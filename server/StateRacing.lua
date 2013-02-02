@@ -232,6 +232,7 @@ function StateRacing:Run()
 		#finishedRacers >= 1 and
 		os.time() - timeOfFirstFinisher >= raceEndTime
 	then
+		MessageRace("Race finished.")
 		EndRace()
 		return
 	end
