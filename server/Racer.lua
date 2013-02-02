@@ -115,6 +115,9 @@ function Racer:Finish()
 		-- vehicle:SetHealth(vehicle:GetHealth() + 0.075)
 	-- end
 	
+	self.player:SetMoney(self.player:GetMoney() + prizeMoneyCurrent)
+	prizeMoneyCurrent = prizeMoneyCurrent * prizeMoneyMult
+	
 	local message = NumberToPlaceString(#finishedRacers).." place!"
 	Network:Send(self.player , "Finish")
 	Network:Send(

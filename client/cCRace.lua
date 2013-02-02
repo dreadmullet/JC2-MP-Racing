@@ -65,6 +65,9 @@ function Race:__init()
 	self.eventSubs.handleInput = Events:Subscribe("LocalPlayerInput" , self , self.HandleInput)
 	self.eventSubs.debugUpdate = Events:Subscribe("Render" , self , self.DebugUpdate)
 	
+	-- Disable nametags.
+	Events:FireRegisteredEvent("NametagsSetState" , false)
+	
 	
 	self.debug = {}
 	self.debug.camPosStreak = 0
@@ -189,6 +192,9 @@ function Race:EndRace()
 		Events:Unsubscribe(sub)
 	end
 	self.eventSubs = nil
+	
+	-- Reenable nametags.
+	Events:FireRegisteredEvent("NametagsSetState" , true)
 	
 end
 
