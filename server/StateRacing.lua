@@ -253,18 +253,22 @@ function StateRacing:Run()
 		if os.time() - t > playerDeathDelay then
 			local player = players_PlayerIdToPlayer[id]
 			local racer = players_PlayerIdToRacer[id]
-			local vehicle = vehicleIdToVehicle[racer.lastVehicleId]
-			if vehicle then
-				-- Remove their vehicle as well.
-				for v = 1 , #vehicles do
-					if vehicles[v]:GetId() == vehicle:GetId() then
-						table.remove(vehicles , v)
-						break
+			if racer then
+				
+				local vehicle = vehicleIdToVehicle[racer.lastVehicleId]
+				if vehicle then
+					-- Remove their vehicle as well.
+					for v = 1 , #vehicles do
+						if vehicles[v]:GetId() == vehicle:GetId() then
+							table.remove(vehicles , v)
+							break
+						end
+					end
+					if IsValid(vehicle) then
+						vehicle:Remove()
 					end
 				end
-				if IsValid(vehicle) then
-					vehicle:Remove()
-				end
+				
 			end
 			
 			RemovePlayer(player)
