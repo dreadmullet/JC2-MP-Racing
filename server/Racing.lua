@@ -58,7 +58,7 @@ if settings == "Release" then
 	lapsMult = 1
 	leaderboardMaxPlayers = 8
 	
-	debugLevel = 1
+	debugLevel = 2
 end
 
 

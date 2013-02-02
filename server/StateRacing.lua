@@ -255,18 +255,17 @@ function StateRacing:Run()
 			local racer = players_PlayerIdToRacer[id]
 			if racer then
 				
+				-- Remove their vehicle as well.
 				local vehicle = vehicleIdToVehicle[racer.lastVehicleId]
-				if vehicle then
-					-- Remove their vehicle as well.
+				if IsValid(vehicle) then
+					-- Remove from vehicles array.
 					for v = 1 , #vehicles do
 						if vehicles[v]:GetId() == vehicle:GetId() then
 							table.remove(vehicles , v)
 							break
 						end
 					end
-					if IsValid(vehicle) then
-						vehicle:Remove()
-					end
+					vehicle:Remove()
 				end
 				
 			end
@@ -295,7 +294,7 @@ function StateRacing:Run()
 				RemovePlayer(racer.player)
 				playersOutOfVehicle[pId] = nil
 				local vehicle = vehicleIdToVehicle[racer.lastVehicleId]
-				if vehicle then
+				if IsValid(vehicle) then
 					-- print(
 						-- "Removing vehicle: id = "..
 						-- racer.lastVehicleId
