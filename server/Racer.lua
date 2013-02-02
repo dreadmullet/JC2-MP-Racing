@@ -103,7 +103,7 @@ function Racer:Finish()
 		MessageServer(self.name.." wins the race!")
 		NetworkSendRace(
 			"ShowLargeMessage" ,
-			{self.name.."wins the race!" , 4}
+			{self.name.." wins the race!" , 4}
 		)
 	elseif #finishedRacers == 2 then
 		MessageRace(self.name.." finishes 2nd.")
