@@ -101,6 +101,10 @@ function Racer:Finish()
 	-- Messages to immediately print for top three finishers.
 	if #finishedRacers == 1 then
 		MessageServer(self.name.." wins the race!")
+		NetworkSendRace(
+			"ShowLargeMessage" ,
+			{self.name.."wins the race!" , 4}
+		)
 	elseif #finishedRacers == 2 then
 		MessageRace(self.name.." finishes 2nd.")
 	elseif #finishedRacers == 3 then
@@ -111,11 +115,12 @@ function Racer:Finish()
 		-- vehicle:SetHealth(vehicle:GetHealth() + 0.075)
 	-- end
 	
+	local message = NumberToPlaceString(#finishedRacers).." place!"
 	Network:Send(self.player , "Finish")
 	Network:Send(
 		self.player ,
 		"ShowLargeMessage" ,
-		{"Finish!" , 7.5}
+		{message , 7.5}
 	)
 
 end

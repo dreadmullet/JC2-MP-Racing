@@ -138,8 +138,6 @@ OnModuleLoad = function(args)
 
 	-- Get a list of course file paths from the course manifest.
 	LoadManifest()
-	
-	currentCourseIndex = 0 -- Sequential turns this into 1.
 
 	SetState("StateWaiting")
 
@@ -151,12 +149,7 @@ local timePrevious = os.time()
 numTicks = 0
 OnServerTick = function(args)
 	
---~ 	if debugLevel >= 3 then
---~ 		print("--pre server tick!")
---~ 	end
-	
 	if fatalError then
-		print("eventSub = " , eventSubServerTick)
 		Events:Unsubscribe(eventSubServerTick)
 		fatalError = false
 		return
@@ -230,7 +223,7 @@ OnPlayerEnterVehicle = function(args)
 		-- Loop through occupants in vehicle.
 		local playersInVehicle = args.vehicle:GetOccupants()
 		for n = 1 , #playersInVehicle do
-			-- If the player's state is stunt position, they don't count as being in the vehicle.
+			
 			if playersInVehicle[n]:GetState() == 4 then
 				-- If this player isn't us, then this bitch is stoled.
 				if args.player:GetId() ~= playersInVehicle[n]:GetId() then
@@ -241,6 +234,7 @@ OnPlayerEnterVehicle = function(args)
 					-- args.player:Teleport(Vector(0 , 1000 , 0) , Angle() , true)
 				end
 			end
+			
 		end
 	end
 	

@@ -1,5 +1,5 @@
 
-debugLevel = 0
+debugLevel = 1
 
 class("Race")
 function Race:__init()
@@ -63,6 +63,11 @@ function Race:__init()
 	self.netSubs.endRace = Network:Subscribe("EndRace" , self , self.EndRace)
 	
 	self.eventSubs.handleInput = Events:Subscribe("LocalPlayerInput" , self , self.HandleInput)
+	self.eventSubs.debugUpdate = Events:Subscribe("Render" , self , self.DebugUpdate)
+	
+	
+	self.debug = {}
+	self.debug.camPosStreak = 0
 	
 end
 

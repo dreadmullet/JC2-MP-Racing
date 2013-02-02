@@ -86,6 +86,7 @@ end
 -- This class, on construction, will fancily draw large text near the center of the screen for a
 -- specified duration.
 class("LargeMessage")
+LargeMessage.messageCount = 0
 function LargeMessage:__init(message , durationSeconds)
 	
 	self.message = message
@@ -95,16 +96,23 @@ function LargeMessage:__init(message , durationSeconds)
 	
 	self.renderEventSub = Events:Subscribe("Render" , self , self.Draw)
 	
+	LargeMessage.messageCount = LargeMessage.messageCount + 1
+	
 end
 
 function LargeMessage:Draw()
 	
 	local timerSeconds = self.timer:GetSeconds()
 	
+	-- Forget about us if there is more than one message showing.
+	if LargeMessage.messageCount >= 2 then
+		self:Destroy()
+		return
+	end
+	
 	-- Forget about us if our time is up.
 	if timerSeconds >= self.durationSeconds then
-		-- print("Unsubscribing...")
-		Events:Unsubscribe(self.renderEventSub)
+		self:Destroy()
 		return
 	end
 	
@@ -145,6 +153,12 @@ function LargeMessage:Draw()
 	
 end
 
+function LargeMessage:Destroy()
+	
+	LargeMessage.messageCount = LargeMessage.messageCount - 1
+	Events:Unsubscribe(self.renderEventSub)
+	
+end
 
 
 

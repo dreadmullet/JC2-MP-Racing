@@ -6,16 +6,21 @@
 class("StateWaiting")
 function StateWaiting:__init()
 	self.__type = "StateWaiting" -- I wish this were the default for all classes.
-
-	timeOfLastRace = os.time()
 	
-	if courseSelectMode == "Random" then
+	-- If this is the first race, select a random course.
+	if timeOfLastRace == 0 then
 		SelectCourseRandom()
-	elseif courseSelectMode == "Sequential" then
-		SelectCourseSequential()
 	else
-		SelectCourseRandom()
+		if courseSelectMode == "Random" then
+			SelectCourseRandom()
+		elseif courseSelectMode == "Sequential" then
+			SelectCourseSequential()
+		else
+			SelectCourseRandom()
+		end
 	end
+	
+	timeOfLastRace = os.time()
 
 	MessageServer("A race is about to begin, use /race to join.")
 
@@ -42,8 +47,8 @@ function StateWaiting:Run()
 		)
 		SetState("StateStartingGrid")
 	elseif
-		numPlayers >= currentCourse.maxPlayers or
-		numPlayers >= Server:GetPlayerCount()
+		numPlayers == currentCourse.maxPlayers or
+		numPlayers == Server:GetPlayerCount()
 	then
 		if debug_ForceMaxPlayers then
 			numPlayers = math.floor(currentCourse.maxPlayers / 1)
@@ -54,6 +59,9 @@ function StateWaiting:Run()
 			" players."
 		)
 		SetState("StateStartingGrid")
+	elseif numPlayers >= currentCourse.maxPlayers then
+		MessageServer("Error: Too many players for course. Race ended.")
+		EndRace()
 	end
 
 

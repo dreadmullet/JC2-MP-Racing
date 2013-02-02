@@ -20,7 +20,7 @@
 -- Version history:
 -- 0.2.2 - 31 January IRC test
 -- 0.2.3+ - Early Febuary public test
-version = "0.2.5"
+version = "0.2.6"
 
 
 ----------------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ if settings == "Release" then
 	lapsMult = 1
 	leaderboardMaxPlayers = 8
 	
-	debugLevel = 2
+	debugLevel = 1
 end
 
 
@@ -87,10 +87,10 @@ if settings == "Debug" then
 	playerModelId = 60
 	useCheckpointIcons = false
 	useFinishIcon = true
-	lapsMult = 0.5
+	lapsMult = 0.1
 	leaderboardMaxPlayers = 8
 	
-	debug_ForceMaxPlayers = true
+	-- debug_ForceMaxPlayers = true
 	
 	-- version = version.." (Debug)"
 	
@@ -522,6 +522,21 @@ LoadManifest = function()
 	end
 
 end
+
+NumberToPlaceString = function(number)
+	
+	if number == 1 then
+		return string.format("%i%s" , 1 , "st")
+	elseif number == 2 then
+		return string.format("%i%s" , 2 , "nd")
+	elseif number == 3 then
+		return string.format("%i%s" , 3 , "rd")
+	else
+		return string.format("%i%s" , number , "th")
+	end
+	
+end
+
 
 -- Replace print. Totally a good idea.
 _print = print
