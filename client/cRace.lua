@@ -1,5 +1,5 @@
 
-debugLevel = 2
+debugLevel = 0
 
 class("Race")
 function Race:__init()

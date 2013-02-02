@@ -134,14 +134,6 @@ function StateStartingGrid:__init()
 		(currentCourse.info.lapTimeMinutes * 60 + currentCourse.info.lapTimeSeconds) *
 		despawnLapRatio
 	)
-
-	--
-	-- If we just changed to this state, set up the grid:
-	--     Spawn vehicles and put players in them. (no functionality yet)
-	-- Temporarily moved to StateRacing
-	--
-	
-	
 	
 	-- [TEMP FEATURE]
 	-- Teleport everyone to a skydive above the starting line and set their world and weather.
@@ -170,9 +162,17 @@ function StateStartingGrid:__init()
 	end
 	
 	--
+	-- Remove every vehicle in the Racing world, just in case.
+	--
+	for vehicle in Server:GetVehicles() do
+		if vehicle:GetWorldId() == worldId then
+			vehicle:Remove()
+		end
+	end
+	
+	--
 	-- Send info to clients.
 	--
-	
 	-- Set up a new checkpoints table, containing only the data to send out.
 	local checkpointData = {} -- [1] = {1}
 	for n = 1 , #currentCourse.checkpoints do
@@ -183,15 +183,6 @@ function StateStartingGrid:__init()
 		table.insert(checkpointData , currentCourse.startFinish.position)
 	elseif currentCourse.info.type == "linear" then
 		table.insert(checkpointData , currentCourse.finish.position)
-	end
-	
-	--
-	-- Remove every vehicle in the Racing world, just in case.
-	--
-	for vehicle in Server:GetVehicles() do
-		if vehicle:GetWorldId() == worldId then
-			vehicle:Remove()
-		end
 	end
 	
 	-- Make them instantiate a Race class.
