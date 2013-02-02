@@ -1,0 +1,70 @@
+
+INFO
+name Cliffracer
+type circuit
+laps 1.2
+lapTimeMinutes 3
+lapTimeSeconds 20
+
+
+STARTGRID # right
+path 4626.645508, 309.545135, 3562.528320
+path 4557.785645, 320.009827, 3644.021484
+path 4485.687500, 327.234894, 3703.310059
+vehicle 91
+width 6.5
+vehicleWidth 1.75
+
+STARTGRID # left
+path 4594.386719, 312.602173, 3560.613037
+path 4538.791992, 320.461426, 3622.173584
+path 4485.643066, 326.677032, 3668.742676
+vehicle 91
+width 6.5
+vehicleWidth 1.75
+
+
+STARTFINISH
+position 4603.285156, 312.639801, 3567.812988
+
+CHECKPOINT #1 left onto primary dirt road
+position 4635.720703, 295.698242, 3389.155029
+
+CHECKPOINT #2 left uphill small
+position 4612.366211, 322.761292, 3208.052979
+
+CHECKPOINT #3 right left uphill
+position 4486.471191, 398.120392, 2944.433838
+
+CHECKPOINT #4 after long left uphill
+position 4218.720703, 501.656067, 2633.357910
+
+CHECKPOINT #5 after hairpin right
+position 4072.547607, 526.672302, 2749.885742
+
+CHECKPOINT #6 right left uphill
+position 4070.003906, 619.941772, 2196.856689
+
+CHECKPOINT #7 after long left
+position 3934.581543, 677.325195, 1934.679932
+
+CHECKPOINT #8 long left very downhill
+position 3450.315430, 552.286560, 1535.135742
+
+CHECKPOINT #9 sharp right
+position 3392.008789, 507.649567, 1685.608643
+
+CHECKPOINT #10 sharp left
+position 3322.597900, 494.419220, 1718.168335
+
+CHECKPOINT #11 90 degree left on road
+position 3518.722900, 494.373840, 2084.238281
+
+CHECKPOINT #12 before esses
+position 3923.675293, 502.479889, 2426.493652
+
+CHECKPOINT #13 last left turn
+position 3891.263184, 360.334259, 3117.849121
+
+CHECKPOINT #14 left onto ramp
+position 4091.239746, 333.179382, 3643.286133

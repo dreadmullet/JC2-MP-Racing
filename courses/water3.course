@@ -1,0 +1,39 @@
+
+# Times:
+# Stuntplane: 3:07
+# Rowlinson (FullyUpgraded): 3:59
+
+
+INFO
+name Berawan Besar Split
+type linear
+lapTimeMinutes 3
+lapTimeSeconds 45
+checkpointRadiusMult 1.5
+
+
+STARTGRID
+path 6410.484863, 202, -11593.946289
+path 6590.623047, 202, -11753.472656
+width 48
+vehicle 27
+vehicleWidth 3.75
+vehicleLength 10
+
+CHECKPOINT #1
+position 6163.252441, 200, -11258.391602
+
+CHECKPOINT
+position 6018.902832, 200, -10858.048828
+
+CHECKPOINT
+position 4499.777832, 200, -10078.808594
+
+CHECKPOINT
+position 1948.368408, 200, -7900.979492
+
+CHECKPOINT #5
+position 1206.733154, 200, -4698.008301
+
+FINISH
+position -498.976105, 200, -3665.224121

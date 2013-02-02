@@ -1,0 +1,58 @@
+INFO
+name Bandar Selekeh Racetrack
+type circuit # Possible types: linear, circuit
+laps 5 # Mandatory for circuits.
+lapTimeMinutes 1
+lapTimeSeconds 5
+hourStart 16 # Begin the race at this hour. (todo)
+hourFinish 3 # After a typical race, the hour will be around this value. (todo)
+# weatherSeverity 2
+
+# Placing all the spawns by hand would get really annoying, this allows them
+# to be placed automatically.
+# The path variables tell where the grid begins and ends; vehicles spawn along
+# this path. If there is more than one path variable, it uses cubic interpolation.
+# More than one STARTGRID is allowed. I already have a course that incorperates
+# multiple starting grids.
+STARTGRID
+path -7191.043457, 221.063049, -4680.785645 # start of grid
+path -7059.973633, 220.956741, -4668.322754 # optional points in middle to make a curve
+path -6798.926758, 220.992615, -4657.106445 # end of grid
+width 16 # How wide the starting grid is.
+vehicle 91 # Titus ZJ
+vehicleTemplate Hardtop
+vehicleWidth 1.75 # These two are temporary, hopefully there will be a better solution.
+vehicleLength 5 # The script tries to fill the starting grid depending on number of players
+
+STARTFINISH # next to pit wall
+position -7191.043457, 221.063049, -4680.785645
+
+CHECKPOINT #1 straight
+position -7422.276855, 221.196289, -4700.561523
+
+CHECKPOINT # right 180
+position -7757.408203, 221.873795, -4800.835938
+
+CHECKPOINT # left 45
+position -7526.485840, 221.236145, -4965.763184
+
+CHECKPOINT # right 180
+position -7321.479980, 220.625961, -5072.958008
+
+CHECKPOINT # left 90
+position -7287.146484, 220.826630, -4826.272949
+
+CHECKPOINT # left 90
+position -6957.389160, 220.933533, -4849.619629
+
+CHECKPOINT # right 180
+position -6925.285156, 221.107681, -5076.157227
+
+CHECKPOINT # right 45
+position -6763.736816, 220.939590, -4878.384277
+
+CHECKPOINT #9 right 45
+position -6935.371582, 220.962555, -4685.918457
+
+# End of checkpoints, so next it loops back to the
+# start/finish because the type is circuit.

@@ -1,0 +1,36 @@
+
+INFO
+name Hillclimbing: Desert Highlands
+type linear
+lapTimeMinutes 3
+lapTimeSeconds 21
+
+
+
+STARTGRID
+path -6673.625000, 245.261490, 8714.858398
+path -6723.762207, 244.754807, 8744.877930
+vehicle 61
+vehicleTemplate FullyUpgraded
+vehicleWidth 2
+vehicleLength 1.9
+width 30
+
+CHECKPOINT
+position -6289.115234, 421.113403, 8531.024414
+
+CHECKPOINT
+position -5853.331543, 455.075043, 8351.691406
+
+CHECKPOINT
+position -5807.850098, 458.444794, 8641.438477
+
+CHECKPOINT
+position -5693.101074, 485.173767, 8329.833008
+
+FINISH
+position -6052.838379, 436.713165, 8242.115234
+
+
+
+

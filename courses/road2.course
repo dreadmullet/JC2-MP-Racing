@@ -1,0 +1,65 @@
+INFO
+name Das Phailenring
+type circuit
+laps 3
+lapTimeMinutes 1
+lapTimeSeconds 25
+
+
+# More than one STARTGRID is allowed. This course has multiple STARTGRIDs
+STARTGRID # north
+path 11827.371094, 263.113861, -7523.221680
+path 11851.067383, 263.019043, -7568.940430
+path 11824.193359, 263.109650, -7526.963379
+width 17
+vehicle 91 # Titus ZJ
+vehicleWidth 2
+vehicleLength 5
+
+STARTGRID # south
+path 11727.109375, 262.955353, -7247.540527
+path 11716.965820, 263.019775, -7194.800781
+path 11691.515625, 262.686859, -7122.184082
+width 17
+vehicle 91 # Titus ZJ
+vehicleWidth 2
+vehicleLength 5
+
+STARTFINISH # after highway ramps
+position 11692.898438, 269.498749, -7417.554688
+
+CHECKPOINT #1 left
+position 11493.072266, 239.255341, -7585.895508
+
+CHECKPOINT #2 right
+position 11415.427734, 227.353317, -7641.134766
+
+CHECKPOINT #3 before bridge
+position 11691.582031, 228.738037, -8008.673340
+
+CHECKPOINT #4 right kink
+position 12050.282227, 211.686539, -8097.013672
+
+CHECKPOINT #5 after uphill right
+position 12327.546875, 219.733566, -7940.373047
+
+CHECKPOINT #6 left kink
+position 12415.721680, 225.196533, -7759.370605
+
+CHECKPOINT #7 uphill right
+position 12576.346680, 241.376297, -7718.916992
+
+CHECKPOINT #8 dirt road on right
+position 12565.815430, 259.624695, -7531.780762
+
+CHECKPOINT #9 left
+position 12343.816406, 251.717133, -7397.846191
+
+CHECKPOINT #10 right 90
+position 12315.535156, 250.294754, -7288.369141
+
+CHECKPOINT #11 after dirt crossing
+position 12017.933594, 263.037781, -7318.405762
+
+# End of checkpoints, so next it loops back to the
+# start/finish because the type is circuit.

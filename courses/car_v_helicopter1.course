@@ -1,0 +1,96 @@
+Stuntplane: 3:06
+Rowlinson, FullyUpgraded: 4:06
+Traver-Z, FullyUpgraded: 3:56
+
+INFO
+name Car v. Helicopter I
+type circuit
+laps 1.2
+lapTimeMinutes 4
+lapTimeSeconds 0
+constantCheckpointOffset 0 2 0
+checkpointRadiusMult 1.2
+
+
+# STARTGRID # Cars left
+# path -8959.477539, 260.460632, -2784.711670
+# path -8959.507813, 260.447449, -2963.868164
+# width 7.25 # How wide the starting grid is.
+# vehicle 35 # Traver-Z
+# vehicleTemplate FullyUpgraded
+# vehicleWidth 2
+# vehicleLength 5.5
+
+# STARTGRID # Cars right
+# path -8977.562500, 260.447876, -2784.704590
+# path -8977.360352, 260.447937, -2963.993652
+# width 7.25 # How wide the starting grid is.
+# vehicle 35 # Traver-Z
+# vehicleTemplate FullyUpgraded
+# vehicleWidth 2
+# vehicleLength 5.5
+
+STARTGRID # Cars
+# path -8968.549805, 260.447876, -2784.752930 # 174
+path -8968.628906, 260.447449, -2427.647705
+path -8968.617188, 260.447876, -2601.345459
+width 17.5 # How wide the starting grid is.
+vehicle 35 # Traver-Z
+vehicleTemplate FullyUpgraded
+vehicleWidth 2.5
+vehicleLength 5.5
+
+
+
+STARTGRID # Helicopters
+path -8968.628906, 260.447449, -2660.647705 # 248
+path -8968.617188, 260.447876, -2918.345459
+width 18 # How wide the starting grid is.
+vehicle 3 # Rowlinson k22
+vehicleTemplate FullyUpgraded
+vehicleWidth 5
+vehicleLength 5.5
+
+STARTFINISH
+position -8968.579102, 260.447205, -2498.684082
+
+CHECKPOINT #1
+position -9819.104492, 264.097748, -1482.376709
+
+CHECKPOINT
+position -10663.149414, 233.190445, -696.271606
+
+CHECKPOINT
+position -10755.261719, 254.211853, -51.166077
+
+CHECKPOINT
+position -10382.499023, 262.060944, 195.457153
+
+CHECKPOINT #5
+position -8406.512695, 231.519257, -328.077789
+
+CHECKPOINT
+position -7823.058105, 230.025314, -991.686890
+
+CHECKPOINT
+position -7643.144531, 230.978195, -1246.750732
+
+CHECKPOINT
+position -7358.196289, 231.141159, -1803.760742
+
+CHECKPOINT
+position -7328.816406, 225.631821, -2522.685059
+
+CHECKPOINT #10
+position -7500.336426, 230.941360, -3043.461182
+
+CHECKPOINT
+position -7961.721680, 229.718140, -3424.035156
+
+CHECKPOINT
+position -8496.089844, 257.292664, -3655.463623
+
+CHECKPOINT
+position -8940.531250, 259.023132, -3146.260254
+
+

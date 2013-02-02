@@ -1,0 +1,86 @@
+
+# Times:
+
+# Car (Hedge Wildchild, Default): 4:45
+# Car (Hedge Wildchild, WeaponUpgrade0): 4:25
+# Car (Hedge Wildchild, WeaponUpgrade1): 4:17   wut
+# Car (Hedge Wildchild, FullyUpgraded): 4:17
+
+# Boat (Snakehead): 3:25
+# Boat (Catshark): 3:55
+# Boat (Powerrun 77, TestTopspeed): 5:05
+# Boat (Powerrun 77, TestAcceleration): 4:57
+# Boat (Powerrun 77, TestHandling): 5:26
+# Boat (Powerrun 77, FullyUpgraded): 3:25
+# Boat (Powerrun 77, WeaponUpgrade1): 4:40
+
+# Heli (Rowlinson K22, Default): 2:55
+# Heli (Mullen Skeeter Hawk): 3:00
+# Heli (Havoc, WeaponUpgrade1): 3:37
+# Heli (Havoc, Default): 4:15
+
+# Plane (Stuntplane): 1:50
+
+
+INFO
+name By Land, Sea, or Air
+type circuit
+laps 1.5
+lapTimeMinutes 3
+lapTimeSeconds 40
+checkpointRadiusMult 1.75
+
+
+STARTGRID # Car
+path -3241.349121, 210.224640, 9187.925781
+path -3207.619385, 213.038376, 9152.474609
+path -3186.259521, 214.863861, 9101.296875
+path -3152.483398, 216.497421, 9040.990234
+width 8
+vehicle 77
+vehicleTemplate WeaponUpgrade0
+
+STARTGRID # Boat
+path -3258.944580, 201.704971, 9379.183594
+path -3222.139893, 201.621262, 9403.356445
+path -3115.176758, 202.115845, 9402.068359
+width 12
+vehicle 88
+vehicleTemplate WeaponUpgrade1
+vehicleLength 6
+vehicleWidth 4
+
+STARTGRID # Helicopter
+path -3451.070313, 208.792572, 8685.459961
+path -3314.456787, 208.796539, 8672.005859
+width 1
+vehicle 37
+vehicleTemplate Default
+vehicleWidth 1
+vehicleLength 6
+
+STARTFINISH
+position -3329.773438, 207, 9284.195313
+
+CHECKPOINT
+position -4373.732910, 207, 9474.855469
+
+CHECKPOINT
+position -3935.756104, 207, 8619.038086
+
+CHECKPOINT
+position -2960.531982, 207, 8386.658203
+
+CHECKPOINT
+position -2647.073975, 207, 8312.735352
+
+CHECKPOINT
+position -1904.398315, 207, 8028.044434
+
+CHECKPOINT
+position -2154.235840, 207, 8556.742188
+
+CHECKPOINT
+position -2992.976318, 207, 8831.479492
+
+
