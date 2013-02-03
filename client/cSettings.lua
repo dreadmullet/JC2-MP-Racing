@@ -42,7 +42,7 @@ Settings.padding = 6
 
 Settings.checkpointArrowFlashNum = 3
 Settings.checkpointArrowFlashInterval = 7
-Settings.checkpointArrowColor = Color(220 , 65 , 62)
+Settings.checkpointArrowColor = Color(204 , 54 , 51)
 -- Settings.checkpointArrowColorActivated = Color(56 , 200 , 45)
 Settings.checkpointArrowColorActivated = Color(0 , 0 , 0 , 0)
 
