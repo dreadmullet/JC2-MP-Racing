@@ -50,6 +50,13 @@ Invisible checkpoint arrow happened a lot.
 
 
 
+-------Public test-------
+
+There's a very evil part in Son of a Beach
+
+
+
+
 FIXED: If the driver gets in stunt position, the person in passenger is kicked for theft.
 
 DONE: Teleport players to the course before it begins, so it's not a race of fast computers.

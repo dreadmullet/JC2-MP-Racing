@@ -20,7 +20,7 @@
 -- Version history:
 -- 0.2.2 - 31 January IRC test
 -- 0.2.3+ - Early Febuary public test
-version = "0.2.7"
+version = "0.2.8"
 
 
 ----------------------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ if settings == "Release" then
 	countdownIntervalSeconds = 2 -- precision of 1 second
 	vehicleToPlayerRatio = 1 -- default of 1
 	worldId = 2 -- vehicles, checkpoints, and players are set to this world.
-	raceEndTime = 50 -- Seconds to allow extra racing after 1 person has finished.
+	raceEndTime = 60 -- Seconds to allow extra racing after 1 person has finished.
 	minimumPlayers = 1
 	despawnLapRatio = 0.6 -- 0.5 means vehicles despawn at 50% lap time.
 	outOfVehicleTrackingDelaySeconds = 8 -- Delay to prevent people from parachuting everywhere.
