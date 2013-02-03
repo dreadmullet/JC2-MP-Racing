@@ -65,9 +65,14 @@ function Race:__init()
 	self.eventSubs.handleInput = Events:Subscribe("LocalPlayerInput" , self , self.HandleInput)
 	self.eventSubs.debugUpdate = Events:Subscribe("Render" , self , self.DebugUpdate)
 	
+	self.netSubs.debugRacePositionTracker = Network:Subscribe(
+		"DebugRacePosTracker" ,
+		self ,
+		self.DebugRacePosTracker
+	)
+	
 	-- Disable nametags.
 	Events:FireRegisteredEvent("NametagsSetState" , false)
-	
 	
 	self.debug = {}
 	self.debug.camPosStreak = 0

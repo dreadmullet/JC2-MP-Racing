@@ -46,7 +46,7 @@ if settings == "Release" then
 	worldId = 2 -- vehicles, checkpoints, and players are set to this world.
 	raceEndTime = 60 -- Seconds to allow extra racing after 1 person has finished.
 	minimumPlayers = 1
-	despawnLapRatio = 0.6 -- 0.5 means vehicles despawn at 50% lap time.
+	despawnLapRatio = 0.25 -- 0.5 means vehicles despawn at 50% lap time.
 	outOfVehicleTrackingDelaySeconds = 8 -- Delay to prevent people from parachuting everywhere.
 	outOfVehicleMaxSeconds = 20 -- After this many seconds out of a vehicle, remove player.
 	timeLimitMult = 2.25 -- Estimated course time is multiplied by this factor to get time limit.

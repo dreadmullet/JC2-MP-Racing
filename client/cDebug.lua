@@ -20,3 +20,23 @@ function Race:DebugUpdate()
 	end
 	
 end
+
+
+--
+-- Network events.
+--
+
+function Race:DebugRacePosTracker(args)
+	
+	local racePosTracker = args[1]
+	local playerIdToCheckpointDistanceSqr = args[2]
+	
+	print()
+	print("racePosTracker = ")
+	Utility.PrintTable(racePosTracker)
+	print()
+	print("playerIdToCheckpointDistanceSqr = ")
+	Utility.PrintTable(playerIdToCheckpointDistanceSqr)
+	print()
+	
+end

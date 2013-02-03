@@ -87,6 +87,20 @@ OnPlayerChat = function(args)
 			else
 				ShowCommandHelp(player)
 			end
+		elseif words[2] == "debug" then
+			if
+				words[3] == "racepos" and
+				GetState() == "StateRacing"
+			then
+				-- Send them the entire RacePosTracker stuff.
+				Network:Send(
+					player ,
+					"DebugRacePosTracker" ,
+					{racePosSender.racePosTracker , racePosSender.playerIdToCheckpointDistanceSqr}
+				)
+			else
+				ShowCommandHelp(player)
+			end
 		else -- Invalid usage, learn the user some infos.
 			ShowCommandHelp(player)
 		end
