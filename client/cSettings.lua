@@ -16,7 +16,8 @@ Settings.blockedInputs = {
 	Action.VehicleFireLeft , -- Blocks firing vehicle weapons.
 	Action.VehicleFireRight , -- Blocks firing vehicle weapons.
 	Action.NextWeapon , -- Blocks switching weapons.
-	Action.PrevWeapon -- Blocks switching weapons.
+	Action.PrevWeapon , -- Blocks switching weapons.
+	Action.StuntJump
 }
 -- Make sure everyone doesn't send their distance at the same time.
 Settings.sendCheckpointDistanceInterval = 0.4 + math.random() * 0.027

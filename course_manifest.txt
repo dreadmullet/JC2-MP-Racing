@@ -2,25 +2,24 @@ scripts/Racing/courses/racetrack1.course
 scripts/Racing/courses/cape_carnival.course
 scripts/Racing/courses/offroad1.course
 scripts/Racing/courses/skull_island.course
+scripts/Racing/courses/facepalm_pond.course
 scripts/Racing/courses/car_v_helicopter1.course
 scripts/Racing/courses/dirt_track_east.course
 scripts/Racing/courses/road4_desert.course
 scripts/Racing/courses/ice1.course
+scripts/Racing/courses/city2.course
 scripts/Racing/courses/offroad2.course
-scripts/Racing/courses/road3_cliffracer.course
 scripts/Racing/courses/water3.course
 scripts/Racing/courses/road2.course
 scripts/Racing/courses/clusterfucking_limousines.course
 scripts/Racing/courses/three_kings_short.course
+scripts/Racing/courses/hillclimbing1.course
 scripts/Racing/courses/road7_mountain3.course
 scripts/Racing/courses/desert_bus.course
 scripts/Racing/courses/roadtrip1_endless_coast.course
 
-# scripts/Racing/courses/facepalm_pond.course
-# scripts/Racing/courses/city2.course #10
 
-# scripts/Racing/courses/hillclimbing1.course
-
+#### scripts/Racing/courses/road3_cliffracer.course # Meh.
 #### scripts/Racing/courses/water1.course # This course isn't very good at all.
 #### scripts/Racing/courses/three_kings_long.course # Shouldn't have both.
 #### scripts/Racing/courses/by_land_sea_or_air.course # Unfinished.
