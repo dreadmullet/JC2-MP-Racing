@@ -65,10 +65,16 @@ function Race:__init()
 	self.eventSubs.handleInput = Events:Subscribe("LocalPlayerInput" , self , self.HandleInput)
 	self.eventSubs.debugUpdate = Events:Subscribe("Render" , self , self.DebugUpdate)
 	
+	-- Debug.
 	self.netSubs.debugRacePositionTracker = Network:Subscribe(
 		"DebugRacePosTracker" ,
 		self ,
 		self.DebugRacePosTracker
+	)
+	self.netSubs.debugCheckpointArrow = Network:Subscribe(
+		"DebugCheckpointArrow" ,
+		self ,
+		self.DebugCheckpointArrow
 	)
 	
 	-- Disable nametags.

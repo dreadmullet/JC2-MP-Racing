@@ -98,6 +98,15 @@ OnPlayerChat = function(args)
 					"DebugRacePosTracker" ,
 					{racePosSender.racePosTracker , racePosSender.playerIdToCheckpointDistanceSqr}
 				)
+			elseif
+				words[3] == "arrow" and
+				GetState() == "StateRacing"
+			then
+				-- Send them the entire RacePosTracker stuff.
+				Network:Send(
+					player ,
+					"DebugCheckpointArrow"
+				)
 			else
 				ShowCommandHelp(player)
 			end

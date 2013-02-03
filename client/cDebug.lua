@@ -40,3 +40,14 @@ function Race:DebugRacePosTracker(args)
 	print()
 	
 end
+
+function Race:DebugCheckpointArrow(args)
+	
+	print("LocalPlayer:GetPosition() = " , LocalPlayer:GetPosition())
+	local vehicle = LocalPlayer:GetVehicle()
+	if IsValid(vehicle) then
+		print("LocalPlayer:GetVehicle():GetPosition() = " , vehicle:GetPosition())
+	end
+	print("Camera:GetPosition() = " , Camera:GetPosition())
+	
+end
