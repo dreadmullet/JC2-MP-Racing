@@ -13,7 +13,7 @@ function Race:DrawCourseNameRace()
 	)
 	
 	DrawText(
-		Vector2(0.5 * Render.Width - textSize.x*0.5 , textSize.y * 0 + 3) ,
+		Vector2(0.5 * Render.Width - textSize.x*0.5 , textSize.y*0 + 3) ,
 		courseName ,
 		Settings.textColor ,
 		"Default" ,
@@ -113,7 +113,6 @@ function Race:DrawLapCounter()
 		"center"
 	)
 	
-	
 end
 
 function Race:DrawRacePosition()
@@ -144,7 +143,8 @@ function Race:DrawLeaderboard()
 	local textWidth = Render:GetTextWidth("W" , Settings.leaderboardTextSize)
 	
 	for n = 1 , #self.leaderboard do
-		local playerInfo = self.playerIdToInfo[self.leaderboard[n]]
+		local playerId = self.leaderboard[n]
+		local playerInfo = self.playerIdToInfo[playerId]
 		local playerName = playerInfo.name
 		
 		-- Clamp their name length.
@@ -166,7 +166,7 @@ function Race:DrawLeaderboard()
 			"left"
 		)
 		-- If this is us, draw an arrow.
-		if self.leaderboard[n] == LocalPlayer:GetId() then
+		if playerId == LocalPlayer:GetId() then
 			DrawText(
 				currentPos + Vector2(textWidth * -1 , 0) ,
 				"»" ,
@@ -181,6 +181,11 @@ function Race:DrawLeaderboard()
 				Settings.leaderboardTextSize ,
 				"left"
 			)
+		end
+		
+		-- Always draw ther players' position tag, for now.
+		if Settings.useNametags == false and playerId ~= LocalPlayer:GetId() then
+			self:DrawPositionTag(playerId , n)
 		end
 		
 		currentPos.y = currentPos.y + textHeight + 2
@@ -220,5 +225,46 @@ function Race:DrawMinimapIcons()
 			
 		end
 	end
+	
+end
+
+-- Draws position tag above someone. ("1st", for example)
+function Race:DrawPositionTag(playerId , position)
+	
+	local worldPos
+	
+	local player = Player.GetById(playerId)
+	if not IsValid(player) then
+		return
+	end
+	
+	local vehicle = player:GetVehicle()
+	if IsValid(vehicle) then
+		worldPos = vehicle:GetPosition()
+	else
+		worldPos = player:GetPosition()
+	end
+	
+	local worldPos = worldPos + Vector(0 , 2 , 0)
+	local screenPos , onScreen = Render:WorldToScreen(worldPos)
+	if not onScreen then
+		return
+	end
+	
+	local size = "Default"
+	
+	local scale = 1
+	if position == 1 then
+		scale = 1.25
+	end
+	
+	DrawText(
+		screenPos ,
+		Utility.NumberToPlaceString(position) ,
+		player:GetColor() ,
+		size ,
+		"center" ,
+		scale
+	)
 	
 end

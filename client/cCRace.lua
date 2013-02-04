@@ -84,7 +84,7 @@ function Race:__init()
 	)
 	
 	-- Disable nametags.
-	if Settings.disableNametags == true then
+	if Settings.useNametags == false then
 		Events:FireRegisteredEvent("NametagsSetState" , false)
 	end
 	
@@ -220,7 +220,7 @@ function Race:EndRace()
 	self.eventSubs = nil
 	
 	-- Reenable nametags.
-	if Settings.disableNametags == true then
+	if Settings.useNametags == false then
 		Events:FireRegisteredEvent("NametagsSetState" , true)
 	end
 	

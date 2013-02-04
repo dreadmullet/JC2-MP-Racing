@@ -26,7 +26,7 @@ NormVector2 = function(x , y)
 end
 
 -- Draws shadowed, aligned text.
-DrawText = function(pos , text , color , size , alignment)
+DrawText = function(pos , text , color , size , alignment , scale)
 	
 	if not text then
 		print("Warning: trying to draw nil text! This should never happen!")
@@ -51,8 +51,8 @@ DrawText = function(pos , text , color , size , alignment)
 	local shadowColor = Copy(Settings.shadowColor)
 	shadowColor.a = color.a
 	
-	Render:DrawText(pos + Vector2(-1 , -1) , text , shadowColor , size)
-	Render:DrawText(pos , text , color , size)
+	Render:DrawText(pos + Vector2(-1 , -1) , text , shadowColor , size , scale or 1)
+	Render:DrawText(pos , text , color , size , scale or 1)
 	
 end
 

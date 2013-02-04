@@ -66,6 +66,7 @@ Settings.minimapCheckpointColorGrey2 = Color(130 , 70 , 60 , 220) -- Border
 -- Normalized.
 Settings.leaderboardPos = Vector2(-0.95 , -0.39)
 Settings.leaderboardTextSize = "Default"
+Settings.leaderboardMaxPlayers = 8
 Settings.maxPlayerNameLength = 16
 
 Settings.largeMessageTextSize = "Huge"
@@ -76,9 +77,7 @@ Settings.largeMessagePos = Vector2(0 , -0.2)
 -- -1 = No minimap icons and low quality checkpoint arrow.
 Settings.guiQuality = 0
 
-Settings.leaderboardMaxPlayers = 8
-
-Settings.disableNametags = true
+Settings.useNametags = false
 
 
 
