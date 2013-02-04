@@ -47,7 +47,6 @@ Settings.checkpointArrowColor = Color(204 , 54 , 51)
 Settings.checkpointArrowColorActivated = Color(0 , 0 , 0 , 0)
 
 -- Normalized positions.
-Settings.lapLabel = "Lap"
 Settings.lapLabelPos = Vector2(0.33 , -0.58)
 Settings.lapLabelSize = "Large"
 Settings.lapCounterPos = Vector2(0.33 , -0.68)

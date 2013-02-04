@@ -80,15 +80,26 @@ end
 
 function Race:DrawLapCounter()
 	
-	-- Make sure the course is a circuit.
-	if self.courseInfo.type ~= "circuit" then
-		return
+	local label
+	local count
+	local total
+	
+	-- If the course is a circuit, draw the laps.
+	-- If the course is linear, draw checkpoint counter.
+	if self.courseInfo.type == "circuit" then
+		label = "Lap"
+		count = self.lapCount
+		total = self.courseInfo.laps
+	elseif self.courseInfo.type == "linear" then
+		label = "CP"
+		count = self.targetCheckpoint - 1
+		total = #self.checkpoints
 	end
 	
-	-- "Lap" label
+	-- "Lap/Checkpoint" label
 	DrawText(
 		NormVector2(Settings.lapLabelPos.x , Settings.lapLabelPos.y) ,
-		Settings.lapLabel ,
+		label ,
 		Settings.textColor ,
 		Settings.lapLabelSize ,
 		"center"
@@ -96,7 +107,7 @@ function Race:DrawLapCounter()
 	-- Counter (ie "1/3")
 	DrawText(
 		NormVector2(Settings.lapCounterPos.x , Settings.lapCounterPos.y) ,
-		string.format("%i/%i" , self.lapCount , self.courseInfo.laps) ,
+		string.format("%i/%i" , count , total) ,
 		Settings.textColor ,
 		Settings.lapCounterSize ,
 		"center"
