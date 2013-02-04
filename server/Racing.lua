@@ -79,7 +79,7 @@ if settings == "Debug" then
 	countdownIntervalSeconds = 2 -- precision of 1 second
 	vehicleToPlayerRatio = 1 -- default of 1
 	worldId = 2 -- Vehicles, checkpoints, and players are set to this world when racing.
-	raceEndTime = 15000 -- Seconds to allow extra racing after 1 person has finished.
+	raceEndTime = 15 -- Seconds to allow extra racing after 1 person has finished.
 	minimumPlayers = 1
 	despawnLapRatio = 1000.6 -- 0.5 means vehicles despawn at 50% lap time.
 	outOfVehicleTrackingDelaySeconds = 8 -- Delay to prevent people from parachuting everywhere.

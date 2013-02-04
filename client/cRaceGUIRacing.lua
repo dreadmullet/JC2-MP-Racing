@@ -138,10 +138,11 @@ function Race:DrawLeaderboard()
 		
 		-- Clamp their name length.
 		playerName = playerName:sub(1 , Settings.maxPlayerNameLength)
+		local playerNameWidth = Render:GetTextWidth(playerName , Settings.leaderboardTextSize)
 		
 		DrawText(
 			currentPos ,
-			string.format("%i." , n) ,
+			Utility.NumberToPlaceString(n) ,
 			Settings.textColor ,
 			Settings.leaderboardTextSize ,
 			"left"
@@ -153,6 +154,24 @@ function Race:DrawLeaderboard()
 			Settings.leaderboardTextSize ,
 			"left"
 		)
+		-- If this is us, draw an arrow.
+		if self.leaderboard[n] == LocalPlayer:GetId() then
+			DrawText(
+				currentPos + Vector2(textWidth * -1 , 0) ,
+				"»" ,
+				Settings.textColor ,
+				Settings.leaderboardTextSize ,
+				"left"
+			)
+			DrawText(
+				currentPos + Vector2(textWidth * 2.5 + playerNameWidth , 0) ,
+				"«" ,
+				Settings.textColor ,
+				Settings.leaderboardTextSize ,
+				"left"
+			)
+		end
+		
 		currentPos.y = currentPos.y + textHeight + 2
 	end
 	

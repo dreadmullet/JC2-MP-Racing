@@ -116,7 +116,7 @@ function Racer:Finish()
 	
 	-- Prize money.
 	self.player:SetMoney(self.player:GetMoney() + prizeMoneyCurrent)
-	MessagePlayer(self.player , string.format("%s%i%s" , "You earned $" , prizeMoneyCurrent , "!"))
+	MessagePlayer(self.player , string.format("%s%i%s" , "You won $" , prizeMoneyCurrent , "!"))
 	prizeMoneyCurrent = prizeMoneyCurrent * prizeMoneyMult
 	
 	local message = NumberToPlaceString(#finishedRacers).." place!"
