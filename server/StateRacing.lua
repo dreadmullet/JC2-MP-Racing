@@ -161,7 +161,7 @@ function StateRacing:__init()
 	for id , racer in pairs(players_PlayerIdToRacer) do
 		racer.targetCheckpoint = 1
 		playersOutOfVehicle[id] = racer
-		racePosTracker[0][id] = true
+		racePosTracker[0][id] = racer.targetCheckpointDistanceSqr
 	end
 
 	timeOfRaceBegin = os.time()
@@ -177,7 +177,7 @@ function StateRacing:__init()
 	)
 	
 	
-	if debugLevel >= 2 then
+	if debugLevel >= 3 then
 		print("------Race Report------")
 		print("Players: "..numPlayers)
 		print("Vehicles: "..#vehicles)
@@ -334,6 +334,11 @@ function StateRacing:Run()
 	-- Example: In a 2 player race, don't update them very quickly.
 	if cheatDetectionTick >= math.max(numPlayers , 250) then
 		cheatDetectionTick = 1
+	end
+	
+	-- Call update on all racers.
+	for id , racer in pairs(players_PlayerIdToRacer) do
+		racer:Update()
 	end
 	
 	-- Time limit.

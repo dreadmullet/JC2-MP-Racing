@@ -135,6 +135,8 @@ function StateStartingGrid:__init()
 		despawnLapRatio
 	)
 	
+	numPlayersAtStart = numPlayers
+	
 	-- [TEMP FEATURE]
 	-- Teleport everyone to a skydive above the starting line and set their world and weather.
 	if debugLevel >= 2 then
@@ -171,6 +173,14 @@ function StateStartingGrid:__init()
 	end
 	
 	--
+	-- Get names of racers, which will be sent to clients.
+	--
+	local playerIdToInfo = {}
+	for id , racer in pairs(players_PlayerIdToRacer) do
+		playerIdToInfo[id] = {["name"] = racer.name , ["color"] = racer.color}
+	end
+	
+	--
 	-- Send info to clients.
 	--
 	-- Set up a new checkpoints table, containing only the data to send out.
@@ -199,6 +209,8 @@ function StateStartingGrid:__init()
 	)
 	-- Race.checkpoints.
 	NetworkSendRace("SetCheckpoints" , checkpointData)
+	-- Send player names.
+	NetworkSendRace("SetPlayerInfo" , playerIdToInfo)
 	-- Tell the client to begin drawing pre race stuff explicitly. Otherwise, they will start drawing
 	-- even if they didn't get the stuff above.
 	NetworkSendRace("StartPreRace")

@@ -92,12 +92,7 @@ OnPlayerChat = function(args)
 				words[3] == "racepos" and
 				GetState() == "StateRacing"
 			then
-				-- Send them the entire RacePosTracker stuff.
-				Network:Send(
-					player ,
-					"DebugRacePosTracker" ,
-					{racePosSender.racePosTracker , racePosSender.playerIdToCheckpointDistanceSqr}
-				)
+				
 			elseif
 				words[3] == "arrow" and
 				GetState() == "StateRacing"
@@ -352,7 +347,7 @@ OnPlayerEnterCheckpoint = function(args)
 		end
 		racer.numCheckpointsHit = racer.numCheckpointsHit + 1
 		-- If this is not set to a large value, it will contain the previous value, which is small.
-		racer.targetCheckpointDistanceSqr = 1000000000
+		racer.targetCheckpointDistanceSqr[1] = 1000000000
 		
 		-- Initialize the table in racePosTracker if it doesn't exist yet.
 		-- Also, since this is the first racer to hit this checkpoint, increase currentCheckpoint.
@@ -362,7 +357,10 @@ OnPlayerEnterCheckpoint = function(args)
 		end
 		
 		-- Add racer to table that contains racers who have hit the current number of checkpoints.
-		racePosTracker[racer.numCheckpointsHit][racer.playerId] = true
+		-- Only add it if they're still racing.
+		if racer.hasFinished == false then
+			racePosTracker[racer.numCheckpointsHit][racer.playerId] = racer.targetCheckpointDistanceSqr
+		end
 
 	elseif id ~= checkpoints[#checkpoints]:GetId() then
 
@@ -385,19 +383,20 @@ end
 
 ReceiveCheckpointDistanceSqr = function(args)
 	
-	-- print("one")
-	
 	-- If the state isn't racing, then ignore this.
 	if GetState() ~= "StateRacing" then
 		return
 	end
 	
-	-- print("two")
+	local playerId = args[1]
+	local distSqr = args[2]
+	local cpIndex = args[3]
 	
-	local racer = players_PlayerIdToRacer[args[1]]
+	local racer = players_PlayerIdToRacer[playerId]
 	
-	if racer then
-		racer.targetCheckpointDistanceSqr = args[2]
+	-- If player is in race and they're sending us the correct checkpoint distance.
+	if racer and racer.targetCheckpoint == cpIndex then
+		racer.targetCheckpointDistanceSqr[1] = distSqr
 	end
 	
 	-- print("Received distance from "..players_PlayerIdToRacer[args[1]].name..": " , args[2])

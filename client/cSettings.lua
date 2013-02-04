@@ -17,8 +17,7 @@ Settings.blockedInputs = {
 	Action.VehicleFireRight , -- Blocks firing vehicle weapons.
 	Action.NextWeapon , -- Blocks switching weapons.
 	Action.PrevWeapon , -- Blocks switching weapons.
-	Action.StuntJump ,
-	Action.GrapplingAction
+	Action.StuntJump -- Prevents people from riding on cars and hopping on people's bikes.
 }
 -- Make sure everyone doesn't send their distance at the same time.
 Settings.sendCheckpointDistanceInterval = 0.4 + math.random() * 0.027
@@ -78,8 +77,9 @@ Settings.largeMessagePos = Vector2(0 , -0.2)
 -- -1 = No minimap icons and low quality checkpoint arrow.
 Settings.guiQuality = 0
 
+Settings.leaderboardMaxPlayers = 8
 
-
+Settings.disableNametags = true
 
 
 

@@ -133,32 +133,27 @@ function Race:DrawLeaderboard()
 	local textWidth = Render:GetTextWidth("W" , Settings.leaderboardTextSize)
 	
 	for n = 1 , #self.leaderboard do
-		local player = Player.GetById(self.leaderboard[n])
+		local playerInfo = self.playerIdToInfo[self.leaderboard[n]]
+		local playerName = playerInfo.name
 		
-		if player then
-			local playerName = player:GetName()
-			
-			-- Clamp their name length.
-			playerName = playerName:sub(1 , Settings.maxPlayerNameLength)
-			
-			DrawText(
-				currentPos ,
-				string.format("%i." , n) ,
-				Settings.textColor ,
-				Settings.leaderboardTextSize ,
-				"left"
-			)
-			DrawText(
-				currentPos + Vector2(textWidth * 2 , 0) ,
-				string.format("%s" , playerName) ,
-				player:GetColor() ,
-				Settings.leaderboardTextSize ,
-				"left"
-			)
-			currentPos.y = currentPos.y + textHeight + 2
-		else
-			-- print("Player from GetById is nil! This should never happen!")
-		end
+		-- Clamp their name length.
+		playerName = playerName:sub(1 , Settings.maxPlayerNameLength)
+		
+		DrawText(
+			currentPos ,
+			string.format("%i." , n) ,
+			Settings.textColor ,
+			Settings.leaderboardTextSize ,
+			"left"
+		)
+		DrawText(
+			currentPos + Vector2(textWidth * 2 , 0) ,
+			string.format("%s" , playerName) ,
+			playerInfo.color ,
+			Settings.leaderboardTextSize ,
+			"left"
+		)
+		currentPos.y = currentPos.y + textHeight + 2
 	end
 	
 end

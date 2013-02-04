@@ -2,7 +2,7 @@
 INFO
 name Three Kings Short
 type circuit
-laps 8
+laps 7
 lapTimeMinutes 0
 lapTimeSeconds 29
 
@@ -13,7 +13,7 @@ path -12842.740234, 216.677536, 15039.378906
 path -12795.695313, 216.738968, 15251.022461
 width 10
 vehicle 78
-vehicleWidth 1.35
+vehicleWidth 1.5
 
 
 STARTFINISH

@@ -6,6 +6,7 @@ function Race:__init()
 	
 	if debugLevel >= 2 then
 		print("Race:__init")
+		raceInstance = self
 	end
 	
 	self.courseInfo = {}
@@ -40,12 +41,17 @@ function Race:__init()
 	
 	self.numTicksRace = 0
 	
+	-- Received at start of race.
+	-- Variables: name, color.
+	self.playerIdToInfo = {}
+	
 	-- Privides an easy way to unsubscribe from all events.
 	self.netSubs = {}
 	self.eventSubs = {}
 	
 	self.netSubs.setCourseInfo = Network:Subscribe("SetCourseInfo" , self , self.SetCourseInfo)
 	self.netSubs.setCheckpoints = Network:Subscribe("SetCheckpoints" , self , self.SetCheckpoints)
+	self.netSubs.setPlayerInfo = Network:Subscribe("SetPlayerInfo" , self , self.SetPlayerInfo)
 	self.netSubs.setTargetCheckpoint = Network:Subscribe(
 		"SetTargetCheckpoint" ,
 		self ,
@@ -78,7 +84,9 @@ function Race:__init()
 	)
 	
 	-- Disable nametags.
-	Events:FireRegisteredEvent("NametagsSetState" , false)
+	if Settings.disableNametags == true then
+		Events:FireRegisteredEvent("NametagsSetState" , false)
+	end
 	
 	self.debug = {}
 	self.debug.camPosStreak = 0
@@ -119,10 +127,10 @@ function Race:StartRace()
 		self ,
 		self.SetRacePosition
 	)
-	self.netSubs.setLeaderboard = Network:Subscribe(
-		"SetLeaderboard" ,
+	self.netSubs.updateRacePositions = Network:Subscribe(
+		"UpdateRacePositions" ,
 		self ,
-		self.SetLeaderboard
+		self.UpdateRacePositions
 	)
 	
 	self.eventSubs.drawRaceGUI = Events:Subscribe("Render" , self , self.DrawRaceGUI)
@@ -170,6 +178,13 @@ function Race:SetCheckpoints(args)
 	
 end
 
+function Race:SetPlayerInfo(playerIdToInfo)
+	
+	self.playerIdToInfo = playerIdToInfo
+	
+end
+
+
 -- Player reached finish line.
 function Race:Finish()
 	
@@ -205,7 +220,9 @@ function Race:EndRace()
 	self.eventSubs = nil
 	
 	-- Reenable nametags.
-	Events:FireRegisteredEvent("NametagsSetState" , true)
+	if Settings.disableNametags == true then
+		Events:FireRegisteredEvent("NametagsSetState" , true)
+	end
 	
 end
 
@@ -237,9 +254,91 @@ function Race:SetRacePosition(args)
 end
 
 -- 
-function Race:SetLeaderboard(args)
+function Race:UpdateRacePositions(args)
 	
-	self.leaderboard = args
+	local racePosTracker = args[1]
+	local currentCheckpoint = args[2]
+	local finishedPlayerIds = args[3]
+	
+	-- print("racePosTracker = ")
+	-- Utility.PrintTable(racePosTracker)
+	-- if true then
+		-- return
+	-- end
+	
+	--
+	-- Store the racePosTracker if debugLevel is 2.
+	--
+	if debugLevel >= 2 then
+		self.racePosTracker = racePosTracker
+	end
+	
+	--
+	-- Transform the (playerId , bool) maps into arrays and fill checkpoint distance array.
+	--
+	local racePosTrackerArray = {}
+	local playerIdToCheckpointDistanceSqr = {}
+	self.playerCount = 0
+	
+	for cp , array in pairs(racePosTracker) do
+		
+		racePosTrackerArray[cp] = {}
+		for id , distSqr in pairs(racePosTracker[cp]) do
+			table.insert(racePosTrackerArray[cp] , id)
+			playerIdToCheckpointDistanceSqr[id] = distSqr[1]
+		end
+		
+		-- Sort player id array by players' distances to their target checkpoints.
+		table.sort(
+			racePosTrackerArray[cp] ,
+			function(id1 , id2)
+				return (
+					playerIdToCheckpointDistanceSqr[id1] <
+					playerIdToCheckpointDistanceSqr[id2]
+				)
+			end
+		)
+		
+	end
+	
+	--
+	-- Calculate top three player positions.
+	--
+	self.leaderboard = {}
+	
+	-- Finished players
+	for n = 1 , #finishedPlayerIds do
+		table.insert(self.leaderboard , finishedPlayerIds[n])
+		self.playerCount = self.playerCount + 1
+	end
+	
+	-- Racing players.
+	for cpIndex = currentCheckpoint , 0 , -1 do
+		
+		local numPlayerIds = #racePosTrackerArray[cpIndex]
+		for playerIdIndex = 1 , numPlayerIds do
+			
+			local playerId = racePosTrackerArray[cpIndex][playerIdIndex]
+			table.insert(self.leaderboard , playerId)
+			self.playerCount = self.playerCount + 1
+			
+			-- If this is us, change some variables.
+			if playerId == LocalPlayer:GetId() then
+				self.racePosition = #self.leaderboard
+			end
+			
+			if #self.leaderboard >= Settings.leaderboardMaxPlayers then
+				break
+			end
+			
+		end
+		
+		if #self.leaderboard >= Settings.leaderboardMaxPlayers then
+			break
+		end
+		
+	end
+	
 	
 end
 
@@ -274,7 +373,6 @@ function Race:DrawPreRaceGUI()
 	self:DrawCourseLength()
 	self:DrawVersion()
 	
-	
 end
 
 -- Called while actually racing.
@@ -295,10 +393,9 @@ function Race:DrawRaceGUI()
 	-- TODO: Add race percentage for linear courses?
 	self:DrawLapCounter()
 	-- self:DrawTimers()
-	-- self:DrawRacePosition()
+	self:DrawRacePosition()
 	self:DrawMinimapIcons()
-	-- self:DrawLeaderboard()
-	
+	self:DrawLeaderboard()
 	
 end
 
@@ -310,13 +407,12 @@ function Race:DrawPostRaceGUI()
 		return
 	end
 	
-	-- self:DrawVersion()
+	self:DrawVersion()
 	self:DrawCourseNameRace()
 	-- self:DrawTimers()
-	-- self:DrawRacePosition()
+	self:DrawRacePosition()
 	self:DrawMinimapIcons()
-	-- self:DrawLeaderboard()
-	
+	self:DrawLeaderboard()
 	
 end
 
@@ -331,7 +427,7 @@ function Race:SendCheckpointDistance(args)
 		-- print("Actually sending distance!")
 		Network:Send(
 			"ReceiveCheckpointDistanceSqr" ,
-			{LocalPlayer:GetId() , self:GetTargetCheckpointDistanceSqr()}
+			{LocalPlayer:GetId() , self:GetTargetCheckpointDistanceSqr() , self.targetCheckpoint}
 		)
 	end
 	

@@ -1,4 +1,6 @@
 
+-- MMavipc is an ostrich.
+
 OnLocalPlayerChat = function(args)
 	
 	if Settings.guiQuality ~= 0 and args.text == "/race quality high" then
@@ -9,6 +11,11 @@ OnLocalPlayerChat = function(args)
 		Settings.guiQuality = -1
 		Client:ChatMessage("Race GUI quality changed to low." , Settings.textColor)
 		return false
+	end
+	
+	if args.text == "/race debug racepos" and raceInstance and raceInstance.racePosTracker then
+		print("racePosTracker = ")
+		Utility.PrintTable(raceInstance.racePosTracker)
 	end
 	
 	return true

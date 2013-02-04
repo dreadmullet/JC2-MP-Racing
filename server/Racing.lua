@@ -79,7 +79,7 @@ if settings == "Debug" then
 	countdownIntervalSeconds = 2 -- precision of 1 second
 	vehicleToPlayerRatio = 1 -- default of 1
 	worldId = 2 -- Vehicles, checkpoints, and players are set to this world when racing.
-	raceEndTime = 15 -- Seconds to allow extra racing after 1 person has finished.
+	raceEndTime = 15000 -- Seconds to allow extra racing after 1 person has finished.
 	minimumPlayers = 1
 	despawnLapRatio = 1000.6 -- 0.5 means vehicles despawn at 50% lap time.
 	outOfVehicleTrackingDelaySeconds = 8 -- Delay to prevent people from parachuting everywhere.
@@ -130,6 +130,7 @@ players_PlayerIdToRacer = {}
 players_PlayerIdToPlayer = {}
 players_DeadPlayerIdToTimeOfDeath = {}
 numPlayers = 0
+numPlayersAtStart = 0
 
 vehicles = {}
 vehicleIdToVehicle = {}
@@ -140,9 +141,8 @@ checkpoints = {}
 
 -- key = number of CPs completed.
 -- value = map of player ids that have completed key number of CPs.
---     key = player Id, value = true
+--     key = player Id, value = pointermabob to checkpoint distance
 racePosTracker = {}
-racePosSender = CRacePosSender(racePosTracker)
 
 -- Starts at 0. When someone hits the first checkpoint, this becomes 1, etc.
 currentCheckpoint = 0
@@ -287,9 +287,6 @@ Cleanup = function()
 	vehicleIdToVehicle = {}
 	
 	racePosTracker = {}
-	-- racePosSender.racePosTracker = racePosTracker
-	racePosSender:Destroy()
-	racePosSender = CRacePosSender(racePosTracker)
 	
 	currentCheckpoint = 0
 	

@@ -9,6 +9,7 @@ function Racer:__init(player)
 	self.player = player
 	self.playerId = player:GetId()
 	self.name = player:GetName()
+	self.color = player:GetColor()
 	self.posOriginal = player:GetPosition() -- player is teleported back here when done.
 	
 	-- Set their model id immediately. Probably a good idea.
@@ -20,26 +21,27 @@ function Racer:__init(player)
 	self.lapsCompleted = 0
 	self.numCheckpointsHit = 0
 	self.hasFinished = false
-	self.targetCheckpointDistanceSqr = 0
+	-- This is pretty much a pointer. o_O
+	-- Used with racePosTracker and helps with NetworkSend parameters.
+	self.targetCheckpointDistanceSqr = {[1] = 0}
 	
 	self.lastVehicleId = -1
 	self.timeSinceOutOfVehicle = 0
 	
+	-- TODO: Helps with vehicle theft.
+	self.assignedVehicleId = -1
+	
 	self.cheatDetection = nil
+	
+	-- Helps with updating only one racer per tick.
+	-- When the first Racer is added, numPlayers is 0.
+	self.updateTick = numPlayers
 
 end
 
 function Racer:AdvanceCheckpoint()
 
 	self.targetCheckpoint = self.targetCheckpoint + 1
-
---~ 	MessagePlayer(
---~ 		self.player ,
---~ 		"Checkpoint! id = "..
---~ 			(self.targetCheckpointId - 1)..
---~ 			" , new target = "..
---~ 			self.targetCheckpointId
---~ 	)
 	
 	local vehicle = self.player:GetVehicle()
 	
@@ -50,11 +52,6 @@ function Racer:AdvanceCheckpoint()
 	-- end
 	
 	Network:Send(self.player , "SetTargetCheckpoint" , self.targetCheckpoint)
-	
-	-- MessagePlayer(
-		-- self.player ,
-		-- "Checkpoint!"
-	-- )
 
 end
 
@@ -67,18 +64,6 @@ function Racer:AdvanceLap()
 	if self.lapsCompleted >= currentCourse.info.laps then
 		self:Finish()
 	else
-		-- local msg = (
-			-- "Lap "..
-			-- self.lapsCompleted..
-			-- "/"..
-			-- currentCourse.info.laps..
-			-- " completed!"
-		-- )
-		-- if self.lapsCompleted == currentCourse.info.laps - 1 then
-			-- msg = msg.." Final lap!"
-		-- end
-		-- MessagePlayer(self.player , msg)
-		
 		-- if IsValid(vehicle) then
 			-- vehicle:SetHealth(vehicle:GetHealth() + 0.075)
 		-- end
@@ -112,7 +97,7 @@ function Racer:Finish()
 		MessageRace(self.name.." finishes 3rd.")
 	end
 	
-	-- If this was the last finisher, end the race.
+	-- If this was the last finisher, end the race. (TODO)
 	-- local allFinished = true
 	-- for id , racer in pairs(players_PlayerIdToRacer) do
 		-- if racer.hasFinished == false then
@@ -129,7 +114,9 @@ function Racer:Finish()
 		-- vehicle:SetHealth(vehicle:GetHealth() + 0.075)
 	-- end
 	
+	-- Prize money.
 	self.player:SetMoney(self.player:GetMoney() + prizeMoneyCurrent)
+	MessagePlayer(self.player , string.format("%s%i%s" , "You earned $" , prizeMoneyCurrent , "!"))
 	prizeMoneyCurrent = prizeMoneyCurrent * prizeMoneyMult
 	
 	local message = NumberToPlaceString(#finishedRacers).." place!"
@@ -142,5 +129,27 @@ function Racer:Finish()
 
 end
 
+function Racer:Update()
+	
+	-- Only update us if it's our turn.
+	if numTicks % numPlayersAtStart == self.updateTick then
+		self:UpdateRacePosition()
+	end
+	
+end
 
+function Racer:UpdateRacePosition()
+	
+	local finishedPlayerIds = {}
+	for n = 1 , #finishedRacers do
+		table.insert(finishedPlayerIds , finishedRacers[n].playerId)
+	end
+	
+	Network:Send(
+		self.player ,
+		"UpdateRacePositions" ,
+		{racePosTracker , currentCheckpoint , finishedPlayerIds}
+	)
+	
+end
 

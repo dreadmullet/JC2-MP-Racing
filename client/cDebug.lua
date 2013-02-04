@@ -11,8 +11,15 @@ function Race:DebugUpdate()
 	if camDist >= 50 then
 		self.debug.camPosStreak = self.debug.camPosStreak + 1
 		if self.debug.camPosStreak >= 60 then
-			print("Warning: Camera:GetPosition() is returning whacky values. Blame Philpax.")
-			print(camDist , "m")
+			print("Warning: Camera:GetPosition() is returning whacky values. Please report this.")
+			
+			print("LocalPlayer:GetPosition() = " , LocalPlayer:GetPosition())
+			local vehicle = LocalPlayer:GetVehicle()
+			if IsValid(vehicle) then
+				print("LocalPlayer:GetVehicle():GetPosition() = " , vehicle:GetPosition())
+			end
+			print("Camera:GetPosition() = " , Camera:GetPosition())
+			
 			self.debug.camPosStreak = 0
 		end
 	else

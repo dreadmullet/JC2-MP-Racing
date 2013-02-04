@@ -70,3 +70,17 @@ M.PrintTable = function(t , depth , tableList)
 
 end
 
+M.NumberToPlaceString = function(number)
+	
+	if number == 1 then
+		return string.format("%i%s" , 1 , "st")
+	elseif number == 2 then
+		return string.format("%i%s" , 2 , "nd")
+	elseif number == 3 then
+		return string.format("%i%s" , 3 , "rd")
+	else
+		return string.format("%i%s" , number , "th")
+	end
+	
+end
+
