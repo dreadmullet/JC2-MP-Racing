@@ -142,7 +142,7 @@ function Race:DrawLeaderboard()
 	local textHeight = Render:GetTextHeight("W" , Settings.leaderboardTextSize)
 	local textWidth = Render:GetTextWidth("W" , Settings.leaderboardTextSize)
 	
-	for n = 1 , #self.leaderboard do
+	for n = 1 , math.min(#self.leaderboard , Settings.leaderboardMaxPlayers) do
 		local playerId = self.leaderboard[n]
 		local playerInfo = self.playerIdToInfo[playerId]
 		local playerName = playerInfo.name
