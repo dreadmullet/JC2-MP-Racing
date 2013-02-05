@@ -19,8 +19,8 @@
 
 -- Version history:
 -- 0.2.2 - 31 January IRC test
--- 0.2.3+ - Early Febuary public test
-version = "0.2.10"
+-- 0.2.3 - 0.2.10 - Early Febuary public test
+version = "0.2.11"
 
 
 ----------------------------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ if settings == "Release" then
 	textColorGlobal = Color(250 , 157 , 133 , 255) -- light red-orange
 	textColorLocal =  Color(255 , 80 , 36 , 255) -- full red-orange
 	commandName = "/race"
-	startGridWaitSeconds = 6
+	startGridWaitSeconds = 7
 	countdownMessages = {"Three!" , "Two!" , "One!" , "GO!!!"}
 	countdownIntervalSeconds = 2 -- precision of 1 second
 	vehicleToPlayerRatio = 1 -- default of 1
@@ -90,7 +90,7 @@ if settings == "Debug" then
 	playerModelId = 60
 	useCheckpointIcons = false
 	useFinishIcon = true
-	lapsMult = 0.1
+	lapsMult = 1
 	leaderboardMaxPlayers = 8
 	-- Prize money awarded starts here and is multiplied by prizeMoneyMult for every racer past 1st.
 	prizeMoneyBase = 10000

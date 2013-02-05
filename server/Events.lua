@@ -322,8 +322,7 @@ OnPlayerEnterCheckpoint = function(args)
 	end
 	
 	-- If the racer doesn't have a vehicle, then we do not care.
-	-- Check if they had a vehicle at some point, but are currently without one.
-	if racer.lastVehicleId ~= -1 and playersOutOfVehicle[args.player:GetId()] then
+	if racer.player:GetVehicle() == nil then
 		return
 	end
 
