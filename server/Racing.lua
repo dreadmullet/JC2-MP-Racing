@@ -96,9 +96,9 @@ if settings == "Debug" then
 	prizeMoneyBase = 10000
 	prizeMoneyMult = 0.75
 	
-	-- debug_ForceMaxPlayers = true
+	debug_ForceMaxPlayers = true
 	
-	-- version = version.." (Debug)"
+	version = version.." (Debug)"
 	
 	-- 0 means no printing except for errors.
 	-- 1 is very reasonable for normal use.

@@ -1,0 +1,31 @@
+
+INFO
+name Mile High Club Madness
+type circuit
+laps 7
+lapTimeMinutes 0
+lapTimeSeconds 35
+checkpointRadiusMult 1.5
+
+STARTGRID # West
+path 13131.660156, 1339.647949, -4851.425293
+path 13131.844727, 1342.966187, -4884.332031
+path 13131.357422, 1342.796875, -4936.811035
+path 13131.727539, 1333.568481, -5014.511719
+width 1
+vehicle 59 # Stunt plane
+vehicleWidth 1
+vehicleLength 9
+fixedVehicleRotation 0 , 0.70710678118 , 0 , 0.70710678118
+
+STARTFINISH # Bottom
+position 13199.111328, 1058.888916, -4948.884766
+
+CHECKPOINT # Top
+position 13199.337891, 1113.634033, -4965.915039
+
+
+
+
+
+

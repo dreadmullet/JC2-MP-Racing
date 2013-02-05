@@ -2,11 +2,13 @@ INFO
 name Bandar Selekeh Racetrack
 type circuit # Possible types: linear, circuit
 laps 5 # Mandatory for circuits.
-lapTimeMinutes 1
+lapTimeMinutes 1 # Used for time limit
 lapTimeSeconds 5
 hourStart 16 # Begin the race at this hour. (todo)
 hourFinish 3 # After a typical race, the hour will be around this value. (todo)
-# weatherSeverity 2
+# weatherSeverity 2 # If this isn't defined, weather is random.
+# checkpointRadiusMult 1.5 # Default of 1.
+# constantCheckpointOffset 0 2 0
 
 # Placing all the spawns by hand would get really annoying, this allows them
 # to be placed automatically.

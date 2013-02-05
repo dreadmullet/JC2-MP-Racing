@@ -146,7 +146,9 @@ OnModuleLoad = function(args)
 		print()
 		print("Racing gamemode "..version.." loaded")
 	end
-
+	
+	MessageServer("Racing "..version.." has been loaded.")
+	
 	-- Seed random number generator.
 	-- os.time() resolution is in seconds.
 	math.randomseed(os.time())
@@ -156,10 +158,9 @@ OnModuleLoad = function(args)
 
 	-- Get a list of course file paths from the course manifest.
 	LoadManifest()
-
+	
 	SetState("StateWaiting")
-
-
+	
 end
 
 

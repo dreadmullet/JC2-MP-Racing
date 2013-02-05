@@ -104,6 +104,10 @@ function StateStartingGrid:__init()
 						(y / (sg.numRows - 1)) * (sg.numRows / sg.maxRows)
 					)
 				end
+				-- If this starting grid has a fixed rotation for all vehicles, use it instead.
+				if sg.fixedVehicleRotation ~= Angle() then
+					gridAngle = sg.fixedVehicleRotation
+				end
 				-- Constant offset.
 				gridPos = gridPos + Vector(0 , 0.5 , 0)
 				currentCourse.gridPositions[

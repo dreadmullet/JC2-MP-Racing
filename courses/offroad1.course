@@ -5,18 +5,12 @@ laps 123 # Optional. (In this case of linear, laps is not parsed)
 lapTimeMinutes 4
 lapTimeSeconds 10
 
-# Placing all the spawns by hand would get really annoying,
-# this allows them to be placed automatically.
-# The thing to watch out for is height differences between the
-# beginning and end of the grid.
-# More than one STARTGRID is allowed. I already have a course that
-# incorperates multiple starting grids.
 STARTGRID # wide open beach
 path 293.388702, 201.931641, 11534.758789
 path 339.632599, 201.828049, 11508.559570
 path 352.323853, 201.373108, 11455.397461
 vehicle 13 # dune buggy
-width 35 # how wide the starting grid is
+width 35
 vehicleWidth 2
 vehicleLength 4
 

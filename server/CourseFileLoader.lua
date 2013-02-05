@@ -74,7 +74,6 @@ function STARTGRID:__init()
 	self.datablockType = "STARTGRID"
 
 	self.path = {} -- Cubically interped curve that the vehicles spawn along.
-	self.angle = Angle() -- Computed after load.
 	self.width = 12
 	self.vehicle = 91 -- Titus ZJ by default? Sure.
 	self.vehicleWidth = 2
@@ -83,6 +82,7 @@ function STARTGRID:__init()
 	self.vehicleDecal = ""
 	self.maxRows = 0 -- Computed after load.
 	self.maxVehiclesPerRow = 0 -- Computed after load.
+	self.fixedVehicleRotation = Angle()
 end
 
 class("STARTFINISH")
