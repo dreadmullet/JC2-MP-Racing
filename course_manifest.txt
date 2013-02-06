@@ -20,7 +20,9 @@
 # scripts/Racing/courses/mhc.course
 
 # scripts/Racing/courses/road8.course
-scripts/Racing/courses/road9.course
+# scripts/Racing/courses/road9.course
+# scripts/Racing/courses/road10_mountain4.course
+scripts/Racing/courses/water4_panau_canals.course
 
 
 #### scripts/Racing/courses/road3_cliffracer.course # Meh.
