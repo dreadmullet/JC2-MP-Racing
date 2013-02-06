@@ -1,0 +1,19 @@
+Features
+- Spawn/delete checkpoints.
+- Very easily move checkpoints around and switch their order.
+- On-screen controls.
+- Multiple players at once.
+- Seperate world for each editing instance.
+- Instant playtesting, a la Trackmania.
+- Instant previewing of starting grids.
+
+
+Specifics
+- Command: /raceeditor
+- Server is instanced a RaceEditor class, player is teleported to another world, then their client is instanced a RaceEditor class.
+
+
+
+
+
+

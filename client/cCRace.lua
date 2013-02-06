@@ -327,15 +327,7 @@ function Race:UpdateRacePositions(args)
 				self.racePosition = #self.leaderboard
 			end
 			
-			-- if #self.leaderboard >= Settings.leaderboardMaxPlayers then
-				-- break
-			-- end
-			
 		end
-		
-		-- if #self.leaderboard >= Settings.leaderboardMaxPlayers then
-			-- break
-		-- end
 		
 	end
 	
