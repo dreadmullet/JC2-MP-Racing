@@ -17,10 +17,10 @@
 # scripts/Racing/courses/road7_mountain3.course
 # scripts/Racing/courses/desert_bus.course
 # scripts/Racing/courses/roadtrip1_endless_coast.course
-scripts/Racing/courses/mhc.course
+# scripts/Racing/courses/mhc.course
 
 # scripts/Racing/courses/road8.course
-# scripts/Racing/courses/road9.course
+scripts/Racing/courses/road9.course
 
 
 #### scripts/Racing/courses/road3_cliffracer.course # Meh.

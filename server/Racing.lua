@@ -27,8 +27,8 @@ version = "0.2.11"
 -- Config variables.
 ----------------------------------------------------------------------------------------------------
 
-settings = "Release"
--- settings = "Debug"
+-- settings = "Release"
+settings = "Debug"
 
 --
 -- Release settings

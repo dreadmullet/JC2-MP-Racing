@@ -2,7 +2,6 @@
 INFO
 name Mile High Club Madness
 type linear
-laps 4.5
 lapTimeMinutes 0
 lapTimeSeconds 35
 checkpointRadiusMult 1.3
