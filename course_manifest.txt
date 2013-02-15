@@ -17,16 +17,16 @@
 # scripts/Racing/courses/road7_mountain3.course
 # scripts/Racing/courses/desert_bus.course
 # scripts/Racing/courses/roadtrip1_endless_coast.course
-scripts/Racing/courses/mhc.course
+# scripts/Racing/courses/mhc.course # needs cp arrow tweak
+# scripts/Racing/courses/water4_panau_canals.course # maybe not finished yet
 
-# scripts/Racing/courses/road8.course
-# scripts/Racing/courses/road9.course
-# scripts/Racing/courses/road10_mountain4.course
-# scripts/Racing/courses/water4_panau_canals.course
-# scripts/Racing/courses/road11.course
-# scripts/Racing/courses/road12.course
-# scripts/Racing/courses/road13_mountain6.course
-# scripts/Racing/courses/road14.course
+# scripts/Racing/courses/road8.course # decent
+# scripts/Racing/courses/road9.course # long but decent
+# scripts/Racing/courses/road10_mountain4.course # very nice
+# scripts/Racing/courses/road11.course # boring, not polished yet
+# scripts/Racing/courses/road12_mountain5.course # not bad at all
+# scripts/Racing/courses/road13.course # boring, not polished yet
+scripts/Racing/courses/road14_mountain6.course # awesome
 
 
 #### scripts/Racing/courses/road3_cliffracer.course # Meh.

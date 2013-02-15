@@ -2,18 +2,17 @@
 
 INFO
 name South-east Berawan Togue
-type linear # Possible types: linear, circuit, unordered.
-laps 123 # Optional. (In this case of linear, laps is not parsed)
-lapTimeMinutes 4
+type linear
+lapTimeMinutes 5
 lapTimeSeconds 10
 
 STARTGRID # belakang petah base exit
 path 5304.001953, 1197.872314, -242.922394
 path 5338.438477, 1196.284790, -204.749313
-vehicle 2
-width 15
+vehicle 87
+width 10
 vehicleWidth 2
-vehicleLength 4
+vehicleLength 6
 
 CHECKPOINT # starting line
 position 5181.386719, 1197.098511, -389.025848

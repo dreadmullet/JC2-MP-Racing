@@ -154,7 +154,7 @@ function Race:SetCourseInfo(args)
 	if not args[3] then print("Error: args[3] is nil for some reason! This should never happen!") end
 	if not args[4] then print("Error: args[4] is nil for some reason! This should never happen!") end
 	
-	if debugLevel >= 2 then
+	if debugLevel >= 3 then
 		-- print("Race:SetCourseInfo")
 		print("Name = " , self.courseInfo.name)
 		print("type = " , self.courseInfo.type)
@@ -169,8 +169,7 @@ function Race:SetCheckpoints(args)
 	
 	self.checkpoints = args
 	
-	if debugLevel >= 2 then
-		-- print("Race:SetCheckpoints")
+	if debugLevel >= 3 then
 		print("#checkpoints = " , #self.checkpoints)
 	end
 	

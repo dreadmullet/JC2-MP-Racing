@@ -1,25 +1,21 @@
 
 INFO
 name West Berawan Besar Togue
-type linear # Possible types: linear, circuit, unordered.
-laps 123 # Optional. (In this case of linear, laps is not parsed)
-lapTimeMinutes 4
-lapTimeSeconds 20
+type linear
+lapTimeMinutes 5
+lapTimeSeconds 0
 
 STARTGRID # kampung curah dalam base
-path -2516.458740, 896.724365, -8268.338867
-path -2533.127441, 896.853394, -8294.635742
-path -2551.685791, 896.484741, -8324.152344
+path -2278.974121, 895.658020, -7890.716309
+path -2549.720215, 896.525452, -8321.070313
 vehicle 2
-width 4
-vehicleWidth 3
+width 7.8
+vehicleWidth 2
 vehicleLength 6
 
-CHECKPOINT # starting point; curah dalam exit bridge
-position -2424.100586, 895.341553, -8120.079590
 
 CHECKPOINT
-position -2116.755127, 898.714783, -7594.075684
+position -2028.248779, 895.625122, -7560.781250
 
 CHECKPOINT
 position -1529.302856, 950.217651, -7920.338379
@@ -97,5 +93,5 @@ CHECKPOINT
 position -3712.912842, 332.860352, -5858.661621
 
 FINISH
-position -4310.996094, 267.758545, -5476.060547
+position -4258.201172, 265.525513, -5468.917480
 

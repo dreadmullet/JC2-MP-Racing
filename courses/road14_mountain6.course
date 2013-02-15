@@ -2,22 +2,30 @@
 
 INFO
 name East Berawan Togue
-type linear # Possible types: linear, circuit, unordered.
-laps 123 # Optional. (In this case of linear, laps is not parsed)
-lapTimeMinutes 10
-lapTimeSeconds 45
+type linear
+lapTimeMinutes 5
+lapTimeSeconds 0
 
-STARTGRID # kem gunung kudus base entry
-path 6897.085938, 1455.025513, -3295.565186 # enabled for now
-path 6905.169922, 1454.890625, -3326.375000
-path 6915.410645, 1454.470337, -3386.070801
+STARTGRID # near base
+path 6897.085938, 1455.025513, -3295.565186
+path 6919.347168, 1453.616821, -3407.687256
 vehicle 2
-width 15
+width 8
 vehicleWidth 2
-vehicleLength 4
+vehicleLength 4.5
 
-CHECKPOINT # starting line
-position 6777.779785, 1439.200684, -3200.781982
+STARTGRID # single-wide down hill in front
+path 6766.122070, 1436.684937, -3188.760254
+path 6816.871582, 1444.366699, -3232.230225
+path 6867.129395, 1452.722290, -3252.812988
+path 6889.956055, 1455.236450, -3277.101074
+vehicle 91
+width 5
+vehicleWidth 2
+vehicleLength 4.4
+
+CHECKPOINT #1
+position 6632.722168, 1386.206665, -3023.627930
 
 CHECKPOINT
 position 6552.502441, 1338.023682, -2770.858154
@@ -94,33 +102,5 @@ position 3747.323975, 727.655762, -7918.050293
 CHECKPOINT
 position 2930.400879, 621.874329, -7839.586914
 
-CHECKPOINT
-position 2526.067383, 581.999268, -7577.625977
-
-CHECKPOINT
-position 2123.450195, 624.758057, -6387.303223
-
-CHECKPOINT
-position 2091.042236, 489.723785, -5347.282715
-
-CHECKPOINT
-position 2020.769897, 461.047150, -4961.696289
-
-CHECKPOINT
-position 1647.149658, 395.748810, -5803.755371
-
-CHECKPOINT
-position 1729.650757, 324.007385, -6843.546875
-
-CHECKPOINT
-position 1886.767944, 240.757828, -7401.928711
-
-CHECKPOINT
-position 1666.478638, 247.931274, -8287.318359
-
-CHECKPOINT
-position 2187.865234, 282.126465, -8575.472656
-
 FINISH
-position 3558.986572, 266.352600, -9786.445313
-
+position 2458.081787, 581.998657, -7413.528320

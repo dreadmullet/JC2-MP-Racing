@@ -2,21 +2,19 @@
 
 INFO
 name Broadcast Centre Boundary
-type circuit # Possible types: linear, circuit
-laps 5 # Mandatory for circuits.
-lapTimeMinutes 1 # Used for time limit
+type circuit
+laps 5
+lapTimeMinutes 1
 lapTimeSeconds 5
-hourStart 16 # Begin the race at this hour. (todo)
-hourFinish 3 # After a typical race, the hour will be around this value. (todo)
 
 STARTGRID
 path -55.016144, 213.325119, -12319.603516
 path -54.040375, 221.308731, -12369.312500
-width 6 # How wide the starting grid is.
-vehicle 91 # Titus ZJ
+width 6
+vehicle 91
 vehicleTemplate Hardtop
-vehicleWidth 1.75 # These two are temporary, hopefully there will be a better solution.
-vehicleLength 3 # The script tries to fill the starting grid depending on number of players
+vehicleWidth 1.75
+vehicleLength 6
 
 STARTFINISH
 position -100.453583, 207.004913, -12209.108398
