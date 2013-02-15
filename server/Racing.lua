@@ -96,7 +96,7 @@ if settings == "Debug" then
 	prizeMoneyBase = 10000
 	prizeMoneyMult = 0.75
 	
-	debug_ForceMaxPlayers = true
+	-- debug_ForceMaxPlayers = true
 	
 	version = version.." (Debug)"
 	

@@ -3,9 +3,9 @@ Models = {}
 
 -- Checkpoint pointer arrow.
 
-local arrowWidth = 0.20
-local arrowLength = 0.625
-local arrowHead = 0.75
+local arrowWidth = 0.18
+local arrowLength = 0.58
+local arrowHead = 0.70
 local arrowHeadWidthMult = 3
 local arrowHeight = 0.0375
 

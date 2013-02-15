@@ -10,7 +10,7 @@ function Race:DebugUpdate()
 	local camDist = Vector.Distance(Camera:GetPosition() , LocalPlayer:GetPosition())
 	if camDist >= 50 then
 		self.debug.camPosStreak = self.debug.camPosStreak + 1
-		if self.debug.camPosStreak >= 60 then
+		if self.debug.camPosStreak >= 60 and LocalPlayer:GetHealth() > 0 then
 			print("Warning: Camera:GetPosition() is returning whacky values. Please report this.")
 			
 			print("LocalPlayer:GetPosition() = " , LocalPlayer:GetPosition())

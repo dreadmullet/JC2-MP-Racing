@@ -42,12 +42,13 @@ function Race:DrawCheckpointArrow()
 	)
 	angleCP.roll = 0
 	
+	-- Compensate position for change in FOV.
 	local z = -8.25
 	local y = 3
 	local vehicle = LocalPlayer:GetVehicle()
 	if vehicle then
-		z = z + vehicle:GetLinearVelocity():Length() / 20
-		y = y + vehicle:GetLinearVelocity():Length() / 300
+		z = z + vehicle:GetLinearVelocity():Length() / 25
+		y = y + vehicle:GetLinearVelocity():Length() / 350
 	end
 	local pos = Camera:GetPosition() + Camera:GetAngle() * Vector(0 , y , z)
 	
