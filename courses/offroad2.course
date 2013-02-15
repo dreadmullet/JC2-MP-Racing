@@ -6,6 +6,7 @@ type circuit
 laps 0.75
 lapTimeMinutes 5
 lapTimeSeconds 20
+author dreadmullet
 
 
 STARTGRID # curve along beach

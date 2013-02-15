@@ -5,7 +5,7 @@ type linear
 lapTimeMinutes 2 # Stunt plane time: 1:50
 lapTimeSeconds 30
 checkpointRadiusMult 1.25
-
+author dreadmullet
 
 STARTGRID
 path -10216.154297, 202, -3736.532471

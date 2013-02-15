@@ -5,6 +5,8 @@ name South-east Berawan Togue
 type linear
 lapTimeMinutes 5
 lapTimeSeconds 10
+author F430
+author dreadmullet
 
 STARTGRID # belakang petah base exit
 path 5304.001953, 1197.872314, -242.922394

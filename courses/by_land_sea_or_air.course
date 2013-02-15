@@ -29,7 +29,7 @@ laps 1.5
 lapTimeMinutes 3
 lapTimeSeconds 40
 checkpointRadiusMult 1.75
-
+author dreadmullet
 
 STARTGRID # Car
 path -3241.349121, 210.224640, 9187.925781

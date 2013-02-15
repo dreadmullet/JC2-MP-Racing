@@ -5,6 +5,8 @@ type linear
 lapTimeMinutes 10
 lapTimeSeconds 45
 weatherSeverity 2
+author F430
+author dreadmullet
 
 STARTGRID # Main road.
 path -9569.739258, 500.905182, 10844.977539

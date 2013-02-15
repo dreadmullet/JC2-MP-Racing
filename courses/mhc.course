@@ -5,6 +5,7 @@ type linear
 lapTimeMinutes 0
 lapTimeSeconds 35
 checkpointRadiusMult 1.3
+author dreadmullet
 
 STARTGRID # West
 path 13131.5, 1339.647949, -4851.425293

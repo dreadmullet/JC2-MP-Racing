@@ -5,6 +5,8 @@ name TV Centre & Paya Luas
 type linear
 lapTimeMinutes 13
 lapTimeSeconds 0
+author F430
+author dreadmullet
 
 STARTGRID # broadcast center expressway
 path -312.682983, 238.202667, -11956.677734

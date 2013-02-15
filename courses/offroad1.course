@@ -4,6 +4,7 @@ type linear # Possible types: linear, circuit, unordered.
 laps 123 # Optional. (In this case of linear, laps is not parsed)
 lapTimeMinutes 4
 lapTimeSeconds 10
+author dreadmullet
 
 STARTGRID # wide open beach
 path 293.388702, 201.931641, 11534.758789

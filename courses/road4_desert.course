@@ -4,7 +4,7 @@ name Reaper's Run
 type linear
 lapTimeMinutes 4
 lapTimeSeconds 10
-
+author dreadmullet
 
 
 STARTGRID # after military checkpoint

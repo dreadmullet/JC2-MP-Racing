@@ -4,6 +4,8 @@ name West Berawan Besar Togue
 type linear
 lapTimeMinutes 5
 lapTimeSeconds 0
+author F430
+author dreadmullet
 
 STARTGRID # kampung curah dalam base
 path -2278.974121, 895.658020, -7890.716309

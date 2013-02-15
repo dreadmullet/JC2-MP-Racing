@@ -5,7 +5,8 @@ INFO
 name Desert Bus
 type linear
 lapTimeMinutes 9
-lapTimeSeconds 0.0001
+lapTimeSeconds 0
+author dreadmullet
 
 STARTGRID
 path -8272.237305, 213.051407, 6625.343262

@@ -5,7 +5,7 @@ type circuit
 laps 3.75
 lapTimeMinutes 1
 lapTimeSeconds 30
-
+author dreadmullet
 
 STARTGRID
 path 3039.782227, 1233.687012, -3784.863281

@@ -9,6 +9,7 @@ hourFinish 3 # After a typical race, the hour will be around this value. (todo)
 # weatherSeverity 2 # If this isn't defined, weather is random.
 # checkpointRadiusMult 1.5 # Default of 1.
 # constantCheckpointOffset 0 2 0
+author dreadmullet
 
 # Placing all the spawns by hand would get really annoying, this allows them
 # to be placed automatically.

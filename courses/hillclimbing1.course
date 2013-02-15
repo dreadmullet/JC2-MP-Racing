@@ -4,7 +4,7 @@ name Hillclimbing: Desert Highlands
 type linear
 lapTimeMinutes 3
 lapTimeSeconds 21
-
+author dreadmullet
 
 
 STARTGRID

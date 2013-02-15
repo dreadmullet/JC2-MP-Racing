@@ -4,6 +4,7 @@ type circuit
 laps 3
 lapTimeMinutes 1
 lapTimeSeconds 25
+author dreadmullet
 
 
 # More than one STARTGRID is allowed. This course has multiple STARTGRIDs

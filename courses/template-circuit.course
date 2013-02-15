@@ -5,7 +5,7 @@ type circuit
 laps 3
 lapTimeMinutes 0
 lapTimeSeconds 00
-
+author authorname
 
 
 STARTGRID

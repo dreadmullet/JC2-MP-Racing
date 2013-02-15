@@ -5,6 +5,8 @@ name East Berawan Togue
 type linear
 lapTimeMinutes 5
 lapTimeSeconds 0
+author F430
+author dreadmullet
 
 STARTGRID # near base
 path 6897.085938, 1455.025513, -3295.565186

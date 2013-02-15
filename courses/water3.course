@@ -10,7 +10,7 @@ type linear
 lapTimeMinutes 3
 lapTimeSeconds 45
 checkpointRadiusMult 1.5
-
+author dreadmullet
 
 STARTGRID
 path 6410.484863, 202, -11593.946289

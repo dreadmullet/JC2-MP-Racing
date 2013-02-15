@@ -7,7 +7,7 @@ laps 3
 lapTimeMinutes 1
 lapTimeSeconds 20
 checkpointRadiusMult 1.5
-
+author dreadmullet
 
 STARTGRID
 path 10443.316406, 202, -526.498840

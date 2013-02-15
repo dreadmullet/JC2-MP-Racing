@@ -6,6 +6,8 @@ type linear # Possible types: linear, circuit, unordered.
 laps 123 # Optional. (In this case of linear, laps is not parsed)
 lapTimeMinutes 4
 lapTimeSeconds 10
+author F430
+author dreadmullet
 
 STARTGRID # pekan kesuma city square
 path 5210.709473, 204.585281, 14067.237305

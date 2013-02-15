@@ -10,6 +10,7 @@ lapTimeMinutes 4
 lapTimeSeconds 0
 constantCheckpointOffset 0 2 0
 checkpointRadiusMult 1.2
+author dreadmullet
 
 
 # STARTGRID # Cars left
@@ -30,6 +31,7 @@ checkpointRadiusMult 1.2
 # vehicleWidth 2
 # vehicleLength 5.5
 
+
 STARTGRID # Cars
 # path -8968.549805, 260.447876, -2784.752930 # 174
 path -8968.628906, 260.447449, -2427.647705
@@ -40,8 +42,6 @@ vehicleTemplate FullyUpgraded
 vehicleWidth 2.5
 vehicleLength 5.5
 
-
-
 STARTGRID # Helicopters
 path -8968.628906, 260.447449, -2660.647705 # 248
 path -8968.617188, 260.447876, -2918.345459
@@ -50,6 +50,7 @@ vehicle 3 # Rowlinson k22
 vehicleTemplate FullyUpgraded
 vehicleWidth 5
 vehicleLength 5.5
+
 
 STARTFINISH
 position -8968.579102, 260.447205, -2498.684082

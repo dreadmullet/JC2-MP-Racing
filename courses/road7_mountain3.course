@@ -4,7 +4,7 @@ name Cliffs of Fear
 type linear
 lapTimeMinutes 5
 lapTimeSeconds 15
-
+author dreadmullet
 
 
 STARTGRID

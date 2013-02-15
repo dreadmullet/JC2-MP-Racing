@@ -6,6 +6,8 @@ type circuit
 laps 5
 lapTimeMinutes 1
 lapTimeSeconds 5
+author F430
+author dreadmullet
 
 STARTGRID
 path -55.016144, 213.325119, -12319.603516

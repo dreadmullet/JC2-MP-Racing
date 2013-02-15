@@ -5,7 +5,7 @@ type circuit
 laps 6
 lapTimeMinutes 0 # default of 0
 lapTimeSeconds 45
-
+author dreadmullet
 
 
 STARTGRID

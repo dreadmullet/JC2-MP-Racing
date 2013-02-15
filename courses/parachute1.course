@@ -6,6 +6,7 @@ type linear
 lapTimeMinutes 2
 lapTimeSeconds 00
 checkpointRadiusMult 0.98
+author dreadmullet
 
 
 STARTGRID

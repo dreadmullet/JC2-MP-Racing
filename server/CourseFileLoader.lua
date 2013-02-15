@@ -67,6 +67,7 @@ function INFO:__init()
 	self.checkpointRadiusMult = 1
 	self.weatherSeverity = -1 -- -1 = random
 	self.constantCheckpointOffset = {}
+	self.authors = {}
 end
 
 class("STARTGRID")
@@ -220,6 +221,14 @@ M.Load = function(path)
 								rest ,
 								"table"
 							)
+						)
+					elseif
+						currentDatablock.datablockType == "INFO" and
+						varName == "author"
+					then
+						table.insert(
+							currentDatablock.authors ,
+							rest
 						)
 					else -- *** Generic cases *** Just add the variable.
 						currentDatablock[varName] = M.Cast(

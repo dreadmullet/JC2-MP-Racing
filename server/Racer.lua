@@ -15,6 +15,13 @@ function Racer:__init(player)
 	-- Set their model id immediately. Probably a good idea.
 	self.modelIdOriginal = player:GetModelId()
 	player:SetModelId(playerModelId)
+	-- Set model of authors to something unique.
+	for n , authorName in ipairs(currentCourse.info.authors) do
+		if self.name == authorName then
+			player:SetModelId(100)
+			break
+		end
+	end
 	
 	-- Index of checkpoints.
 	self.targetCheckpoint = 1

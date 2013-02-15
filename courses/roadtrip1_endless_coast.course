@@ -5,6 +5,7 @@ type linear
 lapTimeMinutes 15
 lapTimeSeconds 0
 weatherSeverity 0.6
+author dreadmullet
 
 STARTGRID # North
 path -10849.853516, 476.939606, 8085.508789
