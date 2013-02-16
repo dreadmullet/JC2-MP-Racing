@@ -209,6 +209,7 @@ function StateStartingGrid:__init()
 			currentCourse.info.type ,
 			currentCourse.info.laps ,
 			currentCourse.info.weatherSeverity ,
+			currentCourse.info.authors
 		}
 	)
 	-- Race.checkpoints.

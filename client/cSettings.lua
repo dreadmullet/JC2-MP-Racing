@@ -35,7 +35,7 @@ Settings.shadowColor = Color(0 , 0 , 0 , 255)
 -- Normalized.
 Settings.startingGridBackgroundTopRight = Vector2(0.88 , -0.92)
 -- Normalized.
-Settings.startingGridBackgroundSize = Vector2(0.3 , 0.105)
+Settings.startingGridBackgroundSize = Vector2(0.35 , 0.105)
 Settings.startingGridTextSize = "Large"
 
 Settings.padding = 6

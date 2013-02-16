@@ -148,11 +148,13 @@ function Race:SetCourseInfo(args)
 	self.courseInfo.type = args[2]
 	self.courseInfo.laps = args[3]
 	self.courseInfo.weatherSeverity = args[4]
+	self.courseInfo.authors = args[5]
 	
 	if not args[1] then print("Error: args[1] is nil for some reason! This should never happen!") end
 	if not args[2] then print("Error: args[2] is nil for some reason! This should never happen!") end
 	if not args[3] then print("Error: args[3] is nil for some reason! This should never happen!") end
 	if not args[4] then print("Error: args[4] is nil for some reason! This should never happen!") end
+	if not args[5] then print("Error: args[5] is nil for some reason! This should never happen!") end
 	
 	if debugLevel >= 3 then
 		-- print("Race:SetCourseInfo")
@@ -330,7 +332,6 @@ function Race:UpdateRacePositions(args)
 		
 	end
 	
-	
 end
 
 --
@@ -345,23 +346,12 @@ function Race:DrawPreRaceGUI()
 		return
 	end
 	
-	-- Reset startingGridTextPos
-	self.startingGridTextPos = (
-		NormVector2(
-			Settings.startingGridBackgroundTopRight.x ,
-			Settings.startingGridBackgroundTopRight.y
-		) +
-		Vector2(
-			-Settings.startingGridBackgroundSize.x * Render.Width + Settings.padding ,
-			Settings.padding
-		)
-	)
-	
 	self:DrawStartingGridBackground()
 	
 	self:DrawCourseName()
 	self:DrawCourseType()
 	self:DrawCourseLength()
+	self:DrawCourseAuthors()
 	self:DrawVersion()
 	
 end
