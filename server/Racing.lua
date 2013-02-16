@@ -34,7 +34,7 @@ settings = "Debug"
 -- Release settings
 --
 if settings == "Release" then
-	courseManifestFilePath = "scripts/Racing/course_manifest.txt"
+	courseManifestFilePath = "course_manifest.txt"
 	maxWaitSecondsBetweenRaces = 35
 	textColorGlobal = Color(250 , 157 , 133 , 255) -- light red-orange
 	textColorLocal =  Color(255 , 80 , 36 , 255) -- full red-orange
@@ -69,7 +69,7 @@ end
 -- Debug settings
 --
 if settings == "Debug" then
-	courseManifestFilePath = "scripts/Racing/course_manifest.txt"
+	courseManifestFilePath = "course_manifest.txt"
 	maxWaitSecondsBetweenRaces = 30
 	textColorGlobal = Color(250 , 157 , 133 , 255) -- light red-orange
 	textColorLocal =  Color(255 , 80 , 36 , 255) -- full red-orange
