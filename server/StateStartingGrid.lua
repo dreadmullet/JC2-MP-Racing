@@ -24,13 +24,13 @@ function StateStartingGrid:__init()
 	-- Scale number of laps by number of players.
 	--
 	local lapsMultPlayers = (numPlayers / currentCourse.maxPlayers)
-	lapsMultPlayers = (lapsMultPlayers - 0.24)
+	lapsMultPlayers = lapsMultPlayers - 0.25
 	lapsMultPlayers = lapsMultPlayers + 1
 	-- Global laps multipier.
 	currentCourse.info.laps = currentCourse.info.laps * lapsMult
 	-- Multiply laps and then round it.
 	currentCourse.info.laps = math.ceil(currentCourse.info.laps * lapsMultPlayers - 0.5)
-	-- Minimum laps of 1
+	-- Minimum laps of 1.
 	if currentCourse.info.laps < 1 then
 		currentCourse.info.laps = 1
 	end
@@ -168,11 +168,16 @@ function StateStartingGrid:__init()
 	end
 	
 	--
-	-- Remove every vehicle in the Racing world, just in case.
+	-- Remove every vehicle and checkpoint in the Racing world, just in case.
 	--
 	for vehicle in Server:GetVehicles() do
 		if vehicle:GetWorldId() == worldId then
 			vehicle:Remove()
+		end
+	end
+	for checkpoint in Server:GetCheckpoints() do
+		if checkpoint:GetWorldId() == worldId then
+			checkpoint:Remove()
 		end
 	end
 	

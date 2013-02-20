@@ -32,7 +32,7 @@ function Racer:__init(player)
 	-- Used with racePosTracker and helps with NetworkSend parameters.
 	self.targetCheckpointDistanceSqr = {[1] = 0}
 	
-	self.lastVehicleId = -1
+	self.assignedVehicleId = -1
 	self.timeSinceOutOfVehicle = 0
 	
 	-- TODO: Helps with vehicle theft.

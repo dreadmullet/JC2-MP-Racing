@@ -18,6 +18,7 @@
 ----------------------------------------------------------------------------------------------------
 
 -- Version history:
+-- 0.1 - Broken, rushed version ran in the November test.
 -- 0.2.2 - 31 January IRC test
 -- 0.2.3 - 0.2.10 - Early Febuary public test
 version = "0.2.11"
@@ -27,8 +28,8 @@ version = "0.2.11"
 -- Config variables.
 ----------------------------------------------------------------------------------------------------
 
--- settings = "Release"
-settings = "Debug"
+settings = "Release"
+-- settings = "Debug"
 
 --
 -- Release settings
@@ -133,7 +134,6 @@ numPlayers = 0
 numPlayersAtStart = 0
 
 vehicles = {}
-vehicleIdToVehicle = {}
 
 -- Current checkpoints that are spawned.
 -- Not to be confused with currentCourse.checkpoints.
@@ -284,7 +284,6 @@ Cleanup = function()
 		end
 	end
 	vehicles = {}
-	vehicleIdToVehicle = {}
 	
 	racePosTracker = {}
 	
@@ -390,6 +389,12 @@ RemovePlayer = function(player)
 	-- Reset their model.
 	racer.player:SetModelId(racer.modelIdOriginal)
 	
+	-- Always remove their vehicle.
+	local vehicle = Vehicle.GetById(racer.assignedVehicleId)
+	if IsValid(vehicle) then
+		RemoveVehicle(vehicle)
+	end
+	
 	-- Remove from racePosTracker, if applicable.
 	if GetState() == "StateRacing" then
 		
@@ -433,6 +438,20 @@ RemovePlayer = function(player)
 		EndRace()
 	end
 
+end
+
+RemoveVehicle = function(vehicle)
+	
+	if IsValid(vehicle) then
+		for n=1 , #vehicles do
+			if vehicles[n] == vehicle then
+				table.remove(vehicles , n)
+				break
+			end
+		end
+		vehicle:Remove()
+	end
+	
 end
 
 GetIsRacer = function(player)

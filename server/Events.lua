@@ -231,29 +231,23 @@ OnPlayerEnterVehicle = function(args)
 	
 	vehiclesDriven[vehicleId] = true
 	
-	racer.lastVehicleId = vehicleId
-	
 	playersOutOfVehicle[args.player:GetId()] = nil
 	
-	-- Kick player from server if they steal a vehicle.
-	------------------------------------------------------------------------------------------------TODO
-	-- todo: Currently, if the passenger takes over from the driver, the passenger is kicked?
-	if args.isdriver then
-		-- Loop through occupants in vehicle.
-		local playersInVehicle = args.vehicle:GetOccupants()
-		for n = 1 , #playersInVehicle do
-			
-			if playersInVehicle[n]:GetState() == 4 then
-				-- If this player isn't us, then this bitch is stoled.
-				if args.player:GetId() ~= playersInVehicle[n]:GetId() then
-					MessageRace(
-						args.player:GetName().." has been kicked for vehicle theft."
-					)
-					args.player:Kick()
-					-- args.player:Teleport(Vector(0 , 1000 , 0) , Angle() , true)
-				end
-			end
-			
+	-- If the racer gets in a car that is not theirs, remove them from it or kick them if they stole
+	-- it.
+	if racer.assignedVehicleId ~= vehicleId and args.isdriver then
+		-- Kick player from server if they steal a vehicle.
+		if args.olddriver then
+			MessageRace(
+				args.player:GetName().." has been kicked for vehicle theft."
+			)
+			args.player:Kick()
+		else -- Otherwise, just remove them from the car.
+			args.player:Teleport(
+				args.player:GetPosition() + Vector(0 , 2 , 0) ,
+				args.player:GetAngle()
+			)
+			MessagePlayer(args.player , "This is not your car!")
 		end
 	end
 	

@@ -17,7 +17,6 @@ function StateRacing:__init()
 	
 	-- Temporary: Spawn vehicles.
 	vehicles = {}
-	vehicleIdToVehicle = {}
 	local vehicleIdToAngle = {}
 	-- Loop through grid positions in order of how far they are to the front (I think).
 	-- Spawn Vehicles and add them to the table vehicles.
@@ -39,7 +38,6 @@ function StateRacing:__init()
 			vehicles ,
 			newVehicle
 		)
-		vehicleIdToVehicle[newVehicle:GetId()] = newVehicle
 		vehicleIdToAngle[newVehicle:GetId()] = angle
 
 	end
@@ -58,14 +56,18 @@ function StateRacing:__init()
 	end
 	local count = 1
 	for id , racer in pairs(players_PlayerIdToRacer) do
-		local teleportPos = vehicles[count]:GetPosition()
-		local angle = vehicleIdToAngle[vehicles[count]:GetId()]
+		local vehicle = vehicles[count]
+		local teleportPos = vehicle:GetPosition()
+		local angle = vehicleIdToAngle[vehicle:GetId()]
 		local angleToPlayerSpawn = Angle(0 , 0 , 0) * angle
 		local dirToPlayerSpawn = angleToPlayerSpawn * Vector(-1 , 0 , 0)
 		teleportPos = teleportPos + dirToPlayerSpawn * 2
 		teleportPos.y = teleportPos.y + 2
+		
 		racer.player:Teleport(teleportPos , angle)
 		racer.player:SetWorldId(worldId)
+		racer.assignedVehicleId = vehicle:GetId()
+		
 		count = count + 1
 	end
 	
@@ -222,8 +224,11 @@ function StateRacing:Run()
 		end
 		for v=#vehicles , 1 , -1 do
 			if vehiclesDriven[vehicles[v]:GetId()] ~= true then
-				vehicles[v]:Remove()
-				table.remove(vehicles , v)
+				local vehicle = vehicles[v]
+				if IsValid(vehicle) then
+					vehicle:Remove()
+					table.remove(vehicles , v)
+				end
 			end
 		end
 	end
@@ -256,17 +261,8 @@ function StateRacing:Run()
 			if racer then
 				
 				-- Remove their vehicle as well.
-				local vehicle = vehicleIdToVehicle[racer.lastVehicleId]
-				if IsValid(vehicle) then
-					-- Remove from vehicles array.
-					for v = 1 , #vehicles do
-						if vehicles[v]:GetId() == vehicle:GetId() then
-							table.remove(vehicles , v)
-							break
-						end
-					end
-					vehicle:Remove()
-				end
+				local vehicle = Vehicle.GetById(racer.assignedVehicleId)
+				RemoveVehicle(vehicle)
 				
 			end
 			
@@ -286,35 +282,15 @@ function StateRacing:Run()
 				not racer.hasFinished
 			then
 				
-				
 				MessageRace(
 					racer.player:GetName()..
 					" was removed from the race for not being in a vehicle."
 				)
 				RemovePlayer(racer.player)
 				playersOutOfVehicle[pId] = nil
-				local vehicle = vehicleIdToVehicle[racer.lastVehicleId]
-				if IsValid(vehicle) then
-					-- print(
-						-- "Removing vehicle: id = "..
-						-- racer.lastVehicleId
-					-- )
-					-- print("id = "..vehicle:GetId())
-					for n=1 , #vehicles do
-						if vehicles[n]:GetId() == racer.lastVehicleId then
-							-- print(
-								-- "Removing vehicle from index: index = "..
-								-- n
-							-- )
-							table.remove(vehicles , n)
-							break
-						end
-					end
-					vehicle:Remove()
-				else
-					-- print("Could not remove vehicle: "..racer.lastVehicleId)
-				end
-				
+				-- Remove their vehicle.
+				local vehicle = Vehicle.GetById(racer.assignedVehicleId)
+				RemoveVehicle(vehicle)
 				
 			end
 			
