@@ -50,7 +50,7 @@ if settings == "Release" then
 	despawnLapRatio = 0.25 -- 0.5 means vehicles despawn at 50% lap time.
 	outOfVehicleTrackingDelaySeconds = 8 -- Delay to prevent people from parachuting everywhere.
 	outOfVehicleMaxSeconds = 20 -- After this many seconds out of a vehicle, remove player.
-	timeLimitMult = 1.75 -- Estimated course time is multiplied by this factor to get time limit.
+	timeLimitMult = 1.8 -- Estimated course time is multiplied by this factor to get time limit.
 	playerDeathDelay = 7 -- When players die, they are removed after this delay in seconds.
 	courseSelectMode = "Sequential"
 	playerModelId = 60
@@ -97,7 +97,7 @@ if settings == "Debug" then
 	prizeMoneyBase = 10000
 	prizeMoneyMult = 0.75
 	
-	-- debug_ForceMaxPlayers = true
+	debug_ForceMaxPlayers = true
 	
 	version = version.." (Debug)"
 	
@@ -389,6 +389,9 @@ RemovePlayer = function(player)
 	-- Reset their model.
 	racer.player:SetModelId(racer.modelIdOriginal)
 	
+	-- Give them their weapons back.
+	racer:RestoreInventory()
+	
 	-- Always remove their vehicle.
 	local vehicle = Vehicle.GetById(racer.assignedVehicleId)
 	if IsValid(vehicle) then
@@ -466,7 +469,7 @@ MessageServer = function(message)
 	
 	Server:BroadcastChatMessage(output , textColorGlobal)
 	
-	_print(output)
+	print(output)
 	
 end
 
@@ -480,7 +483,7 @@ MessageRace = function(message)
 		)
 	end
 
-	_print(output)
+	print(output)
 
 end
 
@@ -565,10 +568,3 @@ NumberToPlaceString = function(number)
 end
 
 
--- Replace print. Totally a good idea.
-_print = print
-print = function(...)
-	
-	_print("[Racing] " , ...)
-	
-end

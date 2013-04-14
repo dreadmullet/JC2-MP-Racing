@@ -142,27 +142,34 @@ function StateStartingGrid:__init()
 	numPlayersAtStart = numPlayers
 	
 	-- [TEMP FEATURE]
-	-- Teleport everyone to a skydive above the starting line and set their world and weather.
+	-- Loop through players:
+	--    Teleport them to a skydive above the starting line.
+	--    Set their world.
+	--    Set their weather.
+	--    Clear their inventory and store it.
 	if debugLevel >= 2 then
 		print("Teleporting "..numPlayers.." players above the starting line.")
 	end
 	local count = 1
-	for id , p in pairs(players_PlayerIdToPlayer) do
+	for id , racer in pairs(players_PlayerIdToRacer) do
+		local player = racer.player
 		-- If this player's world isn't -1, they did something whacky.
-		if p:GetWorldId() ~= -1 then
+		if player:GetWorldId() ~= -1 then
 			MessagePlayer(
-				p ,
+				player ,
 				(
 					"You have been removed from the race "..
 					"for being in the wrong world: "..
-					p:GetWorldId()
+					player:GetWorldId()
 				)
 			)
-			RemovePlayer(p)
+			RemovePlayer(player)
 		else
-			p:SetWorldId(worldId)
-			p:Teleport(currentCourse.skydivePos , Angle(90 , 0 , 0))
-			p:SetWeatherSeverity(currentCourse.info.weatherSeverity)
+			racer:ClearInventory()
+			
+			player:SetWorldId(worldId)
+			player:Teleport(currentCourse.skydivePos , Angle(90 , 0 , 0))
+			player:SetWeatherSeverity(currentCourse.info.weatherSeverity)
 			count = count + 1
 		end
 	end

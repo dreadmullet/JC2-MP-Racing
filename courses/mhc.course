@@ -2,8 +2,8 @@
 INFO
 name Mile High Club Madness
 type linear
-lapTimeMinutes 0
-lapTimeSeconds 35
+lapTimeMinutes 1 # Actual time: 35 seconds. It was increased here to prevent it from ending early.
+lapTimeSeconds 45
 checkpointRadiusMult 1.3
 author dreadmullet
 

@@ -43,6 +43,8 @@ function Racer:__init(player)
 	-- Helps with updating only one racer per tick.
 	-- When the first Racer is added, numPlayers is 0.
 	self.updateTick = numPlayers
+	
+	self.storedInventory = {}
 
 end
 
@@ -160,3 +162,17 @@ function Racer:UpdateRacePosition()
 	
 end
 
+function Racer:ClearInventory()
+	
+	self.storedInventory = self.player:GetInventory()
+	self.player:ClearInventory()
+	
+end
+
+function Racer:RestoreInventory()
+	
+	for index , weapon in pairs(self.storedInventory) do
+		self.player:GiveWeapon(index , weapon)
+	end
+	
+end

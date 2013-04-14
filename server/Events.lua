@@ -141,11 +141,6 @@ end
 
 
 OnModuleLoad = function(args)
-
-	if debugLevel >= 1 then
-		print()
-		print("Racing gamemode "..version.." loaded")
-	end
 	
 	MessageServer("Racing "..version.." has been loaded.")
 	
@@ -235,9 +230,9 @@ OnPlayerEnterVehicle = function(args)
 	
 	-- If the racer gets in a car that is not theirs, remove them from it or kick them if they stole
 	-- it.
-	if racer.assignedVehicleId ~= vehicleId and args.isdriver then
+	if racer.assignedVehicleId ~= vehicleId then
 		-- Kick player from server if they steal a vehicle.
-		if args.olddriver then
+		if args.isdriver and args.olddriver then
 			MessageRace(
 				args.player:GetName().." has been kicked for vehicle theft."
 			)

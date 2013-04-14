@@ -57,8 +57,10 @@ function StateRacing:__init()
 	local count = 1
 	for id , racer in pairs(players_PlayerIdToRacer) do
 		local vehicle = vehicles[count]
+		local vehicleId = vehicle:GetId()
+		
 		local teleportPos = vehicle:GetPosition()
-		local angle = vehicleIdToAngle[vehicle:GetId()]
+		local angle = vehicleIdToAngle[vehicleId]
 		local angleToPlayerSpawn = Angle(0 , 0 , 0) * angle
 		local dirToPlayerSpawn = angleToPlayerSpawn * Vector(-1 , 0 , 0)
 		teleportPos = teleportPos + dirToPlayerSpawn * 2
@@ -66,7 +68,14 @@ function StateRacing:__init()
 		
 		racer.player:Teleport(teleportPos , angle)
 		racer.player:SetWorldId(worldId)
-		racer.assignedVehicleId = vehicle:GetId()
+		racer.assignedVehicleId = vehicleId
+		
+		-- Send them their assigned vehicle id.
+		Network:Send(
+			racer.player ,
+			"SetAssignedVehicleId" ,
+			vehicleId
+		)
 		
 		count = count + 1
 	end
@@ -175,9 +184,8 @@ function StateRacing:__init()
 	
 	NetworkSendRace(
 		"SetRacePosition" ,
-		{1 , numPlayers}
+		{numPlayers , numPlayers}
 	)
-	
 	
 	if debugLevel >= 3 then
 		print("------Race Report------")

@@ -62,6 +62,11 @@ function Race:__init()
 		self ,
 		self.ShowLargeMessage
 	)
+	self.netSubs.setAssignedVehicleId = Network:Subscribe(
+		"SetAssignedVehicleId" ,
+		self ,
+		self.SetAssignedVehicleId
+	)
 	
 	self.netSubs.startPreRace = Network:Subscribe("StartPreRace" , self , self.StartPreRace)
 	self.netSubs.startRace = Network:Subscribe("StartRace" , self , self.StartRace)
@@ -254,7 +259,13 @@ function Race:SetRacePosition(args)
 	
 end
 
--- 
+function Race:SetAssignedVehicleId(id)
+	
+	self.assignedVehicleId = id
+	
+end
+
+
 function Race:UpdateRacePositions(args)
 	
 	local racePosTracker = args[1]
