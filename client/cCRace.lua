@@ -98,7 +98,6 @@ function Race:__init()
 	
 end
 
-
 --
 -- Network events
 --
@@ -362,7 +361,7 @@ function Race:DrawPreRaceGUI()
 	self:DrawCourseName()
 	self:DrawCourseType()
 	self:DrawCourseLength()
-	self:DrawCourseAuthors()
+	-- self:DrawCourseAuthors() -- I am the humblest person alive.
 	self:DrawVersion()
 	
 end
@@ -425,6 +424,10 @@ function Race:SendCheckpointDistance(args)
 	
 end
 
+--
+-- Events
+--
+
 function Race:HandleInput(args)
 	
 	for n = 1 , #Settings.blockedInputs do
@@ -436,7 +439,6 @@ function Race:HandleInput(args)
 	return true
 	
 end
-
 
 --
 -- Other functions.

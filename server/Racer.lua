@@ -54,11 +54,10 @@ function Racer:AdvanceCheckpoint()
 	
 	local vehicle = self.player:GetVehicle()
 	
-	-- if IsValid(vehicle) then
-		-- MessageRace(self.name.."'s vehicle health before: "..vehicle:GetHealth())
-		-- vehicle:SetHealth(vehicle:GetHealth() + 0.075)
-		-- MessageRace(self.name.."'s vehicle health after: "..vehicle:GetHealth())
-	-- end
+	-- Repair vehicle.
+	if IsValid(vehicle) then
+		vehicle:SetHealth(vehicle:GetHealth() + 0.075)
+	end
 	
 	Network:Send(self.player , "SetTargetCheckpoint" , self.targetCheckpoint)
 
@@ -88,10 +87,8 @@ function Racer:Finish()
 
 	table.insert(finishedRacers , self)
 	
-	-- Start the countdown to end the race after 1st person finishes.
-	if #finishedRacers == 1 then
-		timeOfFirstFinisher = os.time()
-	end
+	-- Start the countdown to end the race after someone finishes.
+	timeOfLastFinisher = os.time()
 
 	-- Messages to immediately print for top three finishers.
 	if #finishedRacers == 1 then
@@ -105,23 +102,6 @@ function Racer:Finish()
 	elseif #finishedRacers == 3 then
 		MessageRace(self.name.." finishes 3rd.")
 	end
-	
-	-- If this was the last finisher, end the race. (TODO)
-	-- local allFinished = true
-	-- for id , racer in pairs(players_PlayerIdToRacer) do
-		-- if racer.hasFinished == false then
-			-- allFinished = false
-			-- break
-		-- end
-	-- end
-	-- if allFinished then
-		-- MessageServer("All players finished; ending race.")
-		-- EndRace()
-	-- end
-	
-	-- if IsValid(vehicle) then
-		-- vehicle:SetHealth(vehicle:GetHealth() + 0.075)
-	-- end
 	
 	-- Prize money.
 	self.player:SetMoney(self.player:GetMoney() + prizeMoneyCurrent)

@@ -22,6 +22,18 @@ Settings.blockedInputs = {
 -- Make sure everyone doesn't send their distance at the same time.
 Settings.sendCheckpointDistanceInterval = 0.4 + math.random() * 0.027
 
+Settings.gamemodeName = "Racing"
+Settings.gamemodeDescription = [[
+The Racing gamemode lets you race other players in a variety of races, using vehicles from sports cars to buses to planes. It comes with a fully-featured GUI, letting you focus on the race.
+ 
+Command list:
+   "/race" - Begins a race, if the race is accepting players.
+   "/race quality high" - (default)
+   "/race quality low" - Lowers quality of GUI; makes checkpoint arrow flat and removes minimap icons. This won't affect your framerate too much, only use it if you're desperate.
+ 
+Known issues:
+   During races, sometimes the checkpoint arrow will be invisible. You can probably fix this by reconnecting to the server (type ~ for console and enter "reconnect").
+]]
 
 ----------------
 -- GUI

@@ -19,9 +19,11 @@
 
 -- Version history:
 -- 0.1 - Broken, rushed version ran in the November test.
--- 0.2.2 - 31 January IRC test
--- 0.2.3 - 0.2.10 - Early Febuary public test
-version = "0.2.11"
+-- 0.2.2 - 31 January IRC test.
+-- 0.2.3 - 0.2.10 - Early Febuary public test.
+-- 0.2.11 - Closed tests.
+-- 0.3.x - Current.
+version = "0.3.1"
 
 
 ----------------------------------------------------------------------------------------------------
@@ -45,7 +47,7 @@ if settings == "Release" then
 	countdownIntervalSeconds = 2 -- precision of 1 second
 	vehicleToPlayerRatio = 1 -- default of 1
 	worldId = 2 -- vehicles, checkpoints, and players are set to this world.
-	raceEndTime = 60 -- Seconds to allow extra racing after 1 person has finished.
+	raceEndTime = 25 -- Extra racing time after a person has finished. Reset after each finisher.
 	minimumPlayers = 1
 	despawnLapRatio = 0.25 -- 0.5 means vehicles despawn at 50% lap time.
 	outOfVehicleTrackingDelaySeconds = 8 -- Delay to prevent people from parachuting everywhere.
@@ -80,7 +82,7 @@ if settings == "Debug" then
 	countdownIntervalSeconds = 2 -- precision of 1 second
 	vehicleToPlayerRatio = 1 -- default of 1
 	worldId = 2 -- Vehicles, checkpoints, and players are set to this world when racing.
-	raceEndTime = 15 -- Seconds to allow extra racing after 1 person has finished.
+	raceEndTime = 10 -- Extra racing time after a person has finished. Reset after each finisher.
 	minimumPlayers = 1
 	despawnLapRatio = 1000.6 -- 0.5 means vehicles despawn at 50% lap time.
 	outOfVehicleTrackingDelaySeconds = 8 -- Delay to prevent people from parachuting everywhere.
@@ -91,7 +93,7 @@ if settings == "Debug" then
 	playerModelId = 60
 	useCheckpointIcons = false
 	useFinishIcon = true
-	lapsMult = 1
+	lapsMult = 0
 	leaderboardMaxPlayers = 8
 	-- Prize money awarded starts here and is multiplied by prizeMoneyMult for every racer past 1st.
 	prizeMoneyBase = 10000
@@ -151,8 +153,8 @@ numCheckpointsToFinish = 0
 
 -- Array.
 finishedRacers = {}
--- Set to os.time() when 3 people finish. Used in race state.
-timeOfFirstFinisher = 0
+-- Set to os.time() when someone finishes. Used in race state.
+timeOfLastFinisher = 0
 
 -- Holds a state class.
 -- Possible states:
