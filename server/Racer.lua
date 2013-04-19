@@ -56,7 +56,7 @@ function Racer:AdvanceCheckpoint()
 	
 	-- Repair vehicle.
 	if IsValid(vehicle) then
-		vehicle:SetHealth(vehicle:GetHealth() + 0.075)
+		vehicle:SetHealth(vehicle:GetHealth() + 0.05)
 	end
 	
 	Network:Send(self.player , "SetTargetCheckpoint" , self.targetCheckpoint)
@@ -90,17 +90,15 @@ function Racer:Finish()
 	-- Start the countdown to end the race after someone finishes.
 	timeOfLastFinisher = os.time()
 
-	-- Messages to immediately print for top three finishers.
+	-- Messages to immediately print for all finishers.
 	if #finishedRacers == 1 then
 		MessageServer(self.name.." wins the race!")
 		NetworkSendRace(
 			"ShowLargeMessage" ,
 			{self.name.." wins the race!" , 4}
 		)
-	elseif #finishedRacers == 2 then
-		MessageRace(self.name.." finishes 2nd.")
-	elseif #finishedRacers == 3 then
-		MessageRace(self.name.." finishes 3rd.")
+	else
+		MessageRace(self.name.." finishes "..NumberToPlaceString(#finishedRacers))
 	end
 	
 	-- Prize money.

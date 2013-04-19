@@ -9,9 +9,9 @@ author dreadmullet
 
 # More than one STARTGRID is allowed. This course has multiple STARTGRIDs
 STARTGRID # north
-path 11827.371094, 263.113861, -7523.221680
-path 11851.067383, 263.019043, -7568.940430
-path 11824.193359, 263.109650, -7526.963379
+path 11831.286133, 263.052338, -7536.001465
+path 11854.211914, 263.019135, -7578.333984
+path 11879.487305, 262.849792, -7651.131348
 width 17
 vehicle 91 # Titus ZJ
 vehicleWidth 2

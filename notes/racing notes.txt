@@ -108,10 +108,17 @@ DONE
 Implement race position. It's a useful feature now that client-side Lua is in.
 Notes on calculating/sending race position:
 New class: CRacePosTracker. Stores a deep copy of racePosTracker. Its key to racePosTracker starts at the top and makes its way down. Players are sent their race position. Only a few players are sent their position every tick.
+Note: redid race position when it wasn't working.
 
 
 
 
+	2013/4/17
+Done: Show finishes for everyone, not just top 3
+Delayed: Nametags still show up (nametags needs work)
+Done: Move title at top right
+wot: Render:DrawCircle/Render:FillCircle
+Done: Course polishing/order
 
 
 

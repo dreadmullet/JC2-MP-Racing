@@ -1,34 +1,45 @@
-courses/racetrack1.course
-courses/cape_carnival.course
-courses/offroad1.course
-courses/skull_island.course
-#### courses/facepalm_pond.course
+# Circuit
+# Linear
+# Whacky
+
+courses/racetrack1.course #1
+courses/road10_mountain4.course # very nice
 courses/car_v_helicopter1.course
+courses/cape_carnival.course
+courses/offroad1.course #5
+
+courses/skull_island.course
+courses/water4_panau_canals.course
+courses/road12_mountain5.course # not bad at all
 courses/dirt_track_east.course
-courses/road4_desert.course
+courses/road4_desert.course #10
+
 courses/ice1.course
-#### courses/city2.course
 courses/offroad2.course
-courses/water3.course
-## courses/road2.course # Bugged :S
+courses/road14_mountain6.course # awesome
 courses/clusterfucking_limousines.course
-courses/three_kings_short.course
-#### courses/hillclimbing1.course
+courses/water3.course #15
+
+courses/road2.course
 courses/road7_mountain3.course
 courses/desert_bus.course
+courses/road8_short.course # decent
+courses/three_kings_short.course #20
+
 courses/roadtrip1_endless_coast.course
-courses/mhc.course
-###courses/water4_panau_canals.course # maybe not finished yet
+courses/mhc.course #22
 
-courses/road10_mountain4.course # very nice
-courses/road12_mountain5.course # not bad at all
-courses/road14_mountain6.course # awesome
-courses/road8.course # decent
 
+
+##### courses/road8.course # decent but veeeery long
 ##### courses/road9.course # long but decent
 ##### courses/road11.course # boring, not polished yet
 ##### courses/road13.course # boring, not polished yet
 
+# Bike/ATV races
+#### courses/city2.course
+#### courses/facepalm_pond.course
+#### courses/hillclimbing1.course
 
 #### courses/road3_cliffracer.course # Meh.
 #### courses/water1.course # This course isn't very good at all.

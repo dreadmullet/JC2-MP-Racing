@@ -30,8 +30,8 @@ version = "0.3.1"
 -- Config variables.
 ----------------------------------------------------------------------------------------------------
 
-settings = "Release"
--- settings = "Debug"
+-- settings = "Release"
+settings = "Debug"
 
 --
 -- Release settings
