@@ -352,6 +352,7 @@ AddPlayer = function(player)
 	-- Make sure numPlayers isn't max. This is taken care of elsewhere, but just in case.
 	if numPlayers >= currentCourse.maxPlayers then
 		MessagePlayer(player , "No more slots. Also, you shouldn't be able to see this message!")
+		return
 	end
 	
 	-- Make sure they're not already in the mode.
@@ -360,6 +361,7 @@ AddPlayer = function(player)
 			player ,
 			"You're already in the race. Also, you shouldn't be able to see this message!"
 		)
+		return
 	end
 	
 	local racer = Racer(player)
