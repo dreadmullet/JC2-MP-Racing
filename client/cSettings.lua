@@ -32,6 +32,8 @@ Command list:
    "/race quality high" - (default)
    "/race quality low" - Lowers quality of GUI; makes checkpoint arrow flat and removes minimap icons. This won't affect your framerate much, only use it if you're desperate.
  
+Earning money: You receive $10000 for winning a race. Each following finisher receives 75% of the last finisher (2nd place receives $7500, for example).
+ 
 Known issues:
 During races, sometimes the checkpoint arrow will be invisible. You can probably fix this by reconnecting to the server (press ~ to open the console and enter "reconnect").
 ]]

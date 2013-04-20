@@ -319,8 +319,8 @@ function Race:DrawNextCheckpointArrow()
 		(cpNext - cpTarget):Normalized()
 	)
 	dotMod = math.clamp(dotMod , 0 , 1) ^ 1.5 -- 0 to 1
-	dotMod = math.clamp(dotMod - 0.8 , 0 , 0.2) -- 0 to 0.2
-	dotMod = dotMod * 5 -- 0 to 1
+	dotMod = math.clamp(dotMod - 0.6 , 0 , 0.4) -- 0 to 0.4
+	dotMod = dotMod * 2.5 -- 0 to 1
 	dotMod = 1 - dotMod -- 0 to 1
 	
 	color.a = alpha * dotMod
