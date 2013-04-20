@@ -144,25 +144,25 @@ end
 -- Checkpoint
 do
 	
-	local Y = 1
-	local Z = 1.825
-	local arrowHead = 5
+	local Y = 0.75
+	local Z = 1.35
+	local arrowHead = 3.75
 	
 	Models.nextCPArrowTriangles = {
 		{
-			Vector(0 , -Y , Z + arrowHead*0.33) ,
-			Vector(0 , Y , Z + arrowHead*0.33) ,
+			Vector(0 , -Y , Z + arrowHead*0.25) ,
+			Vector(0 , Y , Z + arrowHead*0.25) ,
 			Vector(0 , Y , -Z)
 		} ,
 		{
-			Vector(0 , -Y , Z + arrowHead*0.33) ,
+			Vector(0 , -Y , Z + arrowHead*0.25) ,
 			Vector(0 , Y , -Z) ,
 			Vector(0 , -Y , -Z)
 		} ,
 		{
 			Vector(0 , -Y*arrowHeadWidthMult , -Z) ,
 			Vector(0 , Y*arrowHeadWidthMult , -Z) ,
-			Vector(0 , 0 , -Z - arrowHead*0.66)
+			Vector(0 , 0 , -Z - arrowHead*0.5)
 		} ,
 	}
 	

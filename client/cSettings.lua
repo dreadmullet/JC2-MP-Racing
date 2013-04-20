@@ -62,7 +62,7 @@ Settings.checkpointArrowColor = Color(204 , 54 , 51)
 -- Settings.checkpointArrowColorActivated = Color(56 , 200 , 45)
 Settings.checkpointArrowColorActivated = Color(0 , 0 , 0 , 0)
 
-Settings.nextCheckpointArrowColor = Color(228 , 142 , 56 , 255)
+Settings.nextCheckpointArrowColor = Color(228 , 142 , 56 , 128)
 
 -- Normalized positions.
 Settings.lapLabelPos = Vector2(0.33 , -0.58)

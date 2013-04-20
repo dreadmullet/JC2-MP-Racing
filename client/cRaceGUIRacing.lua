@@ -313,7 +313,7 @@ function Race:DrawNextCheckpointArrow()
 	alpha = alpha ^ 4
 	alpha = 1 - alpha
 	alpha = alpha * 512 -- From 0 to 512
-	alpha = math.clamp(alpha , 0 , 180) -- From 0 to 200
+	alpha = math.clamp(alpha , 0 , color.a) -- From 0 to color's alpha.
 	
 	local dotMod = Vector.Dot(
 		(cpTarget - Camera:GetPosition()):Normalized() ,
