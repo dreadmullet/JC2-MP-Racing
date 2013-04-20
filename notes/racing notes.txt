@@ -1,3 +1,7 @@
+This file is waaaay out of date for the most part. The bottom part should be recent.
+
+
+
 DELAYED
 Implement time of day. Two options in course file: start hour and end hour. The race will attempt to start at hourStart and end at hourFinish based on the lap time.
 
@@ -109,6 +113,9 @@ Implement race position. It's a useful feature now that client-side Lua is in.
 Notes on calculating/sending race position:
 New class: CRacePosTracker. Stores a deep copy of racePosTracker. Its key to racePosTracker starts at the top and makes its way down. Players are sent their race position. Only a few players are sent their position every tick.
 Note: redid race position when it wasn't working.
+
+
+
 
 
 

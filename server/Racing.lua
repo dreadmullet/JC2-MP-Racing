@@ -22,7 +22,7 @@
 -- 0.2.2 - 31 January IRC test.
 -- 0.2.3 - 0.2.10 - Early Febuary public test.
 -- 0.2.11 - Closed tests.
--- 0.3.1 - Closed test.
+-- 0.3.1 - 2013-04-17 Closed test.
 version = "0.3.2"
 
 
@@ -30,8 +30,8 @@ version = "0.3.2"
 -- Config variables.
 ----------------------------------------------------------------------------------------------------
 
--- settings = "Release"
-settings = "Debug"
+settings = "Release"
+-- settings = "Debug"
 
 --
 -- Release settings
@@ -55,7 +55,7 @@ if settings == "Release" then
 	timeLimitMult = 1.8 -- Estimated course time is multiplied by this factor to get time limit.
 	playerDeathDelay = 7 -- When players die, they are removed after this delay in seconds.
 	courseSelectMode = "Sequential"
-	playerModelId = 60
+	playerModelIds = {60 , 65 , 69}
 	useCheckpointIcons = false
 	useFinishIcon = true
 	lapsMult = 1
@@ -64,7 +64,7 @@ if settings == "Release" then
 	prizeMoneyBase = 10000
 	prizeMoneyMult = 0.75
 	
-	debugLevel = 2
+	debugLevel = 1
 end
 
 
@@ -90,7 +90,7 @@ if settings == "Debug" then
 	timeLimitMult = 1000.5 -- Estimated course time is multiplied by this factor to get time limit.
 	playerDeathDelay = 7 -- When players die, they are removed after this delay in seconds.
 	courseSelectMode = "Sequential"
-	playerModelId = 60
+	playerModelIds = {64}
 	useCheckpointIcons = false
 	useFinishIcon = true
 	lapsMult = 0

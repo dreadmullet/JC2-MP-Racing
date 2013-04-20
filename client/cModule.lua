@@ -1,6 +1,5 @@
 function ModulesLoad()
 	
-	print("Modulesload!")
 	-- Add us to the help menu.
 	local args = {}
 	args.name = Settings.gamemodeName

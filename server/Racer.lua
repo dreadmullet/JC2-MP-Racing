@@ -14,7 +14,7 @@ function Racer:__init(player)
 	
 	-- Set their model id immediately. Probably a good idea.
 	self.modelIdOriginal = player:GetModelId()
-	player:SetModelId(playerModelId)
+	player:SetModelId(table.randomvalue(playerModelIds))
 	-- Set model of authors to something unique.
 	for n , authorName in ipairs(currentCourse.info.authors) do
 		if self.name == authorName then
