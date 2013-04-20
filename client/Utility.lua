@@ -1,6 +1,8 @@
 Utility = {}
 local M = Utility
 
+math.tau = math.pi * 2
+
 local tabPhrase = "    "
 
 local typeStringTabLength = 8

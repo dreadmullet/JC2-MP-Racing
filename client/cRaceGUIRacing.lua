@@ -269,3 +269,71 @@ function Race:DrawPositionTag(playerId , position)
 	)
 	
 end
+
+function Race:DrawNextCheckpointArrow()
+	
+	-- Don't draw for finish lines.
+	if self.targetCheckpoint == #self.checkpoints then
+		if self.courseInfo.type == "linear" then
+			return
+		elseif
+			self.courseInfo.type == "circuit" and
+			self.courseInfo.laps == self.lapCount
+		then
+			return
+		end
+	end
+	
+	local nextCheckpointIndex = self.targetCheckpoint + 1
+	-- Check if target checkpoint is the start/finish.
+	if
+		self.courseInfo.type == "circuit" and
+		self.targetCheckpoint == #self.checkpoints
+	then
+		nextCheckpointIndex = 1
+	end
+	
+	local cpTarget = self.checkpoints[self.targetCheckpoint]
+	local cpNext = self.checkpoints[nextCheckpointIndex]
+	
+	local angle = Angle.FromVectors(
+		Vector(0 , 0 , -1) ,
+		(cpNext - cpTarget):Normalized()
+	)
+	angle.roll = 0
+	
+	local triangles = Models.nextCPArrowTriangles
+	
+	local distance = Vector.Distance(Camera:GetPosition() , cpTarget)
+	
+	local color = Copy(Settings.nextCheckpointArrowColor)
+	local alpha = (140 - distance) / 140 -- From 0 to 1
+	alpha = 1 - alpha -- magic
+	alpha = alpha ^ 4
+	alpha = 1 - alpha
+	alpha = alpha * 512 -- From 0 to 512
+	alpha = math.clamp(alpha , 0 , 180) -- From 0 to 200
+	
+	local dotMod = Vector.Dot(
+		(cpTarget - Camera:GetPosition()):Normalized() ,
+		(cpNext - cpTarget):Normalized()
+	)
+	dotMod = math.clamp(dotMod , 0 , 1) ^ 1.5 -- 0 to 1
+	dotMod = math.clamp(dotMod - 0.8 , 0 , 0.2) -- 0 to 0.2
+	dotMod = dotMod * 5 -- 0 to 1
+	dotMod = 1 - dotMod -- 0 to 1
+	
+	color.a = alpha * dotMod
+	
+	local pos = cpTarget + Vector(0 , 1.5 , 0)
+	
+	for n = 1 , #triangles do
+		Render:FillTriangle(
+			angle * triangles[n][1] + cpTarget ,
+			angle * triangles[n][2] + cpTarget ,
+			angle * triangles[n][3] + cpTarget ,
+			color
+		)
+	end
+	
+end

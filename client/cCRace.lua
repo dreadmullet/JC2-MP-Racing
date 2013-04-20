@@ -1,5 +1,5 @@
 
-debugLevel = 2
+debugLevel = 1
 
 class("Race")
 function Race:__init()
@@ -387,6 +387,7 @@ function Race:DrawRaceGUI()
 	self:DrawRacePosition()
 	self:DrawMinimapIcons()
 	self:DrawLeaderboard()
+	self:DrawNextCheckpointArrow()
 	
 end
 

@@ -33,7 +33,7 @@ Command list:
    "/race quality low" - Lowers quality of GUI; makes checkpoint arrow flat and removes minimap icons. This won't affect your framerate much, only use it if you're desperate.
  
 Known issues:
-   During races, sometimes the checkpoint arrow will be invisible. You can probably fix this by reconnecting to the server (press ~ to open the console and enter "reconnect").
+During races, sometimes the checkpoint arrow will be invisible. You can probably fix this by reconnecting to the server (press ~ to open the console and enter "reconnect").
 ]]
 
 
@@ -59,6 +59,8 @@ Settings.checkpointArrowFlashInterval = 7
 Settings.checkpointArrowColor = Color(204 , 54 , 51)
 -- Settings.checkpointArrowColorActivated = Color(56 , 200 , 45)
 Settings.checkpointArrowColorActivated = Color(0 , 0 , 0 , 0)
+
+Settings.nextCheckpointArrowColor = Color(228 , 142 , 56 , 255)
 
 -- Normalized positions.
 Settings.lapLabelPos = Vector2(0.33 , -0.58)

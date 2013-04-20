@@ -69,7 +69,7 @@ function Race:DrawVersion()
 	)
 	
 	DrawText(
-		Vector2(0.775 * Render.Width - textSize.x , textSize.y * 0 + 1) ,
+		Vector2(0.85 * Render.Width - textSize.x , textSize.y * 0 + 1) ,
 		"JC2-MP-Racing "..version ,
 		Settings.textColor ,
 		"Default"

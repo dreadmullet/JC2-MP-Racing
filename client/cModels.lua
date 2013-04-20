@@ -2,13 +2,11 @@
 Models = {}
 
 -- Checkpoint pointer arrow.
-
 local arrowWidth = 0.18
 local arrowLength = 0.58
 local arrowHead = 0.70
 local arrowHeadWidthMult = 3
 local arrowHeight = 0.0375
-
 do
 	
 	local X = arrowWidth
@@ -117,7 +115,6 @@ do
 	}
 	
 end
-
 -- Flat version. Just in case the solid version is horribly slow.
 do
 	
@@ -139,6 +136,33 @@ do
 			Vector(-X*arrowHeadWidthMult , 0 , -Z) ,
 			Vector(X*arrowHeadWidthMult , 0 , -Z) ,
 			Vector(0 , 0 , -Z - arrowHead)
+		} ,
+	}
+	
+end
+
+-- Checkpoint
+do
+	
+	local Y = 1
+	local Z = 1.825
+	local arrowHead = 5
+	
+	Models.nextCPArrowTriangles = {
+		{
+			Vector(0 , -Y , Z + arrowHead*0.33) ,
+			Vector(0 , Y , Z + arrowHead*0.33) ,
+			Vector(0 , Y , -Z)
+		} ,
+		{
+			Vector(0 , -Y , Z + arrowHead*0.33) ,
+			Vector(0 , Y , -Z) ,
+			Vector(0 , -Y , -Z)
+		} ,
+		{
+			Vector(0 , -Y*arrowHeadWidthMult , -Z) ,
+			Vector(0 , Y*arrowHeadWidthMult , -Z) ,
+			Vector(0 , 0 , -Z - arrowHead*0.66)
 		} ,
 	}
 	
