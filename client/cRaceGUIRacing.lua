@@ -246,7 +246,7 @@ function Race:DrawPositionTag(playerId , position)
 		worldPos = player:GetPosition()
 	end
 	
-	local worldPos = worldPos + Vector(0 , 2 , 0)
+	local worldPos = worldPos + Vector(0 , 4.75 , 0)
 	local screenPos , onScreen = Render:WorldToScreen(worldPos)
 	if not onScreen then
 		return

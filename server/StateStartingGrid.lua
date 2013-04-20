@@ -24,8 +24,8 @@ function StateStartingGrid:__init()
 	-- Scale number of laps by number of players.
 	--
 	local lapsMultPlayers = (numPlayers / currentCourse.maxPlayers)
-	lapsMultPlayers = lapsMultPlayers - 0.25
-	lapsMultPlayers = lapsMultPlayers + 1
+	lapsMultPlayers = lapsMultPlayers + 0.75
+	lapsMultPlayers = math.lerp(1 , lapsMultPlayers , 0.7)
 	-- Global laps multipier.
 	currentCourse.info.laps = currentCourse.info.laps * lapsMult
 	-- Multiply laps and then round it.

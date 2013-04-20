@@ -2,7 +2,7 @@
 INFO
 name Cape Carnival Square
 type circuit
-laps 6
+laps 5.5
 lapTimeMinutes 0 # default of 0
 lapTimeSeconds 45
 author dreadmullet

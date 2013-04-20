@@ -228,15 +228,15 @@ OnPlayerEnterVehicle = function(args)
 	
 	playersOutOfVehicle[args.player:GetId()] = nil
 	
-	-- If the racer gets in a car that is not theirs, remove them from it or kick them if they stole
-	-- it.
+	-- If the racer gets in a car that is not theirs, remove them from it or remove (before,
+	-- they were kicked) them if they stole it.
 	if racer.assignedVehicleId ~= vehicleId then
 		-- Kick player from server if they steal a vehicle.
 		if args.isdriver and args.olddriver then
 			MessageRace(
-				args.player:GetName().." has been kicked for vehicle theft."
+				args.player:GetName().." has been removed for vehicle theft."
 			)
-			args.player:Kick()
+			RemovePlayer(args.player)
 		else -- Otherwise, just remove them from the car.
 			args.player:Teleport(
 				args.player:GetPosition() + Vector(0 , 2 , 0) ,
