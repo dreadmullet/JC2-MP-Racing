@@ -20,7 +20,7 @@ path 13219.025391, 237.976624, -363.299194
 width 6
 vehicle 2 # Cavallo
 vehicleWidth 1.25
-vehicleLength 5.5
+vehicleLength 6
 
 STARTGRID
 path 13140.936523, 239.396759, -622.142395
@@ -31,7 +31,7 @@ width 6
 vehicle 91 # Titus
 vehicleTemplate Hardtop
 vehicleWidth 1.25
-vehicleLength 5.5
+vehicleLength 6
 
 
 STARTFINISH

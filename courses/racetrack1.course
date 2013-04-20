@@ -25,7 +25,7 @@ width 16 # How wide the starting grid is.
 vehicle 91 # Titus ZJ
 vehicleTemplate Hardtop
 vehicleWidth 1.75 # These two are temporary, hopefully there will be a better solution.
-vehicleLength 5 # The script tries to fill the starting grid depending on number of players
+vehicleLength 6 # The script tries to fill the starting grid depending on number of players
 
 STARTFINISH # next to pit wall
 position -7191.043457, 221.063049, -4680.785645

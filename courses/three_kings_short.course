@@ -2,7 +2,7 @@
 INFO
 name Three Kings Short
 type circuit
-laps 7
+laps 6.5
 lapTimeMinutes 0
 lapTimeSeconds 29
 author dreadmullet
@@ -12,8 +12,9 @@ STARTGRID
 path -12842.740234, 216.677536, 15039.378906
 path -12795.695313, 216.738968, 15251.022461
 width 10
-vehicle 78
-vehicleWidth 1.5
+vehicle 7
+vehicleTemplate FullyUpgraded
+vehicleWidth 2
 
 
 STARTFINISH

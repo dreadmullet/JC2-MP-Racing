@@ -16,10 +16,10 @@ STARTGRID # curve along beach
 path 10295.891602, 201.471909, 14521.607422
 path 10231.653320, 201.837784, 14524.680664
 path 10159.256836, 201.829514, 14620.383789
-width 38 # how wide the starting grid is
+width 36 # how wide the starting grid is
 vehicle 48 # Maddox
-vehicleWidth 2 # These two are temporary, hopefully there will be a better solution.
-vehicleLength 4.5 # The script tries to fill the starting grid depending on number of players
+vehicleWidth 2.5 # These two are temporary, hopefully there will be a better solution.
+vehicleLength 6.5 # The script tries to fill the starting grid depending on number of players
 
 
 STARTFINISH
