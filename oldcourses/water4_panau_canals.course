@@ -1,0 +1,49 @@
+
+INFO
+name Panau Canals
+type linear
+lapTimeMinutes 2 # Stunt plane time: 1:50
+lapTimeSeconds 30
+checkpointRadiusMult 1.25
+author dreadmullet
+
+STARTGRID
+path -10216.154297, 202, -3736.532471
+path -10083.037109, 202, -3927.937256
+width 42
+vehicle 27
+vehicleWidth 3.75
+vehicleLength 10
+
+CHECKPOINT #1
+position -10410.339844, 200, -3527.595215
+
+CHECKPOINT
+position -11009.513672, 200, -2882.596436
+
+CHECKPOINT
+position -10546.746094, 200, -2464.328857
+
+CHECKPOINT
+position -10548.267578, 200, -2134.355957
+
+CHECKPOINT #5
+position -10726.777344, 200, -1846.018677
+
+CHECKPOINT
+position -10901.355469, 200, -1745.368896
+
+CHECKPOINT
+position -11454.670898, 200, -1424.942017
+
+CHECKPOINT
+position -11727.340820, 200, -1270.034790
+
+CHECKPOINT
+position -12228.083008, 200, -1578.114746
+
+CHECKPOINT #10
+position -12366.774414, 200, -1139.620728
+
+FINISH
+position -13626.273438, 200.279510, 231.475189

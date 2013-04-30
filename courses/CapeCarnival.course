@@ -1,0 +1,42 @@
+
+INFO
+name Cape Carnival Square
+type Circuit
+laps 4.5
+lapTimeMinutes 0 # default of 0
+lapTimeSeconds 45
+author dreadmullet
+
+
+STARTGRID
+path 13940.680664, 201.385239, -2073.664795
+path 13876.496094, 201.486221, -2036.097900
+path 13825.973633, 201.449463, -2007.593506
+path 13774.905273, 201.386429, -1974.834473
+vehicle 2
+vehicle 78
+vehicle 91
+vehicle 91
+vehicleTemplate .
+vehicleTemplate .
+vehicleTemplate Hardtop
+vehicleTemplate Softtop
+width 15
+numVehiclesPerRow 2
+rowSpacing 24
+
+
+CHECKPOINT #1
+position 14138.446289, 201.384308, -2213.883057
+
+CHECKPOINT #2
+position 13869.923828, 201.385666, -2625.829102
+
+CHECKPOINT #3
+position 13460.099609, 201.460983, -2366.778320
+
+CHECKPOINT #4
+position 13722.583008, 201.352005, -1958.302124
+
+CHECKPOINT # start/finish
+position 13934.444336, 201.385513, -2070.170410

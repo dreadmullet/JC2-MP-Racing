@@ -19,6 +19,18 @@ Settings.blockedInputs = {
 	Action.PrevWeapon , -- Blocks switching weapons.
 	-- Action.StuntJump , -- Prevents people from riding on cars and hopping on people's bikes.
 }
+-- Not sure if all of these work.
+Settings.blockedInputsStartingGrid = {
+	Action.Accelerate ,
+	Action.Reverse ,
+	Action.HeliIncAltitude ,
+	Action.HeliDecAltitude ,
+	Action.PlaneIncTrust ,
+	Action.PlaneDecTrust ,
+	Action.BoatForward ,
+	Action.BoatBackward ,
+}
+
 -- Make sure everyone doesn't send their distance at the same time.
 Settings.sendCheckpointDistanceInterval = 0.4 + math.random() * 0.027
 

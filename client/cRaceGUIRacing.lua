@@ -87,11 +87,11 @@ function Race:DrawLapCounter()
 	
 	-- If the course is a circuit, draw the laps.
 	-- If the course is linear, draw checkpoint counter.
-	if self.courseInfo.type == "circuit" then
+	if self.courseInfo.type == "Circuit" then
 		label = "Lap"
 		count = self.lapCount
 		total = self.courseInfo.laps
-	elseif self.courseInfo.type == "linear" then
+	elseif self.courseInfo.type == "Linear" then
 		label = "CP"
 		count = self.targetCheckpoint - 1
 		total = #self.checkpoints
@@ -210,7 +210,7 @@ function Race:DrawMinimapIcons()
 			-- Check if target checkpoint is the start/finish.
 			if self.targetCheckpoint == #self.checkpoints then
 				-- If this is the last lap, don't draw CP after it.
-				if self.courseInfo.type == "circuit" and self.lapCount >= self.courseInfo.laps then
+				if self.courseInfo.type == "Circuit" and self.lapCount >= self.courseInfo.laps then
 					nextCheckpoint = 0
 				else
 					nextCheckpoint = 1
@@ -275,10 +275,10 @@ function Race:DrawNextCheckpointArrow()
 	
 	-- Don't draw for finish lines.
 	if self.targetCheckpoint == #self.checkpoints then
-		if self.courseInfo.type == "linear" then
+		if self.courseInfo.type == "Linear" then
 			return
 		elseif
-			self.courseInfo.type == "circuit" and
+			self.courseInfo.type == "Circuit" and
 			self.courseInfo.laps == self.lapCount
 		then
 			return
@@ -288,7 +288,7 @@ function Race:DrawNextCheckpointArrow()
 	local nextCheckpointIndex = self.targetCheckpoint + 1
 	-- Check if target checkpoint is the start/finish.
 	if
-		self.courseInfo.type == "circuit" and
+		self.courseInfo.type == "Circuit" and
 		self.targetCheckpoint == #self.checkpoints
 	then
 		nextCheckpointIndex = 1

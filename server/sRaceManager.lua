@@ -1,0 +1,175 @@
+----------------------------------------------------------------------------------------------------
+-- There should only be one RaceManager; the single instance should contain everything.
+----------------------------------------------------------------------------------------------------
+
+function RaceManager:__init()
+	
+	Server:BroadcastChatMessage(
+		settings.name.." "..settings.version.." loaded." ,
+		settings.textColorGlobal
+	)
+	
+	self.courseManagerAll = CourseManager("CourseManifest.txt")
+	
+	self.races = {}
+	self.currentPublicRace = nil
+	-- Key = player id
+	-- Value = true
+	self.playerIds = {}
+	self.numPublicRacesRan = 0
+	
+	if settings.doPublicRaces then
+		self:CreateRacePublic()
+	end
+	
+	Events:Subscribe("PlayerChat" , self , self.PlayerChat)
+	
+end
+
+function RaceManager:CreateRace(name , isPublic)
+	
+	isPublic = isPublic or false
+	
+	-- Make sure race with this name doesn't already exist.
+	for index , race in ipairs(self.races) do
+		if race.name == name then
+			return
+		end
+	end
+	
+	local course = self.courseManagerAll:LoadCourseRandom()
+	
+	local race = Race(name , self , self:GetUnusedWorldId() , course)
+	race.isPublic = isPublic
+	if math.random() >= 0.5 then
+		race.vehicleCollisions = false
+	end
+	table.insert(self.races , race)
+	
+	race:SetState("StateAddPlayers")
+	
+	if isPublic then
+		self.numPublicRacesRan = self.numPublicRacesRan + 1
+	end
+	
+	return race
+	
+end
+
+function RaceManager:CreateRacePublic()
+	
+	self.currentPublicRace = self:CreateRace(self:GenerateName() , true)
+	
+end
+
+function RaceManager:GetUnusedWorldId()
+	
+	local GetIsWorldUsed = function(id)
+		for n , race in pairs(self.races) do
+			if race.worldId == id then
+				return true
+			end
+		end
+		
+		return false	
+	end
+	
+	local newIndex = settings.worldIdBase
+	while true do
+		if GetIsWorldUsed(newIndex) == false then
+			break
+		end
+		newIndex = newIndex + 1
+	end
+	
+	return newIndex
+	
+end
+
+function RaceManager:RemoveRace(raceToRemove)
+	
+	for n , race in ipairs(self.races) do
+		-- Can't compare races directly for some reason.
+		if race.name == raceToRemove.name then
+			table.remove(self.races , n)
+			break
+		end
+	end
+	
+end
+
+function RaceManager:GetIsAdmin(player)
+	
+	local playerSteamId = player:GetSteamId()
+	for n , steamId in ipairs(settings.admins) do
+		if playerSteamId == steamId then
+			return true
+		end
+	end
+	
+	return false
+	
+end
+
+function RaceManager:HasPlayer(player)
+	
+	local playerId = Racing.PlayerId(player)
+	
+	return self.playerIds[playerId]
+	
+end
+
+function RaceManager:RemovePlayer(player)
+	
+	for index , race in ipairs(self.races) do
+		if race.playerIdToRacer[player:GetId()] then
+			race:RemovePlayer(player)
+			break
+		end
+	end
+	
+end
+
+function RaceManager:GenerateName()
+	
+	return "Public"..string.format("%i" , self.numPublicRacesRan + 1)
+	
+end
+
+--
+-- Events
+--
+
+function RaceManager:PlayerChat(args)
+	
+	-- Split the message up into words (by spaces).
+	local words = {}
+	for word in string.gmatch(args.text , "[^%s]+") do
+		table.insert(words , word)
+	end
+	
+	if words[1] == settings.command then
+		if words[2] == nil then
+			-- Join a public race.
+			if self.currentPublicRace:HasPlayer(args.player) then
+				self.currentPublicRace:RemovePlayer(
+					args.player ,
+					"You have been removed from the race."
+				)
+			else
+				if self:HasPlayer(args.player) then
+					self:RemovePlayer(args.player)
+				else
+					self.currentPublicRace:JoinPlayer(args.player)
+				end
+			end
+		elseif self:GetIsAdmin(args.player) then
+			if words[2] == "create" and words[3] then
+				self:CreateRace(words[3])
+			end
+		end
+	end
+	
+	
+	
+end
