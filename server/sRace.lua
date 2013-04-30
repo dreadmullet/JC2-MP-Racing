@@ -175,7 +175,17 @@ function Race:RemovePlayer(player , message)
 	
 end
 
+-- Attempts to add player to race.
 function Race:JoinPlayer(player)
+	
+	-- Player's world id is not -1.
+	if player:GetWorldId() ~= -1 then
+		self:MessagePlayer(
+			player ,
+			"You must exit other gamemodes before you can join."
+		)
+		return false
+	end
 	
 	-- Race is full.
 	if self.numPlayers >= self.maxPlayers then
@@ -185,13 +195,14 @@ function Race:JoinPlayer(player)
 			" is trying to join!"
 		)
 		return false
-	-- Race has available slots.
-	else
-		self:AddPlayer(
-			player ,
-			"You have been added to the next race. Use "..settings.command.." to drop out."
-		)
 	end
+	
+	-- Success.
+	self:AddPlayer(
+		player ,
+		"You have been added to the next race. Use "..settings.command.." to drop out."
+	)
+	
 	-- Race is now full after adding a player.
 	if self.numPlayers == self.maxPlayers then
 		self:MessageServer(
@@ -201,6 +212,8 @@ function Race:JoinPlayer(player)
 		)
 		self:SetState("StateStartingGrid")
 	end
+	
+	return true
 	
 end
 
