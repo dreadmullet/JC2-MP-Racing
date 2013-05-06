@@ -1,8 +1,9 @@
 
 debug = {}
 -- Helps with testing starting grids.
--- debug.alwaysMaxPlayers = true
--- debug.dontRemoveIfOutOfVehicle = true
+debug.alwaysMaxPlayers = true
+debug.dontRemoveIfOutOfVehicle = true
+debug.quickRaceStart = true
 
 settings = {}
 
@@ -39,11 +40,13 @@ settings.lapsMult = 1
 -- Public races
 settings.command = "/race"
 settings.raceJoinWaitSeconds = 110
--- settings.raceJoinWaitSeconds = 10
+if debug.quickRaceStart then settings.raceJoinWaitSeconds = 2 end
 
 settings.admins = {
 	SteamID("76561197985532207") , -- dreadmullet
 }
+
+settings.courseEditorEnabled = true
 
 settings.timeLimitFunc = function(lapTimeSeconds , numLaps)
 	

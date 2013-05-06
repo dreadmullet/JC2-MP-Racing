@@ -79,3 +79,19 @@ function CourseCheckpoint:Enter(racer)
 	end
 	
 end
+
+-- For use with sending course checkpoint info to clients.
+function CourseCheckpoint:Marshal()
+	
+	local info = {}
+	
+	info.index = self.index
+	info.courseEditorId = self.courseEditorId
+	info.position = self.position
+	info.radius = self.radius
+	info.validVehicles = self.validVehicles
+	info.action = self.action
+	
+	return info
+	
+end

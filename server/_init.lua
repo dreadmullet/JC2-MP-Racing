@@ -14,3 +14,6 @@ class("Course")
 class("CourseCheckpoint")
 class("CourseSpawn")
 class("CourseLoader")
+
+class("CourseEditorManager")
+-- class("CourseEditor") -- Defined in shared. #woet

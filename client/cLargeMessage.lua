@@ -38,16 +38,16 @@ function LargeMessage:Draw()
 		alpha = math.lerp(
 			0 ,
 			255 ,
-			math.clamp(durationRatio / Settings.largeMessageBlendRatio , 0 , 1)
+			math.clamp(durationRatio / settings.largeMessageBlendRatio , 0 , 1)
 		)
-	elseif durationRatio >= 1 - Settings.largeMessageBlendRatio then
+	elseif durationRatio >= 1 - settings.largeMessageBlendRatio then
 		alpha = math.lerp(
 			255 ,
 			0 ,
 			math.clamp(
 				(
-					(durationRatio - (1 - Settings.largeMessageBlendRatio)) /
-					Settings.largeMessageBlendRatio
+					(durationRatio - (1 - settings.largeMessageBlendRatio)) /
+					settings.largeMessageBlendRatio
 				) ,
 				0 ,
 				1
@@ -55,14 +55,14 @@ function LargeMessage:Draw()
 		)
 	end
 	
-	local color = Copy(Settings.textColor)
+	local color = Copy(settings.textColor)
 	color.a = alpha
 	
 	DrawText(
-		NormVector2(Settings.largeMessagePos.x , Settings.largeMessagePos.y) ,
+		NormVector2(settings.largeMessagePos.x , settings.largeMessagePos.y) ,
 		self.message ,
 		color ,
-		Settings.largeMessageTextSize ,
+		settings.largeMessageTextSize ,
 		"center"
 	)
 	

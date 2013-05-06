@@ -90,7 +90,7 @@ function Race:__init()
 	)
 	
 	-- Disable nametags.
-	if Settings.useNametags == false then
+	if settings.useNametags == false then
 		Events:FireRegisteredEvent("NametagsSetState" , false)
 	end
 	
@@ -228,7 +228,7 @@ function Race:EndRace()
 	self.eventSubs = nil
 	
 	-- Reenable nametags.
-	if Settings.useNametags == false then
+	if settings.useNametags == false then
 		Events:FireRegisteredEvent("NametagsSetState" , true)
 	end
 	
@@ -417,7 +417,7 @@ function Race:SendCheckpointDistance(args)
 	-- print("Race:SendCheckpointDistance!")
 	
 	-- Send checkpoint distance every interval.
-	if self.sendCheckpointTimer:GetSeconds() >= Settings.sendCheckpointDistanceInterval then
+	if self.sendCheckpointTimer:GetSeconds() >= settings.sendCheckpointDistanceInterval then
 		self.sendCheckpointTimer:Restart()
 		-- print("Actually sending distance!")
 		Network:Send(
@@ -434,7 +434,7 @@ end
 
 function Race:HandleInput(args)
 	
-	for index , input in ipairs(Settings.blockedInputs) do
+	for index , input in ipairs(settings.blockedInputs) do
 		if args.input == input and args.state ~= 0 then
 			return false
 		end
@@ -443,7 +443,7 @@ function Race:HandleInput(args)
 	-- Prevent them from driving if race hasn't started yet.
 	-- This could be much better; use different states for starting grid and racing etc.
 	if self.isRacing == false then
-		for index , input in ipairs(Settings.blockedInputsStartingGrid) do
+		for index , input in ipairs(settings.blockedInputsStartingGrid) do
 			if args.input == input then
 				return false
 			end

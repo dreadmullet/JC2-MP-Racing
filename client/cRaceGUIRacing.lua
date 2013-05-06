@@ -15,7 +15,7 @@ function Race:DrawCourseNameRace()
 	DrawText(
 		Vector2(0.5 * Render.Width - textSize.x*0.5 , textSize.y*0 + 3) ,
 		courseName ,
-		Settings.textColor ,
+		settings.textColor ,
 		"Default" ,
 		"left"
 	)
@@ -27,7 +27,7 @@ function Race:DrawCheckpointArrow()
 	
 	-- print("Drawing checkpoint arrow!")
 	
-	local maxValue = Settings.checkpointArrowFlashNum*2 * Settings.checkpointArrowFlashInterval
+	local maxValue = settings.checkpointArrowFlashNum*2 * settings.checkpointArrowFlashInterval
 	
 	-- Always try to increment the value.
 	self.checkpointArrowActivationValue = self.checkpointArrowActivationValue + 1
@@ -52,20 +52,20 @@ function Race:DrawCheckpointArrow()
 	end
 	local pos = Camera:GetPosition() + Camera:GetAngle() * Vector(0 , y , z)
 	
-	-- Set what model to draw based on Settings.guiQuality.
+	-- Set what model to draw based on settings.guiQuality.
 	local triangles
-	if Settings.guiQuality == 0 then
+	if settings.guiQuality == 0 then
 		triangles = Models.arrowTriangles
-	elseif Settings.guiQuality == -1 then
+	elseif settings.guiQuality == -1 then
 		triangles = Models.arrowTrianglesFast
 	end
 	
-	local color = Settings.checkpointArrowColor
+	local color = settings.checkpointArrowColor
 	if
 		self.checkpointArrowActivationValue < maxValue and
-		math.floor(self.numTicksRace / Settings.checkpointArrowFlashInterval) % 2 == 0
+		math.floor(self.numTicksRace / settings.checkpointArrowFlashInterval) % 2 == 0
 	then
-		color = Settings.checkpointArrowColorActivated
+		color = settings.checkpointArrowColorActivated
 	end
 	
 	for n = 1 , #triangles do
@@ -99,18 +99,18 @@ function Race:DrawLapCounter()
 	
 	-- "Lap/Checkpoint" label
 	DrawText(
-		NormVector2(Settings.lapLabelPos.x , Settings.lapLabelPos.y) ,
+		NormVector2(settings.lapLabelPos.x , settings.lapLabelPos.y) ,
 		label ,
-		Settings.textColor ,
-		Settings.lapLabelSize ,
+		settings.textColor ,
+		settings.lapLabelSize ,
 		"center"
 	)
 	-- Counter (ie "1/3")
 	DrawText(
-		NormVector2(Settings.lapCounterPos.x , Settings.lapCounterPos.y) ,
+		NormVector2(settings.lapCounterPos.x , settings.lapCounterPos.y) ,
 		string.format("%i/%i" , count , total) ,
-		Settings.textColor ,
-		Settings.lapCounterSize ,
+		settings.textColor ,
+		settings.lapCounterSize ,
 		"center"
 	)
 	
@@ -120,18 +120,18 @@ function Race:DrawRacePosition()
 	
 	-- "Pos" label
 	DrawText(
-		NormVector2(Settings.racePosLabelPos.x , Settings.racePosLabelPos.y) ,
-		Settings.racePosLabel ,
-		Settings.textColor ,
-		Settings.racePosLabelSize ,
+		NormVector2(settings.racePosLabelPos.x , settings.racePosLabelPos.y) ,
+		settings.racePosLabel ,
+		settings.textColor ,
+		settings.racePosLabelSize ,
 		"center"
 	)
 	-- Race position (ie "5/21")
 	DrawText(
-		NormVector2(Settings.racePosPos.x , Settings.racePosPos.y) ,
+		NormVector2(settings.racePosPos.x , settings.racePosPos.y) ,
 		string.format("%i/%i" , self.racePosition , self.playerCount) ,
-		Settings.textColor ,
-		Settings.racePosSize ,
+		settings.textColor ,
+		settings.racePosSize ,
 		"center"
 	)
 	
@@ -139,31 +139,31 @@ end
 
 function Race:DrawLeaderboard()
 	
-	local currentPos = NormVector2(Settings.leaderboardPos.x , Settings.leaderboardPos.y)
-	local textHeight = Render:GetTextHeight("W" , Settings.leaderboardTextSize)
-	local textWidth = Render:GetTextWidth("W" , Settings.leaderboardTextSize)
+	local currentPos = NormVector2(settings.leaderboardPos.x , settings.leaderboardPos.y)
+	local textHeight = Render:GetTextHeight("W" , settings.leaderboardTextSize)
+	local textWidth = Render:GetTextWidth("W" , settings.leaderboardTextSize)
 	
-	for n = 1 , math.min(#self.leaderboard , Settings.leaderboardMaxPlayers) do
+	for n = 1 , math.min(#self.leaderboard , settings.leaderboardMaxPlayers) do
 		local playerId = self.leaderboard[n]
 		local playerInfo = self.playerIdToInfo[playerId]
 		local playerName = playerInfo.name
 		
 		-- Clamp their name length.
-		playerName = playerName:sub(1 , Settings.maxPlayerNameLength)
-		local playerNameWidth = Render:GetTextWidth(playerName , Settings.leaderboardTextSize)
+		playerName = playerName:sub(1 , settings.maxPlayerNameLength)
+		local playerNameWidth = Render:GetTextWidth(playerName , settings.leaderboardTextSize)
 		
 		DrawText(
 			currentPos ,
 			Utility.NumberToPlaceString(n) ,
-			Settings.textColor ,
-			Settings.leaderboardTextSize ,
+			settings.textColor ,
+			settings.leaderboardTextSize ,
 			"left"
 		)
 		DrawText(
 			currentPos + Vector2(textWidth * 2 , 0) ,
 			string.format("%s" , playerName) ,
 			playerInfo.color ,
-			Settings.leaderboardTextSize ,
+			settings.leaderboardTextSize ,
 			"left"
 		)
 		-- If this is us, draw an arrow.
@@ -171,21 +171,21 @@ function Race:DrawLeaderboard()
 			DrawText(
 				currentPos + Vector2(textWidth * -1 , 0) ,
 				"»" ,
-				Settings.textColor ,
-				Settings.leaderboardTextSize ,
+				settings.textColor ,
+				settings.leaderboardTextSize ,
 				"left"
 			)
 			DrawText(
 				currentPos + Vector2(textWidth * 2.5 + playerNameWidth , 0) ,
 				"«" ,
-				Settings.textColor ,
-				Settings.leaderboardTextSize ,
+				settings.textColor ,
+				settings.leaderboardTextSize ,
 				"left"
 			)
 		end
 		
 		-- Always draw ther players' position tag, for now.
-		if Settings.useNametags == false and playerId ~= LocalPlayer:GetId() then
+		if settings.useNametags == false and playerId ~= LocalPlayer:GetId() then
 			self:DrawPositionTag(playerId , n)
 		end
 		
@@ -197,7 +197,7 @@ end
 function Race:DrawMinimapIcons()
 	
 	-- Don't draw minimap icons if quality is too low.
-	if Settings.guiQuality < 0 then
+	if settings.guiQuality < 0 then
 		return
 	end
 	
@@ -307,7 +307,7 @@ function Race:DrawNextCheckpointArrow()
 	
 	local distance = Vector.Distance(Camera:GetPosition() , cpTarget)
 	
-	local color = Copy(Settings.nextCheckpointArrowColor)
+	local color = Copy(settings.nextCheckpointArrowColor)
 	local alpha = (140 - distance) / 140 -- From 0 to 1
 	alpha = 1 - alpha -- magic
 	alpha = alpha ^ 4

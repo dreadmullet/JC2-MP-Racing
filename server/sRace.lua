@@ -178,6 +178,11 @@ end
 -- Attempts to add player to race.
 function Race:JoinPlayer(player)
 	
+	-- State is not StateAddPlayers.
+	if self.stateName ~= "StateAddPlayers" then
+		return false
+	end
+	
 	-- Player's world id is not -1.
 	if player:GetWorldId() ~= -1 then
 		self:MessagePlayer(

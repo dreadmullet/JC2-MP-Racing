@@ -87,6 +87,24 @@ function Course:SpawnRacers()
 	
 end
 
+-- For use with sending course info to clients.
+function Course:Marshal()
+	
+	local info = {}
+	
+	info.checkpoints = {}
+	for index , checkpoint in ipairs(self.checkpoints) do
+		table.insert(info.checkpoints , checkpoint:Marshal())
+	end
+	info.spawns = {}
+	for index , spawn in ipairs(self.spawns) do
+		table.insert(info.spawns , spawn:Marshal())
+	end
+	
+	return info
+	
+end
+
 function Course.CreateTestCourse()
 	
 	local course = Course()

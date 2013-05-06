@@ -300,3 +300,22 @@ M.NumberToPlaceString = function(number)
 	end
 	
 end
+
+M.CastFromString = function(string , type)
+	
+	if type == "string" then
+		return string
+	elseif type == "number" then
+		return tonumber(string)
+	elseif type == "boolean" then
+		string = string:lower()
+		if string == "true" then
+			return true
+		elseif string == "false" then
+			return false
+		end
+	end
+	
+	return nil
+	
+end

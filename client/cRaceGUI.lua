@@ -48,7 +48,7 @@ DrawText = function(pos , text , color , size , alignment , scale)
 		-- )
 	end
 	
-	local shadowColor = Copy(Settings.shadowColor)
+	local shadowColor = Copy(settings.shadowColor)
 	shadowColor.a = color.a
 	
 	Render:DrawText(pos + Vector2(-1 , -1) , text , shadowColor , size , scale or 1)
@@ -69,9 +69,9 @@ function Race:DrawVersion()
 	)
 	
 	DrawText(
-		Vector2(0.7825 * Render.Width - textSize.x , textSize.y * 0 + 1) ,
+		Vector2(0.775 * Render.Width - textSize.x , textSize.y * 0 + 1) ,
 		"JC2-MP-Racing "..version ,
-		Settings.textColor ,
+		settings.textColor ,
 		"Default"
 	)
 	

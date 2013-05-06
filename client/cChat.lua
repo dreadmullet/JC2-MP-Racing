@@ -3,13 +3,13 @@
 
 OnLocalPlayerChat = function(args)
 	
-	if Settings.guiQuality ~= 0 and args.text == "/race quality high" then
-		Settings.guiQuality = 0
-		Client:ChatMessage("Race GUI quality changed to high." , Settings.textColor)
+	if settings.guiQuality ~= 0 and args.text == "/race quality high" then
+		settings.guiQuality = 0
+		Client:ChatMessage("Race GUI quality changed to high." , settings.textColor)
 		return false
-	elseif Settings.guiQuality ~= -1 and args.text == "/race quality low" then
-		Settings.guiQuality = -1
-		Client:ChatMessage("Race GUI quality changed to low." , Settings.textColor)
+	elseif settings.guiQuality ~= -1 and args.text == "/race quality low" then
+		settings.guiQuality = -1
+		Client:ChatMessage("Race GUI quality changed to low." , settings.textColor)
 		return false
 	end
 	

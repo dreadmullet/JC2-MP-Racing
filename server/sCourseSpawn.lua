@@ -56,3 +56,17 @@ function CourseSpawn:SpawnRacer()
 	self.racer.player:SetWorldId(self.course.race.worldId)
 	
 end
+
+-- For use with sending course checkpoint info to clients.
+function CourseSpawn:Marshal()
+	
+	local info = {}
+	
+	info.courseEditorId = self.courseEditorId
+	info.position = self.position
+	info.angle = self.angle
+	info.modelIds = self.modelIds
+	
+	return info
+	
+end

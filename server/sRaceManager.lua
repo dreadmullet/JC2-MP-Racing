@@ -130,6 +130,12 @@ function RaceManager:RemovePlayer(player)
 	
 end
 
+function RaceManager:MessagePlayer(player , message)
+	
+	player:SendChatMessage("[Racing] "..message , settings.textColorLocal)
+	
+end
+
 function RaceManager:GenerateName()
 	
 	return "Public"..string.format("%i" , self.numPublicRacesRan + 1)
@@ -166,10 +172,64 @@ function RaceManager:PlayerChat(args)
 		elseif self:GetIsAdmin(args.player) then
 			if words[2] == "create" and words[3] then
 				self:CreateRace(words[3])
+			elseif words[2] == "set" then
+				self:AdminChangeSetting(args.player , words[3] , words[4])
+			elseif words[2] == "get" then
+				self:AdminPrintSetting(args.player , words[3])
 			end
+		end
+	elseif
+		settings.courseEditorEnabled and
+		(
+			words[1] == CourseEditor.settings.commandName or
+			words[1] == CourseEditor.settings.commandNameShort
+		)
+	then
+		if args.player:GetWorldId() == -1 then
+			courseEditor = CourseEditor(args.player)
 		end
 	end
 	
+end
+
+function RaceManager:AdminChangeSetting(player , settingName , value)
 	
+	-- Argument checking.
+	if settingName == nil then
+		self:MessagePlayer(player , "Error: setting name required")
+		return
+	elseif settings[settingName] == nil then
+		self:MessagePlayer(player , "Error: invalid setting")
+		return
+	elseif value == nil then
+		self:MessagePlayer(player , "Error: value required")
+		return
+	end
+	
+	value = Utility.CastFromString(value , type(settings[settingName]))
+	
+	if value == nil then
+		self:MessagePlayer(player , "Error: invalid value")
+		return
+	end
+	
+	settings[settingName] = value
+	
+	self:MessagePlayer(player , "Set settings."..settingName.." to "..tostring(value))
+	
+end
+
+function RaceManager:AdminPrintSetting(player , settingName)
+	
+	-- Argument checking.
+	if settingName == nil then
+		self:MessagePlayer(player , "Error: setting name required")
+		return
+	elseif settings[settingName] == nil then
+		self:MessagePlayer(player , "Error: invalid setting")
+		return
+	end
+	
+	self:MessagePlayer(player , "settings."..settingName.." is "..tostring(settings[settingName]))
 	
 end
