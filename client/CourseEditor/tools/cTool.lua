@@ -4,7 +4,7 @@
 CourseEditor.globals.tools = {}
 local T = CourseEditor.globals.tools
 T["None"] = "None"
-T["Object Spawner"] = "ObjectSpawner"
+T["Object Spawner"] = "BaseSpawner"
 T["Checkpoint Spawner"] = "CheckpointSpawner"
 T["Vehicle Spawner"] = "VehicleSpawner"
 
@@ -81,7 +81,7 @@ function Tool:ManageInput()
 					self[inputNamePressed](self)
 				end
 			else -- Otherwise, call inputNameUnpressed.
-				local inputNameUnpressed = inputName.."Unpressed"
+				local inputNameUnpressed = inputName.."Released"
 				if self[inputNameUnpressed] then
 					self[inputNameUnpressed](self)
 				end

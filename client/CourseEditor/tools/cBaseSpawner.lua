@@ -1,10 +1,10 @@
 
-function ObjectSpawner:__init()
+function BaseSpawner:__init()
 	
 	Tool.__init(self)
 	
 	if CourseEditor.settings.debugLevel >= 2 then
-		print("ObjectSpawner:__init")
+		print("BaseSpawner:__init")
 	end
 	
 	-- Lua less than three.
@@ -12,18 +12,18 @@ function ObjectSpawner:__init()
 	Tool.AddInput(self , "Primary" , Action.FireRight)
 	Tool.AddInput(self , "Secondary" , Action.FireLeft)
 	
-	self.gizmo = Models.objectSpawnerGizmo
+	self.gizmo = Models.BaseSpawnerGizmo
 	self.gizmoColor = Copy(CourseCheckpoint.color)
 	self.usePitch = false
 	
 	table.insert(
 		self.events ,
-		Events:Subscribe("Render" , self , ObjectSpawner.Render)
+		Events:Subscribe("Render" , self , BaseSpawner.Render)
 	)
 	
 end
 
-function ObjectSpawner:Render()
+function BaseSpawner:Render()
 	
 	if not self.isEnabled then
 		return
@@ -38,7 +38,7 @@ function ObjectSpawner:Render()
 	
 	-- Only draw while unpaused and on foot.
 	if self.gizmo then
-		if ObjectSpawner.GetCanUse(self) then
+		if BaseSpawner.GetCanUse(self) then
 			RenderModel(self.gizmo , aimPos , angle , self.gizmoColor)
 		elseif self.gizmoColorDisabled then
 			RenderModel(self.gizmoDisabled or self.gizmo , aimPos , angle , self.gizmoColorDisabled)
@@ -47,7 +47,7 @@ function ObjectSpawner:Render()
 	
 end
 
-function ObjectSpawner:GetCanUse()
+function BaseSpawner:GetCanUse()
 	
 	local hitDistance = Vector.Distance(
 		LocalPlayer:GetPosition() ,

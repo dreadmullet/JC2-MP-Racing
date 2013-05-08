@@ -8,9 +8,9 @@ class("CourseSpawn")
 
 class("Tool")
 class("None")(Tool)
-class("ObjectSpawner")(Tool)
-class("CheckpointSpawner")(ObjectSpawner)
-class("VehicleSpawner")(ObjectSpawner)
+class("BaseSpawner")(Tool)
+class("CheckpointSpawner")(BaseSpawner)
+class("VehicleSpawner")(BaseSpawner)
 
 class("Object")
 class("CheckpointObject")(Object)
