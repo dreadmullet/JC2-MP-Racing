@@ -1,7 +1,8 @@
 
 VirtualKey.Apostrophe = 222 -- wut
 
-CEMainMenu.elementHeight = 0.07
+CEMainMenu.elementHeight = 0.0625
+CEMainMenu.textColor = Color(128 , 128 , 128 , 255):ToCEGUIString()
 
 function CEMainMenu:__init(courseEditor)
 	
@@ -9,14 +10,16 @@ function CEMainMenu:__init(courseEditor)
 	self.isActive = false
 	
 	self.window = Window.Create("GWEN/FrameWindow" , "MainMenu" , RootWindow)
-	self.window:SetText("Course Editor")
-	self.window:SetSizeRel(Vector2(0.125 , 0.375))
+	self.window:SetText(Color(224 , 224 , 224 , 255):ToCEGUIString().."Course Editor")
+	self.window:SetSizeRel(Vector2(0.1125 , 0.39))
 	self.window:SetPositionRel(Vector2(0.01 , 0.25))
 	self.window:SetCloseButtonEnabled(false)
 	self.window:SetRollupEnabled(false)
 	
 	-- Used in content addition methods below.
 	self.currentY = 0
+	
+	self:AddMiscText("Hold ' or q to focus")
 	
 	self:AddSection("Spawning")
 	self:AddButton("Checkpoint")
@@ -42,8 +45,9 @@ function CEMainMenu:__init(courseEditor)
 		math.floor(self.initialWindowPosition.y * Render.Height)
 	)
 	
+	self.events = {}
 	local EventSub = function(name)
-		Events:Subscribe(name , self , self[name])
+		table.insert(self.events , Events:Subscribe(name , self , self[name]))
 	end
 	EventSub("LocalPlayerInput")
 	EventSub("KeyDown")
@@ -61,7 +65,7 @@ end
 function CEMainMenu:AddSection(sectionName)
 	
 	local window = Window.Create("GWEN/StaticText" , "MainMenuSection-"..sectionName , self.window)
-	window:SetText(sectionName)
+	window:SetText(CEMainMenu.textColor..sectionName)
 	window:SetPositionRel(Vector2(0 , self.currentY))
 	window:SetSizeRel(Vector2(1 , CEMainMenu.elementHeight))
 	
@@ -72,7 +76,7 @@ end
 function CEMainMenu:AddButton(buttonName)
 	
 	local window = Window.Create("GWEN/Button" , "MainMenuButton-"..buttonName , self.window)
-	window:SetText(buttonName)
+	window:SetText(CEMainMenu.textColor..buttonName)
 	window:SetPositionRel(Vector2(0 , self.currentY))
 	window:SetSizeRel(Vector2(1 , CEMainMenu.elementHeight))
 	
@@ -87,12 +91,34 @@ function CEMainMenu:AddButton(buttonName)
 	
 end
 
+function CEMainMenu:AddMiscText(text)
+	
+	local window = Window.Create("GWEN/StaticText" , "MainMenuMiscText-"..text , self.window)
+	window:SetText(Color(255 , 255 , 255 , 192):ToCEGUIString()..text)
+	window:SetPositionRel(Vector2(0 , self.currentY))
+	window:SetSizeRel(Vector2(1 , CEMainMenu.elementHeight))
+	
+	self.currentY = self.currentY + CEMainMenu.elementHeight
+	
+end
+
+function CEMainMenu:AddSpacer(size)
+	
+	self.currentY = self.currentY + size
+	
+end
+
 function CEMainMenu:Destroy()
 	
 	-- Commenting this out for now, since it causes a crash.
 	-- self.window:Remove()
 	
-	self.window:SetText("Please reload script")
+	self.window:SetText(Color(240 , 20 , 20 , 255):ToCEGUIString().."Please reload script")
+	
+	-- Unsubscribe from all events.
+	for n , event in ipairs(self.events) do
+		Events:Unsubscribe(event)
+	end
 	
 end
 
@@ -141,6 +167,7 @@ function CEMainMenu:KeyDown(args)
 		end
 		MouseCursor:SetVisible(true)
 		MouseCursor:SetPosition(self:GetWindowPositionAbs())
+		self.window:SetText(Color(180 , 255 , 170 , 255):ToCEGUIString().."Course Editor")
 	end
 	
 end
@@ -153,6 +180,7 @@ function CEMainMenu:KeyUp(args)
 			self.courseEditor.currentTool.isEnabled = true
 		end
 		MouseCursor:SetVisible(false)
+		self.window:SetText(Color(224 , 224 , 224 , 255):ToCEGUIString().."Course Editor")
 	end
 	
 end

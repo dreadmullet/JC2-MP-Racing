@@ -90,6 +90,10 @@ end
 
 function CourseEditor:NetworkExit(nilArgs , player)
 	
+	if self:GetCanPlayerDoActions(player) == false then
+		return
+	end
+	
 	self:RemovePlayer(player , "Exited.")
 	
 end
