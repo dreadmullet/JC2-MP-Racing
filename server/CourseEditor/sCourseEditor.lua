@@ -47,22 +47,13 @@ function CourseEditor:__init(player)
 	
 	self:AddPlayer(player)
 	
-	table.insert(
-		self.events ,
-		Events:Subscribe("PostServerTick" , self , self.Update)
-	)
-	table.insert(
-		self.events ,
-		Events:Subscribe("PlayerQuit" , self , self.PlayerQuit)
-	)
-	table.insert(
-		self.events ,
-		Events:Subscribe("PlayerChat" , self , self.PlayerChat)
-	)
-	table.insert(
-		self.events ,
-		Events:Subscribe("ModuleUnload" , self , self.Destroy)
-	)
+	local EventSub = function(name , funcName)
+		Events:Subscribe(name , self , self[funcName])
+	end
+	EventSub("PostServerTick" , "Update")
+	EventSub("PlayerQuit" , "PlayerQuit")
+	EventSub("PlayerChat" , "PlayerChat")
+	EventSub("ModuleUnload" , "Destroy")
 	
 	self:SubscribeNetworkEvents()
 	
@@ -131,6 +122,11 @@ function CourseEditor:RemovePlayer(player , reason)
 	reason = reason or "No reason."
 	
 	local playerInfo = self.players[player:GetId()]
+	
+	-- Make sure this player exists.
+	if playerInfo == nil then
+		return
+	end
 	
 	-- Reset their position.
 	player:SetPosition(playerInfo.originalPosition)

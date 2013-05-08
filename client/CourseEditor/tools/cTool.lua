@@ -14,6 +14,8 @@ function Tool:__init()
 		print("Tool:__init")
 	end
 	
+	self.isEnabled = true
+	
 	self.inputs = {}
 	
 	self.events = {}
@@ -47,6 +49,10 @@ end
 --
 
 function Tool:Input(args)
+	
+	if not self.isEnabled then
+		return
+	end
 	
 	for inputName , inputInfo in pairs(self.inputs) do
 		-- If this input is currently being pressed.

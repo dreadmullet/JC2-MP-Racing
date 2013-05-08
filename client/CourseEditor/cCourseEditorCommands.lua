@@ -4,28 +4,29 @@ function CourseEditor:DefineCommands()
 	
 	local C = self.commands
 	
-	C.tool = function(args)
+	-- Deprecated.
+	-- C.tool = function(args)
 		
-		local toolNameInput = args[1]
-		if not toolNameInput then
-			return
-		end
+		-- local toolNameInput = args[1]
+		-- if not toolNameInput then
+			-- return
+		-- end
 		
-		toolNameInput = toolNameInput:lower()
+		-- toolNameInput = toolNameInput:lower()
 		
-		local toolName = nil
-		if toolNameInput == "none" then
-			toolName = "None"
-		elseif toolNameInput == "cp" then
-			toolName = "Checkpoint Spawner"
-		elseif toolNameInput == "v" then
-			toolName = "Vehicle Spawner"
-		end
+		-- local toolName = nil
+		-- if toolNameInput == "none" then
+			-- toolName = "None"
+		-- elseif toolNameInput == "cp" then
+			-- toolName = "Checkpoint Spawner"
+		-- elseif toolNameInput == "v" then
+			-- toolName = "Vehicle Spawner"
+		-- end
 		
-		if toolName then
-			self:SetTool(CourseEditor.globals.tools[toolName])
-		end
+		-- if toolName then
+			-- self:SetTool(CourseEditor.globals.tools[toolName])
+		-- end
 		
-	end
+	-- end
 	
 end

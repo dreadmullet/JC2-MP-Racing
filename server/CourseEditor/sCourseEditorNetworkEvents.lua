@@ -1,20 +1,22 @@
 
 function CourseEditor:SubscribeNetworkEvents()
 	
-	local Sub = function(name)
+	local NetworkSub = function(name)
 		table.insert(
 			self.networkEvents ,
 			Network:Subscribe("CE"..name , self , self["Network"..name])
 		)
 	end
 	
-	Sub("AddCP")
-	Sub("RemoveCP")
-	Sub("AddSpawn")
-	Sub("RemoveSpawn")
+	NetworkSub("AddCP")
+	NetworkSub("RemoveCP")
+	NetworkSub("AddSpawn")
+	NetworkSub("RemoveSpawn")
+	NetworkSub("Exit")
 	
 end
 
+-- Helps with making sure client doesn't spam us with network events.
 function CourseEditor:GetCanPlayerDoActions(player)
 	
 	local playerInfo = self.players[player:GetId()]
@@ -83,5 +85,11 @@ function CourseEditor:NetworkRemoveSpawn(position , player)
 	end
 	
 	self:RemoveSpawn(position)
+	
+end
+
+function CourseEditor:NetworkExit(nilArgs , player)
+	
+	self:RemovePlayer(player , "Exited.")
 	
 end

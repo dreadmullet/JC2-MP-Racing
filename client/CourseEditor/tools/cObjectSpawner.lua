@@ -25,6 +25,10 @@ end
 
 function ObjectSpawner:Render()
 	
+	if not self.isEnabled then
+		return
+	end
+	
 	local aimPos = LocalPlayer:GetAimTarget().position
 	local angle = Camera:GetAngle()
 	angle.roll = 0

@@ -14,3 +14,5 @@ class("VehicleSpawner")(ObjectSpawner)
 
 class("Object")
 class("CheckpointObject")(Object)
+
+class("CEMainMenu")

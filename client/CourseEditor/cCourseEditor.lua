@@ -21,6 +21,8 @@ function CourseEditor:__init()
 	
 	self.currentTool = nil
 	
+	self.mainMenu = CEMainMenu(self)
+	
 	self.events = {}
 	self.networkEvents = {}
 	
@@ -57,6 +59,10 @@ function CourseEditor:Destroy()
 	CourseEditor.globals.instance = nil
 	
 	self:SetTool("None")
+	
+	self.course:Destroy()
+	
+	self.mainMenu:Destroy()
 	
 	-- Unsubscribe from all events.
 	for n , event in ipairs(self.events) do
