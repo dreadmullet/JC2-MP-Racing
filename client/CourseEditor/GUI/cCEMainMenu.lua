@@ -1,6 +1,7 @@
 
 VirtualKey.Apostrophe = 222 -- wut
 
+CEMainMenu.size = Vector2(0.1125 , 0.39)
 CEMainMenu.elementHeight = 0.0625
 CEMainMenu.textColor = Color(128 , 128 , 128 , 255):ToCEGUIString()
 
@@ -11,13 +12,16 @@ function CEMainMenu:__init(courseEditor)
 	
 	self.window = Window.Create("GWEN/FrameWindow" , "MainMenu" , RootWindow)
 	self.window:SetText(Color(224 , 224 , 224 , 255):ToCEGUIString().."Course Editor")
-	self.window:SetSizeRel(Vector2(0.1125 , 0.39))
+	self.window:SetSizeRel(CEMainMenu.size)
 	self.window:SetPositionRel(Vector2(0.01 , 0.25))
 	self.window:SetCloseButtonEnabled(false)
 	self.window:SetRollupEnabled(false)
 	
 	-- Used in content addition methods below.
 	self.currentY = 0
+	
+	-- Used to align tool window with its respective button.
+	self.currentButtonName = nil
 	
 	self:AddMiscText("Hold q or ' to focus")
 	
@@ -52,6 +56,7 @@ function CEMainMenu:__init(courseEditor)
 	EventSub("LocalPlayerInput")
 	EventSub("KeyDown")
 	EventSub("KeyUp")
+	EventSub("Render")
 	
 end
 
@@ -85,7 +90,13 @@ function CEMainMenu:AddButton(buttonName)
 		window:SetEnabled(false)
 	end
 	
-	window:Subscribe("Clicked" , self , self[buttonName] or function() end)
+	if self[buttonName] then
+		window:Subscribe("Clicked" , function() self:ButtonPressed(buttonName) end)
+	else
+		window:Subscribe("Clicked" , function() end)
+	end
+	
+	self["button"..buttonName] = window
 	
 	self.currentY = self.currentY + CEMainMenu.elementHeight
 	
@@ -122,23 +133,82 @@ function CEMainMenu:Destroy()
 	
 end
 
+function CEMainMenu:CreateToolWindow(windowName)
+	
+	self.toolWindow = Window.Create(
+		"GWEN/FrameWindow" ,
+		-- "ToolWindow-"..windowName ,
+		"ToolWindow" ,
+		RootWindow
+	)
+	self.toolWindow:SetText(windowName)
+	-- (Position is spammed during Render.)
+	self.toolWindow:SetSizeRel(Vector2(0.2 , 0.25))
+	self.toolWindow:SetCloseButtonEnabled(false)
+	self.toolWindow:SetRollupEnabled(false)
+	
+end
+
+function CEMainMenu:DestroyToolWindow()
+	
+	if self.toolWindow then
+		self.toolWindow:Remove()
+		self.toolWindow = nil
+	end
+	
+end
+
 --
 -- Button events
 --
+
+function CEMainMenu:ButtonPressed(buttonName)
+	
+	-- Second click, remove window and reset tool.
+	if self.toolWindow and self.currentButtonName == buttonName then
+		self:DestroyToolWindow()
+		self["button"..buttonName]:SetText(buttonName)
+		self.currentButtonName = nil
+		self.courseEditor:SetTool()
+	-- First click.
+	else
+		if self.currentButtonName then
+			self["button"..self.currentButtonName]:SetText(self.currentButtonName)
+		end
+		self.currentButtonName = buttonName
+		self["button"..buttonName]:SetText("»»"..buttonName.."««")
+		self[buttonName](self)
+	end
+	
+end
 
 CEMainMenu["Checkpoint"] = function(self)
 	
 	self.courseEditor:SetTool("CheckpointSpawner")
 	self.courseEditor.currentTool.isEnabled = false
 	
+	self:DestroyToolWindow()
+	self:CreateToolWindow("Checkpoint Spawner")
+	
+	local button = Window.Create("GWEN/Button" , "TestButton" , self.toolWindow)
+	button:SetText("tets")
+	button:SetPositionRel(Vector2(0 , self.currentY))
+	button:SetSizeRel(Vector2(0.5 , 0.1))
+	
 end
 
 CEMainMenu["Vehicle spawn"] = function(self)
 	
 	self.courseEditor:SetTool("VehicleSpawner")
-	-- Disable the tool until the main menu is unfocused. Otherwise, the tool will pick up the input
-	-- of the user's click.
 	self.courseEditor.currentTool.isEnabled = false
+	
+	self:DestroyToolWindow()
+	self:CreateToolWindow("Vehicle Spawner")
+	
+	local button = Window.Create("GWEN/Button" , "TestButton" , self.toolWindow)
+	button:SetText("spawn dat vehicle namsayin")
+	button:SetPositionRel(Vector2(0 , self.currentY))
+	button:SetSizeRel(Vector2(0.5 , 0.1))
 	
 end
 
@@ -162,7 +232,8 @@ function CEMainMenu:KeyDown(args)
 	
 	if
 		(args.key == VirtualKey.Apostrophe or args.key == string.byte('Q')) and
-		not self.isActive then
+		not self.isActive
+	then
 		self.isActive = true
 		if self.courseEditor.currentTool then
 			self.courseEditor.currentTool.isEnabled = false
@@ -186,6 +257,27 @@ function CEMainMenu:KeyUp(args)
 	end
 	
 end
+
+function CEMainMenu:Render()
+	
+	if self.toolWindow then
+		local pos = self:GetWindowPositionAbs() + Vector2(CEMainMenu.size.x * Render.Width + 0 , 0)
+		local buttonY = pos.y
+		pos.y = (
+			pos.y +
+			(
+				self["button"..self.currentButtonName]:GetPositionRel().y *
+				CEMainMenu.size.y *
+				Render.Height
+			)
+		)
+		-- Compensate for title bar.
+		pos.y = pos.y + 0.02 * Render.Height
+		self.toolWindow:SetPositionAbs(pos)
+	end
+	
+end
+
 
 -- Utility debug chat print function
 PrintChat = function(message)

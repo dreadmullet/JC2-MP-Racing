@@ -20,6 +20,7 @@ function CourseEditor:__init()
 	self.course = Course()
 	
 	self.currentTool = nil
+	self.currentToolName = ""
 	
 	self.mainMenu = CEMainMenu(self)
 	
@@ -90,6 +91,7 @@ function CourseEditor:SetTool(toolClassName)
 	-- Create the tool if it exists.
 	if _G[toolClassName] then
 		self.currentTool = _G[toolClassName]()
+		self.currentToolName = toolClassName
 	end
 	
 end
