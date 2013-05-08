@@ -19,7 +19,7 @@ function CEMainMenu:__init(courseEditor)
 	-- Used in content addition methods below.
 	self.currentY = 0
 	
-	self:AddMiscText("Hold ' or q to focus")
+	self:AddMiscText("Hold q or ' to focus")
 	
 	self:AddSection("Spawning")
 	self:AddButton("Checkpoint")
@@ -160,7 +160,9 @@ end
 
 function CEMainMenu:KeyDown(args)
 	
-	if args.key == VirtualKey.Apostrophe and not self.isActive then
+	if
+		(args.key == VirtualKey.Apostrophe or args.key == string.byte('Q')) and
+		not self.isActive then
 		self.isActive = true
 		if self.courseEditor.currentTool then
 			self.courseEditor.currentTool.isEnabled = false
@@ -174,7 +176,7 @@ end
 
 function CEMainMenu:KeyUp(args)
 	
-	if args.key == VirtualKey.Apostrophe then
+	if args.key == VirtualKey.Apostrophe or args.key == string.byte('Q') then
 		self.isActive = false
 		if self.courseEditor.currentTool then
 			self.courseEditor.currentTool.isEnabled = true
