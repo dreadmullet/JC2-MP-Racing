@@ -1,4 +1,6 @@
 
+PhilpaxSucks = 1
+
 VirtualKey.Apostrophe = 222 -- wut
 
 CEMainMenu.size = Vector2(0.1125 , 0.39)
@@ -10,7 +12,8 @@ function CEMainMenu:__init(courseEditor)
 	self.courseEditor = courseEditor
 	self.isActive = false
 	
-	self.window = Window.Create("GWEN/FrameWindow" , "MainMenu" , RootWindow)
+	self.window = Window.Create("GWEN/FrameWindow" , "MainMenu"..PhilpaxSucks , RootWindow)
+	PhilpaxSucks = PhilpaxSucks + 1
 	self.window:SetText(Color(240 , 240 , 240 , 255):ToCEGUIString().."Course Editor")
 	self.window:SetSizeRel(CEMainMenu.size)
 	self.window:SetPositionRel(Vector2(0.01 , 0.25))
@@ -69,7 +72,8 @@ end
 
 function CEMainMenu:AddSection(sectionName)
 	
-	local window = Window.Create("GWEN/StaticText" , "MainMenuSection-"..sectionName , self.window)
+	local window = Window.Create("GWEN/StaticText" , "MainMenuSection-"..sectionName..PhilpaxSucks , self.window)
+	PhilpaxSucks = PhilpaxSucks + 1
 	window:SetText(CEMainMenu.textColor..sectionName)
 	window:SetPositionRel(Vector2(0 , self.currentY))
 	window:SetSizeRel(Vector2(1 , CEMainMenu.elementHeight))
@@ -80,7 +84,8 @@ end
 
 function CEMainMenu:AddButton(buttonName)
 	
-	local window = Window.Create("GWEN/Button" , "MainMenuButton-"..buttonName , self.window)
+	local window = Window.Create("GWEN/Button" , "MainMenuButton-"..buttonName..PhilpaxSucks , self.window)
+	PhilpaxSucks = PhilpaxSucks + 1
 	window:SetText(CEMainMenu.textColor..buttonName)
 	window:SetPositionRel(Vector2(0 , self.currentY))
 	window:SetSizeRel(Vector2(1 , CEMainMenu.elementHeight))
@@ -104,7 +109,8 @@ end
 
 function CEMainMenu:AddMiscText(text)
 	
-	local window = Window.Create("GWEN/StaticText" , "MainMenuMiscText-"..text , self.window)
+	local window = Window.Create("GWEN/StaticText" , "MainMenuMiscText-"..text..PhilpaxSucks , self.window)
+	PhilpaxSucks = PhilpaxSucks + 1
 	window:SetText(Color(255 , 255 , 255 , 192):ToCEGUIString()..text)
 	window:SetPositionRel(Vector2(0 , self.currentY))
 	window:SetSizeRel(Vector2(1 , CEMainMenu.elementHeight))
@@ -121,10 +127,14 @@ end
 
 function CEMainMenu:Destroy()
 	
-	-- Commenting this out for now, since it causes a crash.
+	-- Commenting this out for now, since it causes a crash on module unload.
 	-- self.window:Remove()
 	
-	self.window:SetText(Color(240 , 20 , 20 , 255):ToCEGUIString().."Please reload script")
+	-- Temporary window removal.
+	self.window:SetText(Color(240 , 20 , 20 , 255):ToCEGUIString().."Borked")
+	self.window:SetPositionRel(Vector2(-4 , 0))
+	MouseCursor:SetVisible(false)
+	self:DestroyToolWindow()
 	
 	-- Unsubscribe from all events.
 	for n , event in ipairs(self.events) do
@@ -138,9 +148,10 @@ function CEMainMenu:CreateToolWindow(windowName)
 	self.toolWindow = Window.Create(
 		"GWEN/FrameWindow" ,
 		-- "ToolWindow-"..windowName ,
-		"ToolWindow" ,
+		"ToolWindow"..PhilpaxSucks ,
 		RootWindow
 	)
+	PhilpaxSucks = PhilpaxSucks + 1
 	self.toolWindow:SetText(windowName)
 	-- Move the window off screen (position is spammed during Render.). Otherwise, it flashes in the
 	-- wrong position for a frame and it would be annoying to set the actual position here.
@@ -193,7 +204,8 @@ CEMainMenu["Checkpoint"] = function(self)
 	self:DestroyToolWindow()
 	self:CreateToolWindow("Checkpoint Spawner")
 	
-	local button = Window.Create("GWEN/Button" , "TestButton" , self.toolWindow)
+	local button = Window.Create("GWEN/Button" , "TestButton"..PhilpaxSucks , self.toolWindow)
+	PhilpaxSucks = PhilpaxSucks + 1
 	button:SetText("tets")
 	button:SetPositionRel(Vector2(0 , self.currentY))
 	button:SetSizeRel(Vector2(0.5 , 0.1))
@@ -208,7 +220,8 @@ CEMainMenu["Vehicle spawn"] = function(self)
 	self:DestroyToolWindow()
 	self:CreateToolWindow("Vehicle Spawner")
 	
-	local button = Window.Create("GWEN/Button" , "TestButton" , self.toolWindow)
+	local button = Window.Create("GWEN/Button" , "TestButton"..PhilpaxSucks , self.toolWindow)
+	PhilpaxSucks = PhilpaxSucks + 1
 	button:SetText("spawn dat vehicle namsayin")
 	button:SetPositionRel(Vector2(0 , self.currentY))
 	button:SetSizeRel(Vector2(0.5 , 0.1))
