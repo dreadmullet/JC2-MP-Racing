@@ -142,10 +142,13 @@ function CEMainMenu:CreateToolWindow(windowName)
 		RootWindow
 	)
 	self.toolWindow:SetText(windowName)
-	-- (Position is spammed during Render.)
+	-- Move the window off screen (position is spammed during Render.). Otherwise, it flashes in the
+	-- wrong position for a frame and it would be annoying to set the actual position here.
+	self.toolWindow:SetPositionAbs(Vector2(-5000 , 0))
 	self.toolWindow:SetSizeRel(Vector2(0.2 , 0.25))
 	self.toolWindow:SetCloseButtonEnabled(false)
 	self.toolWindow:SetRollupEnabled(false)
+	self.toolWindow:SetDragMovingEnabled(false)
 	
 end
 
@@ -235,11 +238,16 @@ function CEMainMenu:KeyDown(args)
 		not self.isActive
 	then
 		self.isActive = true
+		-- Disable tool and change alpha of tool window back to normal.
 		if self.courseEditor.currentTool then
 			self.courseEditor.currentTool.isEnabled = false
+			self.toolWindow:SetAlpha(1)
 		end
+		-- Enable cursor.
 		MouseCursor:SetVisible(true)
+		-- Move cursor to window position (very buggy at the moment).
 		MouseCursor:SetPosition(self:GetWindowPositionAbs())
+		-- Change text color of main menu title.
 		self.window:SetText(Color(180 , 255 , 170 , 255):ToCEGUIString().."Course Editor")
 	end
 	
@@ -249,10 +257,14 @@ function CEMainMenu:KeyUp(args)
 	
 	if args.key == VirtualKey.Apostrophe or args.key == string.byte('Q') then
 		self.isActive = false
+		-- Reenable tool and reduce alpha of tool window.
 		if self.courseEditor.currentTool then
 			self.courseEditor.currentTool.isEnabled = true
+			self.toolWindow:SetAlpha(0)
 		end
+		-- Disable cursor.
 		MouseCursor:SetVisible(false)
+		-- Change text color of main menu title back to normal.
 		self.window:SetText(Color(224 , 224 , 224 , 255):ToCEGUIString().."Course Editor")
 	end
 	
