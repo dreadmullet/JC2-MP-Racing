@@ -34,9 +34,11 @@ function RaceManager:__init()
 	
 end
 
-function RaceManager:CreateRace(name , isPublic)
+function RaceManager:CreateRace(name , isPublic , course , players)
 	
 	isPublic = isPublic or false
+	players = players or {}
+	course = course or self.courseManagerAll:LoadCourseRandom()
 	
 	-- Make sure race with this name doesn't already exist.
 	for index , race in ipairs(self.races) do
@@ -44,8 +46,6 @@ function RaceManager:CreateRace(name , isPublic)
 			return
 		end
 	end
-	
-	local course = self.courseManagerAll:LoadCourseRandom()
 	
 	local race = Race(name , self , self:GetUnusedWorldId() , course)
 	race.isPublic = isPublic
@@ -56,8 +56,15 @@ function RaceManager:CreateRace(name , isPublic)
 	
 	race:SetState("StateAddPlayers")
 	
+	-- Add players.
+	for index , player in ipairs(players) do
+		race:JoinPlayer(player)
+	end
+	
 	if isPublic then
 		self.numPublicRacesRan = self.numPublicRacesRan + 1
+	else
+		race:SetState("StateStartingGrid")
 	end
 	
 	return race

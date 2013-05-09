@@ -39,6 +39,7 @@ function CEMainMenu:__init(courseEditor)
 	self:AddButton("Course settings")
 	
 	self:AddSection("Editor")
+	self:AddButton("Test drive")
 	self:AddButton("Editor settings")
 	self:AddButton("Save course")
 	self:AddButton("Load course")
@@ -225,6 +226,12 @@ CEMainMenu["Vehicle spawn"] = function(self)
 	button:SetText("spawn dat vehicle namsayin")
 	button:SetPositionRel(Vector2(0 , self.currentY))
 	button:SetSizeRel(Vector2(0.5 , 0.1))
+	
+end
+
+CEMainMenu["Test drive"] = function(self)
+	
+	Network:Send("CETestDrive")
 	
 end
 

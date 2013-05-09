@@ -15,6 +15,7 @@ function Course:__init()
 	self.numLaps = -1
 	self.timeLimitSeconds = -1
 	
+	-- Checkpoints add themselves to this.
 	self.checkpointMap = {}
 	-- Array of CourseSpawns. Determines max player count.
 	self.spawns = {}

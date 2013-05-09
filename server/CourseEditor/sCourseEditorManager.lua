@@ -1,5 +1,7 @@
 
-function CourseEditorManager:__init()
+function CourseEditorManager:__init(raceManager)
+	
+	self.raceManager = raceManager -- Because why not.
 	
 	-- Key: name
 	-- Value: CourseEditor
@@ -27,7 +29,7 @@ function CourseEditorManager:CreateCourseEditor(name)
 		return
 	end
 	
-	local editor = CourseEditor(name)
+	local editor = CourseEditor(self , name)
 	self.courseEditors[name] = editor
 	
 	return editor

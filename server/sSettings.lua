@@ -1,9 +1,9 @@
 
 debug = {}
 -- Helps with testing starting grids.
-debug.alwaysMaxPlayers = true
-debug.dontRemoveIfOutOfVehicle = true
-debug.quickRaceStart = true
+-- debug.alwaysMaxPlayers = true
+-- debug.dontRemoveIfOutOfVehicle = true
+-- debug.quickRaceStart = true
 
 settings = {}
 

@@ -16,10 +16,13 @@ CourseEditor.courseEditors = {}
 CourseEditor.worldCounter = settingsCE.baseWorldId
 
 
-function CourseEditor:__init(name)
+function CourseEditor:__init(courseManager , name)
 	
-	print("CourseEditor created: "..name)
+	if settings.debugLevel >= 1 then
+		print("CourseEditor created: "..name)
+	end
 	
+	self.courseManager = courseManager
 	self.name = name
 	
 	self.worldId = CourseEditor.worldCounter
@@ -35,7 +38,7 @@ function CourseEditor:__init(name)
 	self.commands = {}
 	self:DefineCommands()
 	
-	self.course = Course()
+	self.course = self:CreateDefaultCourse()
 	self.idCounter = 1
 	
 	self.numTicks = 0
@@ -240,6 +243,19 @@ function CourseEditor:Destroy()
 	
 end
 
+function CourseEditor:CreateDefaultCourse()
+	
+	local course = Course()
+	
+	-- Temporary just to get it working.
+	course.type = "Circuit"
+	course.numLaps = 3
+	course.timeLimitSeconds = 600
+	
+	return course
+	
+end
+
 --
 -- Editing functions
 --
@@ -297,7 +313,7 @@ end
 
 function CourseEditor:AddSpawn(position , angle , modelIds)
 	
-	local spawn = CourseSpawn()
+	local spawn = CourseSpawn(self.course)
 	spawn.position = position
 	spawn.angle = angle
 	spawn.modelIds = modelIds
@@ -332,6 +348,30 @@ function CourseEditor:RemoveSpawn(position)
 		-- Also remove from clients' course.
 		self:NetworkSend("CERemoveSpawn" , spawnClosest.courseEditorId)
 	end
+	
+end
+
+-- Removes everyone from the editor and starts a race using them as racers.
+function CourseEditor:TestDrive()
+	
+	local players = {}
+	
+	self:IteratePlayers(
+		function(player)
+			
+			table.insert(players , player)
+			
+			self:RemovePlayer(player , "Starting test race.")
+			
+		end
+	)
+	
+	self.courseManager.raceManager:CreateRace(
+		"Test Drive - "..self.name ,
+		false ,
+		self.course ,
+		players
+	)
 	
 end
 

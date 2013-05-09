@@ -12,6 +12,9 @@ function CourseEditor:SubscribeNetworkEvents()
 	NetworkSub("RemoveCP")
 	NetworkSub("AddSpawn")
 	NetworkSub("RemoveSpawn")
+	
+	NetworkSub("TestDrive")
+	
 	NetworkSub("Exit")
 	
 end
@@ -85,6 +88,18 @@ function CourseEditor:NetworkRemoveSpawn(position , player)
 	end
 	
 	self:RemoveSpawn(position)
+	
+end
+
+function CourseEditor:NetworkTestDrive(nilArgs , player)
+	
+	local playerInfo = self.players[player:GetId()]
+	-- Make sure this player is ours.
+	if playerInfo == nil then
+		return false
+	end
+	
+	self:TestDrive()
 	
 end
 
