@@ -100,7 +100,7 @@ function CourseEditor:AddPlayer(player)
 	-- Make the client instantiate a CourseEditor on their side.
 	Network:Send(player , "CreateCourseEditor")
 	-- Give the player our course.
-	Network:Send(player , "ReplaceCourse" , self.course:Marshal())
+	Network:Send(player , "CEReplaceCourse" , self.course:Marshal())
 	
 end
 
