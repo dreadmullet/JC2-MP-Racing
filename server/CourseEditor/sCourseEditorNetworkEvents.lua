@@ -28,7 +28,7 @@ function CourseEditor:GetCanPlayerDoActions(player)
 	-- Prevents spawning spam.
 	local timer = playerInfo.timer
 	if timer then
-		if timer:GetSeconds() < CourseEditor.settings.actionRateSeconds then
+		if timer:GetSeconds() < settingsCE.actionRateSeconds then
 			-- Timer still active, abort.
 			return false
 		else

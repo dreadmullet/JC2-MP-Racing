@@ -22,7 +22,15 @@ function RaceManager:__init()
 		self:CreateRacePublic()
 	end
 	
-	Events:Subscribe("PlayerChat" , self , self.PlayerChat)
+	self.events = {}
+	local EventSub = function(name)
+		table.insert(
+			self.events ,
+			Events:Subscribe(name , self , self[name])
+		)
+	end
+	EventSub("PlayerChat")
+	EventSub("ModuleUnload")
 	
 end
 
@@ -142,56 +150,6 @@ function RaceManager:GenerateName()
 	
 end
 
---
--- Events
---
-
-function RaceManager:PlayerChat(args)
-	
-	-- Split the message up into words (by spaces).
-	local words = {}
-	for word in string.gmatch(args.text , "[^%s]+") do
-		table.insert(words , word)
-	end
-	
-	if words[1] == settings.command then
-		if words[2] == nil then
-			-- Join a public race.
-			if self.currentPublicRace:HasPlayer(args.player) then
-				self.currentPublicRace:RemovePlayer(
-					args.player ,
-					"You have been removed from the race."
-				)
-			else
-				if self:HasPlayer(args.player) then
-					self:RemovePlayer(args.player)
-				else
-					self.currentPublicRace:JoinPlayer(args.player)
-				end
-			end
-		elseif self:GetIsAdmin(args.player) then
-			if words[2] == "create" and words[3] then
-				self:CreateRace(words[3])
-			elseif words[2] == "set" then
-				self:AdminChangeSetting(args.player , words[3] , words[4])
-			elseif words[2] == "get" then
-				self:AdminPrintSetting(args.player , words[3])
-			end
-		end
-	elseif
-		settings.courseEditorEnabled and
-		(
-			words[1] == CourseEditor.settings.commandName or
-			words[1] == CourseEditor.settings.commandNameShort
-		)
-	then
-		if args.player:GetWorldId() == -1 then
-			courseEditor = CourseEditor(args.player)
-		end
-	end
-	
-end
-
 function RaceManager:AdminChangeSetting(player , settingName , value)
 	
 	-- Argument checking.
@@ -231,5 +189,54 @@ function RaceManager:AdminPrintSetting(player , settingName)
 	end
 	
 	self:MessagePlayer(player , "settings."..settingName.." is "..tostring(settings[settingName]))
+	
+end
+
+--
+-- Events
+--
+
+function RaceManager:PlayerChat(args)
+	
+	-- Split the message up into words (by spaces).
+	local words = {}
+	for word in string.gmatch(args.text , "[^%s]+") do
+		table.insert(words , word)
+	end
+	
+	if words[1] == settings.command then
+		if words[2] == nil then
+			-- Join a public race.
+			if self.currentPublicRace:HasPlayer(args.player) then
+				self.currentPublicRace:RemovePlayer(
+					args.player ,
+					"You have been removed from the race."
+				)
+			else
+				if self:HasPlayer(args.player) then
+					self:RemovePlayer(args.player)
+				else
+					self.currentPublicRace:JoinPlayer(args.player)
+				end
+			end
+		elseif self:GetIsAdmin(args.player) then
+			if words[2] == "create" and words[3] then
+				self:CreateRace(words[3])
+			elseif words[2] == "set" then
+				self:AdminChangeSetting(args.player , words[3] , words[4])
+			elseif words[2] == "get" then
+				self:AdminPrintSetting(args.player , words[3])
+			end
+		end
+	end
+	
+end
+
+function RaceManager:ModuleUnload()
+	
+	-- Unsubscribe from all events.
+	for n , event in ipairs(self.events) do
+		Events:Unsubscribe(event)
+	end
 	
 end

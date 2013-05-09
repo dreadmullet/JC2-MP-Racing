@@ -1,8 +1,8 @@
 
 -- key: Nice-looking name.
 -- value: Class name that will be instantiated.
-CourseEditor.globals.tools = {}
-local T = CourseEditor.globals.tools
+CourseEditor.tools = {}
+local T = CourseEditor.tools
 T["None"] = "None"
 T["Object Spawner"] = "BaseSpawner"
 T["Checkpoint Spawner"] = "CheckpointSpawner"
@@ -10,7 +10,7 @@ T["Vehicle Spawner"] = "VehicleSpawner"
 
 function Tool:__init()
 	
-	if CourseEditor.settings.debugLevel >= 2 then
+	if settingsCE.debugLevel >= 2 then
 		print("Tool:__init")
 	end
 	
@@ -32,7 +32,7 @@ end
 
 function Tool:Destroy()
 	
-	if CourseEditor.settings.debugLevel >= 2 then
+	if settingsCE.debugLevel >= 2 then
 		print("Tool:Destroy")
 	end
 	

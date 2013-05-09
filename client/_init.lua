@@ -6,6 +6,8 @@ class("Course")
 class("CourseCheckpoint")
 class("CourseSpawn")
 
+class("CourseEditor")
+
 class("Tool")
 class("None")(Tool)
 class("BaseSpawner")(Tool)

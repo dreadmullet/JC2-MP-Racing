@@ -1,39 +1,36 @@
+----------------------------------------------------------------------------------------------------
+-- Represents a single editor instance, which contains a course and players (usually one).
+----------------------------------------------------------------------------------------------------
 
-CourseEditor.settings.debugLevel = 1
-CourseEditor.settings.baseWorldId = 200
-CourseEditor.settings.characterModelId = 89
-CourseEditor.settings.actionRateSeconds = 0.5 -- Prevents players from spamming checkpoints etc.
--- More settings are defined in shared/sharedCourseEditor.lua.
+settingsCE.baseWorldId = 200
+settingsCE.characterModelId = 89
+-- Prevents players from spamming checkpoints etc. More settings are defined in 
+-- shared/sharedCourseEditor.lua.
+settingsCE.actionRateSeconds = 0.5
 
--- Global variables.
-CourseEditor.globals = {}
-local G = CourseEditor.globals
 -- key: World id
 -- value: Instance of CourseEditor
-G.courseEditors = {}
+CourseEditor.courseEditors = {}
 -- Course editor instances have their stuff going on in their own world, and it is assigned to this
 -- world id on creation, and the counter is incremented.
-G.worldCounter = CourseEditor.settings.baseWorldId
+CourseEditor.worldCounter = settingsCE.baseWorldId
 
 
-local debugLevel = CourseEditor.settings.debugLevel
-
-
-
-function CourseEditor:__init(player)
+function CourseEditor:__init(name)
 	
-	self.worldId = self.globals.worldCounter
-	self.globals.worldCounter = self.globals.worldCounter + 1
+	print("CourseEditor created: "..name)
+	
+	self.name = name
+	
+	self.worldId = CourseEditor.worldCounter
+	CourseEditor.worldCounter = CourseEditor.worldCounter + 1
 	
 	-- Add ourselves to table containing all other CourseEditors
-	CourseEditor.globals.courseEditors[self.worldId] = self
+	CourseEditor.courseEditors[self.worldId] = self
 	
 	-- Key: Player id
 	-- Value: Player info table
 	self.players = {}
-	-- Table containing all event subscriptions, to easily remove them all later.
-	self.events = {}
-	self.networkEvents = {}
 	-- Commands table, defined in sCourseEditorCommands.lua.
 	self.commands = {}
 	self:DefineCommands()
@@ -43,45 +40,30 @@ function CourseEditor:__init(player)
 	
 	self.numTicks = 0
 	-- Controls how often some functions in Update are ran.
-	self.auxUpdateTick = self.worldId - CourseEditor.settings.baseWorldId
+	self.auxUpdateTick = self.worldId - settingsCE.baseWorldId
 	
-	self:AddPlayer(player)
-	
-	local EventSub = function(name , funcName)
-		Events:Subscribe(name , self , self[funcName])
+	self.events = {}
+	local EventSub = function(name)
+		table.insert(
+			self.events ,
+			Events:Subscribe(name , self , self[name])
+		)
 	end
-	EventSub("PostServerTick" , "Update")
-	EventSub("PlayerQuit" , "PlayerQuit")
-	EventSub("PlayerChat" , "PlayerChat")
-	EventSub("ModuleUnload" , "Destroy")
+	EventSub("PostServerTick")
+	EventSub("PlayerQuit")
+	EventSub("PlayerChat")
+	EventSub("ModuleUnload")
 	
+	self.networkEvents = {}
 	self:SubscribeNetworkEvents()
 	
 	self:CleanWorld()
 	
-	-- If debug, add this editor to the global debug editor variable.
-	if debugLevel >= 1 then
-		editor = self
-	end
-	
 end
 
-function CourseEditor:Destroy()
+function CourseEditor:HasPlayer(player)
 	
-	-- Remove all players.
-	self:IteratePlayers(
-		function(player)
-			self:RemovePlayer(player , "Destroying editor.")
-		end
-	)
-	
-	-- Unsubscribe from all events.
-	for n , event in ipairs(self.events) do
-		Events:Unsubscribe(event)
-	end
-	for n , networkEvent in ipairs(self.networkEvents) do
-		Network:Unsubscribe(networkEvent)
-	end
+	return self.players[player:GetId()] ~= nil
 	
 end
 
@@ -89,6 +71,11 @@ function CourseEditor:AddPlayer(player)
 	
 	-- Make sure this player is in the default world.
 	if player:GetWorldId() ~= -1 then
+		return
+	end
+	
+	-- Make sure this player is not in our editor already.
+	if self.players[player:GetId()] then
 		return
 	end
 	
@@ -106,7 +93,7 @@ function CourseEditor:AddPlayer(player)
 	player:SetWorldId(self.worldId)
 	
 	-- Set their model.
-	player:SetModelId(CourseEditor.settings.characterModelId)
+	player:SetModelId(settingsCE.characterModelId)
 	
 	self:MessageEditor(player:GetName().." has joined the course editor.")
 	
@@ -117,6 +104,7 @@ function CourseEditor:AddPlayer(player)
 	
 end
 
+-- Returns true if player was removed.
 function CourseEditor:RemovePlayer(player , reason)
 	
 	reason = reason or "No reason."
@@ -125,7 +113,7 @@ function CourseEditor:RemovePlayer(player , reason)
 	
 	-- Make sure this player exists.
 	if playerInfo == nil then
-		return
+		return false
 	end
 	
 	-- Reset their position.
@@ -151,6 +139,8 @@ function CourseEditor:RemovePlayer(player , reason)
 	-- Make the client destroy their CourseEditor.
 	Network:Send(player , "CEDestroyCourseEditor")
 	
+	return true
+	
 end
 
 -- Checks to see if player left our world for some reason.
@@ -171,7 +161,7 @@ end
 
 function CourseEditor:MessagePlayer(player , message)
 	
-	player:SendChatMessage("[Course Editor] "..message , CourseEditor.settings.chatColorPlayer)
+	player:SendChatMessage("[Course Editor] "..message , settingsCE.chatColorPlayer)
 	
 end
 
@@ -179,7 +169,7 @@ function CourseEditor:MessageEditor(message)
 	
 	self:IteratePlayers(
 		function(player)
-			player:SendChatMessage("[Course Editor] "..message , CourseEditor.settings.chatColorEditor)
+			player:SendChatMessage("[Course Editor] "..message , settingsCE.chatColorEditor)
 		end
 	)
 	
@@ -228,6 +218,31 @@ function CourseEditor:NetworkSend(name , args)
 	)
 	
 end
+
+function CourseEditor:Destroy()
+	
+	print("Destroying course editor: "..self.name)
+	
+	-- Remove all players.
+	self:IteratePlayers(
+		function(player)
+			self:RemovePlayer(player , "Destroying editor.")
+		end
+	)
+	
+	-- Unsubscribe from all events.
+	for n , event in ipairs(self.events) do
+		Events:Unsubscribe(event)
+	end
+	for n , networkEvent in ipairs(self.networkEvents) do
+		Network:Unsubscribe(networkEvent)
+	end
+	
+end
+
+--
+-- Editing functions
+--
 
 function CourseEditor:AddCP(position)
 	
@@ -324,9 +339,9 @@ end
 -- Events
 ----------------------------------------------------------------------------------------------------
 
-function CourseEditor:Update()
+function CourseEditor:PostServerTick()
 	
-	if self.numTicks % (#CourseEditor.globals.courseEditors + 5) == self.auxUpdateTick then
+	if self.numTicks % (#CourseEditor.courseEditors + 5) == self.auxUpdateTick then
 		self:CheckPlayerWorlds()
 	end
 	
@@ -341,21 +356,12 @@ function CourseEditor:PlayerChat(args)
 		return true
 	end
 	
-	-- If /ce is entered, make the player leave.
-	if
-		args.text == CourseEditor.settings.commandName or
-		args.text == CourseEditor.settings.commandNameShort
-	then
-		self:RemovePlayer(args.player , "Left.")
-		return false
-	end
-	
 	-- Course editor commands.
 	local player = args.player
 	local msg = args.text
 	
 	-- We only want /ce commands.
-	if msg:sub(1 , 4) ~= CourseEditor.settings.commandNameShort.." " then
+	if msg:sub(1 , 4) ~= settingsCE.commandNameShort.." " then
 		return true
 	end
 	
@@ -394,5 +400,11 @@ function CourseEditor:PlayerQuit(args)
 	if self:HasPlayer(args.player) then
 		self:RemovePlayer(args.player , "Disconnected.")
 	end
+	
+end
+
+function CourseEditor:ModuleUnload()
+	
+	self:Destroy()
 	
 end

@@ -24,7 +24,7 @@ function CourseEditor:DefineCommands()
 		-- end
 		
 		-- if toolName then
-			-- self:SetTool(CourseEditor.globals.tools[toolName])
+			-- self:SetTool(CourseEditor.tools[toolName])
 		-- end
 		
 	-- end

@@ -8,7 +8,7 @@ function CourseEditor:DefineCommands()
 		self:MessagePlayer(args.player , "World: "..self.worldId)
 		self:MessagePlayer(
 			args.player ,
-			"Number of editors open: "..table.count(CourseEditor.globals.courseEditors)
+			"Number of editors open: "..table.count(CourseEditor.courseEditors)
 		)
 		
 	end

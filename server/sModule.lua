@@ -6,6 +6,7 @@ Events:Subscribe(
 	"ModuleLoad" ,
 	function()
 		raceManager = RaceManager()
+		courseEditorManager = CourseEditorManager()
 	end
 )
 

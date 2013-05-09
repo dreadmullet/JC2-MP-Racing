@@ -11,7 +11,7 @@ function CEMainMenu:__init(courseEditor)
 	self.isActive = false
 	
 	self.window = Window.Create("GWEN/FrameWindow" , "MainMenu" , RootWindow)
-	self.window:SetText(Color(224 , 224 , 224 , 255):ToCEGUIString().."Course Editor")
+	self.window:SetText(Color(240 , 240 , 240 , 255):ToCEGUIString().."Course Editor")
 	self.window:SetSizeRel(CEMainMenu.size)
 	self.window:SetPositionRel(Vector2(0.01 , 0.25))
 	self.window:SetCloseButtonEnabled(false)
@@ -265,7 +265,7 @@ function CEMainMenu:KeyUp(args)
 		-- Disable cursor.
 		MouseCursor:SetVisible(false)
 		-- Change text color of main menu title back to normal.
-		self.window:SetText(Color(224 , 224 , 224 , 255):ToCEGUIString().."Course Editor")
+		self.window:SetText(Color(240 , 240 , 240 , 255):ToCEGUIString().."Course Editor")
 	end
 	
 end

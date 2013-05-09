@@ -1,8 +1,7 @@
-class("CourseEditor")
 
-CourseEditor.settings = {}
+settingsCE = {}
 
-CourseEditor.settings.commandName = "/courseeditor"
-CourseEditor.settings.commandNameShort = "/ce"
-CourseEditor.settings.chatColorEditor = Color(250 , 157 , 133 , 255)
-CourseEditor.settings.chatColorPlayer = Color(255 , 102 , 63 , 255)
+settingsCE.commandName = "/courseeditor"
+settingsCE.commandNameShort = "/ce"
+settingsCE.chatColorEditor = Color(250 , 157 , 133 , 255)
+settingsCE.chatColorPlayer = Color(255 , 102 , 63 , 255)

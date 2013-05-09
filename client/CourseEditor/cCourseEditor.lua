@@ -1,9 +1,7 @@
 
-CourseEditor.settings.debugLevel = 2
+settingsCE.debugLevel = 2
 
-CourseEditor.globals = {}
-
-local debugLevel = CourseEditor.settings.debugLevel
+local debugLevel = settingsCE.debugLevel
 
 function CourseEditor:__init()
 	
@@ -11,7 +9,7 @@ function CourseEditor:__init()
 		print("CourseEditor:__init")
 	end
 	
-	CourseEditor.globals.instance = self
+	CourseEditor.instance = self
 	
 	-- Commands table, defined in cCourseEditorCommands.lua.
 	self.commands = {}
@@ -57,7 +55,7 @@ function CourseEditor:Destroy()
 		print("CourseEditor:Destroy()")
 	end
 	
-	CourseEditor.globals.instance = nil
+	CourseEditor.instance = nil
 	
 	self:SetTool("None")
 	
@@ -106,7 +104,7 @@ function CourseEditor:LocalPlayerChat(args)
 	local msg = args.text
 	
 	-- We only want /ce commands.
-	if msg:sub(1 , 4) ~= CourseEditor.settings.commandNameShort.." " then
+	if msg:sub(1 , 4) ~= settingsCE.commandNameShort.." " then
 		return true
 	end
 	
