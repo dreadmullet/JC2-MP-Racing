@@ -95,3 +95,20 @@ function CourseCheckpoint:Marshal()
 	return info
 	
 end
+
+function CourseCheckpoint:MarshalJSON()
+	local checkpoint = {}
+
+	checkpoint.position = {}
+
+	checkpoint.position.x = self.position.x
+	checkpoint.position.y = self.position.y
+	checkpoint.position.z = self.position.z
+	checkpoint.radius = self.radius
+	checkpoint.type = self.type
+	checkpoint.validVehicles = self.validVehicles
+	checkpoint.useIcon = self.useIcon
+	checkpoint.action = self.action
+
+	return checkpoint
+end

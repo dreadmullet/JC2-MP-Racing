@@ -106,6 +106,127 @@ function Course:Marshal()
 	
 end
 
+function Course:Save(filename)
+	course = self
+
+	local ctable = {}
+
+	ctable.name = course.name
+	ctable.type = course.type
+	ctable.weatherSeverity = course.weatherSeverity
+	ctable.authors = course.authors
+	ctable.numLaps = course.numLaps
+	ctable.timeLimitSeconds = course.timeLimitSeconds
+	ctable.checkpointMap = course.checkpointMap
+	ctable.prizeMoney = course.prizeMoney
+
+	ctable.checkpoints = {}
+
+	for index, checkpoint in ipairs(course.checkpoints) do
+		table.insert(ctable.checkpoints , checkpoint:MarshalJSON())
+	end
+
+	ctable.spawns = {}
+
+	for index, spawn in ipairs(course.spawns) do
+		table.insert(ctable.spawns , spawn:MarshalJSON())
+	end
+
+	local json = require "json"
+
+	local file = io.open("json/"..filename..".json", "w")
+
+	file:write(json.encode(ctable))
+
+	file:close()
+end
+
+function Course.Load(name)
+
+	if settings.debugLevel >= 2 then
+		print("Loading course file: "..name)
+	end
+	
+	local path = settings.coursesPath..name..".course"
+
+	--
+	-- Make sure file exists.
+	--
+	if path == nil then
+		print()
+		print("*ERROR*")
+		print("Course path is nil!")
+		print()
+		return nil
+	end
+
+	local file = io.open(path , "r")
+
+	if not file then
+		print()
+		print("*ERROR*")
+		print(file)
+		print()
+		return nil
+	end
+
+	local string = ""
+
+	for line in file:lines() do 
+    	string = string..line
+ 	end
+
+ 	local json = require 'json'
+
+ 	local ctable = json.decode(string)
+ 	local course = Course()
+
+	course.name = ctable.name
+	course.type = ctable.type
+	course.weatherSeverity = ctable.weatherSeverity
+	course.authors = ctable.authors
+	course.numLaps = ctable.numLaps
+	course.timeLimitSeconds = ctable.timeLimitSeconds
+	course.checkpointMap = ctable.checkpointMap
+	course.prizeMoney = ctable.prizeMoney
+
+	course.checkpoints = {}
+
+	for index, checkpoint in ipairs(ctable.checkpoints) do
+		local cp = CourseCheckpoint(course)
+		table.insert(course.checkpoints , cp)
+
+		cp.index = #course.checkpoints
+
+		cp.position = Vector(
+			checkpoint.position.x, checkpoint.position.y, 
+			checkpoint.position.z
+		)
+
+		cp.validVehicles = checkpoint.validVehicles
+	end
+
+	course.spawns = {}
+
+	for index, spawn in ipairs(ctable.spawns) do
+		local sp = CourseSpawn(course)
+
+		sp.position = 
+			Vector(spawn.position.x, spawn.position.y, spawn.position.z)
+
+		sp.angle = 
+			Angle(spawn.angle.x, spawn.angle.y, spawn.angle.z, spawn.angle.w)
+
+		sp.modelIds = spawn.modelIds
+		sp.templates = spawn.templates
+		sp.decals = spawn.decals
+
+		table.insert(course.spawns, sp)
+	end
+	
+	return course
+end
+
 function Course.CreateTestCourse()
 	
 	local course = Course()

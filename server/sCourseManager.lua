@@ -11,9 +11,9 @@ function CourseManager:__init(manifestPath)
 end
 
 function CourseManager:LoadCourseRandom()
-	
-	return CourseLoader.Load(table.randomvalue(self.courseNames))
-	
+
+	return Course.Load(table.randomvalue(self.courseNames))
+
 end
 
 function CourseManager:LoadManifest()
