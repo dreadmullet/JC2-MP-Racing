@@ -101,10 +101,10 @@ function CourseCheckpoint:Marshal()
 end
 
 function CourseCheckpoint:MarshalJSON()
+	
 	local checkpoint = {}
-
+	
 	checkpoint.position = {}
-
 	checkpoint.position.x = self.position.x
 	checkpoint.position.y = self.position.y
 	checkpoint.position.z = self.position.z
@@ -112,7 +112,8 @@ function CourseCheckpoint:MarshalJSON()
 	checkpoint.type = self.type
 	checkpoint.validVehicles = self.validVehicles
 	checkpoint.useIcon = self.useIcon
-	checkpoint.action = self.action
+	checkpoint.actions = self.actions
 
 	return checkpoint
+	
 end

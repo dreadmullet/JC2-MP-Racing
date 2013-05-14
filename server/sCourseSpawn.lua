@@ -72,15 +72,14 @@ function CourseSpawn:Marshal()
 end
 
 function CourseSpawn:MarshalJSON()
-
+	
 	local spawn = {}
-
+	
 	spawn.position = {}
-	spawn.angle = {}
-
 	spawn.position.x = self.position.x
 	spawn.position.y = self.position.y
 	spawn.position.z = self.position.z
+	spawn.angle = {}
 	spawn.angle.x = self.angle.x
 	spawn.angle.y = self.angle.y
 	spawn.angle.z = self.angle.z
@@ -88,6 +87,7 @@ function CourseSpawn:MarshalJSON()
 	spawn.modelIds = self.modelIds
 	spawn.templates = self.templates
 	spawn.decals = self.decals
-
+	
 	return spawn
+	
 end

@@ -319,3 +319,20 @@ M.CastFromString = function(string , type)
 	return nil
 	
 end
+
+-- name Awesome Course Name # What an awesome Course name!
+-- 				|
+-- 				v
+-- "name Awesome Course Name"
+M.TrimCommentsFromLine = function(line)
+
+	-- Holy balls, patterns are awesome.
+	line = string.gsub(line , "%s*#.*" , "")
+	
+	-- *nix compatability.
+	line = string.gsub(line, "\r", "")
+	line = string.gsub(line, "\n", "")
+	
+	return line
+
+end

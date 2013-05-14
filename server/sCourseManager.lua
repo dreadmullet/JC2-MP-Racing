@@ -46,7 +46,7 @@ function CourseManager:LoadManifest()
 	-- Loop through each line in the manifest.
 	for line in io.lines(path) do
 		-- Trim comments.
-		line = CourseLoader.TrimCommentsFromLine(line)
+		line = Utility.TrimCommentsFromLine(line)
 		-- Make sure this line has stuff in it.
 		if string.find(line , "%S") then
 			-- Add the entire line, sans comments, to self.courseNames
