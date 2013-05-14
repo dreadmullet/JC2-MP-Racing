@@ -12,8 +12,6 @@ function CourseCheckpoint:__init(course)
 	-- {} -- Allow all vehicles but not on-foot.
 	-- {0} = Only allow on-foot.
 	self.validVehicles = nil
-	-- When racer enters checkpoint, this function of ours is called. One argument: racer.
-	self.action = ""
 	
 	self.gizmoColor = Copy(CourseCheckpoint.color)
 	
@@ -52,7 +50,6 @@ function CourseCheckpoint.Demarshal(course , checkpointInfo)
 	checkpoint.position = checkpointInfo.position
 	checkpoint.radius = checkpointInfo.radius
 	checkpoint.validVehicles = checkpointInfo.validVehicles
-	checkpoint.action = checkpointInfo.action
 	
 	return checkpoint
 	

@@ -12,8 +12,9 @@ function CourseCheckpoint:__init(course)
 	self.validVehicles = nil
 	self.useIcon = false
 	self.checkpoint = nil
-	-- When racer enters checkpoint, this function of ours is called. One argument: racer.
-	self.action = ""
+	-- When racer enters checkpoint, these functions of ours are called. One argument: racer.
+	-- Array of function names.
+	self.actions = {[1] = "RepairCar"}
 	
 end
 
@@ -74,7 +75,12 @@ function CourseCheckpoint:Enter(racer)
 	
 	if self:GetIsValidVehicle(racer.player:GetVehicle()) then
 		if racer.targetCheckpoint == self.index then
+			-- Advance racer's checkpoint.
 			racer:AdvanceCheckpoint(self.index)
+			-- Call this checkpoint's actions.
+			for index , functionName in ipairs(self.actions) do
+				self[functionName](self , racer)
+			end
 		end
 	end
 	
@@ -90,7 +96,6 @@ function CourseCheckpoint:Marshal()
 	info.position = self.position
 	info.radius = self.radius
 	info.validVehicles = self.validVehicles
-	info.action = self.action
 	
 	return info
 	
