@@ -1,4 +1,3 @@
-
 function Course:__init()
 	
 	self.race = nil
@@ -7,14 +6,13 @@ function Course:__init()
 	self.type = "Invalid"
 	-- Array of CourseCheckpoints.
 	self.checkpoints = {}
-	-- map of CourseCheckpoints, useful for mapping PlayerEnterCheckpoint event to a CourseCheckpoint
-	-- Key = checkpointId
-	-- Value = CourseCheckpoint
 	self.weatherSeverity = 0.5
-	self.authors = {"dreadmullet"}
+	self.authors = {}
 	self.numLaps = -1
 	self.timeLimitSeconds = -1
-	
+	-- Map of CourseCheckpoints, useful for mapping PlayerEnterCheckpoint event to a CourseCheckpoint
+	-- Key = checkpointId
+	-- Value = CourseCheckpoint
 	-- Checkpoints add themselves to this.
 	self.checkpointMap = {}
 	-- Array of CourseSpawns. Determines max player count.

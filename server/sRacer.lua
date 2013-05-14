@@ -94,12 +94,6 @@ function Racer:AdvanceCheckpoint(index)
 	end
 	self.numCheckpointsHit = self.numCheckpointsHit + 1
 	
-	-- Repair vehicle.
-	local vehicle = self.player:GetVehicle()
-	if IsValid(vehicle) then
-		vehicle:SetHealth(vehicle:GetHealth() + settings.vehicleRepairAmount)
-	end
-	
 	-- If this is not set to a large value, it will contain the previous value, which is small.
 	self.targetCheckpointDistanceSqr[1] = 1000000000
 	
