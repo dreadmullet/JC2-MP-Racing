@@ -116,7 +116,6 @@ function Course:Save(filename)
 	ctable.authors = course.authors
 	ctable.numLaps = course.numLaps
 	ctable.timeLimitSeconds = course.timeLimitSeconds
-	ctable.checkpointMap = course.checkpointMap
 	ctable.prizeMoney = course.prizeMoney
 	
 	ctable.checkpoints = {}
@@ -187,7 +186,6 @@ function Course.Load(name)
 	course.authors = ctable.authors
 	course.numLaps = ctable.numLaps
 	course.timeLimitSeconds = ctable.timeLimitSeconds
-	course.checkpointMap = ctable.checkpointMap
 	course.prizeMoney = ctable.prizeMoney
 	
 	course.checkpoints = {}
