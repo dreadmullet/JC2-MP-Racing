@@ -197,7 +197,8 @@ function Course.Load(name)
 		cp.index = #course.checkpoints
 
 		cp.position = Vector(
-			checkpoint.position.x, checkpoint.position.y, 
+			checkpoint.position.x, 
+			checkpoint.position.y, 
 			checkpoint.position.z
 		)
 
@@ -210,16 +211,20 @@ function Course.Load(name)
 		local sp = CourseSpawn(course)
 
 		sp.position = 
-			Vector(spawn.position.x, spawn.position.y, spawn.position.z)
+			Vector(spawn.position.x , spawn.position.y , spawn.position.z)
 
-		sp.angle = 
-			Angle(spawn.angle.x, spawn.angle.y, spawn.angle.z, spawn.angle.w)
+		sp.angle = Angle(
+			spawn.angle.x, 
+			spawn.angle.y,
+			spawn.angle.z, 
+			spawn.angle.w
+		)
 
 		sp.modelIds = spawn.modelIds
 		sp.templates = spawn.templates
 		sp.decals = spawn.decals
 
-		table.insert(course.spawns, sp)
+		table.insert(course.spawns , sp)
 	end
 	
 	return course
