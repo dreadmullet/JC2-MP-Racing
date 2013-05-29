@@ -28,7 +28,7 @@ end
 
 function CheckpointSpawner:CreateWindowElements(toolWindow)
 	
-	local spacingY = settingsCE.gui.toolWindow.buttonHeight / 0.75
+	local spacingY = settingsCE.gui.toolWindow.elementHeight / 0.75
 	local currentY = 0
 	local leftX = 0
 	
@@ -38,7 +38,7 @@ function CheckpointSpawner:CreateWindowElements(toolWindow)
 	button:SetPositionRel(Vector2(leftX , currentY))
 	currentY = currentY + spacingY
 	button:SetSizeRel(
-		Vector2(settingsCE.gui.toolWindow.buttonWidth , settingsCE.gui.toolWindow.buttonHeight)
+		Vector2(settingsCE.gui.toolWindow.elementWidth , settingsCE.gui.toolWindow.elementHeight)
 	)
 	
 end

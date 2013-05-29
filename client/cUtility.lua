@@ -86,3 +86,9 @@ M.NumberToPlaceString = function(number)
 	
 end
 
+M.TemporaryRemoveWindow = function(window)
+	
+	window:SetText(Color(240 , 20 , 20 , 255):ToCEGUIString().."Borked")
+	window:SetPositionRel(Vector2(-4 , 0))
+	
+end

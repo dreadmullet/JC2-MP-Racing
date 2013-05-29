@@ -11,6 +11,8 @@ function CEMainMenu:__init(courseEditor)
 	
 	self.courseEditor = courseEditor
 	self.isActive = false
+	-- Tap/Hold.
+	self.activationMethod = "Tap"
 	
 	self.window = Window.Create("GWEN/FrameWindow" , "MainMenu"..PhilpaxSucks , RootWindow)
 	PhilpaxSucks = PhilpaxSucks + 1
@@ -26,7 +28,7 @@ function CEMainMenu:__init(courseEditor)
 	-- Used to align tool window with its respective button.
 	self.currentButtonName = nil
 	
-	self:AddMiscText("Hold q or ' to focus")
+	self:AddMiscText("Use q or ' to focus")
 	
 	self:AddSection("Spawning")
 	self:AddButton("Checkpoint")
@@ -132,8 +134,7 @@ function CEMainMenu:Destroy()
 	-- self.window:Remove()
 	
 	-- Temporary window removal.
-	self.window:SetText(Color(240 , 20 , 20 , 255):ToCEGUIString().."Borked")
-	self.window:SetPositionRel(Vector2(-4 , 0))
+	Utility.TemporaryRemoveWindow(self.window)
 	MouseCursor:SetVisible(false)
 	self:DestroyToolWindow()
 	
@@ -167,7 +168,8 @@ end
 function CEMainMenu:DestroyToolWindow()
 	
 	if self.toolWindow then
-		self.toolWindow:Remove()
+		-- self.toolWindow:Remove()
+		Utility.TemporaryRemoveWindow(self.toolWindow)
 		self.toolWindow = nil
 	end
 	
@@ -179,7 +181,7 @@ end
 
 function CEMainMenu:ButtonPressed(buttonName)
 	
-	-- Make sure focus key is held down, because CEGUI sucks.
+	-- Make sure window is active, because CEGUI sucks.
 	if self.isActive == false then
 		return
 	end
@@ -208,7 +210,7 @@ CEMainMenu["Checkpoint"] = function(self)
 	self.courseEditor.currentTool.isEnabled = false
 	
 	self:DestroyToolWindow()
-	self:CreateToolWindow("Checkpoint Spawner")
+	self:CreateToolWindow("Checkpoint spawner")
 	
 	self.courseEditor.currentTool:CreateWindowElements(self.toolWindow)
 	
@@ -220,7 +222,20 @@ CEMainMenu["Vehicle spawn"] = function(self)
 	self.courseEditor.currentTool.isEnabled = false
 	
 	self:DestroyToolWindow()
-	self:CreateToolWindow("Vehicle Spawner")
+	self:CreateToolWindow("Vehicle spawner")
+	
+	self.courseEditor.currentTool:CreateWindowElements(self.toolWindow)
+	
+end
+
+CEMainMenu["Course settings"] = function(self)
+	
+	self.courseEditor:SetTool("CourseSettings")
+	self.courseEditor.currentTool.isEnabled = false
+	self.courseEditor.currentTool.course = self.courseEditor.course
+	
+	self:DestroyToolWindow()
+	self:CreateToolWindow("Course settings")
 	
 	self.courseEditor.currentTool:CreateWindowElements(self.toolWindow)
 	
@@ -250,40 +265,64 @@ end
 
 function CEMainMenu:KeyDown(args)
 	
-	if
-		(args.key == VirtualKey.Apostrophe or args.key == string.byte('Q')) and
-		not self.isActive
-	then
-		self.isActive = true
-		-- Disable tool and change alpha of tool window back to normal.
-		if self.courseEditor.currentTool then
-			self.courseEditor.currentTool.isEnabled = false
-			self.toolWindow:SetAlpha(1)
+	if self.activationMethod == "Tap" then
+		if (args.key == VirtualKey.Apostrophe or args.key == string.byte('Q')) then
+			if self.isActive then
+				self:SetInactive()
+			else
+				self:SetActive()
+			end
 		end
-		-- Enable cursor.
-		MouseCursor:SetVisible(true)
-		-- Move cursor to window position (very buggy at the moment).
-		MouseCursor:SetPosition(self:GetWindowPositionAbs())
-		-- Change text color of main menu title.
-		self.window:SetText(Color(180 , 255 , 170 , 255):ToCEGUIString().."Course Editor")
+	elseif self.activationMethod == "Hold" then
+		if
+			(args.key == VirtualKey.Apostrophe or args.key == string.byte('Q')) and
+			not self.isActive
+		then
+			self:SetActive()
+		end
 	end
 	
 end
 
 function CEMainMenu:KeyUp(args)
 	
-	if args.key == VirtualKey.Apostrophe or args.key == string.byte('Q') then
-		self.isActive = false
-		-- Reenable tool and reduce alpha of tool window.
-		if self.courseEditor.currentTool then
-			self.courseEditor.currentTool.isEnabled = true
-			self.toolWindow:SetAlpha(0)
+	if self.activationMethod == "Hold" then
+		if args.key == VirtualKey.Apostrophe or args.key == string.byte('Q') then
+			self:SetInactive()
 		end
-		-- Disable cursor.
-		MouseCursor:SetVisible(false)
-		-- Change text color of main menu title back to normal.
-		self.window:SetText(Color(240 , 240 , 240 , 255):ToCEGUIString().."Course Editor")
 	end
+	
+end
+
+function CEMainMenu:SetActive()
+	
+	self.isActive = true
+	-- Disable tool and change alpha of tool window back to normal.
+	if self.courseEditor.currentTool then
+		self.courseEditor.currentTool.isEnabled = false
+		self.toolWindow:SetAlpha(1)
+	end
+	-- Enable cursor.
+	MouseCursor:SetVisible(true)
+	-- Move cursor to window position (very buggy at the moment).
+	MouseCursor:SetPosition(self:GetWindowPositionAbs())
+	-- Change text color of main menu title.
+	self.window:SetText(Color(180 , 255 , 170 , 255):ToCEGUIString().."Course Editor")
+	
+end
+
+function CEMainMenu:SetInactive()
+	
+	self.isActive = false
+	-- Reenable tool and reduce alpha of tool window.
+	if self.courseEditor.currentTool then
+		self.courseEditor.currentTool.isEnabled = true
+		self.toolWindow:SetAlpha(0)
+	end
+	-- Disable cursor.
+	MouseCursor:SetVisible(false)
+	-- Change text color of main menu title back to normal.
+	self.window:SetText(Color(240 , 240 , 240 , 255):ToCEGUIString().."Course Editor")
 	
 end
 
