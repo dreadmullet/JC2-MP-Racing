@@ -179,6 +179,11 @@ end
 
 function CEMainMenu:ButtonPressed(buttonName)
 	
+	-- Make sure focus key is held down, because CEGUI sucks.
+	if self.isActive == false then
+		return
+	end
+	
 	-- Second click, remove window and reset tool.
 	if self.toolWindow and self.currentButtonName == buttonName then
 		self:DestroyToolWindow()
