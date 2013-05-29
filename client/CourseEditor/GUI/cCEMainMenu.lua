@@ -205,11 +205,7 @@ CEMainMenu["Checkpoint"] = function(self)
 	self:DestroyToolWindow()
 	self:CreateToolWindow("Checkpoint Spawner")
 	
-	local button = Window.Create("GWEN/Button" , "TestButton"..PhilpaxSucks , self.toolWindow)
-	PhilpaxSucks = PhilpaxSucks + 1
-	button:SetText("tets")
-	button:SetPositionRel(Vector2(0 , self.currentY))
-	button:SetSizeRel(Vector2(0.5 , 0.1))
+	self.courseEditor.currentTool:CreateWindowElements(self.toolWindow)
 	
 end
 
@@ -221,11 +217,7 @@ CEMainMenu["Vehicle spawn"] = function(self)
 	self:DestroyToolWindow()
 	self:CreateToolWindow("Vehicle Spawner")
 	
-	local button = Window.Create("GWEN/Button" , "TestButton"..PhilpaxSucks , self.toolWindow)
-	PhilpaxSucks = PhilpaxSucks + 1
-	button:SetText("spawn dat vehicle namsayin")
-	button:SetPositionRel(Vector2(0 , self.currentY))
-	button:SetSizeRel(Vector2(0.5 , 0.1))
+	self.courseEditor.currentTool:CreateWindowElements(self.toolWindow)
 	
 end
 

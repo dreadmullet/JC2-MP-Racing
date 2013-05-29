@@ -37,3 +37,20 @@ function VehicleSpawner:SecondaryReleased(state)
 	end
 	
 end
+
+function VehicleSpawner:CreateWindowElements(toolWindow)
+	
+	local spacingY = settingsCE.gui.toolWindow.buttonHeight / 0.75
+	local currentY = 0
+	local leftX = 0
+	
+	local button = Window.Create("GWEN/Button" , "TestButton"..PhilpaxSucks , toolWindow)
+	PhilpaxSucks = PhilpaxSucks + 1
+	button:SetText("spawn dat vehicle namsayin")
+	button:SetPositionRel(Vector2(leftX , currentY))
+	currentY = currentY + spacingY
+	button:SetSizeRel(
+		Vector2(settingsCE.gui.toolWindow.buttonWidth , settingsCE.gui.toolWindow.buttonHeight)
+	)
+	
+end
