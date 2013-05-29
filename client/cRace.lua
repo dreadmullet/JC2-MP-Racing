@@ -50,44 +50,30 @@ function Race:__init()
 	self.netSubs = {}
 	self.eventSubs = {}
 	
-	self.netSubs.setCourseInfo = Network:Subscribe("SetCourseInfo" , self , self.SetCourseInfo)
-	self.netSubs.setCheckpoints = Network:Subscribe("SetCheckpoints" , self , self.SetCheckpoints)
-	self.netSubs.setPlayerInfo = Network:Subscribe("SetPlayerInfo" , self , self.SetPlayerInfo)
-	self.netSubs.setTargetCheckpoint = Network:Subscribe(
-		"SetTargetCheckpoint" ,
-		self ,
-		self.SetTargetCheckpoint
-	)
-	self.netSubs.showLargeMessage = Network:Subscribe(
-		"ShowLargeMessage" ,
-		self ,
-		self.ShowLargeMessage
-	)
-	self.netSubs.setAssignedVehicleId = Network:Subscribe(
-		"SetAssignedVehicleId" ,
-		self ,
-		self.SetAssignedVehicleId
-	)
+	local NetSub = function(name)
+		self.netSubs[name] = Network:Subscribe(name , self , self[name])
+	end
 	
-	self.netSubs.startPreRace = Network:Subscribe("StartPreRace" , self , self.StartPreRace)
-	self.netSubs.startRace = Network:Subscribe("StartRace" , self , self.StartRace)
-	self.netSubs.finish = Network:Subscribe("Finish" , self , self.Finish)
-	self.netSubs.endRace = Network:Subscribe("EndRace" , self , self.EndRace)
+	NetSub("StartPreRace")
+	NetSub("StartRace")
+	NetSub("SetCourseInfo")
+	NetSub("SetCheckpoints")
+	NetSub("SetPlayerInfo")
+	NetSub("Finish")
+	NetSub("EndRace")
+	NetSub("SetTargetCheckpoint")
+	NetSub("SetAssignedVehicleId")
+	NetSub("ShowLargeMessage")
 	
-	self.eventSubs.handleInput = Events:Subscribe("LocalPlayerInput" , self , self.HandleInput)
-	self.eventSubs.debugUpdate = Events:Subscribe("Render" , self , self.DebugUpdate)
+	NetSub("DebugRacePosTracker")
+	NetSub("DebugCheckpointArrow")
 	
-	-- Debug.
-	self.netSubs.debugRacePositionTracker = Network:Subscribe(
-		"DebugRacePosTracker" ,
+	self.eventSubs.LocalPlayerInput = Events:Subscribe(
+		"LocalPlayerInput" ,
 		self ,
-		self.DebugRacePosTracker
+		self.LocalPlayerInput
 	)
-	self.netSubs.debugCheckpointArrow = Network:Subscribe(
-		"DebugCheckpointArrow" ,
-		self ,
-		self.DebugCheckpointArrow
-	)
+	self.eventSubs.DebugUpdate = Events:Subscribe("Render" , self , self.DebugUpdate)
 	
 	-- Disable nametags.
 	if settings.useNametags == false then
@@ -111,7 +97,7 @@ function Race:StartPreRace()
 		print("Race:StartPreRace")
 	end
 	
-	self.eventSubs.drawPreRaceGUI = Events:Subscribe("Render" , self , self.DrawPreRaceGUI)
+	self.eventSubs.DrawPreRaceGUI = Events:Subscribe("Render" , self , self.DrawPreRaceGUI)
 	
 end
 
@@ -126,8 +112,8 @@ function Race:StartRace()
 	
 	self.sendCheckpointTimer = Timer()
 	
-	Events:Unsubscribe(self.eventSubs.drawPreRaceGUI)
-	self.eventSubs.drawPreRaceGUI = nil
+	Events:Unsubscribe(self.eventSubs.DrawPreRaceGUI)
+	self.eventSubs.DrawPreRaceGUI = nil
 	
 	self.netSubs.setRacePositionInfo = Network:Subscribe(
 		"SetRacePosition" ,
@@ -140,8 +126,8 @@ function Race:StartRace()
 		self.UpdateRacePositions
 	)
 	
-	self.eventSubs.drawRaceGUI = Events:Subscribe("Render" , self , self.DrawRaceGUI)
-	self.eventSubs.sendCheckpointDistance = Events:Subscribe(
+	self.eventSubs.DrawRaceGUI = Events:Subscribe("Render" , self , self.DrawRaceGUI)
+	self.eventSubs.SendCheckpointDistance = Events:Subscribe(
 		"PostClientTick" ,
 		self ,
 		self.SendCheckpointDistance
@@ -200,12 +186,12 @@ function Race:Finish()
 		print("Race:Finish!")
 	end
 	
-	Events:Unsubscribe(self.eventSubs.drawRaceGUI)
-	self.eventSubs.drawRaceGUI = nil
-	Events:Unsubscribe(self.eventSubs.sendCheckpointDistance)
-	self.eventSubs.sendCheckpointDistance = nil
+	Events:Unsubscribe(self.eventSubs.DrawRaceGUI)
+	self.eventSubs.DrawRaceGUI = nil
+	Events:Unsubscribe(self.eventSubs.SendCheckpointDistance)
+	self.eventSubs.SendCheckpointDistance = nil
 	
-	self.eventSubs.drawPostRaceGUI = Events:Subscribe("Render" , self , self.DrawPostRaceGUI)
+	self.eventSubs.DrawPostRaceGUI = Events:Subscribe("Render" , self , self.DrawPostRaceGUI)
 	
 end
 
@@ -217,12 +203,12 @@ function Race:EndRace()
 		print("Race:EndRace!")
 	end
 	
-	for name , sub in pairs(self.netSubs) do
+	for key , sub in pairs(self.netSubs) do
 		Network:Unsubscribe(sub)
 	end
 	self.netSubs = nil
 	
-	for name , sub in pairs(self.eventSubs) do
+	for key , sub in pairs(self.eventSubs) do
 		Events:Unsubscribe(sub)
 	end
 	self.eventSubs = nil
@@ -253,6 +239,12 @@ function Race:SetTargetCheckpoint(checkpoint)
 	
 end
 
+function Race:SetAssignedVehicleId(id)
+	
+	self.assignedVehicleId = id
+	
+end
+
 -- Race position AND player count.
 function Race:SetRacePositionInfo(args)
 	
@@ -260,13 +252,6 @@ function Race:SetRacePositionInfo(args)
 	self.playerCount = args[2]
 	
 end
-
-function Race:SetAssignedVehicleId(id)
-	
-	self.assignedVehicleId = id
-	
-end
-
 
 function Race:UpdateRacePositions(args)
 	
@@ -344,6 +329,12 @@ function Race:UpdateRacePositions(args)
 		end
 		
 	end
+	
+end
+
+function Race:ShowLargeMessage(args)
+	
+	LargeMessage(args[1] or "nil" , args[2] or 1.5)
 	
 end
 
@@ -432,7 +423,7 @@ end
 -- Events
 --
 
-function Race:HandleInput(args)
+function Race:LocalPlayerInput(args)
 	
 	for index , input in ipairs(settings.blockedInputs) do
 		if args.input == input and args.state ~= 0 then

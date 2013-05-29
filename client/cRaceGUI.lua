@@ -76,9 +76,3 @@ function Race:DrawVersion()
 	)
 	
 end
-
-function Race:ShowLargeMessage(args)
-	
-	LargeMessage(args[1] or "nil" , args[2] or 1.5)
-	
-end

@@ -340,6 +340,9 @@ end
 function Race:NetworkSendRace(name , ...)
 	
 	for playerId , racer in pairs(self.playerIdToRacer) do
+		if settings.debugLevel >= 3 then
+			print("NetworkSendRace; player = "..racer.name..", network event = "..name)
+		end
 		Network:Send(racer.player , name , ...)
 	end
 	

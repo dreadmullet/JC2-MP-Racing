@@ -18,6 +18,11 @@ function Racer:__init(race , player)
 	-- Used with racePosTracker and helps with NetworkSend parameters.
 	self.targetCheckpointDistanceSqr = {[1] = 0}
 	self.updateTick = race.numPlayers
+	-- Not used for linear courses.
+	self.lapTimer = nil
+	-- Not used for linear courses.
+	self.bestLapTime = nil
+	self.finishTime = nil
 	
 	race.playersOutOfVehicle[player:GetId()] = true
 	
@@ -32,6 +37,7 @@ end
 function Racer:RaceStart()
 	
 	self.outOfVehicleTimer = Timer()
+	self.lapTimer = Timer()
 	
 	-- Disable collisions, if applicable.
 	if self.race.vehicleCollisions == false then
@@ -107,7 +113,7 @@ function Racer:AdvanceCheckpoint(index)
 	end
 	
 	-- If this is the final checkpoint, advance lap if it's a circuit, or finish the race if it's
-	-- linear.
+	-- linear. Also get best lap time here.
 	if index == #self.race.course.checkpoints then
 		if self.race.course.type == "Circuit" then
 			self:AdvanceLap()
@@ -133,6 +139,23 @@ function Racer:AdvanceLap()
 	self.targetCheckpoint = 1
 	self.numLapsCompleted = self.numLapsCompleted + 1
 	
+	local isPersonalBest = false
+	local lapTime = self.lapTimer:GetSeconds()
+	
+	-- Handle lap times for Circuits.
+	if self.bestLapTime then
+		if lapTime < self.bestLapTime then
+			self.bestLapTime = lapTime
+			isPersonalBest = true
+		end
+	else
+		self.bestLapTime = lapTime
+		isPersonalBest = true
+	end
+	Network:Send(self.player , "LapTimePersonal" , {lapTime , isPersonalBest})
+	self.lapTimer:Restart()
+	
+	-- Finish the race if we've completed all laps.
 	if self.numLapsCompleted >= self.race.course.numLaps and self.hasFinished == false then
 		self:Finish()
 	else
@@ -144,6 +167,10 @@ end
 function Racer:Finish()
 	
 	self.hasFinished = true
+	
+	-- Get finishTime.
+	self.finishTime = self.race.state.timer:GetSeconds()
+	Network:Send(self.player , "FinishTimePersonal" , self.finishtime)
 	
 	self.race:RacerFinish(self)
 	

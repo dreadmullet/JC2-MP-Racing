@@ -336,3 +336,13 @@ M.TrimCommentsFromLine = function(line)
 	return line
 
 end
+
+M.LapTimeString = function(totalSeconds)
+	
+	local minutes = math.floor(totalSeconds / 60)
+	local seconds = math.floor(totalSeconds - minutes * 60)
+	local hundredths = math.floor((totalSeconds - seconds) * 100 + 0.5)
+	
+	return string.format("%i:%i.%i" , minutes , seconds , hundredths)
+	
+end

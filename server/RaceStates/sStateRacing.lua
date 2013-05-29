@@ -100,7 +100,7 @@ function StateRacing:Run()
 	end
 	
 	if self.timer:GetSeconds() >= self.race.course.timeLimitSeconds then
-		-- self.race:MessageServer("Time limit up; ending race.") -- Make this MessageRace, maybe?
+		self.race:MessageRace("Time limit up; ending race.")
 		self.race:CleanUp()
 	end
 	
