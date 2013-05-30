@@ -42,6 +42,7 @@ function CourseEditor:__init()
 	
 	NetworkSub("CEDestroyCourseEditor" , "Destroy")
 	NetworkSub("CEReplaceCourse" , "ReplaceCourse")
+	NetworkSub("CESetCourseInfo" , "SetCourseInfo")
 	NetworkSub("CEAddCP" , "AddCP")
 	NetworkSub("CERemoveCP" , "RemoveCP")
 	NetworkSub("CEAddSpawn" , "AddSpawn")
@@ -80,8 +81,12 @@ function CourseEditor:SetTool(toolClassName)
 		print("Tool changed to " , toolClassName)
 	end
 	
-	-- Call Destroy() on the base class, Tool.
+	-- Call Destroy() on the base class, Tool. Also call Destroy on inherited class, if it exists.
+	-- Not sure if this is the best way to do it, but oh well.
 	if self.currentTool then
+		if self.currentTool.Destroy then
+			self.currentTool:Destroy()
+		end
 		Tool.Destroy(self.currentTool)
 		self.currentTool = nil
 	end
@@ -147,6 +152,16 @@ function CourseEditor:ReplaceCourse(courseInfo)
 	self.course:Destroy()
 	
 	self.course = Course.Demarshal(courseInfo)
+	
+end
+
+function CourseEditor:SetCourseInfo(courseInfo)
+	
+	self.course.name = courseInfo.name
+	self.course.type = courseInfo.type
+	self.course.numLaps = courseInfo.numLaps
+	self.course.timeLimitSeconds = courseInfo.timeLimitSeconds
+	self.course.prizeMoney = courseInfo.prizeMoney
 	
 end
 

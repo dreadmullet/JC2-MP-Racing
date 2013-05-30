@@ -12,6 +12,7 @@ function CourseEditor:SubscribeNetworkEvents()
 	NetworkSub("RemoveCP")
 	NetworkSub("AddSpawn")
 	NetworkSub("RemoveSpawn")
+	NetworkSub("SetCourseInfo")
 	
 	NetworkSub("TestDrive")
 	
@@ -88,6 +89,17 @@ function CourseEditor:NetworkRemoveSpawn(position , player)
 	end
 	
 	self:RemoveSpawn(position)
+	
+end
+
+function CourseEditor:NetworkSetCourseInfo(courseInfo)
+	
+	self.course.name = courseInfo.name
+	self.course.type = courseInfo.type
+	self.course.numLaps = courseInfo.numLaps
+	self.course.timeLimitSeconds = courseInfo.timeLimitSeconds
+	
+	self:NetworkSend("CESetCourseInfo" , self.course:MarshalInfo())
 	
 end
 

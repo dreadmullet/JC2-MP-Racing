@@ -237,7 +237,8 @@ CEMainMenu["Course settings"] = function(self)
 	self:DestroyToolWindow()
 	self:CreateToolWindow("Course settings")
 	
-	self.courseEditor.currentTool:CreateWindowElements(self.toolWindow)
+	self.courseEditor.currentTool.toolWindow = self.toolWindow
+	self.courseEditor.currentTool:CreateWindowElements()
 	
 end
 

@@ -248,8 +248,8 @@ function CourseEditor:CreateDefaultCourse()
 	local course = Course()
 	
 	-- Temporary just to get it working.
-	course.type = "Circuit"
-	course.numLaps = 3
+	course.type = "Linear"
+	course.numLaps = 5
 	course.timeLimitSeconds = 600
 	
 	return course

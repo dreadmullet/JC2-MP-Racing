@@ -89,16 +89,32 @@ end
 -- For use with sending course info to clients.
 function Course:Marshal()
 	
-	local info = {}
+	local info = self:MarshalInfo()
 	
 	info.checkpoints = {}
 	for index , checkpoint in ipairs(self.checkpoints) do
 		table.insert(info.checkpoints , checkpoint:Marshal())
 	end
+	
 	info.spawns = {}
 	for index , spawn in ipairs(self.spawns) do
 		table.insert(info.spawns , spawn:Marshal())
 	end
+	
+	return info
+	
+end
+
+-- Marshals variables like name and numLaps, but not checkpoints and such.
+function Course:MarshalInfo()
+	
+	local info = {}
+	
+	info.name = self.name
+	info.type = self.type
+	info.numLaps = self.numLaps
+	info.timeLimitSeconds = self.timeLimitSeconds
+	info.prizeMoney = self.prizeMoney
 	
 	return info
 	
