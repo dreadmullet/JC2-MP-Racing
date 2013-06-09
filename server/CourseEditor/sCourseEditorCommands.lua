@@ -31,4 +31,16 @@ function CourseEditor:DefineCommands()
 		
 	end
 	
+	C.clear = function(args)
+		
+		self.course = self:CreateDefaultCourse()
+		
+		self:IteratePlayers(
+			function(player)
+				Network:Send(player , "CEReplaceCourse" , self.course:Marshal())
+			end
+		)
+		
+	end
+	
 end

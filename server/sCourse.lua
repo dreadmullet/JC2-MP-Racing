@@ -86,6 +86,20 @@ function Course:SpawnRacers()
 	
 end
 
+function Course:GetSpawnPositionAverage()
+	
+	local average = Vector(0 , 0 , 0)
+	
+	for index , spawn in ipairs(self.spawns) do
+		average = average + spawn.position
+	end
+	
+	average = average / #self.spawns
+	
+	return average
+	
+end
+
 -- For use with sending course info to clients.
 function Course:Marshal()
 	
@@ -120,7 +134,7 @@ function Course:MarshalInfo()
 	
 end
 
-function Course:Save(filename)
+function Course:Save(name)
 	
 	course = self
 	
@@ -148,7 +162,7 @@ function Course:Save(filename)
 	
 	local json = require "json"
 	
-	local file = io.open("json/"..filename..".json", "w")
+	local file = io.open(settings.coursesPath..name..".course" , "w")
 	
 	file:write(json.encode(ctable))
 	

@@ -15,6 +15,8 @@ function CourseEditor:SubscribeNetworkEvents()
 	NetworkSub("SetCourseInfo")
 	
 	NetworkSub("TestDrive")
+	NetworkSub("SaveCourse")
+	NetworkSub("LoadCourse")
 	
 	NetworkSub("Exit")
 	
@@ -112,6 +114,18 @@ function CourseEditor:NetworkTestDrive(nilArgs , player)
 	end
 	
 	self:TestDrive()
+	
+end
+
+function CourseEditor:NetworkSaveCourse()
+	
+	self:SaveCourse()
+	
+end
+
+function CourseEditor:NetworkLoadCourse(name)
+	
+	self:LoadCourse(name)
 	
 end
 

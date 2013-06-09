@@ -14,6 +14,7 @@ class("Tool")
 		class("CheckpointSpawner")(BaseSpawner)
 		class("VehicleSpawner")(BaseSpawner)
 	class("CourseSettings")(Tool)
+	class("LoadCourseTool")(Tool)
 
 class("Object")
 	class("CheckpointObject")(Object)

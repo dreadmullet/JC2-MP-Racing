@@ -248,6 +248,29 @@ CEMainMenu["Test drive"] = function(self)
 	
 end
 
+CEMainMenu["Save course"] = function(self)
+	
+	self.courseEditor:SetTool("none")
+	
+	self:DestroyToolWindow()
+	
+	Network:Send("CESaveCourse")
+	
+end
+
+CEMainMenu["Load course"] = function(self)
+	
+	self.courseEditor:SetTool("LoadCourseTool")
+	self.courseEditor.currentTool.isEnabled = false
+	
+	self:DestroyToolWindow()
+	self:CreateToolWindow("Load course")
+	
+	self.courseEditor.currentTool.toolWindow = self.toolWindow
+	self.courseEditor.currentTool:CreateWindowElements()
+	
+end
+
 CEMainMenu["Exit"] = function(self)
 	
 	Network:Send("CEExit")

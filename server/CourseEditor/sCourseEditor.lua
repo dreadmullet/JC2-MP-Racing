@@ -375,6 +375,41 @@ function CourseEditor:TestDrive()
 	
 end
 
+function CourseEditor:SaveCourse()
+	
+	local fileName = self.course.name
+	
+	self.course:Save(fileName)
+	
+	self:MessageEditor("Course saved: "..fileName)
+	
+end
+
+function CourseEditor:LoadCourse(name)
+	
+	-- Load the course.
+	self.course = Course.Load(name)
+	
+	-- Force clients to regenerate gizmos etc.
+	self:IteratePlayers(
+		function(player)
+			Network:Send(player , "CEReplaceCourse" , self.course:Marshal())
+		end
+	)
+	
+	self:MessageEditor("Course loaded: "..name)
+	
+	-- Teleport everyone to the course.
+	local position = self.course:GetSpawnPositionAverage()
+	position.y = position.y + 175
+	self:IteratePlayers(
+		function(player)
+			player:SetPosition(position)
+		end
+	)
+	
+end
+
 ----------------------------------------------------------------------------------------------------
 -- Events
 ----------------------------------------------------------------------------------------------------
