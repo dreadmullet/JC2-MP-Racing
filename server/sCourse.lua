@@ -60,6 +60,7 @@ function Course:SpawnVehicles()
 	
 	if debug.alwaysMaxPlayers then
 		self.race.numPlayers = #self.spawns
+		self.race:MessageRace("Vehicle count: "..self.race.numPlayers)
 	end
 	
 	for n , spawn in ipairs(self.spawns) do
