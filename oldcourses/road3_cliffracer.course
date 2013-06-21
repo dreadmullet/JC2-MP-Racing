@@ -1,7 +1,7 @@
 
 INFO
 name Cliffracer
-type circuit
+type Circuit
 laps 1.2
 lapTimeMinutes 3
 lapTimeSeconds 20
@@ -13,7 +13,8 @@ path 4557.785645, 320.009827, 3644.021484
 path 4485.687500, 327.234894, 3703.310059
 vehicle 91
 width 6.5
-vehicleWidth 1.75
+numVehiclesPerRow 2
+rowSpacing 26
 
 STARTGRID # left
 path 4594.386719, 312.602173, 3560.613037
@@ -21,11 +22,8 @@ path 4538.791992, 320.461426, 3622.173584
 path 4485.643066, 326.677032, 3668.742676
 vehicle 91
 width 6.5
-vehicleWidth 1.75
-
-
-STARTFINISH
-position 4603.285156, 312.639801, 3567.812988
+numVehiclesPerRow 2
+rowSpacing 26
 
 CHECKPOINT #1 left onto primary dirt road
 position 4635.720703, 295.698242, 3389.155029
@@ -68,3 +66,6 @@ position 3891.263184, 360.334259, 3117.849121
 
 CHECKPOINT #14 left onto ramp
 position 4091.239746, 333.179382, 3643.286133
+
+CHECKPOINT
+position 4603.285156, 312.639801, 3567.812988

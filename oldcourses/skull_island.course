@@ -1,6 +1,6 @@
 INFO
 name Skull Island Rollercoaster
-type circuit
+type Circuit
 laps 1.8
 lapTimeMinutes 2
 lapTimeSeconds 35
@@ -15,11 +15,8 @@ width 22
 # vehicleTemplate Cab
 vehicle 72 # Chepachet PVD
 vehicleDecal nope # Most invalid names result in no decal.
-vehicleWidth 2.25
-vehicleLength 5
-
-STARTFINISH
-position -1807.982300, 200.478104, 918.881714
+numVehiclesPerRow 4
+rowSpacing 24
 
 CHECKPOINT #1
 position -1740.176025, 201.083771, 1345.399902
@@ -66,4 +63,5 @@ position -1461.177979, 204.570465, 1459.459717
 CHECKPOINT #15
 position -1401.918945, 200.568817, 1079.605347
 
-
+CHECKPOINT
+position -1807.982300, 200.478104, 918.881714

@@ -1,16 +1,16 @@
 
 INFO
-name Ski Slope Dive
+name Ski Slope Skydive
 type Linear
 lapTimeMinutes 2
-lapTimeSeconds 00
+lapTimeSeconds 0
 checkpointRadiusMult 0.98
 author dreadmullet
 
 
 STARTGRID
 path 5884.649902, 1648.312500, -1933.303833
-width 4
+width 5
 vehicle -1
 
 CHECKPOINT #1
@@ -28,5 +28,5 @@ position 6593.586426, 1115.993652, -1736.985352
 CHECKPOINT #5
 position 6877.963379, 893.667908, -1693.753052
 
-FINISH
+CHECKPOINT
 position 7280.494629, 814.698486, -1316.942383

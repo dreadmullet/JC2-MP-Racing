@@ -1,20 +1,25 @@
 
 INFO
 name Endless Coast
-type linear
+type Linear
 lapTimeMinutes 15
 lapTimeSeconds 0
 weatherSeverity 0.6
 author dreadmullet
 
 STARTGRID # North
-path -10849.853516, 476.939606, 8085.508789
+path -10847.838867, 469.906219, 8121.937988
 path -10864.660156, 490.152954, 8010.706055
 path -10896.225586, 504.283691, 7913.467773
 path -10938.439453, 508.744843, 7852.501953
 path -10989.863281, 507.433441, 7808.016602
 vehicle 2
+vehicle 91
+vehicleTemplate none
+vehicleTemplate Cab
 width 7.75
+numVehiclesPerRow 2
+rowSpacing 21
 
 STARTGRID # South
 path -10764.243164, 410.825562, 8512.223633
@@ -24,15 +29,24 @@ path -10685.561523, 414.928375, 8588.916016
 path -10664.891602, 422.436310, 8664.686523
 path -10626.556641, 422.782013, 8763.054688
 vehicle 2
-vehicleLength 5.25
+vehicle 91
+vehicleTemplate none
+vehicleTemplate Cab
 width 7.75
+numVehiclesPerRow 2
+rowSpacing 18
 
 STARTGRID # Middle
+path -10892.516602, 387.758942, 8432.518555
 path -10839.128906, 373.727722, 8405.206055
 path -10673.950195, 331.580231, 8289.597656
+vehicle 2
 vehicle 91
-vehicleTemplate Softtop
+vehicleTemplate none
+vehicleTemplate Cab
 width 7.75
+numVehiclesPerRow 2
+rowSpacing 18
 
 
 CHECKPOINT #1
@@ -272,6 +286,6 @@ position -5264.961426, 308.905731, 10660.368164
 CHECKPOINT #79
 position -5466.237305, 297.979736, 11391.912109
 
-FINISH
+CHECKPOINT
 position -5445.737305, 204.693527, 12140.169922
 

@@ -1,6 +1,6 @@
 INFO
 name Son of a Beach
-type linear # Possible types: linear, circuit, unordered.
+type Linear # Possible types: linear, circuit, unordered.
 laps 123 # Optional. (In this case of linear, laps is not parsed)
 lapTimeMinutes 4
 lapTimeSeconds 10
@@ -12,8 +12,8 @@ path 339.632599, 201.828049, 11508.559570
 path 352.323853, 201.373108, 11455.397461
 vehicle 13 # dune buggy
 width 35
-vehicleWidth 2
-vehicleLength 4
+numVehiclesPerRow 5
+rowSpacing 15
 
 CHECKPOINT #1 right of mobile dish
 position 185.127869, 202.197861, 11854.198242
@@ -54,6 +54,6 @@ position 2341.516602, 201.267944, 11283.956055
 CHECKPOINT
 position 2671.240234, 202.880081, 11092.041016
 
-FINISH # end of wide sand
+CHECKPOINT # end of wide sand
 position 2959.940430, 201.366745, 10886.684570
 

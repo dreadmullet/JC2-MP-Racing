@@ -1,23 +1,29 @@
 
 INFO
-name Three Kings Long
-type circuit
-laps 5
+name Three Kings Complex
+type Circuit
+laps 4.5
 lapTimeMinutes 0
-lapTimeSeconds 37
+lapTimeSeconds 38
 author dreadmullet
 
+STARTGRID
+path -12844.168945, 216.676682, 15038.774414
+path -12796.972656, 216.739288, 15250.152344
+width 8
+vehicle 86
+vehicleTemplate FullyUpgraded
+numVehiclesPerRow 2
+rowSpacing 27
 
 STARTGRID
-path -12842.740234, 216.677536, 15039.378906
-path -12795.695313, 216.738968, 15251.022461
-width 10
-vehicle 78
-vehicleWidth 1.35
-
-
-STARTFINISH
-position -12823.298828, 216.674332, 15132.448242
+path -12773.300781, 216.724426, 15272.811523
+path -12688.403320, 216.687393, 15299.357422
+width 8
+vehicle 86
+vehicleTemplate FullyUpgraded
+numVehiclesPerRow 2
+rowSpacing 27
 
 CHECKPOINT #1
 position -12800.279297, 216.705597, 14965.667969
@@ -43,3 +49,5 @@ position -12628.223633, 216.675720, 15272.543945
 CHECKPOINT #8
 position -12729.709961, 216.705643, 15286.298828
 
+CHECKPOINT
+position -12823.298828, 216.674332, 15132.448242

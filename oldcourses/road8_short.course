@@ -1,8 +1,6 @@
-
-
 INFO
 name Vortex
-type linear
+type Linear
 lapTimeMinutes 6
 lapTimeSeconds 0
 author F430
@@ -16,8 +14,8 @@ path -634.407410, 239.720367, -11958.200195
 vehicle 35 # Traver-Z
 vehicleTemplate FullyUpgraded
 width 17.5
-vehicleWidth 2
-vehicleLength 6
+numVehiclesPerRow 4
+rowSpacing 34
 
 CHECKPOINT
 position 221.163437, 243.127304, -11942.125000
@@ -103,5 +101,5 @@ position 9146.911133, 220.220673, -11505.928711
 CHECKPOINT
 position 9341.152344, 236.661865, -11447.449219
 
-FINISH
+CHECKPOINT
 position 9193.239258, 235.894424, -11088.380859
