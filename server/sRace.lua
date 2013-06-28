@@ -194,7 +194,7 @@ function Race:JoinPlayer(player)
 	
 	-- Race is full.
 	if self.numPlayers >= self.maxPlayers then
-		self.MessageServer(
+		self:MessageServer(
 			"Error: race is full but "..
 			player:GetName()..
 			" is trying to join!"
