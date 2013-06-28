@@ -195,7 +195,7 @@ function Course.Load(name)
 	if not file then
 		print()
 		print("*ERROR*")
-		print(file)
+		print("Cannot open course file: "..path)
 		print()
 		return nil
 	end
