@@ -29,7 +29,7 @@ function STARTGRID:__init()
 	self.vehicles = {}
 	self.vehicleTemplates = {}
 	self.vehicleDecals = {}
-	self.fixedVehicleRotation = Angle()
+	self.fixedVehicleRotation = Angle(0 , 0 , 0)
 end
 
 class("CHECKPOINT")
@@ -223,14 +223,9 @@ CourseLoader.Load = function(name)
 	--
 	local course = Course()
 	local startGrids = {}
+	local checkpointRadiusMult = 1
 	for n=1 , #datablocks do
-		if datablocks[n].datablockType == "CHECKPOINT" then
-			local cp = CourseCheckpoint(course)
-			table.insert(course.checkpoints , cp)
-			cp.index = #course.checkpoints
-			cp.position = datablocks[n].position
-			cp.validVehicles = datablocks[n].vehicles
-		elseif datablocks[n].datablockType == "STARTGRID" then
+		if datablocks[n].datablockType == "STARTGRID" then
 			table.insert(startGrids , datablocks[n])
 		elseif datablocks[n].datablockType == "INFO" then
 			local info = datablocks[n]
@@ -241,6 +236,14 @@ CourseLoader.Load = function(name)
 			local lapTimeSeconds = info.lapTimeMinutes * 60 + info.lapTimeSeconds
 			course.timeLimitSeconds = settings.timeLimitFunc(lapTimeSeconds , info.laps)
 			course.weatherSeverity = info.weatherSeverity
+			checkpointRadiusMult = info.checkpointRadiusMult
+		elseif datablocks[n].datablockType == "CHECKPOINT" then
+			local cp = CourseCheckpoint(course)
+			table.insert(course.checkpoints , cp)
+			cp.index = #course.checkpoints
+			cp.position = datablocks[n].position
+			cp.validVehicles = datablocks[n].vehicles
+			cp.radius = cp.radius * checkpointRadiusMult
 		end
 	end
 	
@@ -361,6 +364,9 @@ CourseLoader.Load = function(name)
 					x = 0.5
 				end
 				local position , angle = GetPoint(x , y)
+				if startGrid.fixedVehicleRotation ~= Angle(0 , 0 , 0) then
+					angle = startGrid.fixedVehicleRotation
+				end
 				local spawn = CourseSpawn(course)
 				spawn.position = position
 				spawn.angle = angle
