@@ -46,7 +46,7 @@ settings.admins = {
 	SteamID("76561197985532207") , -- dreadmullet
 }
 
-settings.courseEditorEnabled = true
+settings.courseEditorEnabled = false
 
 settings.timeLimitFunc = function(lapTimeSeconds , numLaps)
 	
