@@ -1,12 +1,9 @@
-Utility = {}
+-- Utility is defined in sharedUtility.lua.
 local M = Utility
-
-
 
 -----------------------
 -- Utility functions --
 -----------------------
-
 
 -- Compares simple arrays. Not recursive.
 M.CompareArrays = function(a1 , a2)
@@ -287,20 +284,6 @@ M.VectorCuberp = function(v0 , v1 , v2 , v3 , x)
 
 end
 
-M.NumberToPlaceString = function(number)
-	
-	if number == 1 then
-		return string.format("%i%s" , 1 , "st")
-	elseif number == 2 then
-		return string.format("%i%s" , 2 , "nd")
-	elseif number == 3 then
-		return string.format("%i%s" , 3 , "rd")
-	else
-		return string.format("%i%s" , number , "th")
-	end
-	
-end
-
 M.CastFromString = function(string , type)
 	
 	if type == "string" then
@@ -335,14 +318,4 @@ M.TrimCommentsFromLine = function(line)
 	
 	return line
 
-end
-
-M.LapTimeString = function(totalSeconds)
-	
-	local minutes = math.floor(totalSeconds / 60)
-	local seconds = math.floor(totalSeconds - minutes * 60)
-	local hundredths = math.floor((totalSeconds - seconds) * 100 + 0.5)
-	
-	return string.format("%i:%i.%i" , minutes , seconds , hundredths)
-	
 end

@@ -1,7 +1,5 @@
-Utility = {}
+-- Utility is defined in sharedUtility.lua.
 local M = Utility
-
-math.tau = math.pi * 2
 
 local tabPhrase = "    "
 
@@ -70,20 +68,6 @@ M.PrintTable = function(t , depth , tableList)
 		end
 	end
 
-end
-
-M.NumberToPlaceString = function(number)
-	
-	if number == 1 then
-		return string.format("%i%s" , 1 , "st")
-	elseif number == 2 then
-		return string.format("%i%s" , 2 , "nd")
-	elseif number == 3 then
-		return string.format("%i%s" , 3 , "rd")
-	else
-		return string.format("%i%s" , number , "th")
-	end
-	
 end
 
 M.TemporaryRemoveWindow = function(window)
