@@ -161,7 +161,7 @@ function Course:Save(name)
 		table.insert(ctable.spawns , spawn:MarshalJSON())
 	end
 	
-	local json = require "json"
+	local json = require "JSON"
 	
 	local file = io.open(settings.coursesPath..name..".course" , "w")
 	
@@ -206,7 +206,7 @@ function Course.Load(name)
 		string = string..line
 	end
 	
-	local json = require 'json'
+	local json = require 'JSON'
 	
 	local ctable = json.decode(string)
 	local course = Course()
