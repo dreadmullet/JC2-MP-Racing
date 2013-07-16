@@ -1,3 +1,13 @@
+#JC2-MP Racing
+
+##Some contribution notes
+
+  - Tabs as tabs, 3 spaces
+  - Limit lines to 100 columns
+  - Keep style consistent
+
+##Licence
+
 Copyright (c) 2013 dreadmullet (loosepolygon@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
