@@ -5,6 +5,7 @@
 Events:Subscribe(
 	"ModuleLoad" ,
 	function()
+		Stats.Init()
 		raceManager = RaceManager()
 		courseEditorManager = CourseEditorManager(raceManager)
 	end

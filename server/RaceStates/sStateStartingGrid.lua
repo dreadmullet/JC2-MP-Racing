@@ -37,6 +37,9 @@ function StateStartingGrid:__init(race)
 		self.race.raceManager:CreateRacePublic()
 	end
 	
+	-- Update database.
+	Stats.RaceStart(self.race)
+	
 	--
 	-- Send info to clients.
 	--
@@ -63,6 +66,8 @@ function StateStartingGrid:__init(race)
 			race.course.numLaps ,
 			race.course.weatherSeverity ,
 			race.course.authors ,
+			race.course.topRecords[1].time ,
+			race.course.topRecords[1].playerName ,
 		}
 	)
 	-- Race.checkpoints.

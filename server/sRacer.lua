@@ -5,6 +5,7 @@ function Racer:__init(race , player)
 	self.player = player
 	self.playerId = player:GetId()
 	self.name = player:GetName()
+	self.steamId = player:GetSteamId().Id
 	self.originalPosition = player:GetPosition()
 	self.originalModelId = player:GetModelId()
 	self.targetCheckpoint = 1
@@ -18,11 +19,10 @@ function Racer:__init(race , player)
 	-- Used with racePosTracker and helps with NetworkSend parameters.
 	self.targetCheckpointDistanceSqr = {[1] = 0}
 	self.updateTick = race.numPlayers
-	-- Not used for linear courses.
-	self.lapTimer = nil
-	-- Not used for linear courses.
-	self.bestLapTime = nil
-	self.finishTime = nil
+	-- Procs at end of lap for circuits, or end of race for linear courses.
+	self.raceTimer = nil
+	-- Used for both circuits and linear courses.
+	self.bestTime = -1
 	
 	race.playersOutOfVehicle[player:GetId()] = true
 	
@@ -32,12 +32,15 @@ function Racer:__init(race , player)
 		player:SetModelId(table.randomvalue(settings.playerModelIds))
 	end
 	
+	-- Add to database.
+	Stats.AddPlayer(self)
+	
 end
 
 function Racer:RaceStart()
 	
 	self.outOfVehicleTimer = Timer()
-	self.lapTimer = Timer()
+	self.raceTimer = Timer()
 	
 	-- Disable collisions, if applicable.
 	if self.race.vehicleCollisions == false then
@@ -139,43 +142,64 @@ function Racer:AdvanceLap()
 	self.targetCheckpoint = 1
 	self.numLapsCompleted = self.numLapsCompleted + 1
 	
-	local isPersonalBest = false
-	local lapTime = self.lapTimer:GetSeconds()
+	local lapTime = self.raceTimer:GetSeconds()
 	
-	-- Handle lap times for Circuits.
-	if self.bestLapTime then
-		if lapTime < self.bestLapTime then
-			self.bestLapTime = lapTime
-			isPersonalBest = true
-		end
+	-- If we don't have a best lap time yet, just set it.
+	if self.bestTime == -1 then
+		self.bestTime = lapTime
+	-- Otherwise, only set our best lap time if this lap was faster.
 	else
-		self.bestLapTime = lapTime
-		isPersonalBest = true
+		if lapTime < self.bestTime then
+			self.bestTime = lapTime
+		end
 	end
-	Network:Send(self.player , "LapTimePersonal" , {lapTime , isPersonalBest})
-	self.lapTimer:Restart()
+	
+	Network:Send(self.player , "RaceTimePersonal" , lapTime)
+	
+	-- If this is a new record, send every racer the new time/player and store the new time in the
+	-- database.
+	-- TODO: Change topRecords if we make it into the top x, not just the very top.
+	if lapTime < self.race.course.topRecords[1].time then
+		self.race:NetworkSendRace("NewRecordTime" , {lapTime , self.name})
+		self.race.course.topRecords[1].time = lapTime
+		self.race.course.topRecords[1].playerName = self.name
+	end
+	
+	self.raceTimer:Restart()
 	
 	-- Finish the race if we've completed all laps.
 	if self.numLapsCompleted >= self.race.course.numLaps and self.hasFinished == false then
 		self:Finish()
-	else
-		
 	end
 	
 end
 
+-- TODO: This and Race.RacerFinish are too similar.
 function Racer:Finish()
 	
 	self.hasFinished = true
 	
-	-- Get finishTime.
-	self.finishTime = self.race.state.timer:GetSeconds()
-	Network:Send(self.player , "FinishTimePersonal" , self.finishtime)
+	-- Handle Linear course records. Circuit records are handled in AdvanceLap, above.
+	if self.race.course.type == "Linear" then
+		local raceTime = self.race.state.timer:GetSeconds()
+		
+		self.bestTime = raceTime
+		
+		Network:Send(self.player , "RaceTimePersonal" , raceTime)
+		
+		-- If this is a new record, send every racer the new time/player and store the new time in the
+		-- database.
+		if raceTime < self.race.course.topRecords[1].time then
+			self.race:NetworkSendRace("NewRecordTime" , {raceTime , self.name})
+			self.race.course.topRecords[1].time = raceTime
+			self.race.course.topRecords[1].playerName = self.name
+		end
+	end
 	
 	self.race:RacerFinish(self)
 	
-	local message = Utility.NumberToPlaceString(#self.race.finishedRacers).." place!"
 	Network:Send(self.player , "Finish")
+	local message = Utility.NumberToPlaceString(#self.race.finishedRacers).." place!"
 	Network:Send(
 		self.player ,
 		"ShowLargeMessage" ,
@@ -190,7 +214,7 @@ function Racer:EnterVehicle(args)
 		self.outOfVehicleTimer = nil
 		self.race.playersOutOfVehicle[self.player:GetId()] = nil
 	else
-		if self.race.stateName ~= "StateAddPlayers" then
+		if self.race.stateName ~= "StateAddPlayers" and not debug.dontRestrictVehicle then
 			-- Remove player from race if they steal a vehicle.
 			if args.isdriver and args.olddriver then
 				self.race:MessageRace(

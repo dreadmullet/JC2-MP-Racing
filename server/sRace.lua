@@ -155,6 +155,13 @@ function Race:RemovePlayer(player , message)
 	self.raceManager.playerIds[playerId] = nil
 	
 	local racer = self.playerIdToRacer[playerId]
+	
+	-- If they haven't finished yet, add race result to database; their position is -1 (DNF).
+	if racer.hasFinished == false then
+		racer.bestTime = 59 * 60 + 59 + 0.99
+		Stats.AddRaceResult(racer , -1 , self.course)
+	end
+	
 	racer:Remove()
 	self.playerIdToRacer[playerId] = nil
 	self.numPlayers = self.numPlayers - 1
@@ -171,6 +178,7 @@ function Race:RemovePlayer(player , message)
 		self:CleanUp()
 	end
 	
+	-- End the race on the client's end.
 	Network:Send(racer.player , "EndRace")
 	
 end
@@ -275,6 +283,9 @@ function Race:RacerFinish(racer)
 		racer.player ,
 		"Use "..settings.command.." to exit the race."
 	)
+	
+	-- Add race result to database.
+	Stats.AddRaceResult(racer , #self.finishedRacers , self.course)
 	
 	-- Messages to immediately print for all finishers.
 	if #self.finishedRacers == 1 then

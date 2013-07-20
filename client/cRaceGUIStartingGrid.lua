@@ -20,6 +20,8 @@ function Race:DrawStartingGridBackground()
 	
 	local lastTextPos = self.startingGridTextPos
 	
+	local textHeight = Render:GetTextHeight("|" , settings.startingGridTextSize)
+	
 	-- Reset startingGridTextPos
 	self.startingGridTextPos = (
 		NormVector2(
@@ -28,7 +30,7 @@ function Race:DrawStartingGridBackground()
 		) +
 		Vector2(
 			-settings.startingGridBackgroundSize.x * Render.Width + settings.padding ,
-			settings.padding
+			textHeight * 0.5 + settings.padding
 		)
 	)
 	

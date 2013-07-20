@@ -19,6 +19,10 @@ end
 
 M.LapTimeString = function(totalSeconds)
 	
+	if totalSeconds == nil then
+		return "N/A"
+	end
+	
 	local minutes = math.floor(totalSeconds / 60)
 	totalSeconds = totalSeconds - minutes * 60
 	local seconds = math.floor(totalSeconds)

@@ -15,12 +15,15 @@ function Race:__init()
 	self.targetCheckpoint = 1
 	
 	self.isFinished = false
+	self.finishTime = -1
+	self.lapTimes = {}
 	
 	-- Calculated at race start.
 	self.courseLength = -1
 	
 	self.checkpoints = {}
 	
+	-- Current lap.
 	self.lapCount = 1
 	
 	self.racePosition = -1
@@ -39,6 +42,8 @@ function Race:__init()
 	
 	-- Reset when checkpoint distances are sent.
 	self.sendCheckpointTimer = nil
+	-- This is independent of the server; the server keeps track of time.
+	self.raceTimer = nil
 	
 	self.numTicksRace = 0
 	
@@ -63,6 +68,8 @@ function Race:__init()
 	NetSub("EndRace")
 	NetSub("SetTargetCheckpoint")
 	NetSub("SetAssignedVehicleId")
+	NetSub("RaceTimePersonal")
+	NetSub("NewRecordTime")
 	NetSub("ShowLargeMessage")
 	
 	NetSub("DebugRacePosTracker")
@@ -111,6 +118,7 @@ function Race:StartRace()
 	self.isRacing = true
 	
 	self.sendCheckpointTimer = Timer()
+	self.raceTimer = Timer()
 	
 	Events:Unsubscribe(self.eventSubs.DrawPreRaceGUI)
 	self.eventSubs.DrawPreRaceGUI = nil
@@ -142,19 +150,17 @@ function Race:SetCourseInfo(args)
 	self.courseInfo.laps = args[3]
 	self.courseInfo.weatherSeverity = args[4]
 	self.courseInfo.authors = args[5]
-	
-	if not args[1] then print("Error: args[1] is nil for some reason! This should never happen!") end
-	if not args[2] then print("Error: args[2] is nil for some reason! This should never happen!") end
-	if not args[3] then print("Error: args[3] is nil for some reason! This should never happen!") end
-	if not args[4] then print("Error: args[4] is nil for some reason! This should never happen!") end
-	if not args[5] then print("Error: args[5] is nil for some reason! This should never happen!") end
+	self.courseInfo.recordTime = args[6]
+	self.courseInfo.recordTimePlayerName = args[7]
 	
 	if debugLevel >= 3 then
-		-- print("Race:SetCourseInfo")
+		print("Race:SetCourseInfo")
 		print("Name = " , self.courseInfo.name)
 		print("type = " , self.courseInfo.type)
 		print("laps = " , self.courseInfo.laps)
-		print("WeatherSeverity = " , self.courseInfo.weatherSeverity)
+		print("weatherSeverity = " , self.courseInfo.weatherSeverity)
+		print("recordTime = " , self.courseInfo.recordTime)
+		print("recordTimePlayerName = " , self.courseInfo.recordTimePlayerName)
 	end
 	
 end
@@ -185,6 +191,8 @@ function Race:Finish()
 	if debugLevel >= 2 then
 		print("Race:Finish!")
 	end
+	
+	self.isFinished = true
 	
 	Events:Unsubscribe(self.eventSubs.DrawRaceGUI)
 	self.eventSubs.DrawRaceGUI = nil
@@ -222,26 +230,35 @@ end
 
 function Race:SetTargetCheckpoint(checkpoint)
 	
-	-- if debugLevel >= 2 then
-		-- print("New target checkpoint: " , checkpoint)
-	-- end
-	
 	self.targetCheckpoint = checkpoint
 	
-	-- If we started a new lap, increment self.lapCount.
+	-- If we started a new lap.
 	if checkpoint == 1 then
 		self.lapCount = self.lapCount + 1
 		self.checkpointArrowActivationValue = -1
+		self.raceTimer:Restart()
 	else
 		self.checkpointArrowActivationValue = 0
 	end
-	
 	
 end
 
 function Race:SetAssignedVehicleId(id)
 	
 	self.assignedVehicleId = id
+	
+end
+
+function Race:RaceTimePersonal(raceTime)
+	
+	table.insert(self.lapTimes , raceTime)
+	
+end
+
+function Race:NewRecordTime(args)
+	
+	self.courseInfo.recordTime = args[1]
+	self.courseInfo.recordTimePlayerName = args[2]
 	
 end
 
@@ -377,8 +394,8 @@ function Race:DrawRaceGUI()
 	self:DrawCourseNameRace()
 	-- TODO: Add race percentage for linear courses?
 	self:DrawLapCounter()
-	-- self:DrawTimers()
 	self:DrawRacePosition()
+	self:DrawTimers()
 	self:DrawMinimapIcons()
 	self:DrawLeaderboard()
 	self:DrawNextCheckpointArrow()
@@ -395,8 +412,9 @@ function Race:DrawPostRaceGUI()
 	
 	self:DrawVersion()
 	self:DrawCourseNameRace()
-	-- self:DrawTimers()
+	self:DrawLapCounter()
 	self:DrawRacePosition()
+	self:DrawTimers()
 	self:DrawMinimapIcons()
 	self:DrawLeaderboard()
 	

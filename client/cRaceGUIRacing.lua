@@ -13,7 +13,7 @@ function Race:DrawCourseNameRace()
 	)
 	
 	DrawText(
-		Vector2(0.5 * Render.Width - textSize.x*0.5 , textSize.y*0 + 3) ,
+		Vector2(0.5 * Render.Width - textSize.x * 0.5 , textSize.y * 0.5 + 1) ,
 		courseName ,
 		settings.textColor ,
 		"Default" ,
@@ -97,6 +97,10 @@ function Race:DrawLapCounter()
 		total = #self.checkpoints
 	end
 	
+	if self.isFinished then
+		count = total
+	end
+	
 	-- "Lap/Checkpoint" label
 	DrawText(
 		NormVector2(settings.lapLabelPos.x , settings.lapLabelPos.y) ,
@@ -134,6 +138,52 @@ function Race:DrawRacePosition()
 		settings.racePosSize ,
 		"center"
 	)
+	
+end
+
+function Race:DrawTimers()
+	
+	local currentY = settings.timerLabelsStart.y
+	local advanceY = Render:GetTextHeight("|" , settings.timerLabelsSize) / (Render.Size.y) * 2
+	local leftX = (
+		settings.timerLabelsStart.x -
+		(Render:GetTextWidth("-00:00:00" , settings.timerLabelsSize) / Render.Width) * 2
+	)
+	
+	local AddLine = function(label , value)
+		DrawText(
+			NormVector2(leftX , currentY) ,
+			label ,
+			settings.textColor ,
+			settings.timerLabelsSize ,
+			"right"
+		)
+		DrawText(
+			NormVector2(settings.timerLabelsStart.x , currentY) ,
+			value ,
+			settings.textColor ,
+			settings.timerLabelsSize ,
+			"right"
+		)
+		currentY = currentY + advanceY
+	end
+	
+	AddLine(
+		self.courseInfo.recordTimePlayerName..":" ,
+		Utility.LapTimeString(self.courseInfo.recordTime)
+	)
+	
+	if self.isFinished then
+		if self.courseInfo.type == "Circuit" then
+			AddLine("Previous:" , Utility.LapTimeString(self.lapTimes[#self.lapTimes - 1]))
+		end
+		AddLine("Current:" , Utility.LapTimeString(self.lapTimes[#self.lapTimes]))
+	else
+		if self.courseInfo.type == "Circuit" then
+			AddLine("Previous:" , Utility.LapTimeString(self.lapTimes[#self.lapTimes]))
+		end
+		AddLine("Current:" , Utility.LapTimeString(self.raceTimer:GetSeconds()))
+	end
 	
 end
 

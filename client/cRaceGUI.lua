@@ -41,11 +41,16 @@ DrawText = function(pos , text , color , size , alignment , scale)
 			Render:GetTextWidth(text , size) * -0.5 ,
 			Render:GetTextHeight(text , size) * -0.5
 		)
+	elseif alignment == "right" then
+		pos = pos + Vector2(
+			Render:GetTextWidth(text , size) * -1 ,
+			Render:GetTextHeight(text , size) * -0.5
+		)
 	else -- "left"
-		-- pos = pos + Vector2(
-			-- 0 ,
-			-- Render:GetTextHeight(text , size) * -0.5
-		-- )
+		pos = pos + Vector2(
+			0 ,
+			Render:GetTextHeight(text , size) * -0.5
+		)
 	end
 	
 	local shadowColor = Copy(settings.shadowColor)
@@ -69,7 +74,7 @@ function Race:DrawVersion()
 	)
 	
 	DrawText(
-		Vector2(0.775 * Render.Width - textSize.x , textSize.y * 0 + 1) ,
+		Vector2(0.775 * Render.Width - textSize.x , textSize.y * 0.5 + 1) ,
 		"JC2-MP-Racing "..version ,
 		settings.textColor ,
 		"Default"

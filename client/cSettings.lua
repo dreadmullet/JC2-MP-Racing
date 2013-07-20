@@ -5,9 +5,9 @@ settings = {}
 math.randomseed(os.time())
 math.random()
 
-----------------
+----------------------------------------------------------------------------------------------------
 -- Racing
-----------------
+----------------------------------------------------------------------------------------------------
 
 settings.blockedInputs = {
 	Action.FireLeft , -- Blocks firing weapons on foot.
@@ -51,9 +51,9 @@ During races, sometimes the checkpoint arrow will be invisible. You can probably
 ]]
 
 
-----------------
+----------------------------------------------------------------------------------------------------
 -- GUI
-----------------
+----------------------------------------------------------------------------------------------------
 
 settings.backgroundColor = Color(38 , 26 , 15 , 110)
 settings.backgroundAltColor = Color(5 , 6 , 12 , 90)
@@ -88,6 +88,9 @@ settings.racePosLabelSize = "Large"
 settings.racePosPos = Vector2(-0.33 , -0.68)
 settings.racePosSize = "Huge"
 
+settings.timerLabelsStart = Vector2(0.95 , -0.39)
+settings.timerLabelsSize = "Default"
+
 settings.minimapCheckpointColor1 = Color(245 , 25 , 19)
 settings.minimapCheckpointColor2 = Color(245 , 100 , 19 , 112)
 settings.minimapCheckpointColorGrey1 = Color(180 , 170 , 150 , 255) -- Inside
@@ -108,13 +111,3 @@ settings.largeMessagePos = Vector2(0 , -0.2)
 settings.guiQuality = 0
 
 settings.useNametags = false
-
-
-
-
-
-
-
-
-
-

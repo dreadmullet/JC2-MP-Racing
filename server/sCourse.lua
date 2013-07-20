@@ -19,6 +19,13 @@ function Course:__init()
 	self.spawns = {}
 	self.prizeMoney = settings.prizeMoneyDefault
 	
+	-- Note: if two races are running at the same time with the same course, lap records could be
+	-- overwritten, because lap records are stored when a course is loaded. Not a huge issue, since
+	-- most servers won't be running more than one race at a time. Could always loop through every
+	-- race currently running when a record is added. Or could cache courses, so two Races use the
+	-- same Course.
+	self.topRecords = {}
+	
 end
 
 function Course:GetMaxPlayers()
@@ -259,6 +266,25 @@ function Course.Load(name)
 		sp.decals = spawn.decals
 		
 		table.insert(course.spawns , sp)
+	end
+	
+	course.fileName = path
+	-- Replace backslashes with slashes for OS compatibility.
+	course.fileName = course.fileName:gsub("\\" , "/")
+	-- Strip out everything except the file name.
+	course.fileName = course.fileName:gsub(".*/" , "")
+	
+	-- Add to database.
+	Stats.AddCourse(course)
+	
+	-- Load top times from database.
+	course.topRecords = Stats.GetCourseRecords(course , 1 , 10)
+	--If there are no records yet, use a fake one.
+	if #course.topRecords == 0 then
+		local newRecord = {}
+		newRecord.time = 59 * 60 + 59 + 0.99
+		newRecord.playerName = "xXxSUpA1337r4c3rxXx"
+		table.insert(course.topRecords , newRecord)
 	end
 	
 	return course
