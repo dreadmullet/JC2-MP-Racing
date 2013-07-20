@@ -198,6 +198,16 @@ function Racer:Finish()
 	
 	self.race:RacerFinish(self)
 	
+	DelayedFunction(
+		settings.playerFinishRemoveDelay ,
+		function(racer)
+			if racer.race:HasPlayer(racer.player) then
+				racer.race:RemovePlayer(racer.player)
+			end
+		end ,
+		self
+	)
+	
 	Network:Send(self.player , "Finish")
 	local message = Utility.NumberToPlaceString(#self.race.finishedRacers).." place!"
 	Network:Send(

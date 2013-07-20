@@ -35,6 +35,7 @@ settings.vehicleRepairAmount = 0.05
 settings.prizeMoneyDefault = 10000
 settings.prizeMoneyMultiplier = 0.75
 settings.playerDeathDelay = 7
+settings.playerFinishRemoveDelay = 3
 settings.lapsMult = 1
 
 -- Public races
