@@ -363,7 +363,7 @@ end
 function Race:DrawPreRaceGUI()
 	
 	-- Don't draw while in menus.
-	if not Client:InState(GUIState.Game) then
+	if Client:GetState() ~= GUIState.Game then
 		return
 	end
 	
@@ -383,7 +383,7 @@ function Race:DrawRaceGUI()
 	-- print("DrawRaceGUI!")
 	
 	-- Don't draw while in menus.
-	if not Client:InState(GUIState.Game) then
+	if Client:GetState() ~= GUIState.Game then
 		return
 	end
 	
@@ -406,7 +406,7 @@ end
 function Race:DrawPostRaceGUI()
 	
 	-- Don't draw while in menus.
-	if not Client:InState(GUIState.Game) then
+	if Client:GetState() ~= GUIState.Game then
 		return
 	end
 	

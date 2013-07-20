@@ -187,7 +187,7 @@ function CourseEditor:RemoveCP(editorId)
 	end
 	
 	if didRemove == false then
-		Client:ChatMessage("DIDN'T REMOVE WTFM8: id = "..editorId , Color(255 , 255 , 255))
+		Chat:Print("DIDN'T REMOVE WTFM8: id = "..editorId , Color(255 , 255 , 255))
 	end
 	
 end
@@ -214,7 +214,7 @@ function CourseEditor:RemoveSpawn(editorId)
 	end
 	
 	if didRemove == false then
-		Client:ChatMessage("DIDN'T REMOVE WTFM8: id = "..editorId , Color(255 , 255 , 255))
+		Chat:Print("DIDN'T REMOVE WTFM8: id = "..editorId , Color(255 , 255 , 255))
 	end
 	
 end

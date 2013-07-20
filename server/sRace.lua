@@ -304,7 +304,7 @@ function Race:MessageServer(message)
 	
 	local output = "[Racing-"..self.name.."] "..message
 	
-	Server:BroadcastChatMessage(output , settings.textColorGlobal)
+	Chat:Broadcast(output , settings.textColorGlobal)
 	
 	print(output)
 	
@@ -313,13 +313,13 @@ end
 function Race:MessageRace(message)
 	
 	local output = "[Racing-"..self.name.."] "..message
-
+	
 	for id , racer in pairs(self.playerIdToRacer) do
 		racer.player:SendChatMessage(
 			output , settings.textColorLocal
 		)
 	end
-
+	
 	print(output)
 	
 end

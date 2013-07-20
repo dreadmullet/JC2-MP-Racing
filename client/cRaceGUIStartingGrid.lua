@@ -53,14 +53,15 @@ function Race:DrawStartingGridBackground()
 	
 	Render:FillArea(
 		pos ,
-		settings.startingGridBackgroundSize.x * Render.Width ,
-		height ,
+		Vector2(settings.startingGridBackgroundSize.x * Render.Width ,	height) ,
 		settings.backgroundAltColor
 	)
 	Render:FillArea(
 		pos + Vector2(borderSize , borderSize) ,
-		settings.startingGridBackgroundSize.x * Render.Width + settings.padding - borderSize*2 ,
-		height + settings.padding - borderSize*2 ,
+		Vector2(
+			settings.startingGridBackgroundSize.x * Render.Width + settings.padding - borderSize*2 ,
+			height + settings.padding - borderSize*2
+		) ,
 		settings.backgroundColor
 	)
 	

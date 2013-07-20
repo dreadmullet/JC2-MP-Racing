@@ -5,7 +5,7 @@ VirtualKey.Apostrophe = 222 -- wut
 
 CEMainMenu.size = Vector2(0.1125 , 0.39)
 CEMainMenu.elementHeight = 0.0625
-CEMainMenu.textColor = Color(128 , 128 , 128 , 255):ToCEGUIString()
+-- CEMainMenu.textColor = Color(128 , 128 , 128 , 255):ToCEGUIString()
 
 function CEMainMenu:__init(courseEditor)
 	
@@ -374,6 +374,6 @@ end
 -- Utility debug chat print function
 PrintChat = function(message)
 	
-	Client:ChatMessage(message , Color(64 , 192 , 192))
+	Chat:Print(message , Color(64 , 192 , 192))
 	
 end

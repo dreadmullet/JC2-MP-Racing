@@ -55,7 +55,7 @@ function BaseSpawner:GetCanUse()
 	)
 	
 	return(
-		Client:InState(GUIState.Game) and
+		Client:GetState() == GUIState.Game and
 		LocalPlayer:GetVehicle() == nil and
 		hitDistance < 92 -- No weapon.
 	)

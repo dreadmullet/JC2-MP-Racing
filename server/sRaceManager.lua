@@ -4,7 +4,7 @@
 
 function RaceManager:__init()
 	
-	Server:BroadcastChatMessage(
+	Chat:Broadcast(
 		settings.name.." "..settings.version.." loaded." ,
 		settings.textColorGlobal
 	)

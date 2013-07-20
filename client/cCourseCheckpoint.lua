@@ -22,7 +22,7 @@ end
 function CourseCheckpoint:Render()
 	
 	-- Don't draw while in menus.
-	if not Client:InState(GUIState.Game) then
+	if Client:GetState() ~= GUIState.Game then
 		return
 	end
 	
