@@ -8,7 +8,7 @@ ClusterfuckingLimousines
 DasPhailenring
 DesertBus
 DirtTrackEast
-EastBerawanTogue
+EastBerawanTouge
 EndlessCoast
 FacepalmPond
 HillclimbDesertHighlands
@@ -22,8 +22,8 @@ SidewalkBlazer
 # SkiSlopeSkydive -- totes broken at the moment
 SkullIslandRollercoaster
 SonOfABeach
-SoutheastBerawanTogue
+SoutheastBerawanTouge
 ThreeKingsComplex
 ThreeKingsTriangle
 Vortex
-WestBerawanTogue
+WestBerawanTouge
