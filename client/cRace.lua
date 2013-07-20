@@ -449,9 +449,9 @@ function Race:LocalPlayerInput(args)
 		end
 	end
 	
-	-- Prevent them from driving if race hasn't started yet.
+	-- Prevent them from driving if race hasn't started yet, or if they've finished.
 	-- This could be much better; use different states for starting grid and racing etc.
-	if self.isRacing == false then
+	if self.isRacing == false or self.isFinished == true then
 		for index , input in ipairs(settings.blockedInputsStartingGrid) do
 			if args.input == input then
 				return false
