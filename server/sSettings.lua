@@ -11,7 +11,7 @@ settings.debugLevel = 1
 
 settings.name = "JC2-MP-Racing"
 settings.description = "Race cars and shit."
-settings.version = "0.6.2"
+settings.version = "0.6.3"
 if settings.debugLevel > 1 then
 	settings.version = settings.version.." (debug)"
 end
@@ -35,7 +35,7 @@ settings.vehicleRepairAmount = 0.05
 settings.prizeMoneyDefault = 10000
 settings.prizeMoneyMultiplier = 0.75
 settings.playerDeathDelay = 7
-settings.playerFinishRemoveDelay = 3
+settings.playerFinishRemoveDelay = 12
 settings.lapsMult = 1
 
 -- Public races
