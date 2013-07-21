@@ -6,6 +6,8 @@ function Racer:__init(race , player)
 	self.playerId = player:GetId()
 	self.name = player:GetName()
 	self.steamId = player:GetSteamId().Id
+	-- Pulled from database, and used to update database on our removal.
+	self.playTime = -1
 	self.originalPosition = player:GetPosition()
 	self.originalModelId = player:GetModelId()
 	self.targetCheckpoint = 1
@@ -19,8 +21,10 @@ function Racer:__init(race , player)
 	-- Used with racePosTracker and helps with NetworkSend parameters.
 	self.targetCheckpointDistanceSqr = {[1] = 0}
 	self.updateTick = race.numPlayers
-	-- Procs at end of lap for circuits, or end of race for linear courses.
+	-- Begins at starting grid, used to update playTime.
 	self.raceTimer = nil
+	-- Procs at end of lap for circuits, or end of race for linear courses.
+	self.bestTimeTimer = nil
 	-- Used for both circuits and linear courses.
 	self.bestTime = -1
 	
@@ -33,6 +37,7 @@ function Racer:__init(race , player)
 	end
 	
 	-- Add to database.
+	-- TODO: this causes issues with Vehicle in stats.
 	Stats.AddPlayer(self)
 	
 end
@@ -40,7 +45,7 @@ end
 function Racer:RaceStart()
 	
 	self.outOfVehicleTimer = Timer()
-	self.raceTimer = Timer()
+	self.bestTimeTimer = Timer()
 	
 	-- Disable collisions, if applicable.
 	if self.race.vehicleCollisions == false then
@@ -73,6 +78,10 @@ function Racer:Update()
 end
 
 function Racer:Remove()
+	
+	-- Update database with our new playtime.
+	self.playTime = self.playTime + self.raceTimer:GetSeconds()
+	Stats.PlayerExit(self)
 	
 	self.player:SetPosition(self.originalPosition)
 	self.player:SetModelId(self.originalModelId)
@@ -142,7 +151,7 @@ function Racer:AdvanceLap()
 	self.targetCheckpoint = 1
 	self.numLapsCompleted = self.numLapsCompleted + 1
 	
-	local lapTime = self.raceTimer:GetSeconds()
+	local lapTime = self.bestTimeTimer:GetSeconds()
 	
 	-- If we don't have a best lap time yet, just set it.
 	if self.bestTime == -1 then
@@ -165,7 +174,7 @@ function Racer:AdvanceLap()
 		self.race.course.topRecords[1].playerName = self.name
 	end
 	
-	self.raceTimer:Restart()
+	self.bestTimeTimer:Restart()
 	
 	-- Finish the race if we've completed all laps.
 	if self.numLapsCompleted >= self.race.course.numLaps and self.hasFinished == false then

@@ -50,9 +50,13 @@ function StateStartingGrid:__init(race)
 		table.insert(checkpointData , race.course.checkpoints[n].position)
 	end
 	
-	-- Get names of racers and whatnot, which will be sent to clients.
+	-- Loop through all racers:
+	--    Create each racer's raceTimer.
+	--    Get names of racers and whatnot, which will be sent to clients.
 	local playerIdToInfo = {}
 	for playerId , racer in pairs(self.race.playerIdToRacer) do
+		racer.raceTimer = Timer()
+		
 		playerIdToInfo[playerId] = {["name"] = racer.name , ["color"] = racer.player:GetColor()}
 	end
 	

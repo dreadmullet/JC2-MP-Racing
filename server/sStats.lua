@@ -4,10 +4,16 @@
 
 Stats = {}
 
+Stats.version = 1
+
 -- Logs time elapsed for each function.
 Stats.debug = true
 Stats.timer = nil
 Stats.logFile = nil
+
+----------------------------------------------------------------------------------------------------
+-- Utility
+----------------------------------------------------------------------------------------------------
 
 Stats.DebugTimerStart = function()
 	
@@ -37,6 +43,20 @@ Stats.LogLine = function(message)
 	
 end
 
+Stats.GetTableExists = function(tableName)
+	
+	local query = SQL:Query("select name from sqlite_master where type = 'table' and name = (?)")
+	query:Bind(1 , tableName)
+	local results = query:Execute()
+	
+	return results[1] ~= nil
+	
+end
+
+----------------------------------------------------------------------------------------------------
+-- Stats
+----------------------------------------------------------------------------------------------------
+
 Stats.Init = function()
 	
 	if Stats.debug then
@@ -46,48 +66,81 @@ Stats.Init = function()
 	
 	Stats.DebugTimerStart()
 	
+	local hasDatabase = Stats.GetTableExists("RaceResults")
+	if hasDatabase then
+		local oldVersion
+		local hasVersion = Stats.GetTableExists("RaceVersion")
+		if hasVersion then
+			oldVersion = SQL:Query("select Version from RaceVersion"):Execute()[1].Version
+		else
+			oldVersion = 0
+		end
+		
+		-- Philpax sucks, SQL always returns a string.
+		oldVersion = tonumber(oldVersion)
+		
+		if oldVersion ~= Stats.version then
+			Stats.UpdateFromOldVersion(oldVersion)
+		end
+	end
+	
+	Stats.CreateTables()
+	
+	Stats.DebugTimerEnd("Init")
+	
+end
+
+Stats.CreateTables = function()
+	
 	-- RacePlayers
 	SQL:Execute(
 		"create table if not exists "..
 		"RacePlayers("..
 			"SteamId  integer primary key,"..
 			"Name     text ,"..
-			"Playtime integer default 0".. -- Seconds
+			"PlayTime integer default 0".. -- Seconds
 		")"
 	)
-	
 	-- RaceResults
 	SQL:Execute(
 		"create table if not exists "..
 		"RaceResults("..
-			"Id       integer primary key autoincrement ,"..
-			"SteamId  integer ,"..
-			"Place    integer ,".. -- -1 means DNF
+			"Id                 integer primary key autoincrement ,"..
+			"SteamId            integer ,"..
+			"Place              integer ,".. -- -1 means DNF
 			"CourseFileNameHash integer ,"..
-			"Vehicle  integer ,".. -- Vehicle model id
-			"BestTime integer ,".. -- Milliseconds
+			"Vehicle            integer ,".. -- Vehicle model id
+			"BestTime           integer ,".. -- Milliseconds
 			"foreign key(SteamId) references RacePlayers(SteamId)"..
 		")"
 	)
 	SQL:Execute("create index if not exists RaceResultsSteamId on RaceResults(SteamId)")
 	SQL:Execute(
-		"create index if not exists RaceResultsCourseFileNameHash on RaceResults(CourseFileNameHash)"
+		"create index if not exists RaceResultsCourseFileNameHash "..
+		"on RaceResults(CourseFileNameHash)"
 	)
 	SQL:Execute("create index if not exists RaceResultsBestTime on RaceResults(BestTime)")
-	
 	-- RaceCourses
 	SQL:Execute(
 		"create table if not exists "..
 		"RaceCourses("..
 			"FileNameHash integer primary key ,"..
-			"Name             text default 'Invalid course name' ,"..
-			"TimesPlayed      integer default 0 ,"..
-			"VotesUp          integer default 0 ,"..
-			"VotesDown        integer default 0"..
+			"Name         text default 'Invalid course name' ,"..
+			"TimesPlayed  integer default 0 ,"..
+			"VotesUp      integer default 0 ,"..
+			"VotesDown    integer default 0"..
 		")"
 	)
-	
-	Stats.DebugTimerEnd("Init")
+	-- Version
+	SQL:Execute(
+		"create table if not exists "..
+		"RaceVersion("..
+			"Version integer primary key"..
+		")"
+	)
+	local command = SQL:Command("insert or ignore into RaceVersion(Version) values(?)")
+	command:Bind(1 , Stats.version)
+	command:Execute()
 	
 end
 
@@ -239,5 +292,20 @@ Stats.RaceStart = function(race)
 	end
 	
 	Stats.DebugTimerEnd("RaceStart")
+	
+end
+
+Stats.PlayerExit = function(racer)
+	
+	Stats.DebugTimerStart()
+	
+	local command = SQL:Command(
+		"update RacePlayers set PlayTime = (?) where SteamId = (?)"
+	)
+	command:Bind(1 , racer.playTime)
+	command:Bind(2 , racer.steamId)
+	command:Execute()
+	
+	Stats.DebugTimerEnd("PlayerExit")
 	
 end
