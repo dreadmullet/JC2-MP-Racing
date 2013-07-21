@@ -2,8 +2,6 @@
 -- All database interactions are done here.
 ----------------------------------------------------------------------------------------------------
 
-Stats = {}
-
 Stats.version = 1
 
 -- Logs time elapsed for each function.

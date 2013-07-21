@@ -17,3 +17,5 @@ class("CourseLoader")
 
 class("CourseEditorManager")
 class("CourseEditor")
+
+Stats = {}
