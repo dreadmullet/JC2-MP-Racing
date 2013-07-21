@@ -150,9 +150,12 @@ end
 
 function StateRacing:PlayerEnterCheckpoint(args)
 	
-	local checkpoint = self.race.course.checkpointMap[args.checkpoint:GetId()]
-	if checkpoint then
-		checkpoint:Enter(self.race.playerIdToRacer[args.player:GetId()])
+	local racer = self.race.playerIdToRacer[args.player:GetId()]
+	if racer then	
+		local checkpoint = self.race.course.checkpointMap[args.checkpoint:GetId()]
+		if checkpoint then
+			checkpoint:Enter(racer)
+		end
 	end
 	
 end
