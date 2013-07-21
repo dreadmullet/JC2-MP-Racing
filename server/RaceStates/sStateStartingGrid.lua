@@ -37,9 +37,6 @@ function StateStartingGrid:__init(race)
 		self.race.raceManager:CreateRacePublic()
 	end
 	
-	-- Update database.
-	Stats.RaceStart(self.race)
-	
 	--
 	-- Send info to clients.
 	--
@@ -52,13 +49,19 @@ function StateStartingGrid:__init(race)
 	
 	-- Loop through all racers:
 	--    Create each racer's raceTimer.
+	--    Add ourselves to the database.
 	--    Get names of racers and whatnot, which will be sent to clients.
 	local playerIdToInfo = {}
 	for playerId , racer in pairs(self.race.playerIdToRacer) do
 		racer.raceTimer = Timer()
 		
+		Stats.AddPlayer(racer)
+		
 		playerIdToInfo[playerId] = {["name"] = racer.name , ["color"] = racer.player:GetColor()}
 	end
+	
+	-- Update database.
+	Stats.RaceStart(self.race)
 	
 	-- Make clients instantiate a Race class.
 	race:NetworkSendRace("CreateRace" , settings.version)

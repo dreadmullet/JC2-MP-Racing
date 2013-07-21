@@ -156,9 +156,9 @@ function Race:RemovePlayer(player , message)
 	
 	local racer = self.playerIdToRacer[playerId]
 	
-	-- If they haven't finished yet, add race result to database; their position is -1 (DNF).
-	if racer.hasFinished == false then
-		racer.bestTime = 59 * 60 + 59 + 0.99
+	-- If they haven't finished yet, and the race is going on, add race result to database; their
+	-- position is -1 (DNF).
+	if racer.hasFinished == false and self.stateName ~= "StateAddPlayers" then
 		Stats.AddRaceResult(racer , -1 , self.course)
 	end
 	

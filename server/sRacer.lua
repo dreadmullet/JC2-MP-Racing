@@ -36,10 +36,6 @@ function Racer:__init(race , player)
 		player:SetModelId(table.randomvalue(settings.playerModelIds))
 	end
 	
-	-- Add to database.
-	-- TODO: this causes issues with Vehicle in stats.
-	Stats.AddPlayer(self)
-	
 end
 
 function Racer:RaceStart()
@@ -79,9 +75,11 @@ end
 
 function Racer:Remove()
 	
-	-- Update database with our new playtime.
-	self.playTime = self.playTime + self.raceTimer:GetSeconds()
-	Stats.PlayerExit(self)
+	-- Update database with our new playtime, if the timer is running.
+	if self.raceTimer then
+		self.playTime = self.playTime + self.raceTimer:GetSeconds()
+		Stats.PlayerExit(self)
+	end
 	
 	self.player:SetPosition(self.originalPosition)
 	self.player:SetModelId(self.originalModelId)
