@@ -11,7 +11,7 @@ settings.debugLevel = 1
 
 settings.name = "JC2-MP-Racing"
 settings.description = "Race cars and shit."
-settings.version = "0.6.1"
+settings.version = "0.6.2"
 if settings.debugLevel > 1 then
 	settings.version = settings.version.." (debug)"
 end
