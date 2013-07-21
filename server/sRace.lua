@@ -278,12 +278,6 @@ function Race:RacerFinish(racer)
 	)
 	self.prizeMoneyCurrent = self.prizeMoneyCurrent * settings.prizeMoneyMultiplier
 	
-	-- Tell them how to exit the race.
-	self:MessagePlayer(
-		racer.player ,
-		"Use "..settings.command.." to exit the race."
-	)
-	
 	-- Add race result to database.
 	Stats.AddRaceResult(racer , #self.finishedRacers , self.course)
 	
