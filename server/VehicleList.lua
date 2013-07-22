@@ -1,20 +1,53 @@
-
+----------------------------------------------------------------------------------------------------
 -- Example: 
 -- VehicleList[2].modelId = 2
 -- VehicleList[2].name = Mancini Cavallo 1001
 -- VehicleList[2].vehicleType = "Car"
 -- VehicleList[2].isDLC = false
+----------------------------------------------------------------------------------------------------
+
+VehicleList.SelectRandom = function(vehicleType , allowDLC)
+	
+	local list = {}
+	
+	for modelId , vehicle in pairs(VehicleList) do
+		if type(vehicle) ~= "function" then
+			if vehicleType then
+				if vehicle.vehicleType == vehicleType then
+					if allowDLC then
+						table.insert(list , vehicle)
+					elseif vehicle.isDLC == false then
+						table.insert(list , vehicle)
+					end
+				end
+			else
+				if allowDLC then
+					table.insert(list , vehicle)
+				elseif vehicle.isDLC == false then
+					table.insert(list , vehicle)
+				end
+			end
+		end
+	end
+	
+	if table.count(list) > 0 then
+		return table.randomvalue(list)
+	else
+		return nil
+	end
+	
+end
 
 local IsDLC = true
 local IsNotDLC = false
 
-local AddVehicle = function(modelId , name , vehicleType , IsDLC)
+local AddVehicle = function(modelId , name , vehicleType , isDLC)
 	
 	local vehicle = {}
 	vehicle.modelId = modelId
 	vehicle.name = name
 	vehicle.vehicleType = vehicleType
-	vehicle.isDLC = IsDLC
+	vehicle.isDLC = isDLC
 	VehicleList[modelId] = vehicle
 	
 end
