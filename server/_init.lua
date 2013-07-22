@@ -20,3 +20,4 @@ class("CourseEditor")
 
 Stats = {}
 VehicleList = {}
+WTF = {}

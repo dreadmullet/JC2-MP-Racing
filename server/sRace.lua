@@ -158,8 +158,10 @@ function Race:RemovePlayer(player , message)
 	
 	-- If they haven't finished yet, and the race is going on, add race result to database; their
 	-- position is -1 (DNF).
-	if racer.hasFinished == false and self.stateName ~= "StateAddPlayers" then
-		Stats.AddRaceResult(racer , -1 , self.course)
+	if not settings.WTF then
+		if racer.hasFinished == false and self.stateName ~= "StateAddPlayers" then
+			Stats.AddRaceResult(racer , -1 , self.course)
+		end
 	end
 	
 	racer:Remove()
@@ -279,7 +281,9 @@ function Race:RacerFinish(racer)
 	self.prizeMoneyCurrent = self.prizeMoneyCurrent * settings.prizeMoneyMultiplier
 	
 	-- Add race result to database.
-	Stats.AddRaceResult(racer , #self.finishedRacers , self.course)
+	if not settings.WTF then
+		Stats.AddRaceResult(racer , #self.finishedRacers , self.course)
+	end
 	
 	-- Messages to immediately print for all finishers.
 	if #self.finishedRacers == 1 then
