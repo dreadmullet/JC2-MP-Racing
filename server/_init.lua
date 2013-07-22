@@ -19,3 +19,4 @@ class("CourseEditorManager")
 class("CourseEditor")
 
 Stats = {}
+VehicleList = {}

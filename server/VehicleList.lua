@@ -1,9 +1,9 @@
 
 -- Example: 
--- Vehicles[2].modelId = 2
--- Vehicles[2].name = Mancini Cavallo 1001
--- Vehicles[2].vehicleType = "Car"
--- Vehicles[2].isDLC = false
+-- VehicleList[2].modelId = 2
+-- VehicleList[2].name = Mancini Cavallo 1001
+-- VehicleList[2].vehicleType = "Car"
+-- VehicleList[2].isDLC = false
 
 local IsDLC = true
 local IsNotDLC = false
@@ -15,7 +15,7 @@ local AddVehicle = function(modelId , name , vehicleType , IsDLC)
 	vehicle.name = name
 	vehicle.vehicleType = vehicleType
 	vehicle.isDLC = IsDLC
-	Vehicles[modelId] = vehicle
+	VehicleList[modelId] = vehicle
 	
 end
 
