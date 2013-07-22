@@ -16,10 +16,10 @@ Racing = {}
 -- Always returns player id.
 Racing.PlayerId = function(playerIdOrPlayer)
 	
-	if IsValid(playerIdOrPlayer) then
-		if type(playerIdOrPlayer) == "number" then
-			return playerIdOrPlayer
-		else
+	if type(playerIdOrPlayer) == "number" then
+		return playerIdOrPlayer
+	else
+		if IsValid(playerIdOrPlayer) then
 			return playerIdOrPlayer:GetId()
 		end
 	end
