@@ -59,7 +59,12 @@ Stats.Init = function()
 	
 	if Stats.debug then
 		Stats.logFile = io.open("Stats.log" , "a+")
-		Stats.logFile:write("\n")
+		if Stats.logFile then
+			Stats.logFile:write("\n")
+		else
+			error("Cannot open Stats.log. Are permissions set correctly?")
+			Stats.debug = nil
+		end
 	end
 	
 	Stats.DebugTimerStart()
