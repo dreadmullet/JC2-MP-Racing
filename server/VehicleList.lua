@@ -10,22 +10,20 @@ VehicleList.SelectRandom = function(vehicleType , allowDLC)
 	
 	local list = {}
 	
-	for modelId , vehicle in pairs(VehicleList) do
-		if type(vehicle) ~= "function" then
-			if vehicleType then
-				if vehicle.vehicleType == vehicleType then
-					if allowDLC then
-						table.insert(list , vehicle)
-					elseif vehicle.isDLC == false then
-						table.insert(list , vehicle)
-					end
-				end
-			else
+	for modelId , vehicle in ipairs(VehicleList) do
+		if vehicleType then
+			if vehicle.vehicleType == vehicleType then
 				if allowDLC then
 					table.insert(list , vehicle)
 				elseif vehicle.isDLC == false then
 					table.insert(list , vehicle)
 				end
+			end
+		else
+			if allowDLC then
+				table.insert(list , vehicle)
+			elseif vehicle.isDLC == false then
+				table.insert(list , vehicle)
 			end
 		end
 	end
@@ -35,6 +33,18 @@ VehicleList.SelectRandom = function(vehicleType , allowDLC)
 	else
 		return nil
 	end
+	
+end
+
+VehicleList.FindByName = function(name)
+	
+	for modelId , vehicle in ipairs(VehicleList) do
+		if vehicle.name:find(name) then
+			return vehicle
+		end
+	end
+	
+	return nil
 	
 end
 
