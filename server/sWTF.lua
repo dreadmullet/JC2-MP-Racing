@@ -21,7 +21,6 @@ WTF.RandomiseCheckpointActions = function(course)
 	table.insert(names , "ActionJump")
 	table.insert(names , "ActionTeleportUp")
 	table.insert(names , "ActionSpawnBus")
-	table.insert(names , "ActionSuperBoost")
 	table.insert(names , "ActionReverseDirection")
 	
 	for index , cp in ipairs(course.checkpoints) do
