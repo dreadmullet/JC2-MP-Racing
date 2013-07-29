@@ -13,7 +13,7 @@ function CourseCheckpoint:__init(course)
 	self.checkpoint = nil
 	-- When racer enters checkpoint, these functions of ours are called. One argument: racer.
 	-- Array of function names.
-	self.actions = {[1] = "RepairCar"}
+	self.actions = {[1] = "ActionRepairCar"}
 	
 end
 

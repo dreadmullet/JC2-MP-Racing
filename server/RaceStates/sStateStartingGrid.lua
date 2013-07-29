@@ -9,6 +9,7 @@ function StateStartingGrid:__init(race)
 	
 	if settings.WTF then
 		WTF.RandomiseCourseVehicles(race.course)
+		WTF.RandomiseCheckpointActions(race.course)
 	end
 	race.course:AssignRacers(self.race.playerIdToRacer)
 	race.course:SpawnVehicles()
