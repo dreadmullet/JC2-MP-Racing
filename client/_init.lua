@@ -1,13 +1,17 @@
 
 class("Race")
+	class("StateNone")
+	class("StateAddPlayers")
+	class("StateStartingGrid")
+	class("StateRacing")
+	class("StateFinished")
+	class("StateTerminate")
 class("LargeMessage")
-
 class("Course")
 class("CourseCheckpoint")
 class("CourseSpawn")
 
 class("CourseEditor")
-
 class("Tool")
 	class("None")(Tool)
 	class("BaseSpawner")(Tool)
@@ -15,8 +19,8 @@ class("Tool")
 		class("VehicleSpawner")(BaseSpawner)
 	class("CourseSettings")(Tool)
 	class("LoadCourseTool")(Tool)
-
 class("Object")
 	class("CheckpointObject")(Object)
-
 class("CEMainMenu")
+
+RaceGUI = {}

@@ -104,8 +104,13 @@ function Race:AddPlayer(player , message)
 	
 	self.raceManager.playerIds[playerId] = true
 	
-	self.playerIdToRacer[playerId] = Racer(self , player)
+	local racer = Racer(self , player)
+	self.playerIdToRacer[playerId] = racer
 	self.numPlayers = self.numPlayers + 1
+	
+	if self.state.RacerJoin then
+		self.state.RacerJoin(racer)
+	end
 	
 	if message then
 		self:MessagePlayer(player , message)
@@ -179,9 +184,6 @@ function Race:RemovePlayer(player , message)
 		-- self:MessageServer("No players left; ending race.")
 		self:CleanUp()
 	end
-	
-	-- End the race on the client's end.
-	Network:Send(racer.player , "EndRace")
 	
 end
 

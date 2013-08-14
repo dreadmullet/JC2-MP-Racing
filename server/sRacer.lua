@@ -27,6 +27,7 @@ function Racer:__init(race , player)
 	self.bestTimeTimer = nil
 	-- Used for both circuits and linear courses.
 	self.bestTime = -1
+	self.startPosition = -1
 	
 	race.playersOutOfVehicle[player:GetId()] = true
 	
@@ -35,6 +36,12 @@ function Racer:__init(race , player)
 	else
 		player:SetModelId(table.randomvalue(settings.playerModelIds))
 	end
+	
+	local args = {}
+	args.version = settings.version
+	args.stateName = self.race.stateName
+	args.maxPlayers = self.race.maxPlayers
+	Network:Send(self.player , "Initialize" , args)
 	
 end
 
@@ -99,6 +106,10 @@ function Racer:Remove()
 	end
 	
 	self.race.playersOutOfVehicle[self.player:GetId()] = nil
+	
+	local args = {}
+	args.stateName = "StateTerminate"
+	Network:Send(self.player , "SetState" , args)
 	
 end
 
@@ -215,13 +226,10 @@ function Racer:Finish()
 		self
 	)
 	
-	Network:Send(self.player , "Finish")
-	local message = Utility.NumberToPlaceString(#self.race.finishedRacers).." place!"
-	Network:Send(
-		self.player ,
-		"ShowLargeMessage" ,
-		{message , 7.5}
-	)
+	local args = {}
+	args.stateName = "StateFinished"
+	args.place = #self.race.finishedRacers
+	Network:Send(self.player , "SetState" , args)
 	
 end
 

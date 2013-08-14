@@ -1,8 +1,17 @@
 ----------------------------------------------------------------------------------------------------
--- settingsCE is declared in shared/sharedCourseEditor.lua.
+-- Calls Terminate on the Race instance.
 ----------------------------------------------------------------------------------------------------
 
-settingsCE.gui = {}
+function StateTerminate:__init(race , args)
+	
+	race:Terminate()
+	
+end
 
-settingsCE.gui.toolWindow = {}
-settingsCE.gui.toolWindow.elementHeight = 0.1
+function StateTerminate:Run()
+	
+end
+
+function StateTerminate:End()
+	
+end

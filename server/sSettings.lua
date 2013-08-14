@@ -4,14 +4,15 @@ debug = {}
 -- debug.alwaysMaxPlayers = true
 -- debug.dontRemoveIfOutOfVehicle = true
 -- debug.quickRaceStart = true
+-- debug.oneLap = true
 
 settings = {}
 
-settings.debugLevel = 1
+settings.debugLevel = 3
 
 settings.name = "JC2-MP-Racing"
 settings.description = "Race cars and shit."
-settings.version = "0.6.7"
+settings.version = "0.7.1"
 if settings.debugLevel > 1 then
 	settings.version = settings.version.." (debug)"
 end
@@ -37,6 +38,7 @@ settings.prizeMoneyMultiplier = 0.75
 settings.playerDeathDelay = 7
 settings.playerFinishRemoveDelay = 12
 settings.lapsMult = 1
+if debug.oneLap then settings.lapsMult = 0 end
 
 -- Public races
 settings.command = "/race"

@@ -8,6 +8,7 @@ function LargeMessage:__init(message , durationSeconds)
 	self.durationSeconds = durationSeconds
 	
 	self.timer = Timer()
+	self.exists = true
 	
 	self.renderEventSub = Events:Subscribe("Render" , self , self.Draw)
 	
@@ -71,6 +72,9 @@ end
 function LargeMessage:Destroy()
 	
 	LargeMessage.messageCount = LargeMessage.messageCount - 1
-	Events:Unsubscribe(self.renderEventSub)
+	if self.exists then
+		Events:Unsubscribe(self.renderEventSub)
+		self.exists = false
+	end
 	
 end

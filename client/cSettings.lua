@@ -9,6 +9,11 @@ math.random()
 -- Racing
 ----------------------------------------------------------------------------------------------------
 
+settings.debugLevel = 1
+
+settings.countDownNumMessages = 3
+settings.countDownInterval = 2
+
 settings.blockedInputs = {
 	Action.FireLeft , -- Blocks firing weapons on foot.
 	Action.FireRight , -- Blocks firing weapons on foot.
@@ -35,7 +40,6 @@ settings.blockedInputsStartingGrid = {
 settings.sendCheckpointDistanceInterval = 0.4 + math.random() * 0.027
 
 settings.gamemodeName = "Racing"
-
 settings.gamemodeDescription = [[
 The Racing gamemode lets you race other players in a variety of races, using vehicles from sports cars to buses to planes. It comes with a fully-featured GUI, letting you focus on the race.
  
@@ -64,7 +68,7 @@ settings.shadowColor = Color(0 , 0 , 0 , 255)
 settings.startingGridBackgroundTopRight = Vector2(0.88 , -0.92)
 -- Normalized.
 settings.startingGridBackgroundSize = Vector2(0.35 , 0.105)
-settings.startingGridTextSize = "Large"
+settings.startingGridTextSize = TextSize.Large
 
 settings.padding = 6
 
@@ -78,18 +82,18 @@ settings.nextCheckpointArrowColor = Color(228 , 142 , 56 , 128)
 
 -- Normalized positions.
 settings.lapLabelPos = Vector2(0.33 , -0.58)
-settings.lapLabelSize = "Large"
+settings.lapLabelSize = TextSize.Large
 settings.lapCounterPos = Vector2(0.33 , -0.68)
-settings.lapCounterSize = "Huge"
+settings.lapCounterSize = TextSize.Huge
 
 settings.racePosLabel = "Pos"
 settings.racePosLabelPos = Vector2(-0.33 , -0.58)
-settings.racePosLabelSize = "Large"
+settings.racePosLabelSize = TextSize.Large
 settings.racePosPos = Vector2(-0.33 , -0.68)
-settings.racePosSize = "Huge"
+settings.racePosSize = TextSize.Huge
 
 settings.timerLabelsStart = Vector2(0.95 , -0.39)
-settings.timerLabelsSize = "Default"
+settings.timerLabelsSize = TextSize.Default
 
 settings.minimapCheckpointColor1 = Color(245 , 25 , 19)
 settings.minimapCheckpointColor2 = Color(245 , 100 , 19 , 112)
@@ -98,16 +102,10 @@ settings.minimapCheckpointColorGrey2 = Color(130 , 70 , 60 , 220) -- Border
 
 -- Normalized.
 settings.leaderboardPos = Vector2(-0.95 , -0.39)
-settings.leaderboardTextSize = "Default"
+settings.leaderboardTextSize = TextSize.Default
 settings.leaderboardMaxPlayers = 8
 settings.maxPlayerNameLength = 16
 
-settings.largeMessageTextSize = "Huge"
+settings.largeMessageTextSize = TextSize.Huge
 settings.largeMessageBlendRatio = 0.1
 settings.largeMessagePos = Vector2(0 , -0.2)
-
--- 0 = default
--- -1 = No minimap icons and low quality checkpoint arrow.
-settings.guiQuality = 0
-
-settings.useNametags = false

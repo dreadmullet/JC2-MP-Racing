@@ -1,3 +1,4 @@
+
 function ModulesLoad()
 	
 	-- Add us to the help menu.
@@ -19,3 +20,10 @@ end
 
 Events:Subscribe("ModulesLoad" , ModulesLoad)
 Events:Subscribe("ModuleUnload" , ModuleUnload)
+
+Network:Subscribe(
+	"Initialize" ,
+	function(args)
+		local race = Race(args)
+	end
+)

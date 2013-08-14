@@ -57,6 +57,7 @@ function Course:AssignRacers(playerIdToRacer)
 	
 	local spawnIndex = 1
 	for index , racer in ipairs(racers) do
+		racer.startPosition = index
 		self.spawns[spawnIndex].racer = racer
 		spawnIndex = spawnIndex + 1
 	end

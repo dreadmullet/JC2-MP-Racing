@@ -50,22 +50,6 @@ function StateRacing:__init(race)
 		Network:Subscribe("ReceiveCheckpointDistanceSqr" , self , self.ReceiveCheckpointDistanceSqr)
 	)
 	
-	--
-	-- Send network events.
-	--
-	
-	self.race:NetworkSendRace(
-		"ShowLargeMessage" ,
-		{"GO!" , 2.5}
-	)
-	
-	race:NetworkSendRace("StartRace")
-	
-	race:NetworkSendRace(
-		"SetRacePositionInfo" ,
-		{race.numPlayers , race.numPlayers}
-	)
-	
 end
 
 function StateRacing:Run()

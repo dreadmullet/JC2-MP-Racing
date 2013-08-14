@@ -49,6 +49,12 @@ function StateAddPlayers:End()
 	
 end
 
+function StateAddPlayers:RacerJoin(racer)
+	
+	self.race:NetworkSendRace("SetPlayerCount" , self.race.numPlayers)
+	
+end
+
 
 function StateAddPlayers:PlayerChat(args)
 	

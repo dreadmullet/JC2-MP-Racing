@@ -7,7 +7,7 @@ Events:Subscribe(
 	function()
 		Stats.Init()
 		raceManager = RaceManager()
-		courseEditorManager = CourseEditorManager(raceManager)
+		-- courseEditorManager = CourseEditorManager(raceManager)
 	end
 )
 
