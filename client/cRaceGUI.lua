@@ -5,12 +5,9 @@
 -- Draw version at the top right.
 RaceGUI.DrawVersion = function(version)
 	
-	local textSize = Vector2(
-		Render:GetTextWidth(version , TextSize.Default) ,
-		Render:GetTextHeight(version , TextSize.Default)
-	)
+	local textHeight = Render:GetTextHeight("|" , TextSize.Default)
 	DrawText(
-		Vector2(0.875 * Render.Width , textSize.y * 0.5 + 1) ,
+		Vector2(0.875 * Render.Width , textHeight * 0.5 + 1) ,
 		"JC2-MP-Racing "..version ,
 		settings.textColor ,
 		TextSize.Default ,
@@ -22,16 +19,25 @@ end
 -- Draw small course name at the top.
 function RaceGUI.DrawCourseName(courseName)
 	
-	local textSize = Vector2(
-		Render:GetTextWidth(courseName , TextSize.Default) ,
-		Render:GetTextHeight(courseName , TextSize.Default)
-	)
-	
+	local textHeight = Render:GetTextHeight("|" , TextSize.Default)
 	DrawText(
-		Vector2(0.5 * Render.Width , textSize.y * 0.5 + 1) ,
+		Vector2(0.5 * Render.Width , textHeight * 0.5 + 1) ,
 		courseName ,
 		settings.textColor ,
 		TextSize.Default ,
+		"center"
+	)
+	
+end
+
+function RaceGUI.DrawPlayerCount(args)
+	
+	local textHeight = Render:GetTextHeight("|" , TextSize.Large)
+	DrawText(
+		Vector2(0.5 * Render.Width , textHeight * 2 + 1) ,
+		string.format("Players: %s/%s" , args.numPlayers , args.maxPlayers) ,
+		settings.textColor ,
+		TextSize.Large ,
 		"center"
 	)
 	

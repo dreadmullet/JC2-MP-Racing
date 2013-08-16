@@ -11,7 +11,11 @@ end
 
 function StateAddPlayers:Run()
 	
-	
+	-- DrawPlayerCount
+	local args = {}
+	args.numPlayers = self.numPlayers
+	args.maxPlayers = self.maxPlayers
+	RaceGUI.DrawPlayerCount(args)
 	
 end
 
@@ -25,10 +29,5 @@ end
 function StateAddPlayers:SetPlayerCount(numPlayers)
 	
 	self.numPlayers = numPlayers
-	
-	Chat:Print(
-		string.format("%i/%i players" , self.numPlayers , self.maxPlayers) ,
-		settings.textColor
-	)
 	
 end
