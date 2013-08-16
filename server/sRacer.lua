@@ -241,7 +241,7 @@ function Racer:EnterVehicle(args)
 	else
 		if self.race.stateName ~= "StateAddPlayers" and not debug.dontRestrictVehicle then
 			-- Remove player from race if they steal a vehicle.
-			if args.isdriver and args.olddriver then
+			if args.is_driver and args.old_driver then
 				self.race:MessageRace(
 					args.player:GetName().." has been removed for vehicle theft."
 				)
