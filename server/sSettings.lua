@@ -8,7 +8,7 @@ debug = {}
 
 settings = {}
 
-settings.debugLevel = 3
+settings.debugLevel = 1
 
 settings.name = "JC2-MP-Racing"
 settings.description = "Race cars and shit."
@@ -49,7 +49,7 @@ settings.admins = {
 	SteamID("76561197985532207") , -- dreadmullet
 }
 
-settings.WTF = true
+settings.WTF = false
 
 settings.courseEditorEnabled = false
 
