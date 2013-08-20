@@ -34,6 +34,10 @@ settings.blockedInputsStartingGrid = {
 	Action.PlaneDecTrust ,
 	Action.BoatForward ,
 	Action.BoatBackward ,
+	Action.MoveForward ,
+	Action.MoveBackward ,
+	Action.MoveLeft ,
+	Action.MoveRight ,
 }
 
 -- Make sure everyone doesn't send their distance at the same time.
