@@ -20,7 +20,13 @@ function DelayedFunction:Update()
 	
 	if self.timer:GetSeconds() >= self.delay then
 		self.func(self.firstArg)
-		Events:Unsubscribe(self.event)
+		self:Destroy()
 	end
+	
+end
+
+function DelayedFunction:Destroy()
+	
+	Events:Unsubscribe(self.event)
 	
 end
