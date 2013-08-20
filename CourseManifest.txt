@@ -19,7 +19,7 @@ PanauCanals
 ReapersRun
 SelatanBackcountry
 SidewalkBlazer
-# SkiSlopeSkydive -- totes broken at the moment
+SkiSlopeSkydive
 SkullIslandRollercoaster
 SonOfABeach
 SoutheastBerawanTouge

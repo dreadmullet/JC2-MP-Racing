@@ -14,7 +14,8 @@ end
 
 function CourseSpawn:SpawnVehicle()
 	
-	if self.modelId == -1 then
+	-- If there are no vehicles, it means this is an on-foot race.
+	if #self.modelIds == 0 then
 		return
 	end
 	
@@ -45,12 +46,11 @@ function CourseSpawn:SpawnRacer()
 		local angleForward = self.angle
 		local dirToPlayerSpawn = angleForward * Vector(-1 , 0 , 0)
 		teleportPos = teleportPos + dirToPlayerSpawn * 2
+		self.racer.assignedVehicleId = self.vehicle:GetId()
 	-- Otherwise, place them directly on the spawn position.
 	else
 		
 	end
-	
-	self.racer.assignedVehicleId = self.vehicle:GetId()
 	
 	self.racer.player:Teleport(teleportPos , self.angle)
 	self.racer.player:SetWorldId(self.course.race.worldId)
