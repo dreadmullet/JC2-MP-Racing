@@ -72,23 +72,27 @@ function StateStartingGrid:__init(race)
 		startPositions[racer.playerId] = racer.startPosition
 	end
 	
-	local args = {}
-	args.stateName = "StateStartingGrid"
-	args.delay = settings.startingGridWaitSeconds
-	args.numPlayers = self.race.numPlayers
-	args.playerIdToInfo = playerIdToInfo
-	args.startPositions = startPositions
-	args.courseInfo = {
-		race.course.name ,
-		race.course.type ,
-		race.course.numLaps ,
-		race.course.weatherSeverity ,
-		race.course.authors ,
-	}
-	args.recordTime = race.course.topRecords[1].time
-	args.recordTimePlayerName = race.course.topRecords[1].playerName
-	args.checkpointData = checkpointData
-	self.race:NetworkSendRace("SetState" , args)
+	for id , racer in pairs(self.race.playerIdToRacer) do
+		local args = {}
+		args.stateName = "StateStartingGrid"
+		args.delay = settings.startingGridWaitSeconds
+		args.numPlayers = self.race.numPlayers
+		args.playerIdToInfo = playerIdToInfo
+		args.startPositions = startPositions
+		args.courseInfo = {
+			race.course.name ,
+			race.course.type ,
+			race.course.numLaps ,
+			race.course.weatherSeverity ,
+			race.course.authors ,
+		}
+		args.recordTime = race.course.topRecords[1].time
+		args.recordTimePlayerName = race.course.topRecords[1].playerName
+		args.checkpointData = checkpointData
+		-- Player-specific.
+		args.assignedVehicleId = racer.assignedVehicleId
+		self.race:NetworkSendRace("SetState" , args)
+	end
 	
 end
 

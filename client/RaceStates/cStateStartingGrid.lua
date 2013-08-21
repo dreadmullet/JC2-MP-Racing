@@ -15,6 +15,7 @@ function StateStartingGrid:__init(race , args)
 	self.race.recordTime = args.recordTime
 	self.race.recordTimePlayerName = args.recordTimePlayerName
 	self.race.checkpoints = args.checkpointData
+	self.race.assignedVehicleId = args.assignedVehicleId
 	
 	self.timer = Timer()
 	
@@ -126,6 +127,15 @@ function StateStartingGrid:End()
 end
 
 function StateStartingGrid:LocalPlayerInput(args)
+	
+	-- If we're on foot, block our movement.
+	if self.race.assignedVehicleId == -1 then
+		for index , input in ipairs(settings.blockedInputsStartingGridOnFoot) do
+			if args.input == input and args.state ~= 0 then
+				return false
+			end
+		end
+	end
 	
 	for index , input in ipairs(settings.blockedInputsStartingGrid) do
 		if args.input == input and args.state ~= 0 then

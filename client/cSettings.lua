@@ -24,7 +24,6 @@ settings.blockedInputs = {
 	Action.PrevWeapon , -- Blocks switching weapons.
 	-- Action.StuntJump , -- Prevents people from riding on cars and hopping on people's bikes.
 }
--- Not sure if all of these work.
 settings.blockedInputsStartingGrid = {
 	Action.Accelerate ,
 	Action.Reverse ,
@@ -34,6 +33,9 @@ settings.blockedInputsStartingGrid = {
 	Action.PlaneDecTrust ,
 	Action.BoatForward ,
 	Action.BoatBackward ,
+	
+}
+settings.blockedInputsStartingGridOnFoot = {
 	Action.MoveForward ,
 	Action.MoveBackward ,
 	Action.MoveLeft ,
