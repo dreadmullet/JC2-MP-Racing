@@ -4,6 +4,8 @@
 
 function GMTestServer:__init()
 	
+	GMBase.__init(self)
+	
 	Chat:Broadcast(
 		settings.name.." "..settings.version.." loaded." ,
 		settings.textColorGlobal
@@ -13,9 +15,6 @@ function GMTestServer:__init()
 	
 	self.races = {}
 	self.currentPublicRace = nil
-	-- Key = player id
-	-- Value = true
-	self.playerIds = {}
 	self.numPublicRacesRan = 0
 	
 	if settings.doPublicRaces then
@@ -113,27 +112,6 @@ function GMTestServer:RemoveRace(raceToRemove)
 	
 end
 
-function GMTestServer:GetIsAdmin(player)
-	
-	local playerSteamId = player:GetSteamId()
-	for n , steamId in ipairs(settings.admins) do
-		if playerSteamId == steamId then
-			return true
-		end
-	end
-	
-	return false
-	
-end
-
-function GMTestServer:HasPlayer(player)
-	
-	local playerId = Racing.PlayerId(player)
-	
-	return self.playerIds[playerId]
-	
-end
-
 function GMTestServer:RemovePlayer(player)
 	
 	for index , race in ipairs(self.races) do
@@ -145,57 +123,9 @@ function GMTestServer:RemovePlayer(player)
 	
 end
 
-function GMTestServer:MessagePlayer(player , message)
-	
-	player:SendChatMessage("[Racing] "..message , settings.textColorLocal)
-	
-end
-
 function GMTestServer:GenerateName()
 	
 	return "Public"..string.format("%i" , self.numPublicRacesRan + 1)
-	
-end
-
-function GMTestServer:AdminChangeSetting(player , settingName , value)
-	
-	-- Argument checking.
-	if settingName == nil then
-		self:MessagePlayer(player , "Error: setting name required")
-		return
-	elseif settings[settingName] == nil then
-		self:MessagePlayer(player , "Error: invalid setting")
-		return
-	elseif value == nil then
-		self:MessagePlayer(player , "Error: value required")
-		return
-	end
-	
-	value = Utility.CastFromString(value , type(settings[settingName]))
-	
-	if value == nil then
-		self:MessagePlayer(player , "Error: invalid value")
-		return
-	end
-	
-	settings[settingName] = value
-	
-	self:MessagePlayer(player , "Set settings."..settingName.." to "..tostring(value))
-	
-end
-
-function GMTestServer:AdminPrintSetting(player , settingName)
-	
-	-- Argument checking.
-	if settingName == nil then
-		self:MessagePlayer(player , "Error: setting name required")
-		return
-	elseif settings[settingName] == nil then
-		self:MessagePlayer(player , "Error: invalid setting")
-		return
-	end
-	
-	self:MessagePlayer(player , "settings."..settingName.." is "..tostring(settings[settingName]))
 	
 end
 
@@ -205,14 +135,14 @@ end
 
 function GMTestServer:PlayerChat(args)
 	
-	-- Split the message up into words (by spaces).
-	local words = {}
-	for word in string.gmatch(args.text , "[^%s]+") do
-		table.insert(words , word)
-	end
-	
-	if words[1] == settings.command then
-		if words[2] == nil then
+	if args.text:sub(1 , settings.command:len()) == settings.command then
+		-- Split the message up into words (by spaces).
+		local words = {}
+		for word in string.gmatch(args.text , "[^%s]+") do
+			table.insert(words , word)
+		end
+		
+		if words[1] == settings.command and words[2] == nil then
 			-- Join a public race.
 			if self.currentPublicRace:HasPlayer(args.player) then
 				self.currentPublicRace:RemovePlayer(
@@ -226,16 +156,14 @@ function GMTestServer:PlayerChat(args)
 					self.currentPublicRace:JoinPlayer(args.player)
 				end
 			end
-		elseif self:GetIsAdmin(args.player) then
-			if words[2] == "create" and words[3] then
-				self:CreateRace(words[3])
-			elseif words[2] == "set" then
-				self:AdminChangeSetting(args.player , words[3] , words[4])
-			elseif words[2] == "get" then
-				self:AdminPrintSetting(args.player , words[3])
-			end
+			
+			return true
 		end
+		
+		return false
 	end
+	
+	return true
 	
 end
 

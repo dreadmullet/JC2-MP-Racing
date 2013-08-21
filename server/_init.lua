@@ -1,5 +1,8 @@
 
-class("GMTestServer")
+-- Game managers
+class("GMBase")
+	class("GMTestServer")(GMBase)
+
 class("Race")
 class("Racer")
 
