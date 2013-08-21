@@ -42,9 +42,9 @@ M.LapTimeString = function(totalSeconds)
 	
 end
 
-M.EventSub = function(instance , functionName)
+M.EventSub = function(instance , functionName , optionalName)
 	
-	local sub = Events:Subscribe(functionName , instance , instance[functionName])
+	local sub = Events:Subscribe(functionName , instance , instance[optionalName or functionName])
 	if instance.eventSubs == nil then
 		instance.eventSubs = {}
 	end
@@ -54,9 +54,9 @@ M.EventSub = function(instance , functionName)
 	
 end
 
-M.NetSub = function(instance , functionName)
+M.NetSub = function(instance , functionName , optionalName)
 	
-	local sub = Network:Subscribe(functionName , instance , instance[functionName])
+	local sub = Network:Subscribe(functionName , instance , instance[optionalName or functionName])
 	if instance.netSubs == nil then
 		instance.netSubs = {}
 	end
