@@ -6,11 +6,6 @@ function GMTestServer:__init()
 	
 	GMBase.__init(self)
 	
-	Chat:Broadcast(
-		settings.name.." "..settings.version.." loaded." ,
-		settings.textColorGlobal
-	)
-	
 	self.courseManagerAll = CourseManager("CourseManifest.txt")
 	
 	self.races = {}

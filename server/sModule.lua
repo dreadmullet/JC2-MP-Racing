@@ -5,6 +5,11 @@
 Events:Subscribe(
 	"ModuleLoad" ,
 	function()
+		Chat:Broadcast(
+			settings.name.." "..settings.version.." loaded." ,
+			settings.textColorGlobal
+		)
+		
 		Stats.Init()
 		gameManager = _G["GM"..settings.gameManager]()
 		-- courseEditorManager = CourseEditorManager(raceManager)
