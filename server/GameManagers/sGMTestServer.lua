@@ -130,6 +130,9 @@ function GMTestServer:RaceStateChange(race , stateName)
 	-- Create another race when the current race starts.
 	if stateName == "StateStartingGrid" then
 		self:CreateRacePublic()
+	-- Remove race when it's completely over.
+	elseif stateName == "StateNone" then
+		self:RemoveRace(race)
 	end
 	
 end

@@ -238,9 +238,6 @@ end
 
 function Race:CleanUp()
 	
-	-- Remove self from the GMTestServer.
-	self.gameManager:RemoveRace(self)
-	
 	self:SetState("StateNone")
 	
 	-- Clean up Racers.
