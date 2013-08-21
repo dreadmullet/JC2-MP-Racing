@@ -21,6 +21,7 @@ function GMBase:__init()
 	self.MessagePlayer = GMBase.MessagePlayer
 	self.AdminChangeSetting = GMBase.AdminChangeSetting
 	self.AdminPrintSetting = GMBase.AdminPrintSetting
+	self.RaceStateChange = GMBase.RaceStateChange
 	
 end
 
@@ -90,6 +91,12 @@ function GMBase:AdminPrintSetting(player , settingName)
 	end
 	
 	self:MessagePlayer(player , "settings."..settingName.." is "..tostring(settings[settingName]))
+	
+end
+
+function GMBase:RaceStateChange(race , stateName)
+	
+	
 	
 end
 

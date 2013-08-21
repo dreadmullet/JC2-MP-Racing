@@ -5,6 +5,7 @@
 function GMTestServer:__init()
 	
 	GMBase.__init(self)
+	self.RaceStateChange = GMTestServer.RaceStateChange
 	
 	self.courseManagerAll = CourseManager("CourseManifest.txt")
 	
@@ -121,6 +122,15 @@ end
 function GMTestServer:GenerateName()
 	
 	return "Public"..string.format("%i" , self.numPublicRacesRan + 1)
+	
+end
+
+function GMTestServer:RaceStateChange(race , stateName)
+	
+	-- Create another race when the current race starts.
+	if stateName == "StateStartingGrid" then
+		self:CreateRacePublic()
+	end
 	
 end
 

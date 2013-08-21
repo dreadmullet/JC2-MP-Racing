@@ -39,20 +39,22 @@ function Race:__init(name , gameManager , worldId , course)
 	
 end
 
-function Race:SetState(state , ...)
+function Race:SetState(stateName , ...)
 	
 	if settings.debugLevel >= 2 then
-		print("Changing state to "..state)
+		print("Changing state to "..stateName)
 	end
 	
 	-- Call End function on previous state.
 	if self.state.End then
 		self.state:End()
 	end
-	-- Something like, StateRacing(self , someArg1 , someArg2)
-	self.state = _G[state](self , ...)
 	
-	self.stateName = state
+	self.stateName = stateName
+	-- Something like, StateRacing(self , someArg1 , someArg2)
+	self.state = _G[self.stateName](self , ...)
+	
+	self.gameManager:RaceStateChange(self , stateName)
 	
 end
 
