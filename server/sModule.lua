@@ -1,12 +1,12 @@
 ----------------------------------------------------------------------------------------------------
--- Event to create the RaceManager, as well as misc stuff like global functions.
+-- Event to create the game manager, as well as misc stuff like global functions.
 ----------------------------------------------------------------------------------------------------
 
 Events:Subscribe(
 	"ModuleLoad" ,
 	function()
 		Stats.Init()
-		raceManager = RaceManager()
+		gameManager = _G["GM"..settings.gameManager]()
 		-- courseEditorManager = CourseEditorManager(raceManager)
 	end
 )

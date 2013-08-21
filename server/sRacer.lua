@@ -31,7 +31,7 @@ function Racer:__init(race , player)
 	
 	race.playersOutOfVehicle[player:GetId()] = true
 	
-	if race.raceManager:GetIsAdmin(player) then
+	if race.gameManager:GetIsAdmin(player) then
 		player:SetModelId(settings.playerModelIdAdmin)
 	else
 		player:SetModelId(table.randomvalue(settings.playerModelIds))

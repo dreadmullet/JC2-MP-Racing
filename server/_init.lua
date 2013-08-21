@@ -1,5 +1,5 @@
 
-class("RaceManager")
+class("GMTestServer")
 class("Race")
 class("Racer")
 

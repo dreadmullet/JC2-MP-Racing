@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------
--- There should only be one RaceManager; the single instance should contain everything.
+-- Use /race to join a race. There is always a race running. When one starts, another begins.
 ----------------------------------------------------------------------------------------------------
 
-function RaceManager:__init()
+function GMTestServer:__init()
 	
 	Chat:Broadcast(
 		settings.name.." "..settings.version.." loaded." ,
@@ -34,7 +34,7 @@ function RaceManager:__init()
 	
 end
 
-function RaceManager:CreateRace(name , isPublic , course , players)
+function GMTestServer:CreateRace(name , isPublic , course , players)
 	
 	isPublic = isPublic or false
 	players = players or {}
@@ -71,13 +71,13 @@ function RaceManager:CreateRace(name , isPublic , course , players)
 	
 end
 
-function RaceManager:CreateRacePublic()
+function GMTestServer:CreateRacePublic()
 	
 	self.currentPublicRace = self:CreateRace(self:GenerateName() , true)
 	
 end
 
-function RaceManager:GetUnusedWorldId()
+function GMTestServer:GetUnusedWorldId()
 	
 	local GetIsWorldUsed = function(id)
 		for n , race in pairs(self.races) do
@@ -101,7 +101,7 @@ function RaceManager:GetUnusedWorldId()
 	
 end
 
-function RaceManager:RemoveRace(raceToRemove)
+function GMTestServer:RemoveRace(raceToRemove)
 	
 	for n , race in ipairs(self.races) do
 		-- Can't compare races directly for some reason.
@@ -113,7 +113,7 @@ function RaceManager:RemoveRace(raceToRemove)
 	
 end
 
-function RaceManager:GetIsAdmin(player)
+function GMTestServer:GetIsAdmin(player)
 	
 	local playerSteamId = player:GetSteamId()
 	for n , steamId in ipairs(settings.admins) do
@@ -126,7 +126,7 @@ function RaceManager:GetIsAdmin(player)
 	
 end
 
-function RaceManager:HasPlayer(player)
+function GMTestServer:HasPlayer(player)
 	
 	local playerId = Racing.PlayerId(player)
 	
@@ -134,7 +134,7 @@ function RaceManager:HasPlayer(player)
 	
 end
 
-function RaceManager:RemovePlayer(player)
+function GMTestServer:RemovePlayer(player)
 	
 	for index , race in ipairs(self.races) do
 		if race.playerIdToRacer[player:GetId()] then
@@ -145,19 +145,19 @@ function RaceManager:RemovePlayer(player)
 	
 end
 
-function RaceManager:MessagePlayer(player , message)
+function GMTestServer:MessagePlayer(player , message)
 	
 	player:SendChatMessage("[Racing] "..message , settings.textColorLocal)
 	
 end
 
-function RaceManager:GenerateName()
+function GMTestServer:GenerateName()
 	
 	return "Public"..string.format("%i" , self.numPublicRacesRan + 1)
 	
 end
 
-function RaceManager:AdminChangeSetting(player , settingName , value)
+function GMTestServer:AdminChangeSetting(player , settingName , value)
 	
 	-- Argument checking.
 	if settingName == nil then
@@ -184,7 +184,7 @@ function RaceManager:AdminChangeSetting(player , settingName , value)
 	
 end
 
-function RaceManager:AdminPrintSetting(player , settingName)
+function GMTestServer:AdminPrintSetting(player , settingName)
 	
 	-- Argument checking.
 	if settingName == nil then
@@ -203,7 +203,7 @@ end
 -- Events
 --
 
-function RaceManager:PlayerChat(args)
+function GMTestServer:PlayerChat(args)
 	
 	-- Split the message up into words (by spaces).
 	local words = {}
@@ -239,7 +239,7 @@ function RaceManager:PlayerChat(args)
 	
 end
 
-function RaceManager:ModuleUnload()
+function GMTestServer:ModuleUnload()
 	
 	-- Unsubscribe from all events.
 	for n , event in ipairs(self.events) do

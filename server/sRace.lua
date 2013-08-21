@@ -1,12 +1,12 @@
 
-function Race:__init(name , raceManager , worldId , course)
+function Race:__init(name , gameManager , worldId , course)
 	
 	if settings.debugLevel >= 2 then
 		print("Race:__init")
 	end
 	
 	self.name = name
-	self.raceManager = raceManager
+	self.gameManager = gameManager
 	self.worldId = worldId
 	-- A race should never change its course.
 	self.course = course
@@ -94,7 +94,7 @@ function Race:AddPlayer(player , message)
 		return
 	end
 	-- If player is already in some other race, return.
-	if self.raceManager:HasPlayer(player) then
+	if self.gameManager:HasPlayer(player) then
 		self:MessagePlayer(player , "You are already in a race!")
 		return
 	end
@@ -102,7 +102,7 @@ function Race:AddPlayer(player , message)
 	player = Racing.Player(player)
 	local playerId = Racing.PlayerId(player)
 	
-	self.raceManager.playerIds[playerId] = true
+	self.gameManager.playerIds[playerId] = true
 	
 	local racer = Racer(self , player)
 	self.playerIdToRacer[playerId] = racer
@@ -157,7 +157,7 @@ function Race:RemovePlayer(player , message)
 		end
 	end
 	
-	self.raceManager.playerIds[playerId] = nil
+	self.gameManager.playerIds[playerId] = nil
 	
 	local racer = self.playerIdToRacer[playerId]
 	
@@ -236,8 +236,8 @@ end
 
 function Race:CleanUp()
 	
-	-- Remove self from the RaceManager.
-	self.raceManager:RemoveRace(self)
+	-- Remove self from the GMTestServer.
+	self.gameManager:RemoveRace(self)
 	
 	self:SetState("StateNone")
 	

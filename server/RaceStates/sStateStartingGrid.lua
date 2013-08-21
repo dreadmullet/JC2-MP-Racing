@@ -38,7 +38,7 @@ function StateStartingGrid:__init(race)
 	
 	-- Tell the race manager to create another public race.
 	if settings.doPublicRaces then
-		self.race.raceManager:CreateRacePublic()
+		self.race.gameManager:CreateRacePublic()
 	end
 	
 	--
