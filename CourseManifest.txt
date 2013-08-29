@@ -15,6 +15,7 @@ HillclimbDesertHighlands
 Icewheels
 LostIslandRally
 MileHighClubMadness
+MileHighClubDive1
 PanauCanals
 ReapersRun
 SelatanBackcountry
