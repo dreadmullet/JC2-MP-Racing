@@ -10,10 +10,6 @@ settings = {}
 
 settings.debugLevel = 1
 
--- settings.gameManager = "Default"
-settings.gameManager = "TestServer"
--- settings.gameManager = "CourseEditor"
-
 settings.name = "JC2-MP-Racing"
 settings.description = "Race cars and shit."
 settings.version = "0.7.1"

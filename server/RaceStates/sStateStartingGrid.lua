@@ -36,6 +36,11 @@ function StateStartingGrid:__init(race)
 		self.race:CleanUp()
 	end
 	
+	-- Tell the race manager to create another public race.
+	if settings.doPublicRaces then
+		self.race.raceManager:CreateRacePublic()
+	end
+	
 	--
 	-- Send info to clients.
 	--

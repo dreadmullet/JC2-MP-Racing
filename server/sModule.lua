@@ -1,17 +1,12 @@
 ----------------------------------------------------------------------------------------------------
--- Event to create the game manager, as well as misc stuff like global functions.
+-- Event to create the RaceManager, as well as misc stuff like global functions.
 ----------------------------------------------------------------------------------------------------
 
 Events:Subscribe(
 	"ModuleLoad" ,
 	function()
-		Chat:Broadcast(
-			settings.name.." "..settings.version.." loaded." ,
-			settings.textColorGlobal
-		)
-		
 		Stats.Init()
-		gameManager = _G["GM"..settings.gameManager]()
+		raceManager = RaceManager()
 		-- courseEditorManager = CourseEditorManager(raceManager)
 	end
 )

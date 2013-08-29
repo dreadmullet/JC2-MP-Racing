@@ -1,12 +1,12 @@
 
-function Race:__init(name , gameManager , worldId , course)
+function Race:__init(name , raceManager , worldId , course)
 	
 	if settings.debugLevel >= 2 then
 		print("Race:__init")
 	end
 	
 	self.name = name
-	self.gameManager = gameManager
+	self.raceManager = raceManager
 	self.worldId = worldId
 	-- A race should never change its course.
 	self.course = course
@@ -39,22 +39,20 @@ function Race:__init(name , gameManager , worldId , course)
 	
 end
 
-function Race:SetState(stateName , ...)
+function Race:SetState(state , ...)
 	
 	if settings.debugLevel >= 2 then
-		print("Changing state to "..stateName)
+		print("Changing state to "..state)
 	end
 	
 	-- Call End function on previous state.
 	if self.state.End then
 		self.state:End()
 	end
-	
-	self.stateName = stateName
 	-- Something like, StateRacing(self , someArg1 , someArg2)
-	self.state = _G[self.stateName](self , ...)
+	self.state = _G[state](self , ...)
 	
-	self.gameManager:RaceStateChange(self , stateName)
+	self.stateName = state
 	
 end
 
@@ -96,7 +94,7 @@ function Race:AddPlayer(player , message)
 		return
 	end
 	-- If player is already in some other race, return.
-	if self.gameManager:HasPlayer(player) then
+	if self.raceManager:HasPlayer(player) then
 		self:MessagePlayer(player , "You are already in a race!")
 		return
 	end
@@ -104,7 +102,7 @@ function Race:AddPlayer(player , message)
 	player = Racing.Player(player)
 	local playerId = Racing.PlayerId(player)
 	
-	self.gameManager.playerIds[playerId] = true
+	self.raceManager.playerIds[playerId] = true
 	
 	local racer = Racer(self , player)
 	self.playerIdToRacer[playerId] = racer
@@ -159,7 +157,7 @@ function Race:RemovePlayer(player , message)
 		end
 	end
 	
-	self.gameManager.playerIds[playerId] = nil
+	self.raceManager.playerIds[playerId] = nil
 	
 	local racer = self.playerIdToRacer[playerId]
 	
@@ -237,6 +235,9 @@ function Race:JoinPlayer(player)
 end
 
 function Race:CleanUp()
+	
+	-- Remove self from the RaceManager.
+	self.raceManager:RemoveRace(self)
 	
 	self:SetState("StateNone")
 	
