@@ -12,6 +12,8 @@ function StateStartingGrid:__init(race , args)
 	self.race.courseInfo.numLaps = args.courseInfo[3]
 	self.race.courseInfo.weatherSeverity = args.courseInfo[4]
 	self.race.courseInfo.authors = args.courseInfo[5]
+	self.race.courseInfo.parachuteEnabled = args.courseInfo[6]
+	self.race.courseInfo.grappleEnabled = args.courseInfo[7]
 	self.race.recordTime = args.recordTime
 	self.race.recordTimePlayerName = args.recordTimePlayerName
 	self.race.checkpoints = args.checkpointData

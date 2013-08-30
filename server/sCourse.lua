@@ -18,6 +18,8 @@ function Course:__init()
 	-- Array of CourseSpawns. Determines max player count.
 	self.spawns = {}
 	self.prizeMoney = settings.prizeMoneyDefault
+	self.parachuteEnabled = true
+	self.grappleEnabled = true
 	
 	-- Note: if two races are running at the same time with the same course, lap records could be
 	-- overwritten, because lap records are stored when a course is loaded. Not a huge issue, since
@@ -156,6 +158,8 @@ function Course:Save(name)
 	ctable.numLaps = course.numLaps
 	ctable.timeLimitSeconds = course.timeLimitSeconds
 	ctable.prizeMoney = course.prizeMoney
+	ctable.parachuteEnabled = self.parachuteEnabled
+	ctable.grappleEnabled = self.grappleEnabled
 	
 	ctable.checkpoints = {}
 	
@@ -226,6 +230,11 @@ function Course.Load(name)
 	course.numLaps = ctable.numLaps
 	course.timeLimitSeconds = ctable.timeLimitSeconds
 	course.prizeMoney = ctable.prizeMoney
+	course.parachuteEnabled = ctable.parachuteEnabled
+	course.grappleEnabled = ctable.grappleEnabled
+	-- Temporary because I'm not going to change every course just for this.
+	if course.parachuteEnabled == nil then course.parachuteEnabled = true end
+	if course.grappleEnabled == nil then course.grappleEnabled = true end
 	
 	course.checkpoints = {}
 	

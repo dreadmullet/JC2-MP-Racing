@@ -140,6 +140,22 @@ function StateRacing:LocalPlayerInput(args)
 		if args.input == input and args.state ~= 0 then
 			return false
 		end
+		-- Block parachuting if the course disabled it.
+		if
+			self.race.courseInfo.parachuteEnabled == false and
+			parachuteActions[args.input] and
+			args.state ~= 0
+		then
+			return false
+		end
+		-- Block grappling if the course disabled it.
+		if
+			self.race.courseInfo.grappleEnabled == false and
+			args.input == Action.FireGrapple and
+			args.state ~= 0
+		then
+			return false
+		end
 	end
 	
 	return true

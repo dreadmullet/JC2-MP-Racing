@@ -85,6 +85,8 @@ function StateStartingGrid:__init(race)
 			race.course.numLaps ,
 			race.course.weatherSeverity ,
 			race.course.authors ,
+			race.course.parachuteEnabled ,
+			race.course.grappleEnabled ,
 		}
 		args.recordTime = race.course.topRecords[1].time
 		args.recordTimePlayerName = race.course.topRecords[1].playerName
