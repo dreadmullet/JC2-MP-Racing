@@ -93,7 +93,7 @@ function StateStartingGrid:__init(race)
 		args.checkpointData = checkpointData
 		-- Player-specific.
 		args.assignedVehicleId = racer.assignedVehicleId
-		self.race:NetworkSendRace("SetState" , args)
+		Network:Send(racer.player , "SetState" , args)
 	end
 	
 end
