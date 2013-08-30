@@ -40,6 +40,8 @@ settings.blockedInputsStartingGridOnFoot = {
 	Action.MoveBackward ,
 	Action.MoveLeft ,
 	Action.MoveRight ,
+	Action.FireGrapple ,
+	Action.Jump ,
 }
 
 -- Make sure everyone doesn't send their distance at the same time.
