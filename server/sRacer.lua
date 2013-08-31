@@ -29,6 +29,8 @@ function Racer:__init(race , player)
 	-- Position in leaderboard.
 	self.startPosition = -1
 	self.courseSpawn = nil
+	-- Helps with preventing respawning the player every tick.
+	self.respawnTimer = nil
 	
 	if race.raceManager:GetIsAdmin(player) then
 		player:SetModelId(settings.playerModelIdAdmin)
@@ -50,6 +52,7 @@ function Racer:RaceStart()
 	self.race.playersOutOfVehicle[self.playerId] = true
 	
 	self.bestTimeTimer = Timer()
+	self.respawnTimer = Timer()
 	
 	-- Disable collisions, if applicable.
 	if self.race.vehicleCollisions == false then
@@ -67,6 +70,28 @@ function Racer:Update()
 	local finishedPlayerIds = {}
 	for index , racer in ipairs(self.race.finishedRacers) do
 		table.insert(finishedPlayerIds , racer.playerId)
+	end
+	
+	if self.respawnTimer and self.respawnTimer:GetSeconds() < 10 then
+		-- Do nothing, we recently respawned, and we're likely in the enter vehicle animation.
+	else
+		local isVehicleAlive = true
+		if self.assignedVehicleId >= 0 then
+			local vehicle = Vehicle.GetById(self.assignedVehicleId)
+			if IsValid(vehicle) then
+				isVehicleAlive = vehicle:GetHealth() > 0
+			end
+		end
+		-- If they're out of their vehicle, respawn them and create the respawn timer.
+		if
+			isVehicleAlive and
+			self.player:GetHealth() > 0 and
+			self.assignedVehicleId >= 0 and
+			self.player:InVehicle() == false
+		then
+			self:Respawn()
+			self.respawnTimer = Timer()
+		end
 	end
 	
 	Network:Send(
