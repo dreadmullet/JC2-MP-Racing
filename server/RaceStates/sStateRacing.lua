@@ -45,8 +45,8 @@ function StateRacing:Run()
 	for playerId , bool in pairs(self.race.playersOutOfVehicle) do
 		local racer = self.race.playerIdToRacer[playerId]
 		if
-			-- If their assigned vehicle id is -1, it means they're on-foot.
-			racer.assignedVehicleId ~= -1 and
+			-- If their assigned vehicle id is -1, it means they're on-foot. -2 is no assigned vehicle.
+			racer.assignedVehicleId >= 0 and
 			racer.hasFinished == false and
 			racer.outOfVehicleTimer and
 			racer.outOfVehicleTimer:GetSeconds() >= settings.outOfVehicleMaxSeconds and

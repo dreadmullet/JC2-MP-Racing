@@ -15,7 +15,7 @@ function Racer:__init(race , player)
 	self.numCheckpointsHit = 0
 	self.hasFinished = false
 	self.assignedVehicleId = -1
-	self.outOfVehicleTimer = nil
+	self.outOfVehicleTimer = Timer()
 	self.storedInventory = nil
 	-- Used with racePosTracker and helps with NetworkSend parameters.
 	self.targetCheckpointDistanceSqr = {[1] = 0}
@@ -48,7 +48,6 @@ end
 
 function Racer:RaceStart()
 	
-	self.outOfVehicleTimer = Timer()
 	self.race.playersOutOfVehicle[self.playerId] = true
 	
 	self.bestTimeTimer = Timer()
