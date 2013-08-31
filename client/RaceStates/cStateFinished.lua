@@ -7,7 +7,7 @@ function StateFinished:__init(race , args)
 	local message = Utility.NumberToPlaceString(args.place).." place!"
 	self.largeMessage = LargeMessage(message , 7.5)
 	
-	Utility.NetSub(self , "UpdateRacePositions")
+	Utility.NetSubscribe(self , "UpdateRacePositions")
 	
 end
 

@@ -19,8 +19,8 @@ function Race:__init(args)
 	
 	self:SetState(args)
 	
-	Utility.EventSub(self , "Render")
-	Utility.NetSub(self , "SetState")
+	Utility.EventSubscribe(self , "Render")
+	Utility.NetSubscribe(self , "SetState")
 	
 end
 

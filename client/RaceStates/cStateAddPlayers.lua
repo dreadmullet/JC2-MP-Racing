@@ -5,7 +5,7 @@ function StateAddPlayers:__init(race , args)
 	self.numPlayers = -1
 	self.maxPlayers = args.maxPlayers
 	
-	Utility.NetSub(self , "SetPlayerCount")
+	Utility.NetSubscribe(self , "SetPlayerCount")
 	
 end
 

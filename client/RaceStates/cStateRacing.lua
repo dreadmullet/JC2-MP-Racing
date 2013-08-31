@@ -12,12 +12,12 @@ function StateRacing:__init(race , args)
 	
 	LargeMessage("GO!" , 2)
 	
-	Utility.EventSub(self , "PostClientTick")
-	Utility.EventSub(self , "LocalPlayerInput")
-	Utility.NetSub(self , "SetTargetCheckpoint")
-	Utility.NetSub(self , "UpdateRacePositions")
-	Utility.NetSub(self , "RaceTimePersonal")
-	Utility.NetSub(self , "NewRecordTime")
+	Utility.EventSubscribe(self , "PostClientTick")
+	Utility.EventSubscribe(self , "LocalPlayerInput")
+	Utility.NetSubscribe(self , "SetTargetCheckpoint")
+	Utility.NetSubscribe(self , "UpdateRacePositions")
+	Utility.NetSubscribe(self , "RaceTimePersonal")
+	Utility.NetSubscribe(self , "NewRecordTime")
 	
 end
 

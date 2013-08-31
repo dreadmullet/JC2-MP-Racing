@@ -40,7 +40,7 @@ function StateStartingGrid:__init(race , args)
 		end
 	end
 	
-	Utility.EventSub(self , "LocalPlayerInput")
+	Utility.EventSubscribe(self , "LocalPlayerInput")
 	
 end
 
