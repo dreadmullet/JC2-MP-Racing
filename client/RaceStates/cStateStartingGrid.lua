@@ -69,56 +69,58 @@ function StateStartingGrid:Run()
 	end
 	
 	-- Draw GUI.
-	local args = {}
-	RaceGUI.DrawVersion(self.race.version)
-	RaceGUI.DrawCourseName(self.race.courseInfo.name)
-	-- DrawLapCounter
-	args = {}
-	args.courseType = self.race.courseInfo.type
-	args.currentLap = 1
-	args.totalLaps = self.race.courseInfo.numLaps
-	args.numCheckpoints = #self.race.checkpoints
-	args.targetCheckpoint = 1
-	args.isFinished = false
-	RaceGUI.DrawLapCounter(args)
-	-- DrawRacePosition
-	args = {}
-	args.position = self.startPosition
-	args.numPlayers = self.race.numPlayers
-	RaceGUI.DrawRacePosition(args)
-	-- DrawTimers
-	args = {}
-	args.recordTime = self.race.recordTime
-	args.recordTimePlayerName = self.race.recordTimePlayerName
-	args.courseType = self.race.courseInfo.type
-	args.previousTime = nil
-	args.currentTime = nil
-	RaceGUI.DrawTimers(args)
-	-- DrawLeaderboard
-	args = {}
-	args.leaderboard = self.race.leaderboard
-	args.playerIdToInfo = self.race.playerIdToInfo
-	RaceGUI.DrawLeaderboard(args)
-	-- DrawPositionTags
-	args = {}
-	args.leaderboard = self.race.leaderboard
-	RaceGUI.DrawPositionTags(args)
-	-- DrawMinimapIcons
-	args = {}
-	args.targetCheckpoint = 1
-	args.checkpoints = self.race.checkpoints
-	args.courseType = self.race.courseInfo.type
-	args.currentLap = 1
-	args.numLaps = self.race.courseInfo.numLaps
-	RaceGUI.DrawMinimapIcons(args)
-	-- DrawNextCheckpointArrow
-	args = {}
-	args.targetCheckpoint = 1
-	args.checkpoints = self.race.checkpoints
-	args.courseType = self.race.courseInfo.type
-	args.currentLap = 1
-	args.numLaps = self.race.courseInfo.numLaps
-	RaceGUI.DrawNextCheckpointArrow(args)
+	if Client:GetState() == GUIState.Game then
+		local args = {}
+		RaceGUI.DrawVersion(self.race.version)
+		RaceGUI.DrawCourseName(self.race.courseInfo.name)
+		-- DrawLapCounter
+		args = {}
+		args.courseType = self.race.courseInfo.type
+		args.currentLap = 1
+		args.totalLaps = self.race.courseInfo.numLaps
+		args.numCheckpoints = #self.race.checkpoints
+		args.targetCheckpoint = 1
+		args.isFinished = false
+		RaceGUI.DrawLapCounter(args)
+		-- DrawRacePosition
+		args = {}
+		args.position = self.startPosition
+		args.numPlayers = self.race.numPlayers
+		RaceGUI.DrawRacePosition(args)
+		-- DrawTimers
+		args = {}
+		args.recordTime = self.race.recordTime
+		args.recordTimePlayerName = self.race.recordTimePlayerName
+		args.courseType = self.race.courseInfo.type
+		args.previousTime = nil
+		args.currentTime = nil
+		RaceGUI.DrawTimers(args)
+		-- DrawLeaderboard
+		args = {}
+		args.leaderboard = self.race.leaderboard
+		args.playerIdToInfo = self.race.playerIdToInfo
+		RaceGUI.DrawLeaderboard(args)
+		-- DrawPositionTags
+		args = {}
+		args.leaderboard = self.race.leaderboard
+		RaceGUI.DrawPositionTags(args)
+		-- DrawMinimapIcons
+		args = {}
+		args.targetCheckpoint = 1
+		args.checkpoints = self.race.checkpoints
+		args.courseType = self.race.courseInfo.type
+		args.currentLap = 1
+		args.numLaps = self.race.courseInfo.numLaps
+		RaceGUI.DrawMinimapIcons(args)
+		-- DrawNextCheckpointArrow
+		args = {}
+		args.targetCheckpoint = 1
+		args.checkpoints = self.race.checkpoints
+		args.courseType = self.race.courseInfo.type
+		args.currentLap = 1
+		args.numLaps = self.race.courseInfo.numLaps
+		RaceGUI.DrawNextCheckpointArrow(args)
+	end
 	
 end
 

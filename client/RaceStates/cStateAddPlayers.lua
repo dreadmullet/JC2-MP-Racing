@@ -11,11 +11,13 @@ end
 
 function StateAddPlayers:Run()
 	
-	-- DrawPlayerCount
-	local args = {}
-	args.numPlayers = self.numPlayers
-	args.maxPlayers = self.maxPlayers
-	RaceGUI.DrawPlayerCount(args)
+	if Client:GetState() == GUIState.Game then
+		-- DrawPlayerCount
+		local args = {}
+		args.numPlayers = self.numPlayers
+		args.maxPlayers = self.maxPlayers
+		RaceGUI.DrawPlayerCount(args)
+	end
 	
 end
 

@@ -10,7 +10,7 @@ function LargeMessage:__init(message , durationSeconds)
 	self.timer = Timer()
 	self.exists = true
 	
-	self.renderEventSub = Events:Subscribe("Render" , self , self.Draw)
+	Utility.EventSubscribe(self , "Render")
 	
 	LargeMessage.messageCount = LargeMessage.messageCount + 1
 	
@@ -73,8 +73,16 @@ function LargeMessage:Destroy()
 	
 	LargeMessage.messageCount = LargeMessage.messageCount - 1
 	if self.exists then
-		Events:Unsubscribe(self.renderEventSub)
+		Utility.EventUnsubscribeAll(self)
 		self.exists = false
+	end
+	
+end
+
+function LargeMessage:Render()
+	
+	if Client:GetState() == GUIState.Game then
+		self:Draw()
 	end
 	
 end
