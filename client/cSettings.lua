@@ -66,7 +66,7 @@ settings.gamemodeDescription = [[
 The Racing gamemode lets you race other players in a variety of races, using vehicles from sports cars to buses to planes. It comes with a fully-featured GUI, letting you focus on the race.
  
 Command list:
-   "/race" - Begins a race.icons.
+   "/race" - Begins a race.
  
 Earning money: You receive $10000 for winning a race. Each following finisher receives 75% of the last finisher (2nd place receives $7500, for example).
  
