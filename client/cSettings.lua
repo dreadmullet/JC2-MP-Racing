@@ -14,7 +14,7 @@ settings.debugLevel = 1
 settings.countDownNumMessages = 3
 settings.countDownInterval = 2
 
-settings.blockedInputs = {
+settings.blockedInputsRacing = {
 	Action.FireLeft , -- Blocks firing weapons on foot.
 	Action.FireRight , -- Blocks firing weapons on foot.
 	Action.McFire , -- Blocks firing one-handed weapons on bike/ATV.
@@ -22,9 +22,15 @@ settings.blockedInputs = {
 	Action.VehicleFireRight , -- Blocks firing vehicle weapons.
 	Action.NextWeapon , -- Blocks switching weapons.
 	Action.PrevWeapon , -- Blocks switching weapons.
-	-- Action.StuntJump , -- Prevents people from riding on cars and hopping on people's bikes.
 }
 settings.blockedInputsStartingGrid = {
+	Action.FireLeft ,
+	Action.FireRight ,
+	Action.McFire ,
+	Action.VehicleFireLeft ,
+	Action.VehicleFireRight ,
+	Action.NextWeapon ,
+	Action.PrevWeapon ,
 	Action.Accelerate ,
 	Action.Reverse ,
 	Action.HeliIncAltitude ,
@@ -33,15 +39,23 @@ settings.blockedInputsStartingGrid = {
 	Action.PlaneDecTrust ,
 	Action.BoatForward ,
 	Action.BoatBackward ,
-	
 }
 settings.blockedInputsStartingGridOnFoot = {
+	Action.FireLeft ,
+	Action.FireRight ,
+	Action.NextWeapon ,
+	Action.PrevWeapon ,
 	Action.MoveForward ,
 	Action.MoveBackward ,
 	Action.MoveLeft ,
 	Action.MoveRight ,
 	Action.FireGrapple ,
 	Action.Jump ,
+}
+settings.blockedInputsInVehicle = {
+	Action.UseItem ,
+	Action.StuntJump ,
+	Action.ParachuteOpenClose ,
 }
 
 -- Make sure everyone doesn't send their distance at the same time.
@@ -67,23 +81,12 @@ During races, sometimes the checkpoint arrow will be invisible. You can probably
 -- GUI
 ----------------------------------------------------------------------------------------------------
 
-settings.backgroundColor = Color(38 , 26 , 15 , 110)
-settings.backgroundAltColor = Color(5 , 6 , 12 , 90)
 settings.textColor = Color(228 , 142 , 56 , 255)
 settings.shadowColor = Color(0 , 0 , 0 , 255)
-
--- Normalized.
-settings.startingGridBackgroundTopRight = Vector2(0.88 , -0.92)
--- Normalized.
-settings.startingGridBackgroundSize = Vector2(0.35 , 0.105)
-settings.startingGridTextSize = TextSize.Large
-
-settings.padding = 6
 
 settings.checkpointArrowFlashNum = 3
 settings.checkpointArrowFlashInterval = 7
 settings.checkpointArrowColor = Color(204 , 54 , 51)
--- settings.checkpointArrowColorActivated = Color(56 , 200 , 45)
 settings.checkpointArrowColorActivated = Color(0 , 0 , 0 , 0)
 
 settings.nextCheckpointArrowColor = Color(228 , 142 , 56 , 128)

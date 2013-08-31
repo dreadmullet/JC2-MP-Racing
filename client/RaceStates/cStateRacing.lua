@@ -136,25 +136,35 @@ end
 
 function StateRacing:LocalPlayerInput(args)
 	
-	for index , input in ipairs(settings.blockedInputs) do
-		if args.input == input and args.state ~= 0 then
-			return false
+	-- Block actions.
+	if args.state ~= 0 then
+		-- Block racing actions.
+		for index , input in ipairs(settings.blockedInputsRacing) do
+			if args.input == input then
+				return false
+			end
 		end
 		-- Block parachuting if the course disabled it.
 		if
 			self.race.courseInfo.parachuteEnabled == false and
-			parachuteActions[args.input] and
-			args.state ~= 0
+			parachuteActions[args.input]
 		then
 			return false
 		end
 		-- Block grappling if the course disabled it.
 		if
 			self.race.courseInfo.grappleEnabled == false and
-			args.input == Action.FireGrapple and
-			args.state ~= 0
+			args.input == Action.FireGrapple
 		then
 			return false
+		end
+		-- If we're in a vehicle, prevent us from getting out.
+		if LocalPlayer:InVehicle() then
+			for index , input in ipairs(settings.blockedInputsInVehicle) do
+				if args.input == input then
+					return false
+				end
+			end
 		end
 	end
 	

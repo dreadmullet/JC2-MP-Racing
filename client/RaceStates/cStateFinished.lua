@@ -7,6 +7,7 @@ function StateFinished:__init(race , args)
 	local message = Utility.NumberToPlaceString(args.place).." place!"
 	self.largeMessage = LargeMessage(message , 7.5)
 	
+	Utility.EventSubscribe(self , "LocalPlayerInput")
 	Utility.NetSubscribe(self , "UpdateRacePositions")
 	
 end
@@ -66,6 +67,48 @@ function StateFinished:End()
 	Utility.NetUnsubscribeAll(self)
 	
 end
+
+-- Events
+
+function StateFinished:LocalPlayerInput(args)
+	
+	-- Block actions.
+	if args.state ~= 0 then
+		-- Block racing actions.
+		for index , input in ipairs(settings.blockedInputsRacing) do
+			if args.input == input then
+				return false
+			end
+		end
+		-- Block parachuting if the course disabled it.
+		if
+			self.race.courseInfo.parachuteEnabled == false and
+			parachuteActions[args.input]
+		then
+			return false
+		end
+		-- Block grappling if the course disabled it.
+		if
+			self.race.courseInfo.grappleEnabled == false and
+			args.input == Action.FireGrapple
+		then
+			return false
+		end
+		-- If we're in a vehicle, prevent us from getting out.
+		if LocalPlayer:InVehicle() then
+			for index , input in ipairs(settings.blockedInputsInVehicle) do
+				if args.input == input then
+					return false
+				end
+			end
+		end
+	end
+	
+	return true
+	
+end
+
+-- Network events
 
 function StateFinished:UpdateRacePositions(args)
 	

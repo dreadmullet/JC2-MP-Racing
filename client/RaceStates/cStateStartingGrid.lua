@@ -41,6 +41,7 @@ function StateStartingGrid:__init(race , args)
 	end
 	
 	Utility.EventSubscribe(self , "LocalPlayerInput")
+	Utility.EventSubscribe(self , "InputPoll")
 	
 end
 
@@ -128,29 +129,43 @@ function StateStartingGrid:End()
 	
 end
 
+-- Events
+
 function StateStartingGrid:LocalPlayerInput(args)
 	
-	-- If we're on foot, block our movement.
-	if self.race.assignedVehicleId == -1 then
-		for index , input in ipairs(settings.blockedInputsStartingGridOnFoot) do
-			if args.input == input and args.state ~= 0 then
+	if args.state ~= 0 then
+		for index , input in ipairs(settings.blockedInputsStartingGrid) do
+			if args.input == input then
 				return false
+			end
+		end
+		-- If we're on foot, block our movement.
+		if self.race.assignedVehicleId == -1 then
+			for index , input in ipairs(settings.blockedInputsStartingGridOnFoot) do
+				if args.input == input then
+					return false
+				end
+			end
+		end
+		-- If we're in a vehicle, prevent us from getting out.
+		if LocalPlayer:InVehicle() then
+			for index , input in ipairs(settings.blockedInputsInVehicle) do
+				if args.input == input then
+					return false
+				end
 			end
 		end
 	end
 	
-	for index , input in ipairs(settings.blockedInputsStartingGrid) do
-		if args.input == input and args.state ~= 0 then
-			return false
-		end
-	end
-	
-	for index , input in ipairs(settings.blockedInputs) do
-		if args.input == input and args.state ~= 0 then
-			return false
-		end
-	end
-	
 	return true
+	
+end
+
+function StateStartingGrid:InputPoll()
+	
+	-- Spam the enter vehicle key until they're in a vehicle.
+	if LocalPlayer:InVehicle() == false then
+		Input:SetValue(Action.UseItem , 1 , false)
+	end
 	
 end
