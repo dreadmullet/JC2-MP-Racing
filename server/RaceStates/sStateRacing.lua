@@ -25,10 +25,6 @@ function StateRacing:__init(race)
 		self.racePosTracker[0][id] = racer.targetCheckpointDistanceSqr -- wut
 	end
 	
-	for id , racer in pairs(self.race.playerIdToRacer) do
-		racer:RaceStart()
-	end
-	
 	Utility.EventSubscribe(self , "PlayerChat")
 	Utility.EventSubscribe(self , "PlayerEnterCheckpoint")
 	Utility.EventSubscribe(self , "PlayerEnterVehicle")

@@ -51,6 +51,10 @@ function Race:SetState(state , ...)
 	
 	self.stateName = state
 	
+	for id , racer in pairs(self.playerIdToRacer) do
+		racer:RaceStateChange(self.stateName)
+	end
+	
 end
 
 function Race:HasPlayer(player)
@@ -129,9 +133,11 @@ function Race:RemovePlayer(player , message)
 	local playerId = Racing.PlayerId(player)
 	
 	-- Reenable collisions.
+	-- Why is this in Race and not Racer:Remove
 	if self.vehicleCollisions == false then
 		player:EnableCollision(CollisionGroup.Vehicle)
 	end
+	player:EnableCollision(CollisionGroup.Player)
 	
 	-- If state is StateRacing, remove from state.racePosTracker.
 	if self.stateName == "StateRacing" then

@@ -15,7 +15,7 @@ function Racer:__init(race , player)
 	self.numCheckpointsHit = 0
 	self.hasFinished = false
 	self.assignedVehicleId = -1
-	self.outOfVehicleTimer = Timer()
+	self.outOfVehicleTimer = nil
 	self.storedInventory = nil
 	-- Used with racePosTracker and helps with NetworkSend parameters.
 	self.targetCheckpointDistanceSqr = {[1] = 0}
@@ -46,21 +46,27 @@ function Racer:__init(race , player)
 	
 end
 
-function Racer:RaceStart()
+function Racer:RaceStateChange(stateName)
 	
-	self.race.playersOutOfVehicle[self.playerId] = true
-	
-	self.bestTimeTimer = Timer()
-	self.respawnTimer = Timer()
-	
-	-- Disable collisions, if applicable.
-	if self.race.vehicleCollisions == false then
-		self.player:DisableCollision(CollisionGroup.Vehicle)
+	if stateName == "StateStartingGrid" then
+		-- Consider us out of a vehicle.
+		self.outOfVehicleTimer = Timer()
+		self.race.playersOutOfVehicle[self.playerId] = true
+		
+			-- Disable collisions, if applicable.
+		if self.race.vehicleCollisions == false then
+			self.player:DisableCollision(CollisionGroup.Vehicle)
+		end
+		-- Always disable player collisions.
+		self.player:DisableCollision(CollisionGroup.Player)
+		
+		-- Store our inventory.
+		self.storedInventory = self.player:GetInventory()
+		self.player:ClearInventory()
+	elseif stateName == "StateRacing" then
+		self.bestTimeTimer = Timer()
+		self.respawnTimer = Timer()
 	end
-	
-	-- Store our inventory.
-	self.storedInventory = self.player:GetInventory()
-	self.player:ClearInventory()
 	
 end
 
