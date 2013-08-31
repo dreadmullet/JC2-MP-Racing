@@ -66,16 +66,13 @@ settings.gamemodeDescription = [[
 The Racing gamemode lets you race other players in a variety of races, using vehicles from sports cars to buses to planes. It comes with a fully-featured GUI, letting you focus on the race.
  
 Command list:
-   "/race" - Begins a race, if the race is accepting players.
-   "/race quality high" - (default)
-   "/race quality low" - Lowers quality of GUI; makes checkpoint arrow flat and removes minimap icons. This won't affect your framerate much, only use it if you're desperate.
+   "/race" - Begins a race.icons.
  
 Earning money: You receive $10000 for winning a race. Each following finisher receives 75% of the last finisher (2nd place receives $7500, for example).
  
 Known issues:
 During races, sometimes the checkpoint arrow will be invisible. You can probably fix this by reconnecting to the server (press ~ to open the console and enter "reconnect").
 ]]
-
 
 ----------------------------------------------------------------------------------------------------
 -- GUI
