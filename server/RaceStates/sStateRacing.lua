@@ -29,26 +29,13 @@ function StateRacing:__init(race)
 		racer:RaceStart()
 	end
 	
-	table.insert(self.eventSubs , Events:Subscribe("PlayerChat" , self , self.PlayerChat))
-	table.insert(
-		self.eventSubs ,
-		Events:Subscribe("PlayerEnterCheckpoint" , self , self.PlayerEnterCheckpoint)
-	)
-	table.insert(
-		self.eventSubs ,
-		Events:Subscribe("PlayerEnterVehicle" , self , self.PlayerEnterVehicle)
-	)
-	table.insert(
-		self.eventSubs ,
-		Events:Subscribe("PlayerExitVehicle" , self , self.PlayerExitVehicle)
-	)
-	table.insert(self.eventSubs , Events:Subscribe("PlayerDeath" , self , self.PlayerDeath))
-	table.insert(self.eventSubs , Events:Subscribe("PostServerTick" , self , self.ServerTick))
-	
-	table.insert(
-		self.netSubs ,
-		Network:Subscribe("ReceiveCheckpointDistanceSqr" , self , self.ReceiveCheckpointDistanceSqr)
-	)
+	Utility.EventSubscribe(self , "PlayerChat")
+	Utility.EventSubscribe(self , "PlayerEnterCheckpoint")
+	Utility.EventSubscribe(self , "PlayerEnterVehicle")
+	Utility.EventSubscribe(self , "PlayerExitVehicle")
+	Utility.EventSubscribe(self , "PlayerDeath")
+	Utility.EventSubscribe(self , "PostServerTick")
+	Utility.NetSubscribe(self , "ReceiveCheckpointDistanceSqr")
 	
 end
 
@@ -94,17 +81,8 @@ end
 
 function StateRacing:End()
 	
-	-- Unsubscribe from events.
-	for n , event in ipairs(self.eventSubs) do
-		Events:Unsubscribe(event)
-	end
-	self.eventSubs = {}
-	
-	-- Unsubscribe from network events.
-	for n , event in ipairs(self.netSubs) do
-		Network:Unsubscribe(event)
-	end
-	self.netSubs = {}
+	Utility.EventUnsubscribeAll(self)
+	Utility.NetUnsubscribeAll(self)
 	
 end
 
@@ -176,7 +154,8 @@ function StateRacing:PlayerDeath(args)
 	
 end
 
-function StateRacing:ServerTick()
+-- wat
+function StateRacing:PostServerTick()
 	
 	-- Call Update on all racers, if it's their turn.
 	for id , racer in pairs(self.race.playerIdToRacer) do

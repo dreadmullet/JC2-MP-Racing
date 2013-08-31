@@ -19,16 +19,10 @@ function StateStartingGrid:__init(race)
 	
 	self.startTimer = Timer()
 	
-	table.insert(self.eventSubs , Events:Subscribe("PlayerChat" , self , self.PlayerChat))
-	table.insert(
-		self.eventSubs ,
-		Events:Subscribe("PlayerEnterVehicle" , self , self.PlayerEnterVehicle)
-	)
-	table.insert(
-		self.eventSubs ,
-		Events:Subscribe("PlayerExitVehicle" , self , self.PlayerExitVehicle)
-	)
-	table.insert(self.eventSubs , Events:Subscribe("PlayerDeath" , self , self.PlayerDeath))
+	Utility.EventSubscribe(self , "PlayerChat")
+	Utility.EventSubscribe(self , "PlayerEnterVehicle")
+	Utility.EventSubscribe(self , "PlayerExitVehicle")
+	Utility.EventSubscribe(self , "PlayerDeath")
 	
 	-- If we somehow started without racers, end the race.
 	if self.race.numPlayers == 0 then
@@ -108,11 +102,7 @@ end
 
 function StateStartingGrid:End()
 	
-	-- Unsubscribe from events.
-	for n , event in ipairs(self.eventSubs) do
-		Events:Unsubscribe(event)
-	end
-	self.eventSubs = {}
+	Utility.NetUnsubscribeAll(self)
 	
 end
 

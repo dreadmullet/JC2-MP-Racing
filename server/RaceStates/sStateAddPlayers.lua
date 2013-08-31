@@ -22,7 +22,7 @@ function StateAddPlayers:__init(race)
 		joinString
 	)
 	
-	self.eventPlayerChat = Events:Subscribe("PlayerChat" , self , self.PlayerChat)
+	Utility.EventSubscribe(self , "PlayerChat")
 	
 end
 
@@ -45,7 +45,7 @@ end
 
 function StateAddPlayers:End()
 	
-	Events:Unsubscribe(self.eventPlayerChat)
+	Utility.EventUnsubscribeAll(self)
 	
 end
 
