@@ -236,6 +236,26 @@ end
 
 function Racer:Respawn()
 	
+	local IsSpawnPositionClear = function(position)
+		if self.race.vehicleCollisions == false then
+			return true
+		end
+		
+		local checkRadiusSquared = 4 * 4
+		
+		for id , racer in pairs(self.race.playerIdToRacer) do
+			local vehicle = Vehicle.GetById(racer.assignedVehicleId)
+			if IsValid(vehicle) then
+				local distanceSquared = (position - vehicle:GetPosition()):LengthSqr()
+				if distanceSquared <= checkRadiusSquared then
+					return false
+				end
+			end
+		end
+		
+		return true
+	end
+	
 	self.outOfVehicleTimer = nil
 	self.race.playersOutOfVehicle[self.playerId] = nil
 	
@@ -284,6 +304,11 @@ function Racer:Respawn()
 			spawnDirection
 		)
 		spawnAngle.roll = 0
+	end
+	
+	-- If the spawn position isn't clear, spawn the vehicle a little above. Terrible solution, I know.
+	if IsSpawnPositionClear(spawnPosition) == false then
+		spawnPosition = spawnPosition + Vector(0 , 2.75 , 0)
 	end
 	
 	if self.assignedVehicleId >= 0 then
