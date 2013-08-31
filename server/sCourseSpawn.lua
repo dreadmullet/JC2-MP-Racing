@@ -31,6 +31,8 @@ function CourseSpawn:SpawnVehicle()
 	spawnArgs.decal = self.decals[modelIdIndex] or ""
 	
 	self.vehicle = Vehicle.Create(spawnArgs)
+	self.vehicle:SetDeathRemove(true)
+	self.vehicle:SetUnoccupiedRemove(true)
 	
 end
 

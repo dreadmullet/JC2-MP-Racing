@@ -25,9 +25,6 @@ function Race:__init(name , raceManager , worldId , course)
 	-- Key: player Id
 	-- Value: true
 	self.playersOutOfVehicle = {}
-	-- Key: player Id
-	-- Value: true
-	self.playersDead = {}
 	self.prizeMoneyCurrent = course.prizeMoney
 	
 	self:CleanWorld()
@@ -172,8 +169,6 @@ function Race:RemovePlayer(player , message)
 	racer:Remove()
 	self.playerIdToRacer[playerId] = nil
 	self.numPlayers = self.numPlayers - 1
-	
-	self.playersDead[player:GetId()] = nil
 	
 	if message then
 		self:MessagePlayer(player , message)

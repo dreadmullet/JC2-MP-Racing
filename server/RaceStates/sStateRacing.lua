@@ -33,8 +33,8 @@ function StateRacing:__init(race)
 	Utility.EventSubscribe(self , "PlayerEnterCheckpoint")
 	Utility.EventSubscribe(self , "PlayerEnterVehicle")
 	Utility.EventSubscribe(self , "PlayerExitVehicle")
-	Utility.EventSubscribe(self , "PlayerDeath")
 	Utility.EventSubscribe(self , "PostServerTick")
+	Utility.EventSubscribe(self , "PlayerSpawn")
 	Utility.NetSubscribe(self , "ReceiveCheckpointDistanceSqr")
 	
 end
@@ -60,15 +60,6 @@ function StateRacing:Run()
 				racer.player:GetName()..
 				" was removed from the race for not being in a vehicle."
 			)
-		end
-	end
-	
-	-- Remove dead players after a delay.
-	for playerId , bool in pairs(self.race.playersDead) do
-		local racer = self.race.playerIdToRacer[playerId]
-		if IsValid(racer.player) and racer.deathTimer:GetSeconds() >= settings.playerDeathDelay then
-			self.race:RemovePlayer(playerId)
-			self.race.playersDead[playerId] = nil
 		end
 	end
 	
@@ -142,18 +133,6 @@ function StateRacing:PlayerExitVehicle(args)
 	
 end
 
-function StateRacing:PlayerDeath(args)
-	
-	local racer = self.race.playerIdToRacer[args.player:GetId()]
-	if racer then
-		racer.deathTimer = Timer()
-		self.race.playersDead[racer.player:GetId()] = true
-		
-		self.race:MessageRace(args.player:GetName().." has died!")
-	end
-	
-end
-
 -- wat
 function StateRacing:PostServerTick()
 	
@@ -165,6 +144,17 @@ function StateRacing:PostServerTick()
 	end
 	
 	self.numTicks = self.numTicks + 1
+	
+end
+
+function StateRacing:PlayerSpawn(args)
+	
+	local racer = self.race.playerIdToRacer[args.player:GetId()]
+	if racer then
+		racer:Respawn()
+	end
+	
+	return false
 	
 end
 

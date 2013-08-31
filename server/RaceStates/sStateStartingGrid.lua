@@ -22,7 +22,7 @@ function StateStartingGrid:__init(race)
 	Utility.EventSubscribe(self , "PlayerChat")
 	Utility.EventSubscribe(self , "PlayerEnterVehicle")
 	Utility.EventSubscribe(self , "PlayerExitVehicle")
-	Utility.EventSubscribe(self , "PlayerDeath")
+	Utility.EventSubscribe(self , "PlayerSpawn")
 	
 	-- If we somehow started without racers, end the race.
 	if self.race.numPlayers == 0 then
@@ -106,6 +106,10 @@ function StateStartingGrid:End()
 	
 end
 
+--
+-- Events
+--
+
 function StateStartingGrid:PlayerChat(args)
 	
 	-- If the race is public, it's not our hands; it's handled by the RaceManager.
@@ -146,14 +150,13 @@ function StateStartingGrid:PlayerExitVehicle(args)
 	
 end
 
-function StateStartingGrid:PlayerDeath(args)
+function StateStartingGrid:PlayerSpawn(args)
 	
 	local racer = self.race.playerIdToRacer[args.player:GetId()]
 	if racer then
-		racer.deathTimer = Timer()
-		self.race.playersDead[racer.player:GetId()] = true
-		
-		self.race:MessageRace(args.player:GetName().." has died!")
+		racer:Respawn()
 	end
+	
+	return false
 	
 end

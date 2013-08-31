@@ -17,7 +17,6 @@ function Racer:__init(race , player)
 	self.assignedVehicleId = -1
 	self.outOfVehicleTimer = nil
 	self.storedInventory = nil
-	self.deathTimer = nil
 	-- Used with racePosTracker and helps with NetworkSend parameters.
 	self.targetCheckpointDistanceSqr = {[1] = 0}
 	self.updateTick = race.numPlayers
@@ -308,6 +307,9 @@ function Racer:Respawn()
 			oldVehicle:Remove()
 			
 			local newVehicle = Vehicle.Create(spawnArgs)
+			newVehicle:SetDeathRemove(true)
+			newVehicle:SetUnoccupiedRemove(true)
+			
 			local dirToPlayerSpawn = spawnAngle * Vector(-1 , 0 , 0)
 			local playerSpawnPosition = spawnPosition + dirToPlayerSpawn * 2
 			self.player:Teleport(playerSpawnPosition , spawnAngle)
