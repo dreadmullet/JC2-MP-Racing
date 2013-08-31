@@ -236,6 +236,10 @@ end
 
 function Racer:Respawn()
 	
+	if settings.debugLevel >= 2 then
+		print(self.name.." is respawning.")
+	end
+	
 	local IsSpawnPositionClear = function(position)
 		if self.race.vehicleCollisions == false then
 			return true
