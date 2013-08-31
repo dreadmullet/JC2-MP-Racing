@@ -13,6 +13,8 @@ function Race:__init(args)
 	self.courseInfo = {}
 	self.recordTime = -1
 	self.recordTimePlayerName = ""
+	self.assignedVehicleId = -2
+	
 	self.checkpoints = {}
 	self.lapTimes = {}
 	self.leaderboard = {}

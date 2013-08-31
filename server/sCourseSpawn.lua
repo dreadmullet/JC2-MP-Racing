@@ -52,6 +52,8 @@ function CourseSpawn:SpawnRacer()
 		
 	end
 	
+	self.racer.courseSpawn = self
+	
 	self.racer.player:Teleport(teleportPos , self.angle)
 	self.racer.player:SetWorldId(self.course.race.worldId)
 	

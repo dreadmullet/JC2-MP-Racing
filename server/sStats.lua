@@ -183,8 +183,8 @@ Stats.AddRaceResult = function(racer , place , course)
 	Stats.DebugTimerStart()
 	
 	local vehicle = racer.assignedVehicleId
-	-- Vehicle id of -1 means on-foot.
-	if vehicle ~= -1 then
+	-- Vehicle id of -1 means on-foot. -2 means no assigned vehicle.
+	if vehicle >= 0 then
 		vehicle = Vehicle.GetById(vehicle):GetModelId()
 	end
 	

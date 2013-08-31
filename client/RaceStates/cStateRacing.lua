@@ -9,15 +9,19 @@ function StateRacing:__init(race , args)
 	self.timer = Timer()
 	self.numTicks = 0
 	self.sendCheckpointTimer = Timer()
+	-- When this is true, Action.UseItem is spammed so we enter our vehicle.
+	self.isRespawning = false
 	
 	LargeMessage("GO!" , 2)
 	
 	Utility.EventSubscribe(self , "PostClientTick")
 	Utility.EventSubscribe(self , "LocalPlayerInput")
+	Utility.EventSubscribe(self , "InputPoll")
 	Utility.NetSubscribe(self , "SetTargetCheckpoint")
 	Utility.NetSubscribe(self , "UpdateRacePositions")
 	Utility.NetSubscribe(self , "RaceTimePersonal")
 	Utility.NetSubscribe(self , "NewRecordTime")
+	Utility.NetSubscribe(self , "Respawn")
 	
 end
 
@@ -172,6 +176,18 @@ function StateRacing:LocalPlayerInput(args)
 	
 end
 
+function StateRacing:InputPoll()
+	
+	if self.isRespawning then
+		if LocalPlayer:InVehicle() then
+			self.isRespawning = false
+		else
+			Input:SetValue(Action.UseItem , 1 , false)
+		end
+	end
+	
+end
+
 ----------------------------------------------------------------------------------------------------
 -- Network events
 ----------------------------------------------------------------------------------------------------
@@ -211,5 +227,13 @@ function StateRacing:NewRecordTime(args)
 	
 	self.race.recordTime = args[1]
 	self.race.recordTimePlayerName = args[2]
+	
+end
+
+function StateRacing:Respawn(assignedVehicleId)
+	
+	self.race.assignedVehicleId = assignedVehicleId
+	
+	self.isRespawning = true
 	
 end

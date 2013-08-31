@@ -27,9 +27,9 @@ function Racer:__init(race , player)
 	self.bestTimeTimer = nil
 	-- Used for both circuits and linear courses.
 	self.bestTime = -1
+	-- Position in leaderboard.
 	self.startPosition = -1
-	
-	race.playersOutOfVehicle[player:GetId()] = true
+	self.courseSpawn = nil
 	
 	if race.raceManager:GetIsAdmin(player) then
 		player:SetModelId(settings.playerModelIdAdmin)
@@ -48,6 +48,8 @@ end
 function Racer:RaceStart()
 	
 	self.outOfVehicleTimer = Timer()
+	self.race.playersOutOfVehicle[self.playerId] = true
+	
 	self.bestTimeTimer = Timer()
 	
 	-- Disable collisions, if applicable.
@@ -233,13 +235,102 @@ function Racer:Finish()
 	
 end
 
+function Racer:Respawn()
+	
+	self.outOfVehicleTimer = nil
+	self.race.playersOutOfVehicle[self.playerId] = nil
+	
+	-- Get 2 extra indices of checkpoints around our current one.
+	local previousCheckpointIndex = self.targetCheckpoint - 2
+	local checkpointIndex = self.targetCheckpoint - 1
+	local nextCheckpointIndex = self.targetCheckpoint
+	if checkpointIndex <= 0 and self.race.course.type == "Circuit" and self.numLapsCompleted > 0 then
+		previousCheckpointIndex = #self.race.course.checkpoints - 1
+		checkpointIndex = #self.race.course.checkpoints
+		nextCheckpointIndex = 1
+	end
+	if previousCheckpointIndex <= 0 and self.race.course.type == "Circuit" then
+		previousCheckpointIndex = #self.race.course.checkpoints
+	end
+	
+	-- Get spawn position and angle.
+	local spawnPosition
+	local spawnAngle
+	if checkpointIndex <= 0 then
+		-- Respawn at our spawn position.
+		spawnPosition = self.courseSpawn.position
+		spawnAngle = self.courseSpawn.angle
+	else
+		local previousCheckpoint = self.race.course.checkpoints[previousCheckpointIndex]
+		local checkpoint = self.race.course.checkpoints[checkpointIndex]
+		local nextCheckpoint = self.race.course.checkpoints[nextCheckpointIndex]
+		spawnPosition = checkpoint.position
+		
+		local spawnDirection
+		if previousCheckpoint then
+			spawnDirection = (previousCheckpoint.position - checkpoint.position)
+			if nextCheckpoint then
+				spawnDirection = (
+					spawnDirection +
+					(checkpoint.position - nextCheckpoint.position)
+				) * 0.5
+			end
+		elseif nextCheckpoint then
+			spawnDirection = checkpoint.position - nextCheckpoint.position
+		end
+		spawnDirection = spawnDirection:Normalized()
+		
+		spawnAngle = Angle.FromVectors(
+			Vector(0 , 0 , 1) ,
+			spawnDirection
+		)
+		spawnAngle.roll = 0
+	end
+	
+	if self.assignedVehicleId >= 0 then
+		-- Respawn with vehicle.
+		local oldVehicle = Vehicle.GetById(self.assignedVehicleId)
+		if IsValid(oldVehicle) then
+			local color1 , color2 = oldVehicle:GetColors()
+			
+			local spawnArgs = {}
+			spawnArgs.model_id = oldVehicle:GetModelId()
+			spawnArgs.position = spawnPosition
+			spawnArgs.angle = spawnAngle
+			spawnArgs.world = oldVehicle:GetWorldId()
+			spawnArgs.enabled = true
+			spawnArgs.tone1 = color1
+			spawnArgs.tone2 = color2
+			-- TODO: Currently not implemented by the API.
+			-- spawnArgs.template = oldVehicle:GetTemplate()
+			-- spawnArgs.decal = oldVehicle:GetDecal()
+			
+			oldVehicle:Remove()
+			
+			local newVehicle = Vehicle.Create(spawnArgs)
+			local dirToPlayerSpawn = spawnAngle * Vector(-1 , 0 , 0)
+			local playerSpawnPosition = spawnPosition + dirToPlayerSpawn * 2
+			self.player:Teleport(playerSpawnPosition , spawnAngle)
+			
+			self.assignedVehicleId = newVehicle:GetId()
+		end
+	else
+		-- On-foot, just teleport.
+		self.player:Teleport(spawnPosition , spawnAngle)
+	end
+	
+	Network:Send(self.player , "Respawn" , self.assignedVehicleId)
+	
+end
+
 function Racer:EnterVehicle(args)
 	
-	if self.assignedVehicleId == args.vehicle:GetId() then
-		self.outOfVehicleTimer = nil
-		self.race.playersOutOfVehicle[self.player:GetId()] = nil
-	else
-		if self.race.stateName ~= "StateAddPlayers" and not debug.dontRestrictVehicle then
+	-- -1 is on-foot, -2 is no vehicle.
+	if self.assignedVehicleId >= 0 then
+		if self.assignedVehicleId == args.vehicle:GetId() then
+			self.outOfVehicleTimer = nil
+			self.race.playersOutOfVehicle[self.player:GetId()] = nil
+		elseif self.race.stateName ~= "StateAddPlayers" and not debug.dontRestrictVehicle then
 			-- Remove player from race if they steal a vehicle.
 			if args.is_driver and args.old_driver then
 				self.race:MessageRace(
