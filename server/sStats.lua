@@ -182,10 +182,14 @@ Stats.AddRaceResult = function(racer , place , course)
 	
 	Stats.DebugTimerStart()
 	
-	local vehicle = racer.assignedVehicleId
-	-- Vehicle id of -1 means on-foot. -2 means no assigned vehicle.
-	if vehicle >= 0 then
-		vehicle = Vehicle.GetById(vehicle):GetModelId()
+	local vehicleId = racer.assignedVehicleId
+	-- Vehicle model id of -1 means on-foot. -2 means no assigned vehicle.
+	local vehicleModelId = -2
+	if vehicleId >= 0 then
+		local vehicle = Vehicle.GetById(vehicleId)
+		if IsValid(vehicle) then
+			vehicleModelId = vehicle:GetModelId()
+		end
 	end
 	
 	local bestTime
@@ -202,7 +206,7 @@ Stats.AddRaceResult = function(racer , place , course)
 	command:Bind(1 , racer.steamId)
 	command:Bind(2 , place)
 	command:Bind(3 , FNV(course.fileName))
-	command:Bind(4 , vehicle)
+	command:Bind(4 , vehicleModelId)
 	command:Bind(5 , bestTime)
 	command:Execute()
 	
