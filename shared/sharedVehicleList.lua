@@ -2,17 +2,17 @@
 -- Example: 
 -- VehicleList[2].modelId = 2
 -- VehicleList[2].name = Mancini Cavallo 1001
--- VehicleList[2].vehicleType = "Car"
+-- VehicleList[2].type = "Car"
 -- VehicleList[2].isDLC = false
 ----------------------------------------------------------------------------------------------------
 
-VehicleList.SelectRandom = function(vehicleType , allowDLC)
+VehicleList.SelectRandom = function(type , allowDLC)
 	
 	local list = {}
 	
 	for modelId , vehicle in ipairs(VehicleList) do
-		if vehicleType then
-			if vehicle.vehicleType == vehicleType then
+		if type then
+			if vehicle.type == type then
 				if allowDLC then
 					table.insert(list , vehicle)
 				elseif vehicle.isDLC == false then
@@ -51,12 +51,12 @@ end
 local IsDLC = true
 local IsNotDLC = false
 
-local AddVehicle = function(modelId , name , vehicleType , isDLC)
+local AddVehicle = function(modelId , name , type , isDLC)
 	
 	local vehicle = {}
 	vehicle.modelId = modelId
 	vehicle.name = name
-	vehicle.vehicleType = vehicleType
+	vehicle.type = type
 	vehicle.isDLC = isDLC
 	VehicleList[modelId] = vehicle
 	
