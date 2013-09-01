@@ -165,6 +165,18 @@ function StateStartingGrid:LocalPlayerInput(args)
 				end
 			end
 		end
+		-- Block Action.Accelerate, but only if we don't have a car.
+		if args.input == Action.Accelerate then
+			local vehicle = Vehicle.GetById(self.race.assignedVehicleId)
+			if IsValid(vehicle) then
+				local vehicleInfo = VehicleList[vehicle:GetModelId()]
+				if vehicleInfo then
+					if vehicleInfo.type ~= "Car" then
+						return false
+					end
+				end
+			end
+		end
 	end
 	
 	return true

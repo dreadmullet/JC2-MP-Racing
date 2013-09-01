@@ -31,14 +31,14 @@ settings.blockedInputsStartingGrid = {
 	Action.VehicleFireRight ,
 	Action.NextWeapon ,
 	Action.PrevWeapon ,
-	Action.Accelerate ,
+	-- Action.Accelerate , -- Selectively disabled in StateStartingGrid depending on vehicle type.
 	Action.Reverse ,
 	Action.HeliIncAltitude ,
 	Action.HeliDecAltitude ,
 	Action.PlaneIncTrust ,
 	Action.PlaneDecTrust ,
-	Action.BoatForward ,
-	Action.BoatBackward ,
+	-- Action.BoatForward , -- These two don't even do anything.
+	-- Action.BoatBackward ,
 }
 settings.blockedInputsStartingGridOnFoot = {
 	Action.FireLeft ,
