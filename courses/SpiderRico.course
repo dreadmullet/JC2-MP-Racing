@@ -1075,7 +1075,7 @@
          },
          "radius":10,
          "actions":[
-            "RepairCar"
+            
          ],
          "type":7,
          "useIcon":false
@@ -1088,7 +1088,7 @@
          },
          "radius":10,
          "actions":[
-            "RepairCar"
+            
          ],
          "type":7,
          "useIcon":false
@@ -1101,7 +1101,7 @@
          },
          "radius":10,
          "actions":[
-            "RepairCar"
+            
          ],
          "type":7,
          "useIcon":false
@@ -1114,7 +1114,7 @@
          },
          "radius":10,
          "actions":[
-            "RepairCar"
+            
          ],
          "type":7,
          "useIcon":false
@@ -1127,7 +1127,7 @@
          },
          "radius":10,
          "actions":[
-            "RepairCar"
+            
          ],
          "type":7,
          "useIcon":false
@@ -1140,7 +1140,7 @@
          },
          "radius":10,
          "actions":[
-            "RepairCar"
+            
          ],
          "type":7,
          "useIcon":false
@@ -1153,7 +1153,7 @@
          },
          "radius":10,
          "actions":[
-            "RepairCar"
+            
          ],
          "type":7,
          "useIcon":false
@@ -1166,7 +1166,7 @@
          },
          "radius":10,
          "actions":[
-            "RepairCar"
+            
          ],
          "type":7,
          "useIcon":false

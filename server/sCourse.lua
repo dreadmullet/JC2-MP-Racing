@@ -251,6 +251,7 @@ function Course.Load(name)
 		)
 		
 		cp.validVehicles = checkpoint.validVehicles
+		cp.actions = checkpoint.actions or {}
 	end
 	
 	course.spawns = {}

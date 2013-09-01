@@ -678,7 +678,7 @@
          },
          "radius":12.05,
          "actions":[
-            "RepairCar"
+            
          ],
          "type":7,
          "useIcon":false
