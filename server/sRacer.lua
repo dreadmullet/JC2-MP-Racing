@@ -65,7 +65,6 @@ function Racer:RaceStateChange(stateName)
 		self.player:ClearInventory()
 	elseif stateName == "StateRacing" then
 		self.bestTimeTimer = Timer()
-		self.respawnTimer = Timer()
 	end
 	
 end
@@ -77,7 +76,7 @@ function Racer:Update()
 		table.insert(finishedPlayerIds , racer.playerId)
 	end
 	
-	if self.respawnTimer and self.respawnTimer:GetSeconds() < 10 then
+	if self.respawnTimer and self.respawnTimer:GetSeconds() < 7 then
 		-- Do nothing, we recently respawned, and we're likely in the enter vehicle animation.
 	else
 		local isVehicleAlive = true
@@ -385,6 +384,8 @@ function Racer:Respawn()
 end
 
 function Racer:EnterVehicle(args)
+	
+	self.respawnTimer = nil
 	
 	-- -1 is on-foot, -2 is no vehicle.
 	if self.assignedVehicleId >= 0 then
