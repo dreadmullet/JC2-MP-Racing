@@ -40,6 +40,7 @@ function CourseCheckpoint:Spawn()
 	
 end
 
+-- TODO: a way to force on-foot
 function CourseCheckpoint:GetIsValidVehicle(vehicle)
 	
 	-- We don't have a required vehicle.
@@ -72,14 +73,16 @@ end
 -- Called by PlayerEnterVehicle event of race.
 function CourseCheckpoint:Enter(racer)
 	
-	if self:GetIsValidVehicle(racer.player:GetVehicle()) then
-		if racer.targetCheckpoint == self.index then
-			-- Advance racer's checkpoint.
-			racer:AdvanceCheckpoint(self.index)
-			-- Call this checkpoint's actions.
-			for index , functionName in ipairs(self.actions) do
-				self[functionName](self , racer)
-			end
+	if
+		racer.hasFinished == false and
+		self:GetIsValidVehicle(racer.player:GetVehicle()) and
+		racer.targetCheckpoint == self.index
+	then
+		-- Advance racer's checkpoint.
+		racer:AdvanceCheckpoint(self.index)
+		-- Call this checkpoint's actions.
+		for index , functionName in ipairs(self.actions) do
+			self[functionName](self , racer)
 		end
 	end
 	
