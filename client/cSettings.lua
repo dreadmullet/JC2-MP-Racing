@@ -55,7 +55,7 @@ settings.blockedInputsStartingGridOnFoot = {
 	Action.Kick ,
 }
 settings.blockedInputsInVehicle = {
-	Action.UseItem ,
+	-- Action.UseItem ,
 	Action.StuntJump ,
 	Action.ParachuteOpenClose ,
 }
