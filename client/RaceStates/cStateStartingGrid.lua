@@ -41,6 +41,7 @@ function StateStartingGrid:__init(race , args)
 	end
 	
 	Utility.EventSubscribe(self , "LocalPlayerInput")
+	Utility.EventSubscribe(self , "InputPoll")
 	
 end
 
@@ -167,5 +168,11 @@ function StateStartingGrid:LocalPlayerInput(args)
 	end
 	
 	return true
+	
+end
+
+function StateStartingGrid:InputPoll()
+	
+	Input:SetValue(Action.Handbrake , 1 , false)
 	
 end
