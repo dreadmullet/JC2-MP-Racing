@@ -16,7 +16,6 @@ function StateRacing:__init(race , args)
 	
 	Utility.EventSubscribe(self , "PostClientTick")
 	Utility.EventSubscribe(self , "LocalPlayerInput")
-	Utility.EventSubscribe(self , "InputPoll")
 	Utility.NetSubscribe(self , "SetTargetCheckpoint")
 	Utility.NetSubscribe(self , "UpdateRacePositions")
 	Utility.NetSubscribe(self , "RaceTimePersonal")
@@ -42,6 +41,18 @@ function StateRacing:Run()
 	for index , playerId in ipairs(self.race.leaderboard) do
 		if playerId == LocalPlayer:GetId() then
 			self.racePosition = index
+		end
+	end
+	
+	-- If we've respawned, try to enter the vehicle.
+	if self.isRespawning and self.race.assignedVehicleId >= 0 then
+		if LocalPlayer:InVehicle() then
+			self.isRespawning = false
+		else
+			local vehicle = Vehicle.GetById(self.race.assignedVehicleId)
+			if IsValid(vehicle) then
+				LocalPlayer:EnterVehicle(vehicle , VehicleSeat.Driver)
+			end
 		end
 	end
 	
@@ -174,18 +185,6 @@ function StateRacing:LocalPlayerInput(args)
 	end
 	
 	return true
-	
-end
-
-function StateRacing:InputPoll()
-	
-	if self.isRespawning then
-		if LocalPlayer:InVehicle() then
-			self.isRespawning = false
-		else
-			Input:SetValue(Action.UseItem , 1 , false)
-		end
-	end
 	
 end
 

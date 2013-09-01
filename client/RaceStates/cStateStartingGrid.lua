@@ -41,7 +41,6 @@ function StateStartingGrid:__init(race , args)
 	end
 	
 	Utility.EventSubscribe(self , "LocalPlayerInput")
-	Utility.EventSubscribe(self , "InputPoll")
 	
 end
 
@@ -66,6 +65,14 @@ function StateStartingGrid:Run()
 		local args = {}
 		args.stateName = "StateRacing"
 		self.race:SetState(args)
+	end
+	
+	-- If we're not in a vehicle, teleport us into our assigned vehicle.
+	if self.race.assignedVehicleId >= 0 and LocalPlayer:InVehicle() == false then
+		local vehicle = Vehicle.GetById(self.race.assignedVehicleId)
+		if IsValid(vehicle) then
+			LocalPlayer:EnterVehicle(vehicle , VehicleSeat.Driver)
+		end
 	end
 	
 	-- Draw GUI.
@@ -160,14 +167,5 @@ function StateStartingGrid:LocalPlayerInput(args)
 	end
 	
 	return true
-	
-end
-
-function StateStartingGrid:InputPoll()
-	
-	-- Spam the enter vehicle key until they're in a vehicle.
-	if LocalPlayer:InVehicle() == false then
-		Input:SetValue(Action.UseItem , 1 , false)
-	end
 	
 end
