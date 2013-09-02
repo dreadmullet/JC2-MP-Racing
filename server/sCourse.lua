@@ -20,6 +20,9 @@ function Course:__init()
 	self.prizeMoney = settings.prizeMoneyDefault
 	self.parachuteEnabled = true
 	self.grappleEnabled = true
+	-- Key = modelId
+	-- value = true
+	self.dlcVehicles = {}
 	
 	-- Note: if two races are running at the same time with the same course, lap records could be
 	-- overwritten, because lap records are stored when a course is loaded. Not a huge issue, since
@@ -255,6 +258,7 @@ function Course.Load(name)
 	end
 	
 	course.spawns = {}
+	course.dlcVehicles = {}
 	
 	for index , spawn in ipairs(ctable.spawns) do
 		local sp = CourseSpawn(course)
@@ -276,6 +280,14 @@ function Course.Load(name)
 		sp.templates = spawn.templates
 		sp.decals = spawn.decals
 		
+		-- Add to dlcVehicles.
+		for index , modelId in ipairs(spawn.modelIds) do
+			local vehicleInfo = VehicleList[modelId]
+			if vehicleInfo.isDLC then
+				course.dlcVehicles[modelId] = true
+			end
+		end
+		
 		table.insert(course.spawns , sp)
 	end
 	
@@ -290,7 +302,7 @@ function Course.Load(name)
 	
 	-- Load top times from database.
 	course.topRecords = Stats.GetCourseRecords(course , 1 , 10)
-	--If there are no records yet, use a fake one.
+	-- If there are no records yet, use a fake one.
 	if #course.topRecords == 0 then
 		local newRecord = {}
 		newRecord.time = 59 * 60 + 59 + 0.99

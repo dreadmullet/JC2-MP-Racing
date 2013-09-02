@@ -8,6 +8,8 @@ debug = {}
 
 settings = {}
 
+settings.tempDLC = true
+
 settings.debugLevel = 1
 
 settings.name = "JC2-MP-Racing"

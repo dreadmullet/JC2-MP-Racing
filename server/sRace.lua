@@ -215,6 +215,29 @@ function Race:JoinPlayer(player)
 		return false
 	end
 	
+	-- If there is DLC in the course, make sure they have it.
+	-- TODO: This only tells them about one vehicle they're missing, when there could be more.
+	for modelId , alwaysTrue in pairs(self.course.dlcVehicles) do
+		if player:HasVehicleDLC(modelId) == false then
+			if settings.tempDLC then
+				self:MessageServer(
+					"Warning: "..
+					player:GetName()..
+					" is trying to join "..
+					self.course.name..
+					", but doesn't have DLC: "..
+					VehicleList[modelId].name
+				)
+			end
+			self:MessagePlayer(
+				player ,
+				"You cannot join because you are missing DLC: "..
+				VehicleList[modelId].name
+			)
+			return false
+		end
+	end
+	
 	-- Success.
 	self:AddPlayer(
 		player ,
