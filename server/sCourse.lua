@@ -150,29 +150,27 @@ end
 
 function Course:Save(name)
 	
-	course = self
-	
 	local ctable = {}
 	
-	ctable.name = course.name
-	ctable.type = course.type
-	ctable.weatherSeverity = course.weatherSeverity
-	ctable.authors = course.authors
-	ctable.numLaps = course.numLaps
-	ctable.timeLimitSeconds = course.timeLimitSeconds
-	ctable.prizeMoney = course.prizeMoney
+	ctable.name = self.name
+	ctable.type = self.type
+	ctable.weatherSeverity = self.weatherSeverity
+	ctable.authors = self.authors
+	ctable.numLaps = self.numLaps
+	ctable.timeLimitSeconds = self.timeLimitSeconds
+	ctable.prizeMoney = self.prizeMoney
 	ctable.parachuteEnabled = self.parachuteEnabled
 	ctable.grappleEnabled = self.grappleEnabled
 	
 	ctable.checkpoints = {}
 	
-	for index, checkpoint in ipairs(course.checkpoints) do
+	for index, checkpoint in ipairs(self.checkpoints) do
 		table.insert(ctable.checkpoints , checkpoint:MarshalJSON())
 	end
 	
 	ctable.spawns = {}
 	
-	for index, spawn in ipairs(course.spawns) do
+	for index, spawn in ipairs(self.spawns) do
 		table.insert(ctable.spawns , spawn:MarshalJSON())
 	end
 	
