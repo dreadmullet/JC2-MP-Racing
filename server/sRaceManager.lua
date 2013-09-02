@@ -38,7 +38,16 @@ function RaceManager:CreateRace(name , isPublic , course , players)
 	
 	isPublic = isPublic or false
 	players = players or {}
-	course = course or self.courseManagerAll:LoadCourseRandom()
+	-- This is so bad. Need a proper admin GUI.
+	if settings.forceCourse ~= "" then
+		-- Set forceCourse to an empty string, so if some knobhead gets the course name wrong the
+		-- module won't explode.
+		local temp = settings.forceCourse
+		settings.forceCourse = ""
+		course = Course.Load(temp)
+	else
+		course = course or self.courseManagerAll:LoadCourseRandom()
+	end
 	
 	-- Make sure race with this name doesn't already exist.
 	for index , race in ipairs(self.races) do
