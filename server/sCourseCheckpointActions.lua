@@ -77,3 +77,27 @@ function CourseCheckpoint:ActionReverseDirection(racer)
 	end
 	
 end
+
+function CourseCheckpoint:ActionRespawnAsPinkTukTuk(racer)
+	
+	local oldVehicle = racer.player:GetVehicle()
+	if IsValid(oldVehicle) then
+		
+		local args = {}
+		args.position = Vector(0 , 0 , 0)
+		args.angle = oldVehicle:GetAngle()
+		args.world = self.course.race.worldId
+		args.model_id = 22 -- Tuk-Tuk Laa
+		args.enabled = false
+		args.tone1 = Color(255 , 50 , 240)
+		args.tone2 = Color(200 , 70 , 240)
+		local herpVehicle = Vehicle.Create(args)
+		racer.assignedVehicleId = herpVehicle:GetId()
+		
+		racer:Respawn()
+		oldVehicle:Remove()
+		
+		local newVehicle = Vehicle.GetById(racer.assignedVehicleId)
+	end
+	
+end
