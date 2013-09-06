@@ -101,3 +101,20 @@ function CourseCheckpoint:ActionRespawnAsPinkTukTuk(racer)
 	end
 	
 end
+
+function CourseCheckpoint:ActionShootInRandomDirection(racer)
+	
+	local vehicle = racer.player:GetVehicle()
+	if IsValid(vehicle) then
+		local direction = Vector(
+			(math.random() - 0.5) * 2 ,
+			(math.random() - 0.5) * 2 ,
+			0.5 + math.random() * 0.5
+		)
+		direction = direction:Normalized()
+		local speed = 150 + math.random() * 100
+		local velocity = direction * speed
+		vehicle:SetLinearVelocity(velocity)
+	end
+	
+end

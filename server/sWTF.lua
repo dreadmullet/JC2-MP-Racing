@@ -23,6 +23,7 @@ WTF.RandomiseCheckpointActions = function(course)
 	table.insert(names , "ActionSpawnBus")
 	table.insert(names , "ActionReverseDirection")
 	table.insert(names , "ActionRespawnAsPinkTukTuk")
+	table.insert(names , "ActionShootInRandomDirection")
 	
 	for index , cp in ipairs(course.checkpoints) do
 		local chance = 0.3333
