@@ -29,7 +29,7 @@ function StateRacing:__init(race)
 	Utility.EventSubscribe(self , "PlayerEnterCheckpoint")
 	Utility.EventSubscribe(self , "PlayerEnterVehicle")
 	Utility.EventSubscribe(self , "PlayerExitVehicle")
-	Utility.EventSubscribe(self , "PostServerTick")
+	Utility.EventSubscribe(self , "PostTick")
 	Utility.EventSubscribe(self , "PlayerSpawn")
 	Utility.NetSubscribe(self , "ReceiveCheckpointDistanceSqr")
 	
@@ -130,7 +130,7 @@ function StateRacing:PlayerExitVehicle(args)
 end
 
 -- wat
-function StateRacing:PostServerTick()
+function StateRacing:PostTick()
 	
 	-- Call Update on all racers, if it's their turn.
 	for id , racer in pairs(self.race.playerIdToRacer) do

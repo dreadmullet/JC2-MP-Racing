@@ -120,7 +120,7 @@ function Racer:Remove()
 	
 	self.player:SetPosition(self.originalPosition)
 	self.player:SetModelId(self.originalModelId)
-	self.player:SetWorldId(-1)
+	self.player:SetWorld(DefaultWorld)
 	
 	-- Restore our inventory if it exists.
 	if self.storedInventory then
@@ -354,7 +354,7 @@ function Racer:Respawn()
 			spawnArgs.model_id = oldVehicle:GetModelId()
 			spawnArgs.position = spawnPosition
 			spawnArgs.angle = spawnAngle
-			spawnArgs.world = oldVehicle:GetWorldId()
+			spawnArgs.world = oldVehicle:GetWorld()
 			spawnArgs.enabled = true
 			spawnArgs.tone1 = color1
 			spawnArgs.tone2 = color2
@@ -371,6 +371,7 @@ function Racer:Respawn()
 			local dirToPlayerSpawn = spawnAngle * Vector(-1 , 0 , 0)
 			local playerSpawnPosition = spawnPosition + dirToPlayerSpawn * 2
 			self.player:Teleport(playerSpawnPosition , spawnAngle)
+			self.player:EnterVehicle(newVehicle , VehicleSeat.Driver)
 			
 			self.assignedVehicleId = newVehicle:GetId()
 		end

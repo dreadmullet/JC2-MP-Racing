@@ -55,7 +55,7 @@ function CourseCheckpoint:ActionSpawnBus(racer)
 		args.position = args.position + Vector(0 , 15 , 0)
 		args.angle = vehicle:GetAngle()
 		args.angle.yaw = args.angle.yaw + math.rad(90)
-		args.world = self.course.race.worldId
+		args.world = self.course.race.world
 		args.model_id = VehicleList.FindByName("LeisureLiner").modelId
 		args.enabled = true
 		Vehicle.Create(args)
@@ -86,7 +86,7 @@ function CourseCheckpoint:ActionRespawnAsPinkTukTuk(racer)
 		local args = {}
 		args.position = Vector(0 , 0 , 0)
 		args.angle = oldVehicle:GetAngle()
-		args.world = self.course.race.worldId
+		args.world = self.course.race.world
 		args.model_id = 22 -- Tuk-Tuk Laa
 		args.enabled = false
 		args.tone1 = Color(255 , 50 , 240)

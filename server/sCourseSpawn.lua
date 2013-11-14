@@ -25,7 +25,7 @@ function CourseSpawn:SpawnVehicle()
 	spawnArgs.model_id = self.modelIds[modelIdIndex]
 	spawnArgs.position = self.position
 	spawnArgs.angle = self.angle
-	spawnArgs.world = self.course.race.worldId
+	spawnArgs.world = self.course.race.world
 	spawnArgs.enabled = true
 	spawnArgs.template = self.templates[modelIdIndex] or ""
 	spawnArgs.decal = self.decals[modelIdIndex] or ""
@@ -43,12 +43,13 @@ function CourseSpawn:SpawnRacer()
 	end
 	
 	local teleportPos = self.position + Vector(0 , 2 , 0)
-	-- If there is a vehicle, spawn them next to the door of their car.
+	-- If there is a vehicle, teleport them and put them in the vehicle.
 	if self.vehicle then
 		local angleForward = self.angle
 		local dirToPlayerSpawn = angleForward * Vector(-1 , 0 , 0)
 		teleportPos = teleportPos + dirToPlayerSpawn * 2
 		self.racer.assignedVehicleId = self.vehicle:GetId()
+		self.racer.player:EnterVehicle(self.vehicle , VehicleSeat.Driver)
 	-- Otherwise, place them directly on the spawn position.
 	else
 		
@@ -57,7 +58,7 @@ function CourseSpawn:SpawnRacer()
 	self.racer.courseSpawn = self
 	
 	self.racer.player:Teleport(teleportPos , self.angle)
-	self.racer.player:SetWorldId(self.course.race.worldId)
+	self.racer.player:SetWorld(self.course.race.world)
 	
 end
 

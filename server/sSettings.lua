@@ -27,9 +27,6 @@ settings.doPublicRaces = true
 settings.textColorGlobal = Color(250 , 157 , 133 , 255) -- Light red-orange.
 settings.textColorLocal =  Color(255 , 80 , 36 , 255) -- Full red-orange.
 
--- The first race created starts at this id; other races have higher Ids. When the first race
--- finishes, its id becomes usable again.
-settings.worldIdBase = 10
 settings.playerModelIds = {60 , 65 , 69}
 settings.playerModelIdAdmin = 100
 

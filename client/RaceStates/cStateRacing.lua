@@ -9,12 +9,10 @@ function StateRacing:__init(race , args)
 	self.timer = Timer()
 	self.numTicks = 0
 	self.sendCheckpointTimer = Timer()
-	-- When this is true, Action.UseItem is spammed so we enter our vehicle.
-	self.isRespawning = false
 	
 	LargeMessage("GO!" , 2)
 	
-	Utility.EventSubscribe(self , "PostClientTick")
+	Utility.EventSubscribe(self , "PostTick")
 	Utility.EventSubscribe(self , "LocalPlayerInput")
 	Utility.NetSubscribe(self , "SetTargetCheckpoint")
 	Utility.NetSubscribe(self , "UpdateRacePositions")
@@ -41,18 +39,6 @@ function StateRacing:Run()
 	for index , playerId in ipairs(self.race.leaderboard) do
 		if playerId == LocalPlayer:GetId() then
 			self.racePosition = index
-		end
-	end
-	
-	-- If we've respawned, try to enter the vehicle.
-	if self.isRespawning and self.race.assignedVehicleId >= 0 then
-		if LocalPlayer:InVehicle() then
-			self.isRespawning = false
-		else
-			local vehicle = Vehicle.GetById(self.race.assignedVehicleId)
-			if IsValid(vehicle) then
-				LocalPlayer:EnterVehicle(vehicle , VehicleSeat.Driver)
-			end
 		end
 	end
 	
@@ -137,7 +123,7 @@ end
 -- Events
 ----------------------------------------------------------------------------------------------------
 
-function StateRacing:PostClientTick(args)
+function StateRacing:PostTick(args)
 	
 	-- Send checkpoint distance every interval.
 	if self.sendCheckpointTimer:GetSeconds() >= settings.sendCheckpointDistanceInterval then
@@ -233,7 +219,5 @@ end
 function StateRacing:Respawn(assignedVehicleId)
 	
 	self.race.assignedVehicleId = assignedVehicleId
-	
-	self.isRespawning = true
 	
 end

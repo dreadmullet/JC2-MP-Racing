@@ -9,9 +9,9 @@ function DelayedFunction:__init(delay , func , firstArg)
 	
 	-- blargh
 	if Server then
-		self.event = Events:Subscribe("PreServerTick" , self , self.Update)
+		self.event = Events:Subscribe("PreTick" , self , self.Update)
 	else
-		self.event = Events:Subscribe("PreClientTick" , self , self.Update)
+		self.event = Events:Subscribe("PreTick" , self , self.Update)
 	end
 	
 end

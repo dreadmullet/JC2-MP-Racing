@@ -56,7 +56,7 @@ function RaceManager:CreateRace(name , isPublic , course , players)
 		end
 	end
 	
-	local race = Race(name , self , self:GetUnusedWorldId() , course)
+	local race = Race(name , self , World.Create() , course)
 	race.isPublic = isPublic
 	if math.random() >= 0.5 then
 		race.vehicleCollisions = false
@@ -83,30 +83,6 @@ end
 function RaceManager:CreateRacePublic()
 	
 	self.currentPublicRace = self:CreateRace(self:GenerateName() , true)
-	
-end
-
-function RaceManager:GetUnusedWorldId()
-	
-	local GetIsWorldUsed = function(id)
-		for n , race in pairs(self.races) do
-			if race.worldId == id then
-				return true
-			end
-		end
-		
-		return false	
-	end
-	
-	local newIndex = settings.worldIdBase
-	while true do
-		if GetIsWorldUsed(newIndex) == false then
-			break
-		end
-		newIndex = newIndex + 1
-	end
-	
-	return newIndex
 	
 end
 

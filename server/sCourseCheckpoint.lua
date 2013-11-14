@@ -25,7 +25,7 @@ function CourseCheckpoint:Spawn()
 	spawnArgs.create_trigger = true
 	spawnArgs.create_indicator = self.useIcon
 	spawnArgs.type = self.type
-	spawnArgs.world = self.course.race.worldId
+	spawnArgs.world = self.course.race.world
 	spawnArgs.despawn_on_enter = false
 	spawnArgs.activation_box = Vector(
 		self.radius ,

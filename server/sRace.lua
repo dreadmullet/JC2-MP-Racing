@@ -1,5 +1,5 @@
 
-function Race:__init(name , raceManager , worldId , course)
+function Race:__init(name , raceManager , world , course)
 	
 	if settings.debugLevel >= 2 then
 		print("Race:__init")
@@ -7,7 +7,7 @@ function Race:__init(name , raceManager , worldId , course)
 	
 	self.name = name
 	self.raceManager = raceManager
-	self.worldId = worldId
+	self.world = world
 	-- A race should never change its course.
 	self.course = course
 	self.course.race = self
@@ -27,10 +27,8 @@ function Race:__init(name , raceManager , worldId , course)
 	self.playersOutOfVehicle = {}
 	self.prizeMoneyCurrent = course.prizeMoney
 	
-	self:CleanWorld()
-	
 	self.eventSubs = {}
-	table.insert(self.eventSubs , Events:Subscribe("PreServerTick" , self , self.PreServerTick))
+	table.insert(self.eventSubs , Events:Subscribe("PreTick" , self , self.PreTick))
 	table.insert(self.eventSubs , Events:Subscribe("PlayerQuit" , self , self.PlayerQuit))
 	table.insert(self.eventSubs , Events:Subscribe("ModuleUnload" , self , self.ModuleUnload))
 	
@@ -196,8 +194,8 @@ function Race:JoinPlayer(player)
 		return false
 	end
 	
-	-- Player's world id is not -1.
-	if player:GetWorldId() ~= -1 then
+	-- Player's world is not the default.
+	if player:GetWorld() ~= DefaultWorld then
 		self:MessagePlayer(
 			player ,
 			"You must exit other gamemodes before you can join."
@@ -270,21 +268,8 @@ function Race:CleanUp()
 		self:RemovePlayer(racer.player)
 	end
 	
-	-- Remove checkpoints.
-	for n , checkpoint in ipairs(self.course.checkpoints) do
-		if IsValid(checkpoint.checkpoint) then
-			checkpoint.checkpoint:Remove()
-		end
-	end
-	self.course.checkpoints = {}
-	
-	-- Remove vehicles.
-	for n , spawn in ipairs(self.course.spawns) do
-		if IsValid(spawn.vehicle) then
-			spawn.vehicle:Remove()
-		end
-	end
-	self.course.spawns = {}
+	-- Destroy the world, which removes anything in it.
+	self.world:Remove()
 	
 	-- Unsubscribe from events.
 	for n , event in ipairs(self.eventSubs) do
@@ -354,24 +339,6 @@ function Race:MessagePlayer(player , message)
 	
 end
 
--- Removes all vehicles and checkpoints in our world. Just in case the script exploded and left
--- pieces of spawns all over the place.
-function Race:CleanWorld()
-	
-	for vehicle in Server:GetVehicles() do
-		if vehicle:GetWorldId() == self.worldId then
-			vehicle:Remove()
-		end
-	end
-	
-	for checkpoint in Server:GetCheckpoints() do
-		if checkpoint:GetWorldId() == self.worldId then
-			checkpoint:Remove()
-		end
-	end
-	
-end
-
 function Race:NetworkSendRace(name , ...)
 	
 	for playerId , racer in pairs(self.playerIdToRacer) do
@@ -387,7 +354,7 @@ end
 -- Events
 --
 
-function Race:PreServerTick()
+function Race:PreTick()
 	
 	if self.state.Run then
 		self.state:Run()

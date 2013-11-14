@@ -68,14 +68,6 @@ function StateStartingGrid:Run()
 		self.race:SetState(args)
 	end
 	
-	-- If we're not in a vehicle, teleport us into our assigned vehicle.
-	if self.race.assignedVehicleId >= 0 and LocalPlayer:InVehicle() == false then
-		local vehicle = Vehicle.GetById(self.race.assignedVehicleId)
-		if IsValid(vehicle) then
-			LocalPlayer:EnterVehicle(vehicle , VehicleSeat.Driver)
-		end
-	end
-	
 	-- Draw GUI.
 	if Client:GetState() == GUIState.Game then
 		local args = {}
