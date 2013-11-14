@@ -48,7 +48,7 @@ settings.admins = {
 	SteamID("76561197985532207") , -- dreadmullet
 }
 
-settings.WTF = true
+settings.WTF = false
 
 settings.courseEditorEnabled = false
 
