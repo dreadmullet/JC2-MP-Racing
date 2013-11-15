@@ -250,6 +250,13 @@ function Race:JoinPlayer(player)
 			" players."
 		)
 		self:SetState("StateStartingGrid")
+	elseif self.numPlayers == Server:GetPlayerCount() then
+		self:MessageServer(
+			"All players joined; starting race with "..
+			self.numPlayers..
+			" players."
+		)
+		self:SetState("StateStartingGrid")
 	end
 	
 	return true
