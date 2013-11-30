@@ -3,7 +3,6 @@ debug = {}
 -- Helps with testing starting grids.
 -- debug.alwaysMaxPlayers = true
 -- debug.dontRemoveIfOutOfVehicle = true
--- debug.quickRaceStart = true
 -- debug.oneLap = true
 
 settings = {}
@@ -41,7 +40,6 @@ if debug.oneLap then settings.lapsMult = 0 end
 -- Public races
 settings.command = "/race"
 settings.raceJoinWaitSeconds = 110
-if debug.quickRaceStart then settings.raceJoinWaitSeconds = 2 end
 
 settings.admins = {
 	SteamID("76561197985532207") , -- dreadmullet
