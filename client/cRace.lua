@@ -1,4 +1,8 @@
 
+-- Key: model name
+-- Value: Model
+Race.modelCache = {}
+
 function Race:__init(args)
 	
 	if settings.debugLevel >= 2 then
@@ -20,6 +24,11 @@ function Race:__init(args)
 	self.leaderboard = {}
 	
 	self:SetState(args)
+	
+	-- Request Models from server, if we don't have them already.
+	if Race.modelCache.TargetArrow == nil then
+		OBJLoader.Request("TargetArrow" , self , self.ModelReceive)
+	end
 	
 	Utility.EventSubscribe(self , "Render")
 	Utility.NetSubscribe(self , "SetState")
@@ -111,4 +120,8 @@ function Race:UpdateLeaderboard(racePosTracker , currentCheckpoint , finishedPla
 		end
 	end
 	
+end
+
+function Race:ModelReceive(model , name)
+	Race.modelCache[name] = model
 end

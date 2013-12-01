@@ -83,10 +83,8 @@ During races, sometimes the checkpoint arrow will be invisible. You can probably
 settings.textColor = Color(228 , 142 , 56 , 255)
 settings.shadowColor = Color(0 , 0 , 0 , 255)
 
-settings.checkpointArrowFlashNum = 3
-settings.checkpointArrowFlashInterval = 7
-settings.checkpointArrowColor = Color(204 , 54 , 51)
-settings.checkpointArrowColorActivated = Color(0 , 0 , 0 , 0)
+settings.targetArrowFlashNum = 3
+settings.targetArrowFlashInterval = 7
 
 settings.nextCheckpointArrowColor = Color(228 , 142 , 56 , 128)
 

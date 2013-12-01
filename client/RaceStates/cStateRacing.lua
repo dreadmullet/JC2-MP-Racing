@@ -5,7 +5,7 @@ function StateRacing:__init(race , args)
 	self.racePosition = -1
 	self.currentLap = 1
 	self.targetCheckpoint = 1
-	self.checkpointArrowValue = 1
+	self.targetArrowValue = 1
 	self.timer = Timer()
 	self.numTicks = 0
 	self.sendCheckpointTimer = Timer()
@@ -27,12 +27,12 @@ function StateRacing:Run()
 	self.numTicks = self.numTicks + 1
 	
 	-- Checkpoint arrow value.
-	local maxValue = settings.checkpointArrowFlashNum * settings.checkpointArrowFlashInterval * 2
+	local maxValue = settings.targetArrowFlashNum * settings.targetArrowFlashInterval * 2
 	-- Always try to increment the value.
-	self.checkpointArrowValue = self.checkpointArrowValue + 1
+	self.targetArrowValue = self.targetArrowValue + 1
 	-- Always clamp, too.
-	if self.checkpointArrowValue > maxValue then
-		self.checkpointArrowValue = maxValue
+	if self.targetArrowValue > maxValue then
+		self.targetArrowValue = maxValue
 	end
 	
 	-- Extract our race position from the leaderboard.
@@ -48,12 +48,12 @@ function StateRacing:Run()
 		RaceGUI.DrawVersion(self.race.version)
 		-- DrawCourseName
 		RaceGUI.DrawCourseName(self.race.courseInfo.name)
-		-- DrawCheckpointArrow
+		-- DrawTargetArrow
 		args = {}
-		args.checkpointArrowValue = self.checkpointArrowValue
+		args.targetArrowValue = self.targetArrowValue
 		args.numTicks = self.numTicks
 		args.checkpointPosition = self.race.checkpoints[self.targetCheckpoint]
-		RaceGUI.DrawCheckpointArrow(args)
+		RaceGUI.DrawTargetArrow(args)
 		-- DrawLapCounter
 		args = {}
 		args.courseType = self.race.courseInfo.type
@@ -185,10 +185,10 @@ function StateRacing:SetTargetCheckpoint(targetCheckpoint)
 	-- If we started a new lap.
 	if self.targetCheckpoint == 1 then
 		self.currentLap = self.currentLap + 1
-		self.checkpointArrowValue = -1
+		self.targetArrowValue = -1
 		self.timer:Restart()
 	else
-		self.checkpointArrowValue = 0
+		self.targetArrowValue = 0
 	end
 	
 end

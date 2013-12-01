@@ -44,15 +44,9 @@ function RaceGUI.DrawPlayerCount(args)
 end
 
 -- Draws a 3D arrow at the top of the screen that points to the target checkpoint.
-function RaceGUI.DrawCheckpointArrow(args)
+function RaceGUI.DrawTargetArrow(args)
 	
-	local angleCP = Angle.FromVectors(
-		Vector(0 , 0 , -1) ,
-		args.checkpointPosition - LocalPlayer:GetPosition()
-	)
-	angleCP.roll = 0
-	
-	-- Compensate position for change in FOV.
+	-- Calculate position, compensating for change in FOV.
 	local z = -8.25
 	local y = 3
 	local vehicle = LocalPlayer:GetVehicle()
@@ -60,26 +54,26 @@ function RaceGUI.DrawCheckpointArrow(args)
 		z = z + vehicle:GetLinearVelocity():Length() / 25
 		y = y + vehicle:GetLinearVelocity():Length() / 350
 	end
-	local pos = Camera:GetPosition() + Camera:GetAngle() * Vector(0 , y , z)
-	
-	local triangles = Models.arrowTriangles
-	
-	local color = settings.checkpointArrowColor
-	local maxValue = settings.checkpointArrowFlashNum * settings.checkpointArrowFlashInterval * 2
-	if
-		args.checkpointArrowValue < maxValue and
-		math.floor(args.numTicks / settings.checkpointArrowFlashInterval) % 2 == 0
-	then
-		color = settings.checkpointArrowColorActivated
-	end
-	
-	for n = 1 , #triangles do
-		Render:FillTriangle(
-			angleCP * triangles[n][1] + pos ,
-			angleCP * triangles[n][2] + pos ,
-			angleCP * triangles[n][3] + pos ,
-			color
-		)
+	local position = Camera:GetPosition() + Camera:GetAngle() * Vector(0 , y , z)
+	-- Calculate angle.
+	local angle = Angle.FromVectors(
+		Vector(0 , 0 , -1) ,
+		args.checkpointPosition - LocalPlayer:GetPosition()
+	)
+	angle.roll = 0
+	-- Conditionally render, it blinks when you hit a checkpoint.
+	local maxValue = settings.targetArrowFlashNum * settings.targetArrowFlashInterval * 2
+	local shouldDraw = (
+		args.targetArrowValue == maxValue or
+		math.floor(args.numTicks / settings.targetArrowFlashInterval) % 2 == 0
+	)
+	if shouldDraw and Race.modelCache.TargetArrow then
+		local transform = Transform3()
+		transform:Translate(position)
+		transform:Rotate(angle)
+		Render:SetTransform(transform)
+		Race.modelCache.TargetArrow:Draw()
+		Render:ResetTransform()
 	end
 	
 end
