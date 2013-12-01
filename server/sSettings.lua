@@ -49,11 +49,6 @@ settings.WTF = false
 
 settings.courseEditorEnabled = false
 
-settings.timeLimitFunc = function(lapTimeSeconds , numLaps)
-	
-	return 60 + lapTimeSeconds * numLaps * 4
-	
-end
 settings.numLapsFunc = function(race , courseLaps)
 	
 	local lapsMultPlayers = (race.numPlayers / race.maxPlayers)

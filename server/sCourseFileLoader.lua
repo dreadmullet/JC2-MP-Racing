@@ -234,7 +234,6 @@ CourseLoader.Load = function(name)
 			course.numLaps = info.laps
 			course.authors = info.authors
 			local lapTimeSeconds = info.lapTimeMinutes * 60 + info.lapTimeSeconds
-			course.timeLimitSeconds = settings.timeLimitFunc(lapTimeSeconds , info.laps)
 			course.weatherSeverity = info.weatherSeverity
 			checkpointRadiusMult = info.checkpointRadiusMult
 		elseif datablocks[n].datablockType == "CHECKPOINT" then

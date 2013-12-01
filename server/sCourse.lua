@@ -9,7 +9,6 @@ function Course:__init()
 	self.weatherSeverity = 0.5
 	self.authors = {}
 	self.numLaps = -1
-	self.timeLimitSeconds = -1
 	-- Map of CourseCheckpoints, useful for mapping PlayerEnterCheckpoint event to a CourseCheckpoint
 	-- Key = checkpointId
 	-- Value = CourseCheckpoint
@@ -141,7 +140,6 @@ function Course:MarshalInfo()
 	info.name = self.name
 	info.type = self.type
 	info.numLaps = self.numLaps
-	info.timeLimitSeconds = self.timeLimitSeconds
 	info.prizeMoney = self.prizeMoney
 	
 	return info
@@ -157,7 +155,6 @@ function Course:Save(name)
 	ctable.weatherSeverity = self.weatherSeverity
 	ctable.authors = self.authors
 	ctable.numLaps = self.numLaps
-	ctable.timeLimitSeconds = self.timeLimitSeconds
 	ctable.prizeMoney = self.prizeMoney
 	ctable.parachuteEnabled = self.parachuteEnabled
 	ctable.grappleEnabled = self.grappleEnabled
@@ -229,7 +226,6 @@ function Course.Load(name)
 	course.weatherSeverity = ctable.weatherSeverity
 	course.authors = ctable.authors
 	course.numLaps = ctable.numLaps
-	course.timeLimitSeconds = ctable.timeLimitSeconds
 	course.prizeMoney = ctable.prizeMoney
 	course.parachuteEnabled = ctable.parachuteEnabled
 	course.grappleEnabled = ctable.grappleEnabled
@@ -337,7 +333,6 @@ function Course.CreateTestCourse()
 	end
 	
 	course.numLaps = 1
-	course.timeLimitSeconds = 20 + 70 * course.numLaps * 5
 	
 	local spawn1 = CourseSpawn(course)
 	spawn1.position = Vector(13955.602539 , 201.385193 , -2085.802734)
