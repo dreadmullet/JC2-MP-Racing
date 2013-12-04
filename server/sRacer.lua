@@ -8,17 +8,16 @@ function Racer:__init(race , player)
 	self.steamId = player:GetSteamId().Id
 	-- Pulled from database, and used to update database on our removal.
 	self.playTime = -1
-	self.originalPosition = player:GetPosition()
-	self.originalModelId = player:GetModelId()
+	
 	self.targetCheckpoint = 1
 	self.numLapsCompleted = 0
 	self.numCheckpointsHit = 0
 	self.hasFinished = false
 	self.assignedVehicleId = -1
 	self.outOfVehicleTimer = nil
-	self.storedInventory = nil
 	-- Used with racePosTracker and helps with NetworkSend parameters.
 	self.targetCheckpointDistanceSqr = {[1] = 0}
+	-- TODO: Is this what I want?
 	self.updateTick = race.numPlayers
 	-- Begins at starting grid, used to update playTime.
 	self.raceTimer = nil
@@ -32,37 +31,28 @@ function Racer:__init(race , player)
 	-- Helps with preventing respawning the player every tick.
 	self.respawnTimer = nil
 	
-	if race.raceManager:GetIsAdmin(player) then
-		player:SetModelId(settings.playerModelIdAdmin)
-	else
-		player:SetModelId(table.randomvalue(settings.playerModelIds))
-	end
+	-- if race.raceManager:GetIsAdmin(player) then
+		-- player:SetModelId(settings.playerModelIdAdmin)
+	-- else
+		-- player:SetModelId(table.randomvalue(settings.playerModelIds))
+	-- end
 	
 	local args = {}
 	args.version = settings.version
-	args.stateName = self.race.stateName
-	args.maxPlayers = self.race.maxPlayers
-	Network:Send(self.player , "Initialize" , args)
+	Network:Send(self.player , "Initialise" , args)
 	
 end
 
+-- TODO: this is questionable
 function Racer:RaceStateChange(stateName)
 	
 	if stateName == "StateStartingGrid" then
-		-- Consider us out of a vehicle.
-		self.outOfVehicleTimer = Timer()
-		self.race.playersOutOfVehicle[self.playerId] = true
-		
-			-- Disable collisions, if applicable.
+		-- Disable collisions, if applicable.
 		if self.race.vehicleCollisions == false then
 			self.player:DisableCollision(CollisionGroup.Vehicle)
 		end
 		-- Always disable player collisions.
 		self.player:DisableCollision(CollisionGroup.Player)
-		
-		-- Store our inventory.
-		self.storedInventory = self.player:GetInventory()
-		self.player:ClearInventory()
 	elseif stateName == "StateRacing" then
 		self.bestTimeTimer = Timer()
 	end
@@ -71,6 +61,7 @@ end
 
 function Racer:Update()
 	
+	-- TODO: The actual fuck
 	local finishedPlayerIds = {}
 	for index , racer in ipairs(self.race.finishedRacers) do
 		table.insert(finishedPlayerIds , racer.playerId)
@@ -118,24 +109,11 @@ function Racer:Remove()
 		Stats.PlayerExit(self)
 	end
 	
-	self.player:SetPosition(self.originalPosition)
-	self.player:SetModelId(self.originalModelId)
-	self.player:SetWorld(DefaultWorld)
-	
-	-- Restore our inventory if it exists.
-	if self.storedInventory then
-		for index , weapon in pairs(self.storedInventory) do
-			self.player:GiveWeapon(index , weapon)
-		end
-	end
-	
 	-- Remove our vehicle.
 	local vehicle = Vehicle.GetById(self.assignedVehicleId)
 	if vehicle then
 		vehicle:Remove()
 	end
-	
-	self.race.playersOutOfVehicle[self.player:GetId()] = nil
 	
 	local args = {}
 	args.stateName = "StateTerminate"
@@ -246,15 +224,15 @@ function Racer:Finish()
 	
 	self.race:RacerFinish(self)
 	
-	DelayedFunction(
-		settings.playerFinishRemoveDelay ,
-		function(racer)
-			if racer.race:HasPlayer(racer.player) then
-				racer.race:RemovePlayer(racer.player)
-			end
-		end ,
-		self
-	)
+	-- DelayedFunction(
+		-- settings.playerFinishRemoveDelay ,
+		-- function(racer)
+			-- if racer.race:HasPlayer(racer.player) then
+				-- racer.race:RemovePlayer(racer.player)
+			-- end
+		-- end ,
+		-- self
+	-- )
 	
 	local args = {}
 	args.stateName = "StateFinished"
@@ -288,9 +266,6 @@ function Racer:Respawn()
 		
 		return true
 	end
-	
-	self.outOfVehicleTimer = nil
-	self.race.playersOutOfVehicle[self.playerId] = nil
 	
 	-- Get 2 extra indices of checkpoints around our current one.
 	local previousCheckpointIndex = self.targetCheckpoint - 2
@@ -388,34 +363,15 @@ function Racer:EnterVehicle(args)
 	
 	self.respawnTimer = nil
 	
-	-- -1 is on-foot, -2 is no vehicle.
-	if self.assignedVehicleId >= 0 then
-		if self.assignedVehicleId == args.vehicle:GetId() then
-			self.outOfVehicleTimer = nil
-			self.race.playersOutOfVehicle[self.player:GetId()] = nil
-		elseif self.race.stateName ~= "StateAddPlayers" and not debug.dontRestrictVehicle then
-			-- Remove player from race if they steal a vehicle.
-			if args.is_driver and args.old_driver then
-				self.race:MessageRace(
-					args.player:GetName().." has been removed for vehicle theft."
-				)
-				self.race:RemovePlayer(args.player)
-			else -- Otherwise, just remove them from the car.
-				args.player:Teleport(
-					args.player:GetPosition() + Vector(0 , 2 , 0) ,
-					args.player:GetAngle()
-				)
-				self.race:MessagePlayer(args.player , "This is not your car!")
-			end
+	-- If someone enters the wrong car, boot them out.
+	if self.assignedVehicleId >= 0 and self.assignedVehicleId ~= args.vehicle:GetId() then
+		if not debug.dontRestrictVehicle then
+			args.player:Teleport(
+				args.player:GetPosition() + Vector(0 , 2 , 0) ,
+				args.player:GetAngle()
+			)
+			self.race:MessagePlayer(args.player , "This is not your car!")
 		end
 	end
-	
-end
-
-function Racer:ExitVehicle(args)
-	
-	self.outOfVehicleTimer = Timer()
-	
-	self.race.playersOutOfVehicle[self.player:GetId()] = true
 	
 end

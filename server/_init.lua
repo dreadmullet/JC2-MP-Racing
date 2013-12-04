@@ -1,5 +1,7 @@
 
 class("RaceManager")
+class("RaceManagerMode")
+class("RaceManagerJoinable")
 class("Race")
 class("Racer")
 

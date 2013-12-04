@@ -81,7 +81,7 @@ end
 
 function LargeMessage:Render()
 	
-	if Client:GetState() == GUIState.Game then
+	if Game:GetState() == GUIState.Game then
 		self:Draw()
 	end
 	

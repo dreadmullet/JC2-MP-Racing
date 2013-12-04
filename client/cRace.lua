@@ -10,7 +10,7 @@ function Race:__init(args)
 	end
 	
 	self.state = nil
-	self.stateName = nil
+	self.stateName = ""
 	self.version = args.version
 	self.numPlayers = -1
 	self.playerIdToInfo = {}
@@ -22,8 +22,6 @@ function Race:__init(args)
 	self.checkpoints = {}
 	self.lapTimes = {}
 	self.leaderboard = {}
-	
-	self:SetState(args)
 	
 	-- Request Models from server, if we don't have them already.
 	if Race.modelCache.TargetArrow == nil then
@@ -48,7 +46,7 @@ end
 
 function Race:Render()
 	
-	if self.state then
+	if self.state and self.state.Run then
 		self.state:Run()
 	end
 	

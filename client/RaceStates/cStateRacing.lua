@@ -43,7 +43,7 @@ function StateRacing:Run()
 	end
 	
 	-- Draw GUI.
-	if Client:GetState() == GUIState.Game then
+	if Game:GetState() == GUIState.Game then
 		-- DrawVersion
 		RaceGUI.DrawVersion(self.race.version)
 		-- DrawCourseName

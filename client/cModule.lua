@@ -30,7 +30,7 @@ Events:Subscribe("ModulesLoad" , ModulesLoad)
 Events:Subscribe("ModuleUnload" , ModuleUnload)
 
 Network:Subscribe(
-	"Initialize" ,
+	"Initialise" ,
 	function(args)
 		local race = Race(args)
 	end

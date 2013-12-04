@@ -15,7 +15,7 @@ end
 function StateFinished:Run()
 	
 	-- Draw GUI.
-	if Client:GetState() == GUIState.Game then
+	if Game:GetState() == GUIState.Game then
 		RaceGUI.DrawVersion(self.race.version)
 		RaceGUI.DrawCourseName(self.race.courseInfo.name)
 		-- DrawLapCounter

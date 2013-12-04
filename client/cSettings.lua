@@ -9,7 +9,7 @@ math.random()
 -- Racing
 ----------------------------------------------------------------------------------------------------
 
-settings.debugLevel = 1
+settings.debugLevel = 2
 
 settings.countDownNumMessages = 3
 settings.countDownInterval = 2

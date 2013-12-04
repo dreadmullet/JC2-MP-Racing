@@ -69,7 +69,7 @@ function StateStartingGrid:Run()
 	end
 	
 	-- Draw GUI.
-	if Client:GetState() == GUIState.Game then
+	if Game:GetState() == GUIState.Game then
 		local args = {}
 		RaceGUI.DrawVersion(self.race.version)
 		RaceGUI.DrawCourseName(self.race.courseInfo.name)

@@ -25,39 +25,11 @@ function StateRacing:__init(race)
 		self.racePosTracker[0][id] = racer.targetCheckpointDistanceSqr -- wut
 	end
 	
-	Utility.EventSubscribe(self , "PlayerChat")
 	Utility.EventSubscribe(self , "PlayerEnterCheckpoint")
 	Utility.EventSubscribe(self , "PlayerEnterVehicle")
-	Utility.EventSubscribe(self , "PlayerExitVehicle")
 	Utility.EventSubscribe(self , "PostTick")
 	Utility.EventSubscribe(self , "PlayerSpawn")
 	Utility.NetSubscribe(self , "ReceiveCheckpointDistanceSqr")
-	
-end
-
-function StateRacing:Run()
-	
-	-- Remove players who aren't in a vehicle for some time.
-	for playerId , bool in pairs(self.race.playersOutOfVehicle) do
-		local racer = self.race.playerIdToRacer[playerId]
-		if
-			-- If their assigned vehicle id is -1, it means they're on-foot. -2 is no assigned vehicle.
-			racer.assignedVehicleId >= 0 and
-			racer.hasFinished == false and
-			racer.outOfVehicleTimer and
-			racer.outOfVehicleTimer:GetSeconds() >= settings.outOfVehicleMaxSeconds and
-			not debug.dontRemoveIfOutOfVehicle -- double negatives ftw
-		then
-			self.race:RemovePlayer(
-				playerId ,
-				"You were removed from the race for not being in a vehicle"
-			)
-			self.race:MessageRace(
-				racer.player:GetName()..
-				" was removed from the race for not being in a vehicle."
-			)
-		end
-	end
 	
 end
 
@@ -71,28 +43,6 @@ end
 --
 -- Events
 --
-
-function StateRacing:PlayerChat(args)
-	
-	-- If the race is public, it's not our hands; it's handled by the RaceManager.
-	if self.race.isPublic then
-		return
-	end
-	
-	if args.text == settings.command then
-		if self.race:HasPlayer(args.player) then
-			self.race:RemovePlayer(
-				args.player ,
-				"You have exited the race."
-			)
-			
-			return false
-		end
-	end
-	
-	return true
-	
-end
 
 function StateRacing:PlayerEnterCheckpoint(args)
 	
@@ -111,15 +61,6 @@ function StateRacing:PlayerEnterVehicle(args)
 	local racer = self.race.playerIdToRacer[args.player:GetId()]
 	if racer then
 		racer:EnterVehicle(args)
-	end
-	
-end
-
-function StateRacing:PlayerExitVehicle(args)
-	
-	local racer = self.race.playerIdToRacer[args.player:GetId()]
-	if racer then
-		racer:ExitVehicle(args)
 	end
 	
 end

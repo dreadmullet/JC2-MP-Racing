@@ -1,13 +1,18 @@
 ----------------------------------------------------------------------------------------------------
--- Event to create the RaceManager, as well as misc stuff like global functions.
+-- Event to create the race manager, as well as misc stuff like global functions.
 ----------------------------------------------------------------------------------------------------
 
 Events:Subscribe(
 	"ModuleLoad" ,
 	function()
+		Chat:Broadcast(
+			settings.name.." "..settings.version.." loaded." ,
+			settings.textColorGlobal
+		)
+		
 		Stats.Init()
-		raceManager = RaceManager()
-		-- courseEditorManager = CourseEditorManager(raceManager)
+		-- raceManager = RaceManagerMode()
+		raceManager = RaceManagerJoinable()
 	end
 )
 

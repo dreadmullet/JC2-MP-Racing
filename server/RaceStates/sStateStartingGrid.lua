@@ -15,25 +15,16 @@ function StateStartingGrid:__init(race)
 	race.course:SpawnVehicles()
 	race.course:SpawnRacers()
 	race.course:SpawnCheckpoints()
-	race.course.numLaps = settings.numLapsFunc(race , race.course.numLaps)
+	race.course.numLaps = settings.numLapsFunc(
+		race.numPlayers ,
+		#race.course.spawns ,
+		race.course.numLaps
+	)
 	
 	self.startTimer = Timer()
 	
-	Utility.EventSubscribe(self , "PlayerChat")
 	Utility.EventSubscribe(self , "PlayerEnterVehicle")
-	Utility.EventSubscribe(self , "PlayerExitVehicle")
 	Utility.EventSubscribe(self , "PlayerSpawn")
-	
-	-- If we somehow started without racers, end the race.
-	if self.race.numPlayers == 0 then
-		self.race:MessageServer("Race somehow started with no players! Ending race.")
-		self.race:CleanUp()
-	end
-	
-	-- Tell the race manager to create another public race.
-	if settings.doPublicRaces then
-		self.race.raceManager:CreateRacePublic()
-	end
 	
 	--
 	-- Send info to clients.
@@ -66,6 +57,7 @@ function StateStartingGrid:__init(race)
 		startPositions[racer.playerId] = racer.startPosition
 	end
 	
+	-- TODO: Why is args created every iteration
 	for id , racer in pairs(self.race.playerIdToRacer) do
 		local args = {}
 		args.stateName = "StateStartingGrid"
@@ -111,42 +103,11 @@ end
 -- Events
 --
 
-function StateStartingGrid:PlayerChat(args)
-	
-	-- If the race is public, it's not our hands; it's handled by the RaceManager.
-	if self.race.isPublic then
-		return
-	end
-	
-	if args.text == settings.command then
-		if self.race:HasPlayer(args.player) then
-			self.race:RemovePlayer(
-				args.player ,
-				"You have exited the race."
-			)
-			
-			return false
-		end
-	end
-	
-	return true
-	
-end
-
 function StateStartingGrid:PlayerEnterVehicle(args)
 	
 	local racer = self.race.playerIdToRacer[args.player:GetId()]
 	if racer then
 		racer:EnterVehicle(args)
-	end
-	
-end
-
-function StateStartingGrid:PlayerExitVehicle(args)
-	
-	local racer = self.race.playerIdToRacer[args.player:GetId()]
-	if racer then
-		racer:ExitVehicle(args)
 	end
 	
 end

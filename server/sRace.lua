@@ -1,36 +1,30 @@
 
-function Race:__init(name , raceManager , world , course)
+function Race:__init(raceManager , playerArray , course , vehicleCollisions)
 	
 	if settings.debugLevel >= 2 then
 		print("Race:__init")
 	end
 	
-	self.name = name
 	self.raceManager = raceManager
-	self.world = world
-	-- A race should never change its course.
+	self.vehicleCollisions = vehicleCollisions
+	self.playerIdToRacer = {}
+	self.numPlayers = #playerArray
+	for index , player in ipairs(playerArray) do
+		local newRacer = Racer(self , player)
+		self.playerIdToRacer[player:GetId()] = newRacer
+	end
 	self.course = course
 	self.course.race = self
 	
-	-- If a race is public, it can be entered without specifying the name.
-	self.isPublic = false
-	self.vehicleCollisions = true
-	self.playerIdToRacer = {}
-	self.numPlayers = 0
-	self.maxPlayers = course:GetMaxPlayers()
-	self.state = StateNone()
-	-- Set along with SetState. This allows you to see what the current state is.
-	self.stateName = "StateNone"
+	self.world = World.Create()
 	self.finishedRacers = {}
-	-- Key: player Id
-	-- Value: true
-	self.playersOutOfVehicle = {}
 	self.prizeMoneyCurrent = course.prizeMoney
+	
+	-- TODO: This will be replaced with EGUSM.StateMachine.
+	self:SetState("StateStartingGrid")
 	
 	self.eventSubs = {}
 	table.insert(self.eventSubs , Events:Subscribe("PreTick" , self , self.PreTick))
-	table.insert(self.eventSubs , Events:Subscribe("PlayerQuit" , self , self.PlayerQuit))
-	table.insert(self.eventSubs , Events:Subscribe("ModuleUnload" , self , self.ModuleUnload))
 	
 end
 
@@ -41,7 +35,7 @@ function Race:SetState(state , ...)
 	end
 	
 	-- Call End function on previous state.
-	if self.state.End then
+	if self.state and self.state.End then
 		self.state:End()
 	end
 	-- Something like, StateRacing(self , someArg1 , someArg2)
@@ -61,69 +55,38 @@ function Race:HasPlayer(player)
 	
 end
 
--- Awesomesauce iterator. Usage: for player in race:GetPlayers() do blah end
--- function Race:GetRacers()
-	
-	-- local racerIteraterCounter = self:GetPlayerCount() + 1
-	
-	-- local function func()
-		-- if (racerIteraterCounter <= 0) then
-			-- return nil
-		-- else
-			-- racerIteraterCounter = racerIteraterCounter - 1
-			-- return self.players[racerIteraterCounter]
-		-- end
-	-- end
-	
-	-- return func
-	
--- end
-
 function Race:GetRacerCount()
 	
 	return table.count(self.playerIdToRacer)
 	
 end
 
-function Race:AddPlayer(player , message)
+-- Add a player to a race that is currently in progress.
+function Race:AddPlayer(player)
 	
 	-- If the racer already exists, return.
 	if self:HasPlayer(player) then
-		warn("Attempting to add player twice: " , player)
-		return
-	end
-	-- If player is already in some other race, return.
-	if self.raceManager:HasPlayer(player) then
-		self:MessagePlayer(player , "You are already in a race!")
+		error("Attempting to add player twice: " , player)
 		return
 	end
 	
 	player = Racing.Player(player)
 	local playerId = Racing.PlayerId(player)
 	
-	self.raceManager.playerIds[playerId] = true
-	
-	local racer = Racer(self , player)
-	self.playerIdToRacer[playerId] = racer
+	local newRacer = Racer(self , player)
+	self.playerIdToRacer[playerId] = newRacer
 	self.numPlayers = self.numPlayers + 1
 	
 	if self.state.RacerJoin then
 		self.state.RacerJoin(racer)
 	end
 	
-	if message then
-		self:MessagePlayer(player , message)
-	end
-	
 end
 
-function Race:RemovePlayer(player , message)
+function Race:RemovePlayer(player)
 	
-	message = message or "You have been removed from the race."
-	
-	-- If the racer doesn't exist, return.
+	-- If the player isn't part of this Race, return.
 	if self:HasPlayer(player) == false then
-		warn("Attempting to remove player that doesn't exist: " , player)
 		return
 	end
 	
@@ -131,13 +94,14 @@ function Race:RemovePlayer(player , message)
 	local playerId = Racing.PlayerId(player)
 	
 	-- Reenable collisions.
-	-- Why is this in Race and not Racer:Remove
+	-- TODO: Why is this in Race and not Racer:Remove
 	if self.vehicleCollisions == false then
 		player:EnableCollision(CollisionGroup.Vehicle)
 	end
 	player:EnableCollision(CollisionGroup.Player)
 	
 	-- If state is StateRacing, remove from state.racePosTracker.
+	-- TODO: This should be a part of a RacerRemove state callback.
 	if self.stateName == "StateRacing" then
 		local removed = false
 		for cp , map in pairs(self.state.racePosTracker) do
@@ -158,14 +122,13 @@ function Race:RemovePlayer(player , message)
 		end
 	end
 	
-	self.raceManager.playerIds[playerId] = nil
-	
 	local racer = self.playerIdToRacer[playerId]
 	
-	-- If they haven't finished yet, and the race is going on, add race result to database; their
+	-- If they haven't finished yet, add race result to database; their
 	-- position is -1 (DNF).
+	-- TODO: This should probably be part of the race manager, inside RacerFinish.
 	if not settings.WTF then
-		if racer.hasFinished == false and self.stateName ~= "StateAddPlayers" then
+		if racer.hasFinished == false then
 			Stats.AddRaceResult(racer , -1 , self.course)
 		end
 	end
@@ -174,99 +137,15 @@ function Race:RemovePlayer(player , message)
 	self.playerIdToRacer[playerId] = nil
 	self.numPlayers = self.numPlayers - 1
 	
-	if message then
-		self:MessagePlayer(player , message)
-	end
-	
-	-- If we're in the race and all players leave, end the race.
-	if self.numPlayers == 0 and self.stateName ~= "StateAddPlayers" then
-		-- self:MessageServer("No players left; ending race.")
-		self:CleanUp()
+	-- If all players leave, end the race.
+	if self.numPlayers == 0 then
+		self:Terminate()
 	end
 	
 end
 
--- Attempts to add player to race.
-function Race:JoinPlayer(player)
-	
-	-- State is not StateAddPlayers.
-	if self.stateName ~= "StateAddPlayers" then
-		return false
-	end
-	
-	-- Player's world is not the default.
-	if player:GetWorld() ~= DefaultWorld then
-		self:MessagePlayer(
-			player ,
-			"You must exit other gamemodes before you can join."
-		)
-		return false
-	end
-	
-	-- Race is full.
-	if self.numPlayers >= self.maxPlayers then
-		self:MessageServer(
-			"Error: race is full but "..
-			player:GetName()..
-			" is trying to join!"
-		)
-		return false
-	end
-	
-	-- If there is DLC in the course, make sure they have it.
-	-- TODO: This only tells them about one vehicle they're missing, when there could be more.
-	for modelId , alwaysTrue in pairs(self.course.dlcVehicles) do
-		if player:HasVehicleDLC(modelId) == false then
-			if settings.tempDLC then
-				self:MessageServer(
-					"Warning: "..
-					player:GetName()..
-					" is trying to join "..
-					self.course.name..
-					", but doesn't have DLC: "..
-					VehicleList[modelId].name
-				)
-			end
-			self:MessagePlayer(
-				player ,
-				"You cannot join because you are missing DLC: "..
-				VehicleList[modelId].name
-			)
-			return false
-		end
-	end
-	
-	-- Success.
-	self:AddPlayer(
-		player ,
-		"You have been added to the next race. Use "..settings.command.." to drop out."
-	)
-	
-	-- Race is now full after adding a player.
-	if self.numPlayers == self.maxPlayers then
-		self:MessageServer(
-			"Max players reached; starting race with "..
-			self.numPlayers..
-			" players."
-		)
-		self:SetState("StateStartingGrid")
-	elseif self.numPlayers == Server:GetPlayerCount() then
-		self:MessageServer(
-			"All players joined; starting race with "..
-			self.numPlayers..
-			" players."
-		)
-		self:SetState("StateStartingGrid")
-	end
-	
-	return true
-	
-end
-
-function Race:CleanUp()
-	
-	-- Remove self from the RaceManager.
-	self.raceManager:RemoveRace(self)
+-- This cleans up everything and can be called at any time.
+function Race:Terminate()
 	
 	self:SetState("StateNone")
 	
@@ -275,8 +154,17 @@ function Race:CleanUp()
 		self:RemovePlayer(racer.player)
 	end
 	
-	-- Destroy the world, which removes anything in it.
-	self.world:Remove()
+	-- Remove the world, which removes anything in it.
+	if self.world then
+		self.world:Remove()
+		self.world = nil
+	end
+	
+	-- Remove self from the RaceManager.
+	if self.raceManager and self.raceManager.RaceEnd then
+		self.raceManager:RaceEnd(self)
+		self.raceManager = nil
+	end
 	
 	-- Unsubscribe from events.
 	for n , event in ipairs(self.eventSubs) do
@@ -286,6 +174,7 @@ function Race:CleanUp()
 	
 end
 
+-- TODO: Move this to race manager.
 function Race:RacerFinish(racer)
 	
 	table.insert(self.finishedRacers , racer)
@@ -305,7 +194,6 @@ function Race:RacerFinish(racer)
 	
 	-- Messages to immediately print for all finishers.
 	if #self.finishedRacers == 1 then
-		self:MessageServer(racer.name.." wins the race!")
 		self:NetworkSendRace(
 			"ShowLargeMessage" ,
 			{racer.name.." wins the race!" , 4}
@@ -316,19 +204,9 @@ function Race:RacerFinish(racer)
 	
 end
 
-function Race:MessageServer(message)
-	
-	local output = "[Racing-"..self.name.."] "..message
-	
-	Chat:Broadcast(output , settings.textColorGlobal)
-	
-	print(output)
-	
-end
-
 function Race:MessageRace(message)
 	
-	local output = "[Racing-"..self.name.."] "..message
+	local output = "[Racing] "..message
 	
 	for id , racer in pairs(self.playerIdToRacer) do
 		racer.player:SendChatMessage(
@@ -342,7 +220,7 @@ end
 
 function Race:MessagePlayer(player , message)
 	
-	player:SendChatMessage("[Racing-"..self.name.."] "..message , settings.textColorLocal)
+	player:SendChatMessage("[Racing] "..message , settings.textColorLocal)
 	
 end
 
@@ -366,19 +244,5 @@ function Race:PreTick()
 	if self.state.Run then
 		self.state:Run()
 	end
-	
-end
-
-function Race:PlayerQuit(args)
-	
-	if self.playerIdToRacer[args.player:GetId()] then
-		self:RemovePlayer(args.player)
-	end
-	
-end
-
-function Race:ModuleUnload()
-	
-	self:CleanUp()
 	
 end

@@ -3,7 +3,7 @@ debug = {}
 -- Helps with testing starting grids.
 -- debug.alwaysMaxPlayers = true
 -- debug.dontRemoveIfOutOfVehicle = true
--- debug.oneLap = true
+debug.oneLap = true
 
 settings = {}
 
@@ -13,7 +13,7 @@ settings.forceCourse = ""
 settings.debugLevel = 1
 
 settings.name = "JC2-MP-Racing"
-settings.version = "0.7.5"
+settings.version = "0.8.1"
 if settings.debugLevel > 1 then
 	settings.version = settings.version.." (debug)"
 end
@@ -49,9 +49,9 @@ settings.WTF = false
 
 settings.courseEditorEnabled = false
 
-settings.numLapsFunc = function(race , courseLaps)
+settings.numLapsFunc = function(numPlayers , maxPlayers , courseLaps)
 	
-	local lapsMultPlayers = (race.numPlayers / race.maxPlayers)
+	local lapsMultPlayers = (numPlayers / maxPlayers)
 	lapsMultPlayers = lapsMultPlayers + 0.75
 	-- Dilute the effect.
 	lapsMultPlayers = math.lerp(1 , lapsMultPlayers , 0.7)
