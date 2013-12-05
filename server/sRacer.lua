@@ -16,7 +16,6 @@ function Racer:__init(race , player , updateOffset)
 	self.numCheckpointsHit = 0
 	self.hasFinished = false
 	self.assignedVehicleId = -1
-	self.outOfVehicleTimer = nil
 	-- Used with racePosTracker and helps with NetworkSend parameters.
 	self.targetCheckpointDistanceSqr = {[1] = 0}
 	-- Begins at starting grid, used to update playTime.
