@@ -10,7 +10,7 @@ function Race:__init(raceManager , playerArray , course , vehicleCollisions)
 	self.playerIdToRacer = {}
 	self.numPlayers = #playerArray
 	for index , player in ipairs(playerArray) do
-		local newRacer = Racer(self , player)
+		local newRacer = Racer(self , player , index)
 		self.playerIdToRacer[player:GetId()] = newRacer
 	end
 	self.course = course

@@ -17,7 +17,7 @@ function StateRacing:__init(race)
 	self.eventSubs = {}
 	self.netSubs = {}
 	
-	self.numPlayersAtStart = race.numPlayers
+	self.racerUpdateInterval = math.max(10 , race.numPlayers)
 	
 	-- Set up racePosTracker
 	self.racePosTracker[0] = {}
@@ -68,9 +68,10 @@ end
 -- wat
 function StateRacing:PostTick()
 	
-	-- Call Update on all racers, if it's their turn.
+	-- Loop through each Racer and call Update on them if its their turn. Only one Racer should be
+	-- chosen.
 	for id , racer in pairs(self.race.playerIdToRacer) do
-		if self.numTicks % self.numPlayersAtStart == racer.updateTick then
+		if (self.numTicks + racer.updateOffset) % self.racerUpdateInterval == 0 then
 			racer:Update()
 		end
 	end

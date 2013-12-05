@@ -1,14 +1,16 @@
 
-function Racer:__init(race , player)
+function Racer:__init(race , player , updateOffset)
 	
 	self.race = race
 	self.player = player
+	-- This helps with calling Racer:Update only one player per tick.
+	self.updateOffset = updateOffset
+	
 	self.playerId = player:GetId()
 	self.name = player:GetName()
 	self.steamId = player:GetSteamId().Id
 	-- Pulled from database, and used to update database on our removal.
 	self.playTime = -1
-	
 	self.targetCheckpoint = 1
 	self.numLapsCompleted = 0
 	self.numCheckpointsHit = 0
@@ -17,8 +19,6 @@ function Racer:__init(race , player)
 	self.outOfVehicleTimer = nil
 	-- Used with racePosTracker and helps with NetworkSend parameters.
 	self.targetCheckpointDistanceSqr = {[1] = 0}
-	-- TODO: Is this what I want?
-	self.updateTick = race.numPlayers
 	-- Begins at starting grid, used to update playTime.
 	self.raceTimer = nil
 	-- Procs at end of lap for circuits, or end of race for linear courses.
@@ -223,16 +223,6 @@ function Racer:Finish()
 	end
 	
 	self.race:RacerFinish(self)
-	
-	-- DelayedFunction(
-		-- settings.playerFinishRemoveDelay ,
-		-- function(racer)
-			-- if racer.race:HasPlayer(racer.player) then
-				-- racer.race:RemovePlayer(racer.player)
-			-- end
-		-- end ,
-		-- self
-	-- )
 	
 	local args = {}
 	args.stateName = "StateFinished"
