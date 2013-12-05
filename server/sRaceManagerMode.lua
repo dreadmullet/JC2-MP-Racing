@@ -26,6 +26,8 @@ end
 -- PlayerManager callbacks
 
 function RaceManagerMode:ManagedPlayerJoin(player)
+	player:ClearInventory()
+	
 	if self.isInitialised then
 		-- If this is the first person to join the server, create the race.
 		if self:GetPlayerCount() == 1 then
