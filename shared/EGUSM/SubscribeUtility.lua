@@ -30,6 +30,7 @@ function EGUSM.SubscribeUtility:EventUnsubscribe(eventName)
 	for index , pair in ipairs(self.subscribeUtilityEventSubs) do
 		if pair[1] == eventName then
 			Events:Unsubscribe(pair[2])
+            self.subscribeUtilityEventSubs[index] = nil
 			break
 		end
 	end
@@ -39,6 +40,7 @@ function EGUSM.SubscribeUtility:NetworkUnsubscribe(netName)
 	for index , pair in ipairs(self.subscribeUtilityNetSubs) do
 		if pair[1] == netName then
 			Network:Unsubscribe(pair[2])
+            self.subscribeUtilityNetSubs[index] = nil
 			break
 		end
 	end
