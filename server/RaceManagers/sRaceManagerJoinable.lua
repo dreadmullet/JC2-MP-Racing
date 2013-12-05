@@ -1,4 +1,4 @@
-function RaceManagerJoinable:__init() ; EGUSM.PlayerManager.__init(self)
+function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 	self.courseManager = CourseManager("CourseManifest.txt")
 	-- Array of Races.
 	self.races = {}
@@ -16,6 +16,8 @@ end
 function RaceManagerJoinable:SetupNextRace()
 	self.playerQueue = {}
 	self.nextCourse = self.courseManager:LoadCourseRandom()
+	
+	self:Message("A race is about to start, use "..settings.command.." to join!")
 end
 
 function RaceManagerJoinable:StartRace()

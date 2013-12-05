@@ -181,10 +181,7 @@ function Race:RacerFinish(racer)
 	
 	-- Award prize money.
 	racer.player:SetMoney(racer.player:GetMoney() + self.prizeMoneyCurrent)
-	self:MessagePlayer(
-		racer.player ,
-		string.format("%s%i%s" , "You won $" , self.prizeMoneyCurrent , "!")
-	)
+	racer:Message(string.format("%s%i%s" , "You won $" , self.prizeMoneyCurrent , "!"))
 	self.prizeMoneyCurrent = self.prizeMoneyCurrent * settings.prizeMoneyMultiplier
 	
 	-- Add race result to database.
@@ -199,28 +196,18 @@ function Race:RacerFinish(racer)
 			{racer.name.." wins the race!" , 4}
 		)
 	else
-		self:MessageRace(racer.name.." finishes "..Utility.NumberToPlaceString(#self.finishedRacers))
+		self:Message(racer.name.." finishes "..Utility.NumberToPlaceString(#self.finishedRacers))
 	end
 	
 end
 
-function Race:MessageRace(message)
-	
-	local output = "[Racing] "..message
+function Race:Message(message)
 	
 	for id , racer in pairs(self.playerIdToRacer) do
-		racer.player:SendChatMessage(
-			output , settings.textColor
-		)
+		racer:Message(message)
 	end
 	
-	print(output)
-	
-end
-
-function Race:MessagePlayer(player , message)
-	
-	player:SendChatMessage("[Racing] "..message , settings.textColor)
+	print(message)
 	
 end
 

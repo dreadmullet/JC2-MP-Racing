@@ -1,7 +1,8 @@
 
-class("RaceManager")
-class("RaceManagerMode")
-class("RaceManagerJoinable")
+class("RaceManagerBase")
+	class("RaceManagerMode")
+	class("RaceManagerJoinable")
+
 class("Race")
 class("Racer")
 

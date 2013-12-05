@@ -348,6 +348,12 @@ function Racer:Respawn()
 	
 end
 
+function Racer:Message(message)
+	self.player:SendChatMessage("[Racing] "..message , settings.textColor)
+end
+
+-- Event callbacks
+
 function Racer:EnterVehicle(args)
 	
 	self.respawnTimer = nil
@@ -359,7 +365,7 @@ function Racer:EnterVehicle(args)
 				args.player:GetPosition() + Vector(0 , 2 , 0) ,
 				args.player:GetAngle()
 			)
-			self.race:MessagePlayer(args.player , "This is not your car!")
+			self:Message("This is not your car!")
 		end
 	end
 	

@@ -1,7 +1,7 @@
 RaceManagerMode.settings = {}
 RaceManagerMode.settings.initialiseDelay = 1
 
-function RaceManagerMode:__init() ; EGUSM.PlayerManager.__init(self)
+function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
 	self.isInitialised = false
 	self.courseManager = CourseManager("CourseManifest.txt")
 	self.race = nil
