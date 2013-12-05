@@ -5,6 +5,8 @@ function RaceManagerJoinable:__init() ; EGUSM.PlayerManager.__init(self)
 	-- Array of Players.
 	self.playerQueue = {}
 	self.nextCourse = nil
+	-- Helps with storing position, model id, and inventory and restoring them when they leave.
+	self.playerIdToRacerInfo = {}
 	
 	self:SetupNextRace()
 	
@@ -17,6 +19,18 @@ function RaceManagerJoinable:SetupNextRace()
 end
 
 function RaceManagerJoinable:StartRace()
+	-- Store everyone's position, inventory, and model.
+	self:IteratePlayers(
+		function(player)
+			local info = {}
+			info.position = player:GetPosition()
+			info.modelId = player:GetModelId()
+			info.inventory = player:GetInventory()
+			player:ClearInventory()
+			self.playerIdToRacerInfo[player:GetId()] = info
+		end
+	)
+	
 	local race = Race(self , self.playerQueue , self.nextCourse)
 	table.insert(self.races , race)
 	self:SetupNextRace()
@@ -47,6 +61,15 @@ function RaceManagerJoinable:ManagedPlayerLeave(player)
 	-- Search all Races for this player and remove them.
 	for index , race in ipairs(self.races) do
 		race:RemovePlayer(player)
+	end
+	-- Give them back their position, model, and inventory, if applicable.
+	local racerInfo = self.playerIdToRacerInfo[player:GetId()]
+	if racerInfo then
+		player:SetPosition(racerInfo.position)
+		player:SetModelId(racerInfo.modelId)
+		for index , weapon in pairs(racerInfo.inventory) do
+			player:GiveWeapon(index , weapon)
+		end
 	end
 end
 

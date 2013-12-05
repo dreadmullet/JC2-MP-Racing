@@ -55,8 +55,8 @@ function EGUSM.PlayerManager:GetPlayerCount()
 end
 
 function EGUSM.PlayerManager:IteratePlayers(func)
-	for player , alwaysTrue in pairs(self.playerManagerPlayers) do
-		func(player)
+	for playerId , alwaysTrue in pairs(self.playerManagerPlayers) do
+		func(Player.GetById(playerId))
 	end
 end
 
