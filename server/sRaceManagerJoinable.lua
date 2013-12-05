@@ -9,7 +9,6 @@ function RaceManagerJoinable:__init() ; EGUSM.PlayerManager.__init(self)
 	self:SetupNextRace()
 	
 	self:EventSubscribe("PlayerChat")
-	self:EventSubscribe("ModuleUnload")
 end
 
 function RaceManagerJoinable:SetupNextRace()
@@ -51,6 +50,14 @@ function RaceManagerJoinable:ManagedPlayerLeave(player)
 	end
 end
 
+function RaceManagerJoinable:PlayerManagerTerminate()
+	EGUSM.Print("PlayerManagerTerminate")
+	-- Terminate all Races.
+	for index , race in ipairs(self.races) do
+		race:Terminate()
+	end
+end
+
 -- Race callbacks
 
 function RaceManagerJoinable:RaceEnd(raceThatEnded)
@@ -76,11 +83,4 @@ function RaceManagerJoinable:PlayerChat(args)
 	end
 	
 	return true
-end
-
-function RaceManagerJoinable:ModuleUnload()
-	-- Terminate all Races.
-	for index , race in ipairs(self.races) do
-		race:Terminate()
-	end
 end
