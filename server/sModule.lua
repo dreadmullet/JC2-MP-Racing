@@ -7,12 +7,11 @@ Events:Subscribe(
 	function()
 		Chat:Broadcast(
 			settings.name.." "..settings.version.." loaded." ,
-			settings.textColorGlobal
+			settings.textColor
 		)
 		
 		Stats.Init()
-		-- raceManager = RaceManagerMode()
-		raceManager = RaceManagerJoinable()
+		raceManager = _G[settings.raceManager]()
 	end
 )
 

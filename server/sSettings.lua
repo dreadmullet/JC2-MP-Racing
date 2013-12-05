@@ -18,12 +18,13 @@ if settings.debugLevel > 1 then
 	settings.version = settings.version.." (debug)"
 end
 
+settings.raceManager = "RaceManagerMode"
+
 settings.coursesPath = "courses/"
 
 settings.doPublicRaces = true
 
-settings.textColorGlobal = Color(250 , 157 , 133 , 255) -- Light red-orange.
-settings.textColorLocal =  Color(255 , 80 , 36 , 255) -- Full red-orange.
+settings.textColor = Color(250 , 157 , 133 , 255) -- Light red-orange.
 
 settings.playerModelIds = {60 , 65 , 69}
 settings.playerModelIdAdmin = 100

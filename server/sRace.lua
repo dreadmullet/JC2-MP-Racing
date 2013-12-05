@@ -210,7 +210,7 @@ function Race:MessageRace(message)
 	
 	for id , racer in pairs(self.playerIdToRacer) do
 		racer.player:SendChatMessage(
-			output , settings.textColorLocal
+			output , settings.textColor
 		)
 	end
 	
@@ -220,7 +220,7 @@ end
 
 function Race:MessagePlayer(player , message)
 	
-	player:SendChatMessage("[Racing] "..message , settings.textColorLocal)
+	player:SendChatMessage("[Racing] "..message , settings.textColor)
 	
 end
 
