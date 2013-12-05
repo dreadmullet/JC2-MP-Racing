@@ -73,7 +73,7 @@ function Race:AddPlayer(player)
 	player = Racing.Player(player)
 	local playerId = Racing.PlayerId(player)
 	
-	local newRacer = Racer(self , player)
+	local newRacer = Racer(self , player , 0)
 	self.playerIdToRacer[playerId] = newRacer
 	self.numPlayers = self.numPlayers + 1
 	
