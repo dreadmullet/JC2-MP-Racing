@@ -7,7 +7,7 @@ debug = {}
 
 settings = {}
 
-settings.tempDLC = true
+settings.tempDLC = false
 settings.forceCourse = ""
 
 settings.debugLevel = 1
