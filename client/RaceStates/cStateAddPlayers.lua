@@ -11,7 +11,7 @@ end
 
 function StateAddPlayers:Run()
 	
-	if Client:GetState() == GUIState.Game then
+	if Game:GetState() == GUIState.Game then
 		-- DrawPlayerCount
 		local args = {}
 		args.numPlayers = self.numPlayers
