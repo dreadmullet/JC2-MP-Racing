@@ -32,6 +32,9 @@ function RaceManager:__init()
 	EventSub("PlayerChat")
 	EventSub("ModuleUnload")
 	
+	Events:Register("JoinGamemode")
+	EventSub("JoinGamemode")
+	
 end
 
 function RaceManager:CreateRace(name , isPublic , course , players)
@@ -231,4 +234,10 @@ function RaceManager:ModuleUnload()
 		Events:Unsubscribe(event)
 	end
 	
+end
+
+function RaceManager:JoinGamemode(args)
+	if args.name ~= "Racing" then
+		self:RemovePlayer(args.player)
+	end
 end
