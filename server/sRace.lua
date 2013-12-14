@@ -8,6 +8,8 @@ function Race:__init(name , raceManager , world , course)
 	self.name = name
 	self.raceManager = raceManager
 	self.world = world
+	self.world:SetTime(math.random(5, 20))
+	self.world:SetWeatherSeverity(math.pow(math.random() , 2.5) * 2)
 	-- A race should never change its course.
 	self.course = course
 	self.course.race = self
