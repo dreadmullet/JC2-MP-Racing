@@ -5,7 +5,7 @@ function Racer:__init(race , player)
 	self.player = player
 	self.playerId = player:GetId()
 	self.name = player:GetName()
-	self.steamId = player:GetSteamId().Id
+	self.steamId = player:GetSteamId().id
 	-- Pulled from database, and used to update database on our removal.
 	self.playTime = -1
 	self.originalPosition = player:GetPosition()
