@@ -101,7 +101,7 @@ end
 
 function Course:GetSpawnPositionAverage()
 	
-	local average = Vector(0 , 0 , 0)
+	local average = Vector3(0 , 0 , 0)
 	
 	for index , spawn in ipairs(self.spawns) do
 		average = average + spawn.position
@@ -241,7 +241,7 @@ function Course.Load(name)
 		
 		cp.index = #course.checkpoints
 		
-		cp.position = Vector(
+		cp.position = Vector3(
 			checkpoint.position.x ,
 			checkpoint.position.y ,
 			checkpoint.position.z
@@ -257,7 +257,7 @@ function Course.Load(name)
 	for index , spawn in ipairs(ctable.spawns) do
 		local sp = CourseSpawn(course)
 		
-		sp.position = Vector(
+		sp.position = Vector3(
 			spawn.position.x ,
 			spawn.position.y ,
 			spawn.position.z
@@ -317,11 +317,11 @@ function Course.CreateTestCourse()
 	course.type = "Circuit"
 	
 	local checkpointPositions = {
-		Vector(14138.446289, 201.384308, -2213.883057) ,
-		Vector(13869.923828, 201.385666, -2625.829102) ,
-		Vector(13460.099609, 201.460983, -2366.778320) ,
-		Vector(13722.583008, 201.352005, -1958.302124) ,
-		Vector(13934.444336, 201.385513, -2070.170410) , -- Start/finish
+		Vector3(14138.446289, 201.384308, -2213.883057) ,
+		Vector3(13869.923828, 201.385666, -2625.829102) ,
+		Vector3(13460.099609, 201.460983, -2366.778320) ,
+		Vector3(13722.583008, 201.352005, -1958.302124) ,
+		Vector3(13934.444336, 201.385513, -2070.170410) , -- Start/finish
 	}
 	
 	for n , pos in ipairs(checkpointPositions) do
@@ -335,7 +335,7 @@ function Course.CreateTestCourse()
 	course.numLaps = 1
 	
 	local spawn1 = CourseSpawn(course)
-	spawn1.position = Vector(13955.602539 , 201.385193 , -2085.802734)
+	spawn1.position = Vector3(13955.602539 , 201.385193 , -2085.802734)
 	spawn1.angle = Angle(-math.tau * 0.18 , 0 , 0)
 	table.insert(spawn1.modelIds , 2)
 	table.insert(spawn1.modelIds , 21)
@@ -346,7 +346,7 @@ function Course.CreateTestCourse()
 	table.insert(course.spawns , spawn1)
 	
 	local spawn2 = CourseSpawn(course)
-	spawn2.position = Vector(13958.250000, 201.385193 , -2080.351074)
+	spawn2.position = Vector3(13958.250000, 201.385193 , -2080.351074)
 	spawn2.angle = Angle(-math.tau * 0.18 , 0 , 0)
 	table.insert(spawn2.modelIds , 35)
 	table.insert(spawn2.templates , "FullyUpgraded")

@@ -24,9 +24,9 @@ function CourseCheckpoint:ActionSpinout(racer)
 	local vehicle = racer.player:GetVehicle()
 	if IsValid(vehicle) then
 		if math.random() > 0.5 then
-			vehicle:SetAngularVelocity(Vector(0 , 25 , 0))
+			vehicle:SetAngularVelocity(Vector3(0 , 25 , 0))
 		else
-			vehicle:SetAngularVelocity(Vector(0 , -25 , 0))
+			vehicle:SetAngularVelocity(Vector3(0 , -25 , 0))
 		end
 	end
 	
@@ -52,7 +52,7 @@ function CourseCheckpoint:ActionSpawnBus(racer)
 	if IsValid(vehicle) then
 		local args = {}
 		args.position = self.position
-		args.position = args.position + Vector(0 , 15 , 0)
+		args.position = args.position + Vector3(0 , 15 , 0)
 		args.angle = vehicle:GetAngle()
 		args.angle.yaw = args.angle.yaw + math.rad(90)
 		args.world = self.course.race.world
@@ -84,7 +84,7 @@ function CourseCheckpoint:ActionRespawnAsPinkTukTuk(racer)
 	if IsValid(oldVehicle) then
 		
 		local args = {}
-		args.position = Vector(0 , 0 , 0)
+		args.position = Vector3(0 , 0 , 0)
 		args.angle = oldVehicle:GetAngle()
 		args.world = self.course.race.world
 		args.model_id = 22 -- Tuk-Tuk Laa
@@ -106,7 +106,7 @@ function CourseCheckpoint:ActionShootInRandomDirection(racer)
 	
 	local vehicle = racer.player:GetVehicle()
 	if IsValid(vehicle) then
-		local direction = Vector(
+		local direction = Vector3(
 			(math.random() - 0.5) * 2 ,
 			(math.random() - 0.5) * 2 ,
 			0.5 + math.random() * 0.5

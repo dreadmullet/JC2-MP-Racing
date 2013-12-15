@@ -275,7 +275,7 @@ M.VectorCuberp = function(v0 , v1 , v2 , v3 , x)
 	if v0 == nil then v0 = v1 end
 	if v3 == nil then v3 = v2 end
 
-	return Vector(
+	return Vector3(
 		M.Cuberp(v0.x , v1.x , v2.x , v3.x , x) ,
 		M.Cuberp(v0.y , v1.y , v2.y , v3.y , x) ,
 		M.Cuberp(v0.z , v1.z , v2.z , v3.z , x)

@@ -36,7 +36,7 @@ class("CHECKPOINT")
 function CHECKPOINT:__init()
 	self.datablockType = "CHECKPOINT"
 
-	self.position = Vector(0 , 0 , 0)
+	self.position = Vector3(0 , 0 , 0)
 	self.vehicles = {}
 end
 
@@ -254,7 +254,7 @@ CourseLoader.Load = function(name)
 		for n = 1 , #startGrid.path - 1 do
 			lengthRough = (
 				lengthRough +
-				Vector.Distance(startGrid.path[n] , startGrid.path[n+1])
+				Vector3.Distance(startGrid.path[n] , startGrid.path[n+1])
 			)
 		end
 		
@@ -276,7 +276,7 @@ CourseLoader.Load = function(name)
 				)
 				sectionLengths[a] = (
 					sectionLengths[a] +
-					Vector.Distance(
+					Vector3.Distance(
 						previousPoint ,
 						nextPoint
 					)
@@ -339,9 +339,9 @@ CourseLoader.Load = function(name)
 			end
 			forward = forward:Normalized()
 			-- forward rotated by 90 degrees to the right.
-			right = Vector(forward.z , forward.y , -forward.x)
+			right = Vector3(forward.z , forward.y , -forward.x)
 			-- Get angle from forward vector.
-			local angle = Angle.FromVectors(Vector(0 , 0 , 1) , forward)
+			local angle = Angle.FromVectors(Vector3(0 , 0 , 1) , forward)
 			angle.roll = 0
 			
 			return curvePos + right * (startGrid.width * 0.5 * (x * 2 - 1)) ,	angle
@@ -450,7 +450,7 @@ CourseLoader.Cast = function(input , type)
 		end
 
 		if #elementArray == 3 then
-			return Vector(elementArray[1] , elementArray[2] , elementArray[3])
+			return Vector3(elementArray[1] , elementArray[2] , elementArray[3])
 		elseif #elementArray == 4 then
 			return Angle(
 				elementArray[1] ,

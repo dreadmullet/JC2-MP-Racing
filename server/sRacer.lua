@@ -333,7 +333,7 @@ function Racer:Respawn()
 		spawnDirection = spawnDirection:Normalized()
 		
 		spawnAngle = Angle.FromVectors(
-			Vector(0 , 0 , 1) ,
+			Vector3(0 , 0 , 1) ,
 			spawnDirection
 		)
 		spawnAngle.roll = 0
@@ -341,7 +341,7 @@ function Racer:Respawn()
 	
 	-- If the spawn position isn't clear, spawn the vehicle a little above. Terrible solution, I know.
 	if IsSpawnPositionClear(spawnPosition) == false then
-		spawnPosition = spawnPosition + Vector(0 , 2.75 , 0)
+		spawnPosition = spawnPosition + Vector3(0 , 2.75 , 0)
 	end
 	
 	if self.assignedVehicleId >= 0 then
@@ -367,7 +367,7 @@ function Racer:Respawn()
 			newVehicle:SetDeathRemove(true)
 			newVehicle:SetUnoccupiedRemove(true)
 			
-			local dirToPlayerSpawn = spawnAngle * Vector(-1 , 0 , 0)
+			local dirToPlayerSpawn = spawnAngle * Vector3(-1 , 0 , 0)
 			local playerSpawnPosition = spawnPosition + dirToPlayerSpawn * 2
 			self.player:Teleport(playerSpawnPosition , spawnAngle)
 			self.player:EnterVehicle(newVehicle , VehicleSeat.Driver)
@@ -401,7 +401,7 @@ function Racer:EnterVehicle(args)
 				self.race:RemovePlayer(args.player)
 			else -- Otherwise, just remove them from the car.
 				args.player:Teleport(
-					args.player:GetPosition() + Vector(0 , 2 , 0) ,
+					args.player:GetPosition() + Vector3(0 , 2 , 0) ,
 					args.player:GetAngle()
 				)
 				self.race:MessagePlayer(args.player , "This is not your car!")

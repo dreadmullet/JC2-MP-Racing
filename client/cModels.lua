@@ -37,101 +37,101 @@ do
 	Models.arrowTriangles = {
 		-- Bottom
 		{
-			Vector(-X , -Y , Z) ,
-			Vector(X , -Y , Z) ,
-			Vector(X , -Y , -Z)
+			Vector3(-X , -Y , Z) ,
+			Vector3(X , -Y , Z) ,
+			Vector3(X , -Y , -Z)
 		} ,
 		{
-			Vector(-X , -Y , Z) ,
-			Vector(X , -Y , -Z) ,
-			Vector(-X , -Y , -Z)
+			Vector3(-X , -Y , Z) ,
+			Vector3(X , -Y , -Z) ,
+			Vector3(-X , -Y , -Z)
 		} ,
 		{
-			Vector(-X*arrowHeadWidthMult , -Y , -Z) ,
-			Vector(X*arrowHeadWidthMult , -Y , -Z) ,
-			Vector(0 , -Y , -Z - arrowHead)
+			Vector3(-X*arrowHeadWidthMult , -Y , -Z) ,
+			Vector3(X*arrowHeadWidthMult , -Y , -Z) ,
+			Vector3(0 , -Y , -Z - arrowHead)
 		} ,
 		-- Top
 		{
-			Vector(-X , Y , Z) ,
-			Vector(X , Y , Z) ,
-			Vector(X , Y , -Z)
+			Vector3(-X , Y , Z) ,
+			Vector3(X , Y , Z) ,
+			Vector3(X , Y , -Z)
 		} ,
 		{
-			Vector(-X , Y , Z) ,
-			Vector(X , Y , -Z) ,
-			Vector(-X , Y , -Z)
+			Vector3(-X , Y , Z) ,
+			Vector3(X , Y , -Z) ,
+			Vector3(-X , Y , -Z)
 		} ,
 		{
-			Vector(-X*arrowHeadWidthMult , Y , -Z) ,
-			Vector(X*arrowHeadWidthMult , Y , -Z) ,
-			Vector(0 , Y , -Z - arrowHead)
+			Vector3(-X*arrowHeadWidthMult , Y , -Z) ,
+			Vector3(X*arrowHeadWidthMult , Y , -Z) ,
+			Vector3(0 , Y , -Z - arrowHead)
 		} ,
 		-- Back
 		{
-			Vector(-X , -Y , Z) ,
-			Vector(X , -Y , Z) ,
-			Vector(X , Y , Z)
+			Vector3(-X , -Y , Z) ,
+			Vector3(X , -Y , Z) ,
+			Vector3(X , Y , Z)
 		} ,
 		{
-			Vector(-X , -Y , Z) ,
-			Vector(X , Y , Z) ,
-			Vector(-X , Y , Z)
+			Vector3(-X , -Y , Z) ,
+			Vector3(X , Y , Z) ,
+			Vector3(-X , Y , Z)
 		} ,
 		-- Front
 		{
-			Vector(-X*arrowHeadWidthMult , -Y , -Z) ,
-			Vector(X*arrowHeadWidthMult , -Y , -Z) ,
-			Vector(X*arrowHeadWidthMult , Y , -Z)
+			Vector3(-X*arrowHeadWidthMult , -Y , -Z) ,
+			Vector3(X*arrowHeadWidthMult , -Y , -Z) ,
+			Vector3(X*arrowHeadWidthMult , Y , -Z)
 		} ,
 		{
-			Vector(-X*arrowHeadWidthMult , -Y , -Z) ,
-			Vector(X*arrowHeadWidthMult , Y , -Z) ,
-			Vector(-X*arrowHeadWidthMult , Y , -Z)
+			Vector3(-X*arrowHeadWidthMult , -Y , -Z) ,
+			Vector3(X*arrowHeadWidthMult , Y , -Z) ,
+			Vector3(-X*arrowHeadWidthMult , Y , -Z)
 		} ,
 		-- Left
 		{
-			Vector(-X , -Y , Z) ,
-			Vector(-X , -Y , -Z) ,
-			Vector(-X , Y , -Z)
+			Vector3(-X , -Y , Z) ,
+			Vector3(-X , -Y , -Z) ,
+			Vector3(-X , Y , -Z)
 		} ,
 		{
-			Vector(-X , -Y , Z) ,
-			Vector(-X , Y , -Z) ,
-			Vector(-X , Y , Z)
+			Vector3(-X , -Y , Z) ,
+			Vector3(-X , Y , -Z) ,
+			Vector3(-X , Y , Z)
 		} ,
 		-- Right
 		{
-			Vector(X , -Y , Z) ,
-			Vector(X , -Y , -Z) ,
-			Vector(X , Y , -Z)
+			Vector3(X , -Y , Z) ,
+			Vector3(X , -Y , -Z) ,
+			Vector3(X , Y , -Z)
 		} ,
 		{
-			Vector(X , -Y , Z) ,
-			Vector(X , Y , -Z) ,
-			Vector(X , Y , Z)
+			Vector3(X , -Y , Z) ,
+			Vector3(X , Y , -Z) ,
+			Vector3(X , Y , Z)
 		} ,
 		-- Front left
 		{
-			Vector(-X*arrowHeadWidthMult , -Y , -Z) ,
-			Vector(-X*arrowHeadWidthMult , Y , -Z) ,
-			Vector(0 , Y , -Z - arrowHead)
+			Vector3(-X*arrowHeadWidthMult , -Y , -Z) ,
+			Vector3(-X*arrowHeadWidthMult , Y , -Z) ,
+			Vector3(0 , Y , -Z - arrowHead)
 		} ,
 		{
-			Vector(-X*arrowHeadWidthMult , -Y , -Z) ,
-			Vector(0 , -Y , -Z - arrowHead) ,
-			Vector(0 , Y , -Z - arrowHead)
+			Vector3(-X*arrowHeadWidthMult , -Y , -Z) ,
+			Vector3(0 , -Y , -Z - arrowHead) ,
+			Vector3(0 , Y , -Z - arrowHead)
 		} ,
 		-- Front right
 		{
-			Vector(X*arrowHeadWidthMult , -Y , -Z) ,
-			Vector(X*arrowHeadWidthMult , Y , -Z) ,
-			Vector(0 , Y , -Z - arrowHead)
+			Vector3(X*arrowHeadWidthMult , -Y , -Z) ,
+			Vector3(X*arrowHeadWidthMult , Y , -Z) ,
+			Vector3(0 , Y , -Z - arrowHead)
 		} ,
 		{
-			Vector(X*arrowHeadWidthMult , -Y , -Z) ,
-			Vector(0 , -Y , -Z - arrowHead) ,
-			Vector(0 , Y , -Z - arrowHead)
+			Vector3(X*arrowHeadWidthMult , -Y , -Z) ,
+			Vector3(0 , -Y , -Z - arrowHead) ,
+			Vector3(0 , Y , -Z - arrowHead)
 		}
 	}
 	
@@ -144,19 +144,19 @@ do
 	
 	Models.arrowTrianglesFast = {
 		{
-			Vector(-X , 0 , Z) ,
-			Vector(X , 0 , Z) ,
-			Vector(X , 0 , -Z)
+			Vector3(-X , 0 , Z) ,
+			Vector3(X , 0 , Z) ,
+			Vector3(X , 0 , -Z)
 		} ,
 		{
-			Vector(-X , 0 , Z) ,
-			Vector(X , 0 , -Z) ,
-			Vector(-X , 0 , -Z)
+			Vector3(-X , 0 , Z) ,
+			Vector3(X , 0 , -Z) ,
+			Vector3(-X , 0 , -Z)
 		} ,
 		{
-			Vector(-X*arrowHeadWidthMult , 0 , -Z) ,
-			Vector(X*arrowHeadWidthMult , 0 , -Z) ,
-			Vector(0 , 0 , -Z - arrowHead)
+			Vector3(-X*arrowHeadWidthMult , 0 , -Z) ,
+			Vector3(X*arrowHeadWidthMult , 0 , -Z) ,
+			Vector3(0 , 0 , -Z - arrowHead)
 		} ,
 	}
 	
@@ -171,19 +171,19 @@ do
 	
 	Models.nextCPArrowTriangles = {
 		{
-			Vector(0 , -Y , Z + arrowHead*0.25) ,
-			Vector(0 , Y , Z + arrowHead*0.25) ,
-			Vector(0 , Y , -Z)
+			Vector3(0 , -Y , Z + arrowHead*0.25) ,
+			Vector3(0 , Y , Z + arrowHead*0.25) ,
+			Vector3(0 , Y , -Z)
 		} ,
 		{
-			Vector(0 , -Y , Z + arrowHead*0.25) ,
-			Vector(0 , Y , -Z) ,
-			Vector(0 , -Y , -Z)
+			Vector3(0 , -Y , Z + arrowHead*0.25) ,
+			Vector3(0 , Y , -Z) ,
+			Vector3(0 , -Y , -Z)
 		} ,
 		{
-			Vector(0 , -Y*arrowHeadWidthMult , -Z) ,
-			Vector(0 , Y*arrowHeadWidthMult , -Z) ,
-			Vector(0 , 0 , -Z - arrowHead*0.5)
+			Vector3(0 , -Y*arrowHeadWidthMult , -Z) ,
+			Vector3(0 , Y*arrowHeadWidthMult , -Z) ,
+			Vector3(0 , 0 , -Z - arrowHead*0.5)
 		} ,
 	}
 	
@@ -209,9 +209,9 @@ do
 		table.insert(
 			Models.objectSpawnerGizmo ,
 			{
-				Vector(0 , 0 , 0) ,
-				Vector(math.cos(angle1) * radius , height , math.sin(angle1) * radius) ,
-				Vector(math.cos(angle2) * radius , height , math.sin(angle2) * radius)
+				Vector3(0 , 0 , 0) ,
+				Vector3(math.cos(angle1) * radius , height , math.sin(angle1) * radius) ,
+				Vector3(math.cos(angle2) * radius , height , math.sin(angle2) * radius)
 			}
 		)
 	end
@@ -233,9 +233,9 @@ do
 		local angle2 = segmentAngle * (n + 1)
 		local angleMid = math.lerp(angle1 , angle2 , 0.5)
 		
-		local pos1 = Angle.AngleAxis(angle1 , Vector(0 , 0 , -1)) * Vector(radius , 0 , 0)
-		local pos2 = Angle.AngleAxis(angleMid , Vector(0 , 0 , -1)) * Vector(radius*1.15 , 0 , 0)
-		local pos3 = Angle.AngleAxis(angle2 , Vector(0 , 0 , -1)) * Vector(radius , 0 , 0)
+		local pos1 = Angle.AngleAxis(angle1 , Vector3(0 , 0 , -1)) * Vector3(radius , 0 , 0)
+		local pos2 = Angle.AngleAxis(angleMid , Vector3(0 , 0 , -1)) * Vector3(radius*1.15 , 0 , 0)
+		local pos3 = Angle.AngleAxis(angle2 , Vector3(0 , 0 , -1)) * Vector3(radius , 0 , 0)
 		
 		table.insert(
 			Models.checkpoint ,
@@ -262,43 +262,43 @@ do
 	local Line = function(a , b)
 		table.insert(
 			Models.vehicleSpawn ,
-			{a , b , b + Vector(0 , height , 0)}
+			{a , b , b + Vector3(0 , height , 0)}
 		)
 		table.insert(
 			Models.vehicleSpawn ,
-			{a , a + Vector(0 , height , 0) , b + Vector(0 , height , 0)}
+			{a , a + Vector3(0 , height , 0) , b + Vector3(0 , height , 0)}
 		)
 	end
 	
 	-- Create the box.
 	Line(
-		Vector(width * -0.5 , 0 , length * 0.5) ,
-		Vector(width * -0.5 , 0 , length * -0.5)
+		Vector3(width * -0.5 , 0 , length * 0.5) ,
+		Vector3(width * -0.5 , 0 , length * -0.5)
 	)
 	Line(
-		Vector(width * -0.5 , 0 , length * -0.5) ,
-		Vector(width * 0.5 , 0 , length * -0.5)
+		Vector3(width * -0.5 , 0 , length * -0.5) ,
+		Vector3(width * 0.5 , 0 , length * -0.5)
 	)
 	Line(
-		Vector(width * 0.5 , 0 , length * -0.5) ,
-		Vector(width * 0.5 , 0 , length * 0.5)
+		Vector3(width * 0.5 , 0 , length * -0.5) ,
+		Vector3(width * 0.5 , 0 , length * 0.5)
 	)
 	Line(
-		Vector(width * 0.5 , 0 , length * 0.5) ,
-		Vector(width * -0.5 , 0 , length * 0.5)
+		Vector3(width * 0.5 , 0 , length * 0.5) ,
+		Vector3(width * -0.5 , 0 , length * 0.5)
 	)
 	-- Create the arrow.
 	Line(
-		Vector(0 , 1 , length * 0.3333) ,
-		Vector(0 , 1 , length * -0.3333)
+		Vector3(0 , 1 , length * 0.3333) ,
+		Vector3(0 , 1 , length * -0.3333)
 	)
 	Line(
-		Vector(0 , 1 , length * -0.3333) ,
-		Vector(width * 0.3333 , 1 , length * -0.075)
+		Vector3(0 , 1 , length * -0.3333) ,
+		Vector3(width * 0.3333 , 1 , length * -0.075)
 	)
 	Line(
-		Vector(0 , 1 , length * -0.3333) ,
-		Vector(width * -0.3333 , 1 , length * -0.075)
+		Vector3(0 , 1 , length * -0.3333) ,
+		Vector3(width * -0.3333 , 1 , length * -0.075)
 	)
 	
 end
