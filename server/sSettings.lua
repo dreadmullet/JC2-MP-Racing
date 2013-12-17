@@ -43,7 +43,7 @@ settings.command = "/race"
 settings.raceJoinWaitSeconds = 110
 
 settings.admins = {
-	SteamID("76561197985532207") , -- dreadmullet
+	SteamId("76561197985532207") , -- dreadmullet
 }
 
 settings.WTF = false

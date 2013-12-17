@@ -54,10 +54,10 @@ function RaceGUI.DrawTargetArrow(args)
 		z = z + vehicle:GetLinearVelocity():Length() / 25
 		y = y + vehicle:GetLinearVelocity():Length() / 350
 	end
-	local position = Camera:GetPosition() + Camera:GetAngle() * Vector(0 , y , z)
+	local position = Camera:GetPosition() + Camera:GetAngle() * Vector3(0 , y , z)
 	-- Calculate angle.
 	local angle = Angle.FromVectors(
-		Vector(0 , 0 , -1) ,
+		Vector3(0 , 0 , -1) ,
 		args.checkpointPosition - LocalPlayer:GetPosition()
 	)
 	angle.roll = 0
@@ -288,7 +288,7 @@ function RaceGUI.DrawPositionTag(playerId , position)
 		worldPos = player:GetPosition()
 	end
 	
-	local worldPos = worldPos + Vector(0 , 2 , 0)
+	local worldPos = worldPos + Vector3(0 , 2 , 0)
 	local screenPos , onScreen = Render:WorldToScreen(worldPos)
 	if not onScreen then
 		return
@@ -340,14 +340,14 @@ function RaceGUI.DrawNextCheckpointArrow(args)
 	local cpNext = args.checkpoints[nextCheckpointIndex]
 	
 	local angle = Angle.FromVectors(
-		Vector(0 , 0 , -1) ,
+		Vector3(0 , 0 , -1) ,
 		(cpNext - cpTarget):Normalized()
 	)
 	angle.roll = 0
 	
 	local triangles = Models.nextCPArrowTriangles
 	
-	local distance = Vector.Distance(Camera:GetPosition() , cpTarget)
+	local distance = Vector3.Distance(Camera:GetPosition() , cpTarget)
 	
 	local color = Copy(settings.nextCheckpointArrowColor)
 	local alpha = (140 - distance) / 140 -- From 0 to 1
@@ -357,7 +357,7 @@ function RaceGUI.DrawNextCheckpointArrow(args)
 	alpha = alpha * 512 -- From 0 to 512
 	alpha = math.clamp(alpha , 0 , color.a) -- From 0 to color's alpha.
 	
-	local dotMod = Vector.Dot(
+	local dotMod = Vector3.Dot(
 		(cpTarget - Camera:GetPosition()):Normalized() ,
 		(cpNext - cpTarget):Normalized()
 	)
@@ -368,7 +368,7 @@ function RaceGUI.DrawNextCheckpointArrow(args)
 	
 	color.a = alpha * dotMod
 	
-	local pos = cpTarget + Vector(0 , 1.5 , 0)
+	local pos = cpTarget + Vector3(0 , 1.5 , 0)
 	
 	for n = 1 , #triangles do
 		Render:FillTriangle(

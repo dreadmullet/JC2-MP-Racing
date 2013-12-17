@@ -42,11 +42,11 @@ function CourseSpawn:SpawnRacer()
 		return
 	end
 	
-	local teleportPos = self.position + Vector(0 , 2 , 0)
+	local teleportPos = self.position + Vector3(0 , 2 , 0)
 	-- If there is a vehicle, teleport them and put them in the vehicle.
 	if self.vehicle then
 		local angleForward = self.angle
-		local dirToPlayerSpawn = angleForward * Vector(-1 , 0 , 0)
+		local dirToPlayerSpawn = angleForward * Vector3(-1 , 0 , 0)
 		teleportPos = teleportPos + dirToPlayerSpawn * 2
 		self.racer.assignedVehicleId = self.vehicle:GetId()
 		self.racer.player:EnterVehicle(self.vehicle , VehicleSeat.Driver)

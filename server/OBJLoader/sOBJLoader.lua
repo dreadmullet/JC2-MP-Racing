@@ -103,7 +103,7 @@ OBJLoader.Load = function(path)
 			if words[1] == "v" then
 				table.insert(
 					mesh.vertices ,
-					Vector(tonumber(words[2]) ,	tonumber(words[3]) , tonumber(words[4]))
+					Vector3(tonumber(words[2]) ,	tonumber(words[3]) , tonumber(words[4]))
 				)
 			elseif words[1] == "vn" then
 				-- Normals are unused.
