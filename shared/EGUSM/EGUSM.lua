@@ -1,5 +1,5 @@
 
-EGUSM.debugStates = false
+EGUSM.debug = false
 
 EGUSM.Print = function(message)
 	message = tostring(message)

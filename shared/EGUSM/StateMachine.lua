@@ -19,7 +19,7 @@ end
 
 function EGUSM.StateMachine:SetState(stateName , ...)
 	-- Debug printing.
-	if EGUSM.debugStates then
+	if EGUSM.debug then
 		EGUSM.Print("Setting state to "..(stateName or "nil"))
 	end
 	-- Remove current state.
