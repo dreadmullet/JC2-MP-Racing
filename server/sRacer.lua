@@ -107,9 +107,9 @@ function Racer:Remove()
 	
 	-- Reenable collisions.
 	if self.vehicleCollisions == false then
-		player:EnableCollision(CollisionGroup.Vehicle)
+		self.player:EnableCollision(CollisionGroup.Vehicle)
 	end
-	player:EnableCollision(CollisionGroup.Player)
+	self.player:EnableCollision(CollisionGroup.Player)
 	
 	local args = {}
 	args.stateName = "StateTerminate"
