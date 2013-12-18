@@ -15,8 +15,11 @@ function Race:__init(raceManager , playerArray , course , vehicleCollisions)
 	end
 	self.course = course
 	self.course.race = self
-	
+	-- Create world and randomise the time and weather.
 	self.world = World.Create()
+	self.world:SetTime(math.random(4, 21))
+	self.world:SetWeatherSeverity(math.pow(math.random() , 2.5) * 2)
+	
 	self.finishedRacers = {}
 	self.prizeMoneyCurrent = course.prizeMoney
 	
