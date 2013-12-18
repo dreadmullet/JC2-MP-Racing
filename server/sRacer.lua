@@ -319,9 +319,8 @@ function Racer:Respawn()
 			spawnArgs.enabled = true
 			spawnArgs.tone1 = color1
 			spawnArgs.tone2 = color2
-			-- TODO: Currently not implemented by the API.
-			-- spawnArgs.template = oldVehicle:GetTemplate()
-			-- spawnArgs.decal = oldVehicle:GetDecal()
+			spawnArgs.template = oldVehicle:GetTemplate()
+			spawnArgs.decal = oldVehicle:GetDecal()
 			
 			oldVehicle:Remove()
 			
