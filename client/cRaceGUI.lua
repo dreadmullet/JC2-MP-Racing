@@ -4,7 +4,6 @@
 
 -- Draw version at the top right.
 RaceGUI.DrawVersion = function(version)
-	
 	local textHeight = Render:GetTextHeight("|" , TextSize.Default)
 	DrawText(
 		Vector2(0.875 * Render.Width , textHeight * 0.5 + 1) ,
@@ -13,12 +12,10 @@ RaceGUI.DrawVersion = function(version)
 		TextSize.Default ,
 		"right"
 	)
-	
 end
 
 -- Draw small course name at the top.
 function RaceGUI.DrawCourseName(courseName)
-	
 	local textHeight = Render:GetTextHeight("|" , TextSize.Default)
 	DrawText(
 		Vector2(0.5 * Render.Width , textHeight * 0.5 + 1) ,
@@ -27,11 +24,9 @@ function RaceGUI.DrawCourseName(courseName)
 		TextSize.Default ,
 		"center"
 	)
-	
 end
 
 function RaceGUI.DrawPlayerCount(args)
-	
 	local textHeight = Render:GetTextHeight("|" , TextSize.Large)
 	DrawText(
 		Vector2(0.5 * Render.Width , textHeight * 2 + 1) ,
@@ -40,12 +35,10 @@ function RaceGUI.DrawPlayerCount(args)
 		TextSize.Large ,
 		"center"
 	)
-	
 end
 
 -- Draws a 3D arrow at the top of the screen that points to the target checkpoint.
 function RaceGUI.DrawTargetArrow(args)
-	
 	-- Calculate position, compensating for change in FOV.
 	local z = -8.25
 	local y = 3
@@ -75,11 +68,9 @@ function RaceGUI.DrawTargetArrow(args)
 		Race.modelCache.TargetArrow:Draw()
 		Render:ResetTransform()
 	end
-	
 end
 
 function RaceGUI.DrawLapCounter(args)
-	
 	local label
 	local count
 	local total
@@ -116,11 +107,9 @@ function RaceGUI.DrawLapCounter(args)
 		settings.lapCounterSize ,
 		"center"
 	)
-	
 end
 
 function RaceGUI.DrawRacePosition(args)
-	
 	-- "Pos" label
 	DrawText(
 		NormVector2(settings.racePosLabelPos.x , settings.racePosLabelPos.y) ,
@@ -137,11 +126,9 @@ function RaceGUI.DrawRacePosition(args)
 		settings.racePosSize ,
 		"center"
 	)
-	
 end
 
 function RaceGUI.DrawTimers(args)
-	
 	local currentY = settings.timerLabelsStart.y
 	local advanceY = Render:GetTextHeight("|" , settings.timerLabelsSize) / (Render.Size.y) * 2
 	local leftX = (
@@ -176,11 +163,9 @@ function RaceGUI.DrawTimers(args)
 		AddLine("Previous:" , Utility.LapTimeString(args.previousTime))
 	end
 	AddLine("Current:" , Utility.LapTimeString(args.currentTime))
-	
 end
 
 function RaceGUI.DrawLeaderboard(args)
-	
 	local currentPos = NormVector2(settings.leaderboardPos.x , settings.leaderboardPos.y)
 	local textHeight = Render:GetTextHeight("W" , settings.leaderboardTextSize)
 	local textWidth = Render:GetTextWidth("W" , settings.leaderboardTextSize)
@@ -228,21 +213,17 @@ function RaceGUI.DrawLeaderboard(args)
 		
 		currentPos.y = currentPos.y + textHeight + 2
 	end
-	
 end
 
 function RaceGUI.DrawPositionTags(args)
-	
 	for index , playerId in ipairs(args.leaderboard) do
 		if playerId ~= LocalPlayer:GetId() then
 			RaceGUI.DrawPositionTag(playerId , index)
 		end
 	end
-	
 end
 
 function RaceGUI.DrawMinimapIcons(args)
-	
 	for n = 1 , #args.checkpoints do
 		local pos , success = Render:WorldToMinimap(args.checkpoints[n])
 		if success then
@@ -268,12 +249,10 @@ function RaceGUI.DrawMinimapIcons(args)
 			
 		end
 	end
-	
 end
 
 -- Draws position tag above someone. ("1st", for example)
 function RaceGUI.DrawPositionTag(playerId , position)
-	
 	local worldPos
 	
 	local player = Player.GetById(playerId)
@@ -310,11 +289,9 @@ function RaceGUI.DrawPositionTag(playerId , position)
 		"center" ,
 		scale
 	)
-	
 end
 
 function RaceGUI.DrawNextCheckpointArrow(args)
-	
 	-- Don't draw for finish lines.
 	if args.targetCheckpoint == #args.checkpoints then
 		if args.courseType == "Linear" then
@@ -378,5 +355,4 @@ function RaceGUI.DrawNextCheckpointArrow(args)
 			color
 		)
 	end
-	
 end

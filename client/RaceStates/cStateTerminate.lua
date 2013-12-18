@@ -3,9 +3,7 @@
 ----------------------------------------------------------------------------------------------------
 
 function StateTerminate:__init(race , args)
-	
 	race:Terminate()
-	
 end
 
 function StateTerminate:Run()

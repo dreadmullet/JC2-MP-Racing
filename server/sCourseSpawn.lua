@@ -1,6 +1,5 @@
 
 function CourseSpawn:__init(course)
-	
 	self.course = course
 	self.position = nil
 	self.angle = nil
@@ -9,11 +8,9 @@ function CourseSpawn:__init(course)
 	self.decals = {}
 	self.racer = nil
 	self.vehicle = nil
-	
 end
 
 function CourseSpawn:SpawnVehicle()
-	
 	-- If there are no vehicles, it means this is an on-foot race.
 	if #self.modelIds == 0 then
 		return
@@ -33,11 +30,9 @@ function CourseSpawn:SpawnVehicle()
 	self.vehicle = Vehicle.Create(spawnArgs)
 	self.vehicle:SetDeathRemove(true)
 	self.vehicle:SetUnoccupiedRemove(true)
-	
 end
 
 function CourseSpawn:SpawnRacer()
-	
 	if self.racer == nil or IsValid(self.racer.player) == false then
 		return
 	end
@@ -59,12 +54,10 @@ function CourseSpawn:SpawnRacer()
 	
 	self.racer.player:Teleport(teleportPos , self.angle)
 	self.racer.player:SetWorld(self.course.race.world)
-	
 end
 
 -- For use with sending course checkpoint info to clients.
 function CourseSpawn:Marshal()
-	
 	local info = {}
 	
 	info.courseEditorId = self.courseEditorId
@@ -73,11 +66,9 @@ function CourseSpawn:Marshal()
 	info.modelIds = self.modelIds
 	
 	return info
-	
 end
 
 function CourseSpawn:MarshalJSON()
-	
 	local spawn = {}
 	
 	spawn.position = {}
@@ -94,5 +85,4 @@ function CourseSpawn:MarshalJSON()
 	spawn.decals = self.decals
 	
 	return spawn
-	
 end

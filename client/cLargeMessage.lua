@@ -3,7 +3,6 @@
 -- specified duration.
 LargeMessage.messageCount = 0
 function LargeMessage:__init(message , durationSeconds)
-	
 	self.message = message
 	self.durationSeconds = durationSeconds
 	
@@ -13,11 +12,9 @@ function LargeMessage:__init(message , durationSeconds)
 	Utility.EventSubscribe(self , "Render")
 	
 	LargeMessage.messageCount = LargeMessage.messageCount + 1
-	
 end
 
 function LargeMessage:Draw()
-	
 	local timerSeconds = self.timer:GetSeconds()
 	
 	-- Forget about us if there is more than one message showing.
@@ -66,23 +63,18 @@ function LargeMessage:Draw()
 		settings.largeMessageTextSize ,
 		"center"
 	)
-	
 end
 
 function LargeMessage:Destroy()
-	
 	LargeMessage.messageCount = LargeMessage.messageCount - 1
 	if self.exists then
 		Utility.EventUnsubscribeAll(self)
 		self.exists = false
 	end
-	
 end
 
 function LargeMessage:Render()
-	
 	if Game:GetState() == GUIState.Game then
 		self:Draw()
 	end
-	
 end

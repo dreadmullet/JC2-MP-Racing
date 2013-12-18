@@ -5,7 +5,6 @@ local tabPhrase = "    "
 
 local typeStringTabLength = 8
 M.PrintTable = function(t , depth , tableList)
-
 	-- Error checking against arguments.
 	if t == nil then
 		print("nil")
@@ -67,12 +66,4 @@ M.PrintTable = function(t , depth , tableList)
 			end
 		end
 	end
-
-end
-
-M.TemporaryRemoveWindow = function(window)
-	
-	-- window:SetText(Color(240 , 20 , 20 , 255):ToCEGUIString().."Borked")
-	window:SetPositionRel(Vector2(-4 , 0))
-	
 end

@@ -1,6 +1,5 @@
 
 function StateFinished:__init(race , args)
-	
 	self.race = race
 	self.place = args.place
 	
@@ -9,11 +8,9 @@ function StateFinished:__init(race , args)
 	
 	Utility.EventSubscribe(self , "LocalPlayerInput")
 	Utility.NetSubscribe(self , "UpdateRacePositions")
-	
 end
 
 function StateFinished:Run()
-	
 	-- Draw GUI.
 	if Game:GetState() == GUIState.Game then
 		RaceGUI.DrawVersion(self.race.version)
@@ -58,22 +55,18 @@ function StateFinished:Run()
 		args.numLaps = self.race.courseInfo.numLaps
 		RaceGUI.DrawMinimapIcons(args)
 	end
-	
 end
 
 function StateFinished:End()
-	
 	self.largeMessage:Destroy()
 	
 	Utility.EventUnsubscribeAll(self)
 	Utility.NetUnsubscribeAll(self)
-	
 end
 
 -- Events
 
 function StateFinished:LocalPlayerInput(args)
-	
 	-- Block actions.
 	if args.state ~= 0 then
 		-- Block racing actions.
@@ -107,17 +100,14 @@ function StateFinished:LocalPlayerInput(args)
 	end
 	
 	return true
-	
 end
 
 -- Network events
 
 function StateFinished:UpdateRacePositions(args)
-	
 	local racePosTracker = args[1]
 	local currentCheckpoint = args[2]
 	local finishedPlayerIds = args[3]
 	
 	self.race:UpdateLeaderboard(racePosTracker , currentCheckpoint , finishedPlayerIds)
-	
 end

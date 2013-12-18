@@ -1,26 +1,21 @@
 
 function CourseCheckpoint:ActionRepairCar(racer)
-	
 	local vehicle = racer.player:GetVehicle()
 	if IsValid(vehicle) then
 		vehicle:SetHealth(vehicle:GetHealth() + 0.05)
 	end
-	
 end
 
 function CourseCheckpoint:ActionJump(racer)
-	
 	local vehicle = racer.player:GetVehicle()
 	if IsValid(vehicle) then
 		local velocity = vehicle:GetLinearVelocity()
 		velocity.y = velocity.y + 20
 		vehicle:SetLinearVelocity(velocity)
 	end
-	
 end
 
 function CourseCheckpoint:ActionSpinout(racer)
-	
 	local vehicle = racer.player:GetVehicle()
 	if IsValid(vehicle) then
 		if math.random() > 0.5 then
@@ -29,11 +24,9 @@ function CourseCheckpoint:ActionSpinout(racer)
 			vehicle:SetAngularVelocity(Vector3(0 , -25 , 0))
 		end
 	end
-	
 end
 
 function CourseCheckpoint:ActionTeleportUp(racer)
-	
 	local vehicle = racer.player:GetVehicle()
 	if IsValid(vehicle) then
 		local position = vehicle:GetPosition()
@@ -43,11 +36,9 @@ function CourseCheckpoint:ActionTeleportUp(racer)
 		vehicle:SetPosition(position)
 		vehicle:SetLinearVelocity(velocity)
 	end
-	
 end
 
 function CourseCheckpoint:ActionSpawnBus(racer)
-	
 	local vehicle = racer.player:GetVehicle()
 	if IsValid(vehicle) then
 		local args = {}
@@ -60,11 +51,9 @@ function CourseCheckpoint:ActionSpawnBus(racer)
 		args.enabled = true
 		Vehicle.Create(args)
 	end
-	
 end
 
 function CourseCheckpoint:ActionReverseDirection(racer)
-	
 	local vehicle = racer.player:GetVehicle()
 	if IsValid(vehicle) then
 		local velocity = vehicle:GetLinearVelocity()
@@ -75,11 +64,9 @@ function CourseCheckpoint:ActionReverseDirection(racer)
 		angle.yaw = angle.yaw + math.rad(180)
 		vehicle:SetAngle(angle)
 	end
-	
 end
 
 function CourseCheckpoint:ActionRespawnAsPinkTukTuk(racer)
-	
 	local oldVehicle = racer.player:GetVehicle()
 	if IsValid(oldVehicle) then
 		
@@ -99,11 +86,9 @@ function CourseCheckpoint:ActionRespawnAsPinkTukTuk(racer)
 		
 		local newVehicle = Vehicle.GetById(racer.assignedVehicleId)
 	end
-	
 end
 
 function CourseCheckpoint:ActionShootInRandomDirection(racer)
-	
 	local vehicle = racer.player:GetVehicle()
 	if IsValid(vehicle) then
 		local direction = Vector3(
@@ -116,5 +101,4 @@ function CourseCheckpoint:ActionShootInRandomDirection(racer)
 		local velocity = direction * speed
 		vehicle:SetLinearVelocity(velocity)
 	end
-	
 end

@@ -7,7 +7,6 @@
 ----------------------------------------------------------------------------------------------------
 
 VehicleList.SelectRandom = function(type , allowDLC)
-	
 	local list = {}
 	
 	for modelId , vehicle in ipairs(VehicleList) do
@@ -33,11 +32,9 @@ VehicleList.SelectRandom = function(type , allowDLC)
 	else
 		return nil
 	end
-	
 end
 
 VehicleList.FindByName = function(name)
-	
 	for modelId , vehicle in ipairs(VehicleList) do
 		if vehicle.name:find(name) then
 			return vehicle
@@ -45,21 +42,18 @@ VehicleList.FindByName = function(name)
 	end
 	
 	return nil
-	
 end
 
 local IsDLC = true
 local IsNotDLC = false
 
 local AddVehicle = function(modelId , name , type , isDLC)
-	
 	local vehicle = {}
 	vehicle.modelId = modelId
 	vehicle.name = name
 	vehicle.type = type
 	vehicle.isDLC = isDLC
 	VehicleList[modelId] = vehicle
-	
 end
 
 AddVehicle(1 , "Dongtai Agriboss 35" , "Car" , IsNotDLC)

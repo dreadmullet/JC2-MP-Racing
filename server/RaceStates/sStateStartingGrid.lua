@@ -1,9 +1,5 @@
-----------------------------------------------------------------------------------------------------
--- Cars spawn, and players are teleported to their cars.
-----------------------------------------------------------------------------------------------------
 
 function StateStartingGrid:__init(race)
-	
 	self.race = race
 	self.eventSubs = {}
 	
@@ -77,44 +73,33 @@ function StateStartingGrid:__init(race)
 		args.assignedVehicleId = racer.assignedVehicleId
 		Network:Send(racer.player , "SetState" , args)
 	end
-	
 end
 
 function StateStartingGrid:Run()
-	
 	if self.startTimer:GetSeconds() >= settings.startingGridWaitSeconds then
 		self.race:SetState("StateRacing")
 	end
-	
 end
 
 function StateStartingGrid:End()
-	
 	Utility.EventUnsubscribeAll(self)
 	Utility.NetUnsubscribeAll(self)
-	
 end
 
---
 -- Events
---
 
 function StateStartingGrid:PlayerEnterVehicle(args)
-	
 	local racer = self.race.playerIdToRacer[args.player:GetId()]
 	if racer then
 		racer:EnterVehicle(args)
 	end
-	
 end
 
 function StateStartingGrid:PlayerSpawn(args)
-	
 	local racer = self.race.playerIdToRacer[args.player:GetId()]
 	if racer then
 		racer:Respawn()
 	end
 	
 	return false
-	
 end

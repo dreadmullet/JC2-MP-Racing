@@ -1,6 +1,5 @@
 
 function Race:__init(raceManager , playerArray , course , vehicleCollisions)
-	
 	if settings.debugLevel >= 2 then
 		print("Race:__init")
 	end
@@ -28,11 +27,9 @@ function Race:__init(raceManager , playerArray , course , vehicleCollisions)
 	
 	self.eventSubs = {}
 	table.insert(self.eventSubs , Events:Subscribe("PreTick" , self , self.PreTick))
-	
 end
 
 function Race:SetState(state , ...)
-	
 	if settings.debugLevel >= 2 then
 		print("Changing state to "..state)
 	end
@@ -45,30 +42,15 @@ function Race:SetState(state , ...)
 	self.state = _G[state](self , ...)
 	
 	self.stateName = state
-	
-end
-
-function Race:HasPlayer(player)
-	
-	return self.playerIdToRacer[Racing.PlayerId(player)] ~= nil
-	
-end
-
-function Race:GetRacerCount()
-	
-	return table.count(self.playerIdToRacer)
-	
 end
 
 function Race:RemovePlayer(player)
+	local playerId = player:GetId()
 	
 	-- If the player isn't part of this Race, return.
-	if self:HasPlayer(player) == false then
+	if self.playerIdToRacer[playerId] == nil then
 		return
 	end
-	
-	player = Racing.Player(player)
-	local playerId = Racing.PlayerId(player)
 	
 	-- If state is StateRacing, remove from state.racePosTracker.
 	-- TODO: This should be a part of a RacerRemove state callback.
@@ -109,12 +91,10 @@ function Race:RemovePlayer(player)
 	if self.numPlayers == 0 then
 		self:Terminate()
 	end
-	
 end
 
 -- This cleans up everything and can be called at any time.
 function Race:Terminate()
-	
 	self:SetState("StateNone")
 	
 	-- Clean up Racers.
@@ -139,35 +119,29 @@ function Race:Terminate()
 		Events:Unsubscribe(event)
 	end
 	self.eventSubs = {}
-	
 end
 
 function Race:Message(message)
-	
 	for id , racer in pairs(self.playerIdToRacer) do
 		racer:Message(message)
 	end
 	
 	print(message)
-	
 end
 
 function Race:NetworkSendRace(name , ...)
-	
 	for playerId , racer in pairs(self.playerIdToRacer) do
 		if settings.debugLevel >= 3 then
 			print("NetworkSendRace; player = "..racer.name..", network event = "..name)
 		end
 		Network:Send(racer.player , name , ...)
 	end
-	
 end
 
 -- Racer callbacks
 
 -- TODO: Move parts of this to race manager.
 function Race:RacerFinish(racer)
-	
 	table.insert(self.finishedRacers , racer)
 	
 	-- Award prize money.
@@ -192,15 +166,12 @@ function Race:RacerFinish(racer)
 	if self.raceManager.RacerFinish then
 		self.raceManager:RacerFinish(racer)
 	end
-	
 end
 
 -- Events
 
 function Race:PreTick()
-	
 	if self.state.Run then
 		self.state:Run()
 	end
-	
 end

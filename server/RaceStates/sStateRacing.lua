@@ -1,9 +1,5 @@
-----------------------------------------------------------------------------------------------------
--- Racing!
-----------------------------------------------------------------------------------------------------
 
 function StateRacing:__init(race)
-	
 	self.race = race
 	self.timer = Timer()
 	-- Key: number of CPs completed.
@@ -30,19 +26,14 @@ function StateRacing:__init(race)
 	Utility.EventSubscribe(self , "PostTick")
 	Utility.EventSubscribe(self , "PlayerSpawn")
 	Utility.NetSubscribe(self , "ReceiveCheckpointDistanceSqr")
-	
 end
 
 function StateRacing:End()
-	
 	Utility.EventUnsubscribeAll(self)
 	Utility.NetUnsubscribeAll(self)
-	
 end
 
---
 -- Events
---
 
 function StateRacing:PlayerEnterCheckpoint(args)
 	

@@ -5,7 +5,6 @@
 ----------------------------------------------------------------------------------------------------
 
 Stats.UpdateFromOldVersion = function(oldVersion)
-	
 	print("Updating database...")
 	local timer = Timer()
 	
@@ -74,11 +73,9 @@ Stats.UpdateFromOldVersion = function(oldVersion)
 	transaction:Commit()
 	
 	print("Done. Time elapsed: "..string.format("%.3f" , timer:GetSeconds()).." seconds")
-	
 end
 
 Stats.UpdateFromV0 = function(oldDatabase)
-	
 	if oldDatabase == nil then
 		oldDatabase = {}
 		oldDatabase.RacePlayers = SQL:Query("select * from RacePlayers"):Execute()
@@ -96,5 +93,4 @@ Stats.UpdateFromV0 = function(oldDatabase)
 	returnDatabase.RaceCourses = oldDatabase.RaceCourses
 	
 	return returnDatabase
-	
 end

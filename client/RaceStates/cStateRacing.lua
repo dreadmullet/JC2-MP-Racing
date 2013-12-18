@@ -1,6 +1,5 @@
 
 function StateRacing:__init(race , args)
-	
 	self.race = race
 	self.racePosition = -1
 	self.currentLap = 1
@@ -19,11 +18,9 @@ function StateRacing:__init(race , args)
 	Utility.NetSubscribe(self , "RaceTimePersonal")
 	Utility.NetSubscribe(self , "NewRecordTime")
 	Utility.NetSubscribe(self , "Respawn")
-	
 end
 
 function StateRacing:Run()
-	
 	self.numTicks = self.numTicks + 1
 	
 	-- Checkpoint arrow value.
@@ -102,21 +99,16 @@ function StateRacing:Run()
 		args.numLaps = self.race.courseInfo.numLaps
 		RaceGUI.DrawNextCheckpointArrow(args)
 	end
-	
 end
 
 function StateRacing:End()
-	
 	Utility.EventUnsubscribeAll(self)
 	Utility.NetUnsubscribeAll(self)
-	
 end
 
 function StateRacing:GetTargetCheckpointDistanceSqr()
-	
 	local targetCheckpointPos = self.race.checkpoints[self.targetCheckpoint]
 	return (targetCheckpointPos - LocalPlayer:GetPosition()):LengthSqr()
-	
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -124,7 +116,6 @@ end
 ----------------------------------------------------------------------------------------------------
 
 function StateRacing:PostTick(args)
-	
 	-- Send checkpoint distance every interval.
 	if self.sendCheckpointTimer:GetSeconds() >= settings.sendCheckpointDistanceInterval then
 		self.sendCheckpointTimer:Restart()
@@ -133,11 +124,9 @@ function StateRacing:PostTick(args)
 			{LocalPlayer:GetId() , self:GetTargetCheckpointDistanceSqr() , self.targetCheckpoint}
 		)
 	end
-	
 end
 
 function StateRacing:LocalPlayerInput(args)
-	
 	-- Block actions.
 	if args.state ~= 0 then
 		-- Block racing actions.
@@ -171,7 +160,6 @@ function StateRacing:LocalPlayerInput(args)
 	end
 	
 	return true
-	
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -179,7 +167,6 @@ end
 ----------------------------------------------------------------------------------------------------
 
 function StateRacing:SetTargetCheckpoint(targetCheckpoint)
-	
 	self.targetCheckpoint = targetCheckpoint
 	
 	-- If we started a new lap.
@@ -190,34 +177,25 @@ function StateRacing:SetTargetCheckpoint(targetCheckpoint)
 	else
 		self.targetArrowValue = 0
 	end
-	
 end
 
 function StateRacing:UpdateRacePositions(args)
-	
 	local racePosTracker = args[1]
 	local currentCheckpoint = args[2]
 	local finishedPlayerIds = args[3]
 	
 	self.race:UpdateLeaderboard(racePosTracker , currentCheckpoint , finishedPlayerIds)
-	
 end
 
 function StateRacing:RaceTimePersonal(time)
-	
 	table.insert(self.race.lapTimes , time)
-	
 end
 
 function StateRacing:NewRecordTime(args)
-	
 	self.race.recordTime = args[1]
 	self.race.recordTimePlayerName = args[2]
-	
 end
 
 function StateRacing:Respawn(assignedVehicleId)
-	
 	self.race.assignedVehicleId = assignedVehicleId
-	
 end

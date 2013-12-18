@@ -14,15 +14,12 @@ Stats.logFile = nil
 ----------------------------------------------------------------------------------------------------
 
 Stats.DebugTimerStart = function()
-	
 	if Stats.debug then
 		Stats.timer = Timer()
 	end
-	
 end
 
 Stats.DebugTimerEnd = function(description)
-	
 	if Stats.debug then
 		Stats.LogLine(
 			description..
@@ -31,24 +28,19 @@ Stats.DebugTimerEnd = function(description)
 			" seconds"
 		)
 	end
-	
 end
 
 Stats.LogLine = function(message)
-	
 	Stats.logFile:write(os.date("%c").." | "..message.."\n")
 	Stats.logFile:flush()
-	
 end
 
 Stats.GetTableExists = function(tableName)
-	
 	local query = SQL:Query("select name from sqlite_master where type = 'table' and name = (?)")
 	query:Bind(1 , tableName)
 	local results = query:Execute()
 	
 	return results[1] ~= nil
-	
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -56,7 +48,6 @@ end
 ----------------------------------------------------------------------------------------------------
 
 Stats.Init = function()
-	
 	if Stats.debug then
 		Stats.logFile = io.open("Stats.log" , "a+")
 		if Stats.logFile then
@@ -90,11 +81,9 @@ Stats.Init = function()
 	Stats.CreateTables()
 	
 	Stats.DebugTimerEnd("Init")
-	
 end
 
 Stats.CreateTables = function()
-	
 	-- RacePlayers
 	SQL:Execute(
 		"create table if not exists "..
@@ -144,11 +133,9 @@ Stats.CreateTables = function()
 	local command = SQL:Command("insert or ignore into RaceVersion(Version) values(?)")
 	command:Bind(1 , Stats.version)
 	command:Execute()
-	
 end
 
 Stats.AddPlayer = function(racer)
-	
 	Stats.DebugTimerStart()
 	
 	local command = SQL:Command("insert or ignore into RacePlayers(SteamId , Name) values(?,?)")
@@ -161,11 +148,9 @@ Stats.AddPlayer = function(racer)
 	command:Execute()
 	
 	Stats.DebugTimerEnd("AddPlayer")
-	
 end
 
 Stats.GetPlayerInfoFromSteamId = function(steamId)
-	
 	Stats.DebugTimerStart()
 	
 	local query = SQL:Query("select * from RacePlayers where SteamId = (?)")
@@ -175,11 +160,9 @@ Stats.GetPlayerInfoFromSteamId = function(steamId)
 	Stats.DebugTimerEnd("GetPlayerInfoFromSteamId")
 	
 	return results[1]
-	
 end
 
 Stats.AddRaceResult = function(racer , place , course)
-	
 	Stats.DebugTimerStart()
 	
 	local vehicleId = racer.assignedVehicleId
@@ -211,11 +194,9 @@ Stats.AddRaceResult = function(racer , place , course)
 	command:Execute()
 	
 	Stats.DebugTimerEnd("AddRaceResult")
-	
 end
 
 Stats.AddCourse = function(course)
-	
 	Stats.DebugTimerStart()
 	
 	local command = SQL:Command(
@@ -232,13 +213,11 @@ Stats.AddCourse = function(course)
 	command:Execute()
 	
 	Stats.DebugTimerEnd("AddCourse")
-	
 end
 
 -- Example: from 1 to 10 returns top 10 times.
 -- Each item is {time = 123.45 , playerName = ""}
 Stats.GetCourseRecords = function(course , from , to)
-	
 	Stats.DebugTimerStart()
 	
 	local count = to - from + 1
@@ -266,11 +245,9 @@ Stats.GetCourseRecords = function(course , from , to)
 	Stats.DebugTimerEnd("GetCourseRecords")
 	
 	return records
-	
 end
 
 Stats.RaceStart = function(race)
-	
 	Stats.DebugTimerStart()
 	
 	-- Increment RaceCourses.TimesPlayed.
@@ -299,11 +276,9 @@ Stats.RaceStart = function(race)
 	end
 	
 	Stats.DebugTimerEnd("RaceStart")
-	
 end
 
 Stats.PlayerExit = function(racer)
-	
 	Stats.DebugTimerStart()
 	
 	local command = SQL:Command(
@@ -314,5 +289,4 @@ Stats.PlayerExit = function(racer)
 	command:Execute()
 	
 	Stats.DebugTimerEnd("PlayerExit")
-	
 end

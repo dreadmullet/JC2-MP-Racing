@@ -8,22 +8,18 @@ parachuteActions[Action.StuntposToParachute] = true
 parachuteActions[Action.DeployParachuteWhileReelingAction] = true
 
 function ModulesLoad()
-	
 	-- Add us to the help menu.
 	local args = {}
 	args.name = settings.gamemodeName
 	args.text = settings.gamemodeDescription
 	Events:FireRegisteredEvent("HelpAddItem" , args)
-	
 end
 
 function ModuleUnload()
-	
 	-- Remove us from the help menu.
 	local args = {}
 	args.name = settings.gamemodeName
 	Events:FireRegisteredEvent("HelpRemoveItem" , args)
-	
 end
 
 Events:Subscribe("ModulesLoad" , ModulesLoad)

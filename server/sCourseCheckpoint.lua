@@ -1,5 +1,4 @@
 function CourseCheckpoint:__init(course)
-	
 	self.course = course
 	self.index = -1
 	self.position = nil
@@ -14,11 +13,9 @@ function CourseCheckpoint:__init(course)
 	-- When racer enters checkpoint, these functions of ours are called. One argument: racer.
 	-- Array of function names.
 	self.actions = {}
-	
 end
 
 function CourseCheckpoint:Spawn()
-	
 	local spawnArgs = {}
 	spawnArgs.position = self.position
 	spawnArgs.create_checkpoint = true
@@ -37,12 +34,9 @@ function CourseCheckpoint:Spawn()
 	self.checkpoint = Checkpoint.Create(spawnArgs)
 	
 	self.course.checkpointMap[self.checkpoint:GetId()] = self
-	
 end
 
--- TODO: a way to force on-foot
 function CourseCheckpoint:GetIsValidVehicle(vehicle)
-	
 	-- We don't have a required vehicle.
 	if self.validVehicles == nil then
 		return true
@@ -67,12 +61,10 @@ function CourseCheckpoint:GetIsValidVehicle(vehicle)
 	end
 	
 	return false
-	
 end
 
 -- Called by PlayerEnterVehicle event of race.
 function CourseCheckpoint:Enter(racer)
-	
 	if
 		racer.hasFinished == false and
 		self:GetIsValidVehicle(racer.player:GetVehicle()) and
@@ -85,12 +77,10 @@ function CourseCheckpoint:Enter(racer)
 			self[functionName](self , racer)
 		end
 	end
-	
 end
 
 -- For use with sending course checkpoint info to clients.
 function CourseCheckpoint:Marshal()
-	
 	local info = {}
 	
 	info.index = self.index
@@ -100,11 +90,9 @@ function CourseCheckpoint:Marshal()
 	info.validVehicles = self.validVehicles
 	
 	return info
-	
 end
 
 function CourseCheckpoint:MarshalJSON()
-	
 	local checkpoint = {}
 	
 	checkpoint.position = {}
@@ -118,5 +106,4 @@ function CourseCheckpoint:MarshalJSON()
 	checkpoint.actions = self.actions
 
 	return checkpoint
-	
 end

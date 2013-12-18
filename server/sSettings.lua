@@ -42,7 +42,6 @@ settings.admins = {
 settings.courseEditorEnabled = false
 
 settings.numLapsFunc = function(numPlayers , maxPlayers , courseLaps)
-	
 	local lapsMultPlayers = (numPlayers / maxPlayers)
 	lapsMultPlayers = lapsMultPlayers + 0.75
 	-- Dilute the effect.
@@ -57,5 +56,4 @@ settings.numLapsFunc = function(numPlayers , maxPlayers , courseLaps)
 	end
 	
 	return numLaps
-	
 end

@@ -1,6 +1,5 @@
 
 function Racer:__init(race , player , updateOffset)
-	
 	self.race = race
 	self.player = player
 	-- This helps with calling Racer:Update only one player per tick.
@@ -46,11 +45,9 @@ function Racer:__init(race , player , updateOffset)
 	local args = {}
 	args.version = settings.version
 	Network:Send(self.player , "Initialise" , args)
-	
 end
 
 function Racer:Update()
-	
 	-- TODO: The actual fuck
 	local finishedPlayerIds = {}
 	for index , racer in ipairs(self.race.finishedRacers) do
@@ -88,11 +85,9 @@ function Racer:Update()
 			finishedPlayerIds
 		}
 	)
-	
 end
 
 function Racer:Remove()
-	
 	-- Update database with our new playtime, if the timer is running.
 	if self.raceTimer then
 		self.playTime = self.playTime + self.raceTimer:GetSeconds()
@@ -114,11 +109,9 @@ function Racer:Remove()
 	local args = {}
 	args.stateName = "StateTerminate"
 	Network:Send(self.player , "SetState" , args)
-	
 end
 
 function Racer:AdvanceCheckpoint(index)
-	
 	self.targetCheckpoint = self.targetCheckpoint + 1
 	if self.targetCheckpoint > #self.race.course.checkpoints then
 		self.targetCheckpoint = 1
@@ -156,11 +149,9 @@ function Racer:AdvanceCheckpoint(index)
 	end
 	
 	Network:Send(self.player , "SetTargetCheckpoint" , self.targetCheckpoint)
-	
 end
 
 function Racer:AdvanceLap()
-	
 	self.targetCheckpoint = 1
 	self.numLapsCompleted = self.numLapsCompleted + 1
 	
@@ -193,12 +184,10 @@ function Racer:AdvanceLap()
 	if self.numLapsCompleted >= self.race.course.numLaps and self.hasFinished == false then
 		self:Finish()
 	end
-	
 end
 
 -- TODO: This and Race.RacerFinish are too similar.
 function Racer:Finish()
-	
 	self.hasFinished = true
 	
 	-- Handle Linear course records. Circuit records are handled in AdvanceLap, above.
@@ -224,11 +213,9 @@ function Racer:Finish()
 	args.stateName = "StateFinished"
 	args.place = #self.race.finishedRacers
 	Network:Send(self.player , "SetState" , args)
-	
 end
 
 function Racer:Respawn()
-	
 	if settings.debugLevel >= 2 then
 		print(self.name.." is respawning.")
 	end
@@ -341,7 +328,6 @@ function Racer:Respawn()
 	end
 	
 	Network:Send(self.player , "Respawn" , self.assignedVehicleId)
-	
 end
 
 function Racer:Message(message)
@@ -351,7 +337,6 @@ end
 -- Event callbacks
 
 function Racer:EnterVehicle(args)
-	
 	self.respawnTimer = nil
 	
 	-- If someone enters the wrong car, boot them out.
@@ -364,5 +349,4 @@ function Racer:EnterVehicle(args)
 			self:Message("This is not your car!")
 		end
 	end
-	
 end

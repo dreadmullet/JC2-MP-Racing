@@ -1,6 +1,5 @@
 
 function StateStartingGrid:__init(race , args)
-	
 	self.race = race
 	self.delay = args.delay
 	self.race.numPlayers = args.numPlayers
@@ -42,11 +41,9 @@ function StateStartingGrid:__init(race , args)
 	
 	Utility.EventSubscribe(self , "LocalPlayerInput")
 	Utility.EventSubscribe(self , "InputPoll")
-	
 end
 
 function StateStartingGrid:Run()
-	
 	-- Countdown timer
 	--
 	-- If there is a valid count down time left, and it's ready to be shown, show it.
@@ -121,20 +118,16 @@ function StateStartingGrid:Run()
 		args.numLaps = self.race.courseInfo.numLaps
 		RaceGUI.DrawNextCheckpointArrow(args)
 	end
-	
 end
 
 function StateStartingGrid:End()
-	
 	Utility.EventUnsubscribeAll(self)
 	Utility.NetUnsubscribeAll(self)
-	
 end
 
 -- Events
 
 function StateStartingGrid:LocalPlayerInput(args)
-	
 	if args.state ~= 0 then
 		for index , input in ipairs(settings.blockedInputsStartingGrid) do
 			if args.input == input then
@@ -172,11 +165,8 @@ function StateStartingGrid:LocalPlayerInput(args)
 	end
 	
 	return true
-	
 end
 
 function StateStartingGrid:InputPoll()
-	
 	Input:SetValue(Action.Handbrake , 1 , false)
-	
 end

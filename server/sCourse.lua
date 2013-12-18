@@ -1,5 +1,4 @@
 function Course:__init()
-	
 	self.race = nil
 	-- Includes finish or start/finish.
 	self.name = "unnamed course"
@@ -29,17 +28,13 @@ function Course:__init()
 	-- race currently running when a record is added. Or could cache courses, so two Races use the
 	-- same Course.
 	self.topRecords = {}
-	
 end
 
 function Course:GetMaxPlayers()
-	
 	return #self.spawns
-	
 end
 
 function Course:AssignRacers(playerIdToRacer)
-	
 	local numRacers = table.count(playerIdToRacer)
 	if numRacers > #self.spawns then
 		error(
@@ -65,11 +60,9 @@ function Course:AssignRacers(playerIdToRacer)
 		self.spawns[spawnIndex].racer = racer
 		spawnIndex = spawnIndex + 1
 	end
-	
 end
 
 function Course:SpawnVehicles()
-	
 	if debug.alwaysMaxPlayers then
 		self.race.numPlayers = #self.spawns
 		self.race:Message("Vehicle count: "..self.race.numPlayers)
@@ -80,27 +73,21 @@ function Course:SpawnVehicles()
 			spawn:SpawnVehicle()
 		end
 	end
-	
 end
 
 function Course:SpawnCheckpoints()
-	
 	for n, checkpoint in ipairs(self.checkpoints) do
 		checkpoint:Spawn()
 	end
-	
 end
 
 function Course:SpawnRacers()
-	
 	for n , spawn in ipairs(self.spawns) do
 		spawn:SpawnRacer()
 	end
-	
 end
 
 function Course:GetSpawnPositionAverage()
-	
 	local average = Vector3(0 , 0 , 0)
 	
 	for index , spawn in ipairs(self.spawns) do
@@ -110,12 +97,10 @@ function Course:GetSpawnPositionAverage()
 	average = average / #self.spawns
 	
 	return average
-	
 end
 
 -- For use with sending course info to clients.
 function Course:Marshal()
-	
 	local info = self:MarshalInfo()
 	
 	info.checkpoints = {}
@@ -129,12 +114,10 @@ function Course:Marshal()
 	end
 	
 	return info
-	
 end
 
 -- Marshals variables like name and numLaps, but not checkpoints and such.
 function Course:MarshalInfo()
-	
 	local info = {}
 	
 	info.name = self.name
@@ -143,11 +126,9 @@ function Course:MarshalInfo()
 	info.prizeMoney = self.prizeMoney
 	
 	return info
-	
 end
 
 function Course:Save(name)
-	
 	local ctable = {}
 	
 	ctable.name = self.name
@@ -178,11 +159,9 @@ function Course:Save(name)
 	file:write(json.encode(ctable))
 	
 	file:close()
-	
 end
 
 function Course.Load(name)
-	
 	if settings.debugLevel >= 2 then
 		print("Loading course file: "..name)
 	end
@@ -305,53 +284,4 @@ function Course.Load(name)
 	end
 	
 	return course
-	
-end
-
-function Course.CreateTestCourse()
-	
-	local course = Course()
-	
-	course.name = "Cape Carnival Test"
-	
-	course.type = "Circuit"
-	
-	local checkpointPositions = {
-		Vector3(14138.446289, 201.384308, -2213.883057) ,
-		Vector3(13869.923828, 201.385666, -2625.829102) ,
-		Vector3(13460.099609, 201.460983, -2366.778320) ,
-		Vector3(13722.583008, 201.352005, -1958.302124) ,
-		Vector3(13934.444336, 201.385513, -2070.170410) , -- Start/finish
-	}
-	
-	for n , pos in ipairs(checkpointPositions) do
-		local cp = CourseCheckpoint(course)
-		cp.index = n
-		cp.position = pos
-		cp.validVehicles = {}
-		table.insert(course.checkpoints , cp)
-	end
-	
-	course.numLaps = 1
-	
-	local spawn1 = CourseSpawn(course)
-	spawn1.position = Vector3(13955.602539 , 201.385193 , -2085.802734)
-	spawn1.angle = Angle(-math.tau * 0.18 , 0 , 0)
-	table.insert(spawn1.modelIds , 2)
-	table.insert(spawn1.modelIds , 21)
-	table.insert(spawn1.modelIds , 91)
-	table.insert(spawn1.templates , "")
-	table.insert(spawn1.templates , "")
-	table.insert(spawn1.templates , "Softtop")
-	table.insert(course.spawns , spawn1)
-	
-	local spawn2 = CourseSpawn(course)
-	spawn2.position = Vector3(13958.250000, 201.385193 , -2080.351074)
-	spawn2.angle = Angle(-math.tau * 0.18 , 0 , 0)
-	table.insert(spawn2.modelIds , 35)
-	table.insert(spawn2.templates , "FullyUpgraded")
-	table.insert(course.spawns , spawn2)
-	
-	return course
-	
 end

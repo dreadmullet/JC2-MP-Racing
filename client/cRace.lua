@@ -4,7 +4,6 @@
 Race.modelCache = {}
 
 function Race:__init(args)
-	
 	if settings.debugLevel >= 2 then
 		print("Race:__init")
 	end
@@ -30,30 +29,24 @@ function Race:__init(args)
 	
 	Utility.EventSubscribe(self , "Render")
 	Utility.NetSubscribe(self , "SetState")
-	
 end
 
 function Race:Terminate()
-	
 	local args = {}
 	args.stateName = "StateNone"
 	self:SetState(args)
 	
 	Utility.EventUnsubscribeAll(self)
 	Utility.NetUnsubscribeAll(self)
-	
 end
 
 function Race:Render()
-	
 	if self.state and self.state.Run then
 		self.state:Run()
 	end
-	
 end
 
 function Race:SetState(args)
-	
 	if settings.debugLevel >= 2 then
 		print("Changing state to "..args.stateName)
 	end
@@ -64,14 +57,11 @@ function Race:SetState(args)
 	end
 	self.state = _G[args.stateName](self , args)
 	self.stateName = args.stateName
-	
 end
 
 function Race:UpdateLeaderboard(racePosTracker , currentCheckpoint , finishedPlayerIds)
-	
-	--
 	-- Transform the (playerId , bool) maps into arrays and fill checkpoint distance array.
-	--
+	
 	local racePosTrackerArray = {}
 	local playerIdToCheckpointDistanceSqr = {}
 	
@@ -117,7 +107,6 @@ function Race:UpdateLeaderboard(racePosTracker , currentCheckpoint , finishedPla
 			self.numPlayers = self.numPlayers + 1
 		end
 	end
-	
 end
 
 function Race:ModelReceive(model , name)
