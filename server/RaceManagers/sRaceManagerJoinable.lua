@@ -1,3 +1,6 @@
+RaceManagerJoinable.command = "/race"
+RaceManagerJoinable.startDelay = 120
+
 function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 	self.courseManager = CourseManager("CourseManifest.txt")
 	-- Array of Races.
@@ -7,20 +10,24 @@ function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 	self.nextCourse = nil
 	-- Helps with storing position, model id, and inventory and restoring them when they leave.
 	self.playerIdToRacerInfo = {}
+	self.startTimer = Timer()
 	
 	self:SetupNextRace()
 	
 	self:EventSubscribe("PlayerChat")
+	self:EventSubscribe("PreTick")
 end
 
 function RaceManagerJoinable:SetupNextRace()
 	self.playerQueue = {}
 	self.nextCourse = self.courseManager:LoadCourseRandom()
 	
-	self:Message("A race is about to start, use "..settings.command.." to join!")
+	self:Message("A race is about to start, use "..RaceManagerJoinable.command.." to join!")
 end
 
-function RaceManagerJoinable:StartRace()
+function RaceManagerJoinable:CreateRace()
+	self:Message("Starting race with "..#self.playerQueue.." players")
+	
 	-- Store everyone's position, inventory, and model.
 	self:IteratePlayers(
 		function(player)
@@ -48,7 +55,7 @@ function RaceManagerJoinable:ManagedPlayerJoin(player)
 		#self.playerQueue == #self.nextCourse.spawns or
 		#self.playerQueue == Server:GetPlayerCount()
 	then
-		self:StartRace()
+		self:CreateRace()
 	end
 end
 
@@ -85,6 +92,10 @@ end
 
 -- Race callbacks
 
+function RaceManagerJoinable:RacerFinish(racer)
+	racer:Message("Use "..RaceManagerJoinable.command.." to leave the race")
+end
+
 function RaceManagerJoinable:RaceEnd(raceThatEnded)
 	-- Remove this race from self.races.
 	for index , race in ipairs(self.races) do
@@ -98,7 +109,7 @@ end
 -- Events
 
 function RaceManagerJoinable:PlayerChat(args)
-	if args.text == settings.command then
+	if args.text == RaceManagerJoinable.command then
 		if self:HasPlayer(args.player) then
 			self:RemovePlayer(args.player)
 		else
@@ -108,4 +119,14 @@ function RaceManagerJoinable:PlayerChat(args)
 	end
 	
 	return true
+end
+
+function RaceManagerJoinable:PreTick()
+	if #self.playerQueue > 0 then
+		if self.startTimer:GetSeconds() > RaceManagerJoinable.startDelay then
+			self:CreateRace()
+		end
+	else
+		self.startTimer = Timer()
+	end
 end

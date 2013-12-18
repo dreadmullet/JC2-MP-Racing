@@ -18,7 +18,7 @@ if settings.debugLevel > 1 then
 	settings.version = settings.version.." (debug)"
 end
 
-settings.raceManager = "RaceManagerMode"
+settings.raceManager = "RaceManagerJoinable"
 
 settings.coursesPath = "courses/"
 
@@ -37,10 +37,6 @@ settings.prizeMoneyMultiplier = 0.75
 settings.playerFinishRemoveDelay = 12
 settings.lapsMult = 1
 if debug.oneLap then settings.lapsMult = 0 end
-
--- Public races
-settings.command = "/race"
-settings.raceJoinWaitSeconds = 110
 
 settings.admins = {
 	SteamId("76561197985532207") , -- dreadmullet
