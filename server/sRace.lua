@@ -43,10 +43,6 @@ function Race:SetState(state , ...)
 	
 	self.stateName = state
 	
-	for id , racer in pairs(self.playerIdToRacer) do
-		racer:RaceStateChange(self.stateName)
-	end
-	
 end
 
 function Race:HasPlayer(player)

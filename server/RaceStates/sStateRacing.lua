@@ -19,9 +19,9 @@ function StateRacing:__init(race)
 	
 	self.racerUpdateInterval = math.max(10 , race.numPlayers)
 	
-	-- Set up racePosTracker
 	self.racePosTracker[0] = {}
 	for id , racer in pairs(self.race.playerIdToRacer) do
+		racer.bestTimeTimer = Timer()
 		self.racePosTracker[0][id] = racer.targetCheckpointDistanceSqr -- wut
 	end
 	

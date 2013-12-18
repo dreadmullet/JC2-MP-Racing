@@ -36,25 +36,16 @@ function Racer:__init(race , player , updateOffset)
 		-- player:SetModelId(table.randomvalue(settings.playerModelIds))
 	-- end
 	
+	-- Disable collisions, if applicable.
+	if self.race.vehicleCollisions == false then
+		self.player:DisableCollision(CollisionGroup.Vehicle)
+	end
+	-- Always disable player collisions.
+	self.player:DisableCollision(CollisionGroup.Player)
+	
 	local args = {}
 	args.version = settings.version
 	Network:Send(self.player , "Initialise" , args)
-	
-end
-
--- TODO: this is questionable
-function Racer:RaceStateChange(stateName)
-	
-	if stateName == "StateStartingGrid" then
-		-- Disable collisions, if applicable.
-		if self.race.vehicleCollisions == false then
-			self.player:DisableCollision(CollisionGroup.Vehicle)
-		end
-		-- Always disable player collisions.
-		self.player:DisableCollision(CollisionGroup.Player)
-	elseif stateName == "StateRacing" then
-		self.bestTimeTimer = Timer()
-	end
 	
 end
 
