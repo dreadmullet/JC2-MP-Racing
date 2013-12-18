@@ -60,28 +60,6 @@ function Race:GetRacerCount()
 	
 end
 
--- Add a player to a race that is currently in progress.
-function Race:AddPlayer(player)
-	
-	-- If the racer already exists, return.
-	if self:HasPlayer(player) then
-		error("Attempting to add player twice: " , player)
-		return
-	end
-	
-	player = Racing.Player(player)
-	local playerId = Racing.PlayerId(player)
-	
-	local newRacer = Racer(self , player , 0)
-	self.playerIdToRacer[playerId] = newRacer
-	self.numPlayers = self.numPlayers + 1
-	
-	if self.state.RacerJoin then
-		self.state.RacerJoin(racer)
-	end
-	
-end
-
 function Race:RemovePlayer(player)
 	
 	-- If the player isn't part of this Race, return.
