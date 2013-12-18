@@ -3,8 +3,6 @@ RaceManagerMode.settings.initialiseDelay = 1
 
 class("RaceInfo")
 function RaceInfo:__init()
-	-- Started when the first person finishes. Helps with ending the race at a percentage of the
-	-- winner's time.
 	self.hasWinner = false
 	self.timer = Timer()
 	self.raceEndTime = -1
@@ -15,7 +13,7 @@ function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
 	self.courseManager = CourseManager("CourseManifest.txt")
 	self.race = nil
 	self.raceInfo = nil
-	-- Helps with delaying race start until a few seconds after module load.
+	-- Helps with delaying the first race.
 	self.initialiseTimer = Timer()
 	
 	self:EventSubscribe("ClientModuleLoad")
@@ -58,10 +56,10 @@ end
 
 function RaceManagerMode:RacerFinish(racer)
 	local raceInfo = self.raceInfo
-	-- If the finish timer hasn't started yet, start it.
+	-- If this is the first finisher, set the race end time.
 	if raceInfo.hasWinner == false then
 		raceInfo.hasWinner = true
-		raceInfo.raceEndTime = self.raceInfo.timer:GetSeconds() * 1.08 + 10
+		raceInfo.raceEndTime = self.raceInfo.timer:GetSeconds() * 1.06 + 12
 	end
 end
 
