@@ -59,11 +59,10 @@ end
 -- Race callbacks
 
 function RaceManagerMode:RacerFinish(racer)
-	local raceInfo = self.raceInfo
 	-- If this is the first finisher, set the race end time.
-	if raceInfo.hasWinner == false then
-		raceInfo.hasWinner = true
-		raceInfo.raceEndTime = self.raceInfo.timer:GetSeconds() * 1.06 + 12
+	if self.raceInfo.hasWinner == false then
+		self.raceInfo.hasWinner = true
+		self.raceInfo.raceEndTime = self.raceInfo.timer:GetSeconds() * 1.06 + 12
 	end
 end
 
@@ -82,8 +81,9 @@ function RaceManagerMode:ClientModuleLoad(args)
 end
 
 function RaceManagerMode:PreTick(args)
-	-- Delay the first race to make sure everyone's client has loaded.
+	-- We will not be initialised when the module is first loaded.
 	if self.isInitialised == false then
+		-- Delay the first race to make sure everyone's client has loaded.
 		if self.initialiseTimer:GetSeconds() > RaceManagerMode.settings.initialiseDelay then
 			-- Add all players to us.
 			for player in Server:GetPlayers() do
