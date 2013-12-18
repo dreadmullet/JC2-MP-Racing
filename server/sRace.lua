@@ -97,10 +97,8 @@ function Race:RemovePlayer(player)
 	-- If they haven't finished yet, add race result to database; their
 	-- position is -1 (DNF).
 	-- TODO: This should probably be part of the race manager, inside RacerFinish.
-	if not settings.WTF then
-		if racer.hasFinished == false then
-			Stats.AddRaceResult(racer , -1 , self.course)
-		end
+	if racer.hasFinished == false then
+		Stats.AddRaceResult(racer , -1 , self.course)
 	end
 	
 	racer:Remove()
@@ -155,9 +153,7 @@ function Race:RacerFinish(racer)
 	self.prizeMoneyCurrent = self.prizeMoneyCurrent * settings.prizeMoneyMultiplier
 	
 	-- Add race result to database.
-	if not settings.WTF then
-		Stats.AddRaceResult(racer , #self.finishedRacers , self.course)
-	end
+	Stats.AddRaceResult(racer , #self.finishedRacers , self.course)
 	
 	-- Messages to immediately print for all finishers.
 	if #self.finishedRacers == 1 then

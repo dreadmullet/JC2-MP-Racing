@@ -3,7 +3,7 @@ function CourseCheckpoint:ActionRepairCar(racer)
 	
 	local vehicle = racer.player:GetVehicle()
 	if IsValid(vehicle) then
-		vehicle:SetHealth(vehicle:GetHealth() + settings.vehicleRepairAmount)
+		vehicle:SetHealth(vehicle:GetHealth() + 0.05)
 	end
 	
 end

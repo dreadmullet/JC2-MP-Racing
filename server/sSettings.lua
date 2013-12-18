@@ -18,11 +18,9 @@ if settings.debugLevel > 1 then
 	settings.version = settings.version.." (debug)"
 end
 
-settings.raceManager = "RaceManagerJoinable"
+settings.raceManager = "RaceManagerMode"
 
 settings.coursesPath = "courses/"
-
-settings.doPublicRaces = true
 
 settings.textColor = Color(250 , 157 , 133 , 255) -- Light red-orange.
 
@@ -31,7 +29,6 @@ settings.playerModelIdAdmin = 100
 
 settings.startingGridWaitSeconds = 11
 settings.outOfVehicleMaxSeconds = 20
-settings.vehicleRepairAmount = 0.05
 settings.prizeMoneyDefault = 10000
 settings.prizeMoneyMultiplier = 0.75
 settings.playerFinishRemoveDelay = 12
@@ -41,8 +38,6 @@ if debug.oneLap then settings.lapsMult = 0 end
 settings.admins = {
 	SteamId("76561197985532207") , -- dreadmullet
 }
-
-settings.WTF = false
 
 settings.courseEditorEnabled = false
 

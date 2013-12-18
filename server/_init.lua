@@ -22,4 +22,3 @@ class("CourseEditorManager")
 class("CourseEditor")
 
 Stats = {}
-WTF = {}
