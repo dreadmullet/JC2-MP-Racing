@@ -6,4 +6,5 @@ end
 
 function RaceManagerBase:Message(message)
 	Chat:Broadcast("[Racing] "..message , settings.textColor)
+	print(message)
 end
