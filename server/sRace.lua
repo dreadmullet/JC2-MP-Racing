@@ -89,13 +89,6 @@ function Race:RemovePlayer(player)
 	player = Racing.Player(player)
 	local playerId = Racing.PlayerId(player)
 	
-	-- Reenable collisions.
-	-- TODO: Why is this in Race and not Racer:Remove
-	if self.vehicleCollisions == false then
-		player:EnableCollision(CollisionGroup.Vehicle)
-	end
-	player:EnableCollision(CollisionGroup.Player)
-	
 	-- If state is StateRacing, remove from state.racePosTracker.
 	-- TODO: This should be a part of a RacerRemove state callback.
 	if self.stateName == "StateRacing" then

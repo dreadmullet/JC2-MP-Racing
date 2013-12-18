@@ -105,6 +105,12 @@ function Racer:Remove()
 		vehicle:Remove()
 	end
 	
+	-- Reenable collisions.
+	if self.vehicleCollisions == false then
+		player:EnableCollision(CollisionGroup.Vehicle)
+	end
+	player:EnableCollision(CollisionGroup.Player)
+	
 	local args = {}
 	args.stateName = "StateTerminate"
 	Network:Send(self.player , "SetState" , args)
