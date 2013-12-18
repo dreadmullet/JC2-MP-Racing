@@ -8,6 +8,7 @@ function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 	-- Array of Players.
 	self.playerQueue = {}
 	self.nextCourse = nil
+	self.nextCourseCollisions = true
 	-- Helps with storing position, model id, and inventory and restoring them when they leave.
 	self.playerIdToRacerInfo = {}
 	self.startTimer = Timer()
@@ -21,8 +22,17 @@ end
 function RaceManagerJoinable:SetupNextRace()
 	self.playerQueue = {}
 	self.nextCourse = self.courseManager:LoadCourseRandom()
+	self.nextCourseCollisions = math.random() > 0.55
 	
-	self:Message("A race is about to start, use "..RaceManagerJoinable.command.." to join!")
+	local collisionsString = "off"
+	if self.nextCourseCollisions then
+		collisionsString = "on"
+	end
+	
+	self:Message(
+		"A race is about to start, use "..RaceManagerJoinable.command.." to join! "..
+		"("..self.nextCourse.name..", collisions "..collisionsString..")"
+	)
 end
 
 function RaceManagerJoinable:CreateRace()
@@ -40,7 +50,7 @@ function RaceManagerJoinable:CreateRace()
 		end
 	)
 	
-	local race = Race(self , self.playerQueue , self.nextCourse)
+	local race = Race(self , self.playerQueue , self.nextCourse , self.nextCourseCollisions)
 	table.insert(self.races , race)
 	self:SetupNextRace()
 end
@@ -83,7 +93,9 @@ function RaceManagerJoinable:ManagedPlayerLeave(player)
 end
 
 function RaceManagerJoinable:PlayerManagerTerminate()
-	EGUSM.Print("PlayerManagerTerminate")
+	if EGUSM.debug then
+		EGUSM.Print("PlayerManagerTerminate")
+	end
 	-- Terminate all Races.
 	for index , race in ipairs(self.races) do
 		race:Terminate()

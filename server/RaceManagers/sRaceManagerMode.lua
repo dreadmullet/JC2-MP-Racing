@@ -22,12 +22,16 @@ end
 
 -- Adds all players in the server to a new Race.
 function RaceManagerMode:CreateRace(playerArray)
+	self:Message("Starting race with "..Server:GetPlayerCount().." players")
+	
 	local course = self.courseManager:LoadCourseRandom()
 	local playerArray = {}
 	for player in Server:GetPlayers() do
 		table.insert(playerArray , player)
 	end
-	self.race = Race(self , playerArray , course)
+	local doCollisions = math.random() > 0.55
+	
+	self.race = Race(self , playerArray , course , doCollisions)
 	
 	self.raceInfo = RaceInfo()
 end
