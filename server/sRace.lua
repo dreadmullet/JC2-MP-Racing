@@ -142,7 +142,30 @@ function Race:Terminate()
 	
 end
 
--- TODO: Move this to race manager.
+function Race:Message(message)
+	
+	for id , racer in pairs(self.playerIdToRacer) do
+		racer:Message(message)
+	end
+	
+	print(message)
+	
+end
+
+function Race:NetworkSendRace(name , ...)
+	
+	for playerId , racer in pairs(self.playerIdToRacer) do
+		if settings.debugLevel >= 3 then
+			print("NetworkSendRace; player = "..racer.name..", network event = "..name)
+		end
+		Network:Send(racer.player , name , ...)
+	end
+	
+end
+
+-- Racer callbacks
+
+-- TODO: Move parts of this to race manager.
 function Race:RacerFinish(racer)
 	
 	table.insert(self.finishedRacers , racer)
@@ -172,30 +195,7 @@ function Race:RacerFinish(racer)
 	
 end
 
-function Race:Message(message)
-	
-	for id , racer in pairs(self.playerIdToRacer) do
-		racer:Message(message)
-	end
-	
-	print(message)
-	
-end
-
-function Race:NetworkSendRace(name , ...)
-	
-	for playerId , racer in pairs(self.playerIdToRacer) do
-		if settings.debugLevel >= 3 then
-			print("NetworkSendRace; player = "..racer.name..", network event = "..name)
-		end
-		Network:Send(racer.player , name , ...)
-	end
-	
-end
-
---
 -- Events
---
 
 function Race:PreTick()
 	
