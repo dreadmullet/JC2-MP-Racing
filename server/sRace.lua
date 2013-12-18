@@ -199,6 +199,11 @@ function Race:RacerFinish(racer)
 		self:Message(racer.name.." finishes "..Utility.NumberToPlaceString(#self.finishedRacers))
 	end
 	
+	-- Tell our RaceManager that a Racer finished.
+	if self.raceManager.RacerFinish then
+		self.raceManager:RacerFinish(racer)
+	end
+	
 end
 
 function Race:Message(message)

@@ -18,7 +18,7 @@ if settings.debugLevel > 1 then
 	settings.version = settings.version.." (debug)"
 end
 
-settings.raceManager = "RaceManagerJoinable"
+settings.raceManager = "RaceManagerMode"
 
 settings.coursesPath = "courses/"
 

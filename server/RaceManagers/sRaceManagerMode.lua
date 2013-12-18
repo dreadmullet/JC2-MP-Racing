@@ -1,15 +1,24 @@
 RaceManagerMode.settings = {}
 RaceManagerMode.settings.initialiseDelay = 1
 
+class("RaceInfo")
+function RaceInfo:__init()
+	-- Started when the first person finishes. Helps with ending the race at a percentage of the
+	-- winner's time.
+	self.hasWinner = false
+	self.timer = Timer()
+	self.raceEndTime = -1
+end
+
 function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
 	self.isInitialised = false
 	self.courseManager = CourseManager("CourseManifest.txt")
 	self.race = nil
-	
-	self.timer = Timer()
+	self.raceInfo = nil
+	-- Helps with delaying race start until a few seconds after module load.
+	self.initialiseTimer = Timer()
 	
 	self:EventSubscribe("ClientModuleLoad")
-	-- This is unsubscribed after a delay.
 	self:EventSubscribe("PreTick")
 end
 
@@ -21,6 +30,8 @@ function RaceManagerMode:CreateRace(playerArray)
 		table.insert(playerArray , player)
 	end
 	self.race = Race(self , playerArray , course)
+	
+	self.raceInfo = RaceInfo()
 end
 
 -- PlayerManager callbacks
@@ -45,6 +56,15 @@ end
 
 -- Race callbacks
 
+function RaceManagerMode:RacerFinish(racer)
+	local raceInfo = self.raceInfo
+	-- If the finish timer hasn't started yet, start it.
+	if raceInfo.hasWinner == false then
+		raceInfo.hasWinner = true
+		raceInfo.raceEndTime = self.raceInfo.timer:GetSeconds() * 1.08 + 10
+	end
+end
+
 function RaceManagerMode:RaceEnd(raceThatEnded)
 	-- Create a race if there are any players left.
 	local playerCount = self:GetPlayerCount()
@@ -60,19 +80,30 @@ function RaceManagerMode:ClientModuleLoad(args)
 end
 
 function RaceManagerMode:PreTick(args)
-	if self.timer:GetSeconds() > RaceManagerMode.settings.initialiseDelay then
-		-- Add all players to us.
-		for player in Server:GetPlayers() do
-			self:AddPlayer(player)
+	-- Delay the first race to make sure everyone's client has loaded.
+	if self.isInitialised == false then
+		if self.initialiseTimer:GetSeconds() > RaceManagerMode.settings.initialiseDelay then
+			-- Add all players to us.
+			for player in Server:GetPlayers() do
+				self:AddPlayer(player)
+			end
+			-- Create a race if there are any players.
+			local playerCount = Server:GetPlayerCount()
+			if playerCount ~= 0 then
+				self:CreateRace()
+			end
+			
+			self.isInitialised = true
 		end
-		-- Create a race if there are any players.
-		local playerCount = Server:GetPlayerCount()
-		if playerCount ~= 0 then
-			self:CreateRace()
+	else
+		-- If someone has finished and it's time to end the race, end it.
+		if
+			self.raceInfo and
+			self.raceInfo.hasWinner and
+			self.raceInfo.timer:GetSeconds() > self.raceInfo.raceEndTime
+		then
+			self.raceInfo = nil
+			self.race:Terminate()
 		end
-		
-		self.isInitialised = true
-		
-		self:EventUnsubscribe("PreTick")
 	end
 end
