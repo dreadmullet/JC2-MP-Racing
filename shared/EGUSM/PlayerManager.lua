@@ -85,5 +85,5 @@ function EGUSM.PlayerManager:PlayerQuit(args)
 end
 
 function EGUSM.PlayerManager:ModuleUnload(args)
-	self:Terminate()
+	self:Destroy()
 end
