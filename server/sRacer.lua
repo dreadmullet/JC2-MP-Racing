@@ -1,13 +1,7 @@
 
-function Racer:__init(race , player , updateOffset)
-	self.race = race
-	self.player = player
-	-- This helps with calling Racer:Update only one player per tick.
-	self.updateOffset = updateOffset
+function Racer:__init(race , player , index) ; RacerBase.__init(self , race , player , index)
+	self.Update = Racer.Update
 	
-	self.playerId = player:GetId()
-	self.name = player:GetName()
-	self.steamId = player:GetSteamId().id
 	-- Pulled from database, and used to update database on our removal.
 	self.playTime = -1
 	self.targetCheckpoint = 1
@@ -48,11 +42,7 @@ function Racer:__init(race , player , updateOffset)
 end
 
 function Racer:Update()
-	-- TODO: The actual fuck
-	local finishedPlayerIds = {}
-	for index , racer in ipairs(self.race.finishedRacers) do
-		table.insert(finishedPlayerIds , racer.playerId)
-	end
+	RacerBase.Update(self)
 	
 	if self.respawnTimer and self.respawnTimer:GetSeconds() < 7 then
 		-- Do nothing, we recently respawned, and we're likely in the enter vehicle animation.
@@ -75,16 +65,6 @@ function Racer:Update()
 			self.respawnTimer = Timer()
 		end
 	end
-	
-	Network:Send(
-		self.player ,
-		"UpdateRacePositions" ,
-		{
-			self.race.state.racePosTracker ,
-			self.race.state.currentCheckpoint ,
-			finishedPlayerIds
-		}
-	)
 end
 
 function Racer:Remove()

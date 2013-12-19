@@ -4,7 +4,10 @@ class("RaceManagerBase")
 	class("RaceManagerJoinable")
 
 class("Race")
-class("Racer")
+
+class("RacerBase")
+	class("Racer")
+	class("Spectator")
 
 -- Race states
 class("StateNone")
