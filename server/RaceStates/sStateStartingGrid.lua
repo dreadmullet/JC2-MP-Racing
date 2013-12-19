@@ -1,5 +1,5 @@
 
-function StateStartingGrid:__init(race)
+function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	self.race = race
 	self.eventSubs = {}
 	
@@ -14,9 +14,6 @@ function StateStartingGrid:__init(race)
 	)
 	
 	self.startTimer = Timer()
-	
-	Utility.EventSubscribe(self , "PlayerEnterVehicle")
-	Utility.EventSubscribe(self , "PlayerSpawn")
 	
 	-- Send info to clients.
 	
@@ -65,17 +62,20 @@ function StateStartingGrid:__init(race)
 		args.assignedVehicleId = racer.assignedVehicleId
 		Network:Send(racer.player , "RaceSetState" , args)
 	end
+	
+	self:EventSubscribe("PreTick")
+	self:EventSubscribe("PlayerEnterVehicle")
+	self:EventSubscribe("PlayerSpawn")
 end
 
-function StateStartingGrid:Run()
+function StateStartingGrid:PreTick()
 	if self.startTimer:GetSeconds() >= settings.startingGridWaitSeconds then
 		self.race:SetState("StateRacing")
 	end
 end
 
 function StateStartingGrid:End()
-	Utility.EventUnsubscribeAll(self)
-	Utility.NetUnsubscribeAll(self)
+	self:Destroy()
 end
 
 -- Events

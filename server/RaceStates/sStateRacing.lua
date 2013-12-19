@@ -1,5 +1,5 @@
 
-function StateRacing:__init(race)
+function StateRacing:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	self.race = race
 	self.timer = Timer()
 	-- Key: number of CPs completed.
@@ -10,8 +10,6 @@ function StateRacing:__init(race)
 	self.currentCheckpoint = 0
 	-- Number of times ServerTick has been called.
 	self.numTicks = 0
-	self.eventSubs = {}
-	self.netSubs = {}
 	
 	-- Array of RacerBases. This is used to update one RacerBase per tick.
 	self.updateList = {}
@@ -28,16 +26,15 @@ function StateRacing:__init(race)
 		self.racePosTracker[0][id] = racer.targetCheckpointDistanceSqr -- wut
 	end
 	
-	Utility.EventSubscribe(self , "PlayerEnterCheckpoint")
-	Utility.EventSubscribe(self , "PlayerEnterVehicle")
-	Utility.EventSubscribe(self , "PostTick")
-	Utility.EventSubscribe(self , "PlayerSpawn")
-	Utility.NetSubscribe(self , "ReceiveCheckpointDistanceSqr")
+	self:EventSubscribe("PlayerEnterCheckpoint")
+	self:EventSubscribe("PlayerEnterVehicle")
+	self:EventSubscribe("PostTick")
+	self:EventSubscribe("PlayerSpawn")
+	self:NetworkSubscribe("ReceiveCheckpointDistanceSqr")
 end
 
 function StateRacing:End()
-	Utility.EventUnsubscribeAll(self)
-	Utility.NetUnsubscribeAll(self)
+	self:Destroy()
 end
 
 -- Events

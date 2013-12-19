@@ -1,5 +1,7 @@
 
 function Race:__init(raceManager , playerArray , course , vehicleCollisions)
+	EGUSM.StateMachine.__init(self)
+	
 	if settings.debugLevel >= 2 then
 		print("Race:__init")
 	end
@@ -32,26 +34,10 @@ function Race:__init(raceManager , playerArray , course , vehicleCollisions)
 	self.prizeMoneyCurrent = course.prizeMoney
 	self.vehicleCollisions = vehicleCollisions
 	
-	-- TODO: This will be replaced with EGUSM.StateMachine.
+	-- Prevents terminating twice.
+	self.isValid = true
+	
 	self:SetState("StateStartingGrid")
-	
-	self.eventSubs = {}
-	table.insert(self.eventSubs , Events:Subscribe("PreTick" , self , self.PreTick))
-end
-
-function Race:SetState(state , ...)
-	if settings.debugLevel >= 2 then
-		print("Changing state to "..state)
-	end
-	
-	-- Call End function on previous state.
-	if self.state and self.state.End then
-		self.state:End()
-	end
-	-- Something like, StateRacing(self , someArg1 , someArg2)
-	self.state = _G[state](self , ...)
-	
-	self.stateName = state
 end
 
 function Race:AddSpectator(player)
@@ -124,7 +110,11 @@ end
 
 -- This cleans up everything and can be called at any time.
 function Race:Terminate()
-	self:SetState("StateNone")
+	if self.isValid then
+		self.isValid = false
+	else
+		return
+	end
 	
 	-- Clean up Racers.
 	for id , racer in pairs(self.playerIdToRacer) do
@@ -137,17 +127,13 @@ function Race:Terminate()
 		self.world = nil
 	end
 	
-	-- Remove self from the RaceManager.
+	-- Tell our RaceManager that we ended.
 	if self.raceManager and self.raceManager.RaceEnd then
 		self.raceManager:RaceEnd(self)
 		self.raceManager = nil
 	end
 	
-	-- Unsubscribe from events.
-	for n , event in ipairs(self.eventSubs) do
-		Events:Unsubscribe(event)
-	end
-	self.eventSubs = {}
+	self:Destroy()
 end
 
 function Race:Message(message)
@@ -194,13 +180,5 @@ function Race:RacerFinish(racer)
 	-- Tell our RaceManager that a Racer finished.
 	if self.raceManager.RacerFinish then
 		self.raceManager:RacerFinish(racer)
-	end
-end
-
--- Events
-
-function Race:PreTick()
-	if self.state.Run then
-		self.state:Run()
 	end
 end
