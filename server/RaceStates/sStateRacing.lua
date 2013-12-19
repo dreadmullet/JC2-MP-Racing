@@ -36,7 +36,6 @@ end
 -- Events
 
 function StateRacing:PlayerEnterCheckpoint(args)
-	
 	local racer = self.race.playerIdToRacer[args.player:GetId()]
 	if racer then	
 		local checkpoint = self.race.course.checkpointMap[args.checkpoint:GetId()]
@@ -44,21 +43,16 @@ function StateRacing:PlayerEnterCheckpoint(args)
 			checkpoint:Enter(racer)
 		end
 	end
-	
 end
 
 function StateRacing:PlayerEnterVehicle(args)
-	
 	local racer = self.race.playerIdToRacer[args.player:GetId()]
 	if racer then
 		racer:EnterVehicle(args)
 	end
-	
 end
 
--- wat
 function StateRacing:PostTick()
-	
 	-- Loop through each Racer and call Update on them if its their turn. Only one Racer should be
 	-- chosen.
 	for id , racer in pairs(self.race.playerIdToRacer) do
@@ -68,18 +62,15 @@ function StateRacing:PostTick()
 	end
 	
 	self.numTicks = self.numTicks + 1
-	
 end
 
 function StateRacing:PlayerSpawn(args)
-	
 	local racer = self.race.playerIdToRacer[args.player:GetId()]
 	if racer then
 		racer:Respawn()
 	end
 	
 	return false
-	
 end
 
 --
@@ -87,7 +78,6 @@ end
 --
 
 function StateRacing:ReceiveCheckpointDistanceSqr(args)
-	
 	local playerId = args[1]
 	local distSqr = args[2]
 	local cpIndex = args[3]
@@ -99,5 +89,4 @@ function StateRacing:ReceiveCheckpointDistanceSqr(args)
 		racer.targetCheckpointDistanceSqr[1] = distSqr
 		-- print("Received distanceSqr from "..racer.name..": " , distSqr)
 	end
-	
 end
