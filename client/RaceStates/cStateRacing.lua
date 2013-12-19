@@ -52,6 +52,7 @@ function StateRacing:Render()
 		args.targetArrowValue = self.targetArrowValue
 		args.numTicks = self.numTicks
 		args.checkpointPosition = self.race.checkpoints[self.targetCheckpoint]
+		args.model = RaceBase.modelCache.TargetArrow
 		RaceGUI.DrawTargetArrow(args)
 		-- DrawLapCounter
 		args = {}

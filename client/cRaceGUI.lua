@@ -60,12 +60,12 @@ function RaceGUI.DrawTargetArrow(args)
 		args.targetArrowValue == maxValue or
 		math.floor(args.numTicks / settings.targetArrowFlashInterval) % 2 == 0
 	)
-	if shouldDraw and Race.modelCache.TargetArrow then
+	if shouldDraw and args.model then
 		local transform = Transform3()
 		transform:Translate(position)
 		transform:Rotate(angle)
 		Render:SetTransform(transform)
-		Race.modelCache.TargetArrow:Draw()
+		args.model:Draw()
 		Render:ResetTransform()
 	end
 end
