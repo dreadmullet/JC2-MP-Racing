@@ -1,9 +1,6 @@
 Utility = {}
-local M = Utility
 
-math.tau = math.pi * 2
-
-M.NumberToPlaceString = function(number)
+Utility.NumberToPlaceString = function(number)
 	if number == 1 then
 		return string.format("%i%s" , 1 , "st")
 	elseif number == 2 then
@@ -15,7 +12,7 @@ M.NumberToPlaceString = function(number)
 	end
 end
 
-M.LapTimeString = function(totalSeconds)
+Utility.LapTimeString = function(totalSeconds)
 	if totalSeconds == nil then
 		return "N/A"
 	end
@@ -36,44 +33,4 @@ M.LapTimeString = function(totalSeconds)
 	end
 	
 	return string.format("%.2i:%.2i.%.2i" , minutes , seconds , hundredths)
-end
-
-M.EventSubscribe = function(instance , functionName , optionalName)
-	local sub = Events:Subscribe(functionName , instance , instance[optionalName or functionName])
-	if instance.eventSubs == nil then
-		instance.eventSubs = {}
-	end
-	table.insert(instance.eventSubs , sub)
-	
-	return sub
-end
-
-M.NetSubscribe = function(instance , functionName , optionalName)
-	local sub = Network:Subscribe(functionName , instance , instance[optionalName or functionName])
-	if instance.netSubs == nil then
-		instance.netSubs = {}
-	end
-	table.insert(instance.netSubs , sub)
-	
-	return sub
-end
-
-M.EventUnsubscribeAll = function(instance)
-	if instance.eventSubs then
-		for index , sub in ipairs(instance.eventSubs) do
-			if IsValid(sub) then
-				Events:Unsubscribe(sub)
-			end
-		end
-	end
-end
-
-M.NetUnsubscribeAll = function(instance)
-	if instance.netSubs then
-		for index , sub in ipairs(instance.netSubs) do
-			if IsValid(sub) then
-				Network:Unsubscribe(sub)
-			end
-		end
-	end
 end

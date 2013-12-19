@@ -1,9 +1,4 @@
 -- Utility is defined in sharedUtility.lua.
-local M = Utility
-
------------------------
--- Utility functions --
------------------------
 
 -- these are tabs, such as 4 spaces
 local tabPhrase = "    "
@@ -18,7 +13,7 @@ local typeStringTabLength = 8
 	-- tableList is a list that contains all of the tables that
 	-- have already been printed, so that it doesn't
 	-- form an infinite loop of printing tables.
-M.PrintTable = function(t , depth , tableList)
+Utility.PrintTable = function(t , depth , tableList)
 	-- Error checking against arguments.
 	if t == nil then
 		print("nil")
@@ -82,21 +77,8 @@ M.PrintTable = function(t , depth , tableList)
 	end
 end
 
--- Similar to above, but only prints the keys on one line.
-M.PrintTableKeys = function(t)
-	local keysString = ""
-	
-	for key,value in pairs(t) do
-		keysString = keysString..tostring(key).." , "
-	end
-	
-	keysString = keysString:sub(1 , keysString:len() - 3)
-	
-	print(keysString)
-end
-
 -- Cubic Interpolation (Hermite)
-M.Cuberp = function(v0 , v1 , v2 , v3 , x)
+Utility.Cuberp = function(v0 , v1 , v2 , v3 , x)
 	if v0 == nil then v0 = v1 end
 	if v3 == nil then v3 = v2 end
 	
@@ -108,19 +90,19 @@ M.Cuberp = function(v0 , v1 , v2 , v3 , x)
 	return a0*x^3 + a1*x^2 + a2*x + a3
 end
 
-M.VectorCuberp = function(v0 , v1 , v2 , v3 , x)
+Utility.VectorCuberp = function(v0 , v1 , v2 , v3 , x)
 	-- todo: make distances between points less wonky at the ends.
 	if v0 == nil then v0 = v1 end
 	if v3 == nil then v3 = v2 end
 	
 	return Vector3(
-		M.Cuberp(v0.x , v1.x , v2.x , v3.x , x) ,
-		M.Cuberp(v0.y , v1.y , v2.y , v3.y , x) ,
-		M.Cuberp(v0.z , v1.z , v2.z , v3.z , x)
+		Utility.Cuberp(v0.x , v1.x , v2.x , v3.x , x) ,
+		Utility.Cuberp(v0.y , v1.y , v2.y , v3.y , x) ,
+		Utility.Cuberp(v0.z , v1.z , v2.z , v3.z , x)
 	)
 end
 
-M.CastFromString = function(string , type)
+Utility.CastFromString = function(string , type)
 	if type == "string" then
 		return string
 	elseif type == "number" then
@@ -141,7 +123,7 @@ end
 -- 				|
 -- 				v
 -- "name Awesome Course Name"
-M.TrimCommentsFromLine = function(line)
+Utility.TrimCommentsFromLine = function(line)
 	-- Holy balls, patterns are awesome.
 	line = string.gsub(line , "%s*#.*" , "")
 	
