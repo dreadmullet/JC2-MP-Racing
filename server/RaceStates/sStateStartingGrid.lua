@@ -22,12 +22,6 @@ function StateStartingGrid:__init(race)
 	-- Send info to clients.
 	--
 	
-	-- Set up a new checkpoints table, containing only the data to send out.
-	local checkpointData = {} -- [1] = {1}
-	for n = 1 , #race.course.checkpoints do
-		table.insert(checkpointData , race.course.checkpoints[n].position)
-	end
-	
 	-- Loop through all racers:
 	--    Create each racer's raceTimer.
 	--    Add ourselves to the database.
@@ -68,10 +62,10 @@ function StateStartingGrid:__init(race)
 		}
 		args.recordTime = race.course.topRecords[1].time
 		args.recordTimePlayerName = race.course.topRecords[1].playerName
-		args.checkpointData = checkpointData
+		args.checkpointPositions = self.race.checkpointPositions
 		-- Player-specific.
 		args.assignedVehicleId = racer.assignedVehicleId
-		Network:Send(racer.player , "SetState" , args)
+		Network:Send(racer.player , "RaceSetState" , args)
 	end
 end
 

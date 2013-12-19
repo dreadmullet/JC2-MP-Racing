@@ -1,5 +1,5 @@
 
-function StateRacing:__init(race , args)
+function StateRacing:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self.race = race
 	self.racePosition = -1
 	self.currentLap = 1
@@ -11,16 +11,18 @@ function StateRacing:__init(race , args)
 	
 	LargeMessage("GO!" , 2)
 	
-	Utility.EventSubscribe(self , "PostTick")
-	Utility.EventSubscribe(self , "LocalPlayerInput")
-	Utility.NetSubscribe(self , "SetTargetCheckpoint")
-	Utility.NetSubscribe(self , "UpdateRacePositions")
-	Utility.NetSubscribe(self , "RaceTimePersonal")
-	Utility.NetSubscribe(self , "NewRecordTime")
-	Utility.NetSubscribe(self , "Respawn")
+	self:EventSubscribe("Render")
+	self:EventSubscribe("PostTick")
+	self:EventSubscribe("LocalPlayerInput")
+	
+	self:NetworkSubscribe("SetTargetCheckpoint")
+	self:NetworkSubscribe("UpdateRacePositions")
+	self:NetworkSubscribe("RaceTimePersonal")
+	self:NetworkSubscribe("NewRecordTime")
+	self:NetworkSubscribe("Respawn")
 end
 
-function StateRacing:Run()
+function StateRacing:Render()
 	self.numTicks = self.numTicks + 1
 	
 	-- Checkpoint arrow value.
@@ -102,8 +104,7 @@ function StateRacing:Run()
 end
 
 function StateRacing:End()
-	Utility.EventUnsubscribeAll(self)
-	Utility.NetUnsubscribeAll(self)
+	self:Destroy()
 end
 
 function StateRacing:GetTargetCheckpointDistanceSqr()

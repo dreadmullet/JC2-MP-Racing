@@ -14,7 +14,7 @@ end
 
 function EGUSM.StateMachine:Destroy()
 	self:SetState(nil)
-	self:UnsubscribeAll()
+	EGUSM.SubscribeUtility.Destroy(self)
 end
 
 function EGUSM.StateMachine:SetState(stateName , ...)

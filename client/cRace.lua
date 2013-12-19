@@ -3,13 +3,11 @@
 -- Value: Model
 Race.modelCache = {}
 
-function Race:__init(args)
+function Race:__init(args) ; EGUSM.StateMachine.__init(self)
 	if settings.debugLevel >= 2 then
 		print("Race:__init")
 	end
 	
-	self.state = nil
-	self.stateName = ""
 	self.version = args.version
 	self.numPlayers = -1
 	self.playerIdToInfo = {}
@@ -27,36 +25,8 @@ function Race:__init(args)
 		OBJLoader.Request("TargetArrow" , self , self.ModelReceive)
 	end
 	
-	Utility.EventSubscribe(self , "Render")
-	Utility.NetSubscribe(self , "SetState")
-end
-
-function Race:Terminate()
-	local args = {}
-	args.stateName = "StateNone"
-	self:SetState(args)
-	
-	Utility.EventUnsubscribeAll(self)
-	Utility.NetUnsubscribeAll(self)
-end
-
-function Race:Render()
-	if self.state and self.state.Run then
-		self.state:Run()
-	end
-end
-
-function Race:SetState(args)
-	if settings.debugLevel >= 2 then
-		print("Changing state to "..args.stateName)
-	end
-	
-	-- Call End function on previous state.
-	if self.state and self.state.End then
-		self.state:End()
-	end
-	self.state = _G[args.stateName](self , args)
-	self.stateName = args.stateName
+	self:NetworkSubscribe("Terminate")
+	self:NetworkSubscribe("RaceSetState")
 end
 
 function Race:UpdateLeaderboard(racePosTracker , currentCheckpoint , finishedPlayerIds)
@@ -66,7 +36,6 @@ function Race:UpdateLeaderboard(racePosTracker , currentCheckpoint , finishedPla
 	local playerIdToCheckpointDistanceSqr = {}
 	
 	for cp , array in pairs(racePosTracker) do
-		
 		racePosTrackerArray[cp] = {}
 		for id , distSqr in pairs(racePosTracker[cp]) do
 			table.insert(racePosTrackerArray[cp] , id)
@@ -83,7 +52,6 @@ function Race:UpdateLeaderboard(racePosTracker , currentCheckpoint , finishedPla
 				)
 			end
 		)
-		
 	end
 	
 	--
@@ -111,4 +79,14 @@ end
 
 function Race:ModelReceive(model , name)
 	Race.modelCache[name] = model
+end
+
+-- Network events
+
+function Race:RaceSetState(args)
+	self:SetState(args.stateName , args)
+end
+
+function Race:Terminate()
+	self:Destroy()
 end

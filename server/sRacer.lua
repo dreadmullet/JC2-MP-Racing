@@ -106,9 +106,7 @@ function Racer:Remove()
 	end
 	self.player:EnableCollision(CollisionGroup.Player)
 	
-	local args = {}
-	args.stateName = "StateTerminate"
-	Network:Send(self.player , "SetState" , args)
+	Network:Send(self.player , "Terminate")
 end
 
 function Racer:AdvanceCheckpoint(index)
@@ -212,7 +210,7 @@ function Racer:Finish()
 	local args = {}
 	args.stateName = "StateFinished"
 	args.place = #self.race.finishedRacers
-	Network:Send(self.player , "SetState" , args)
+	Network:Send(self.player , "RaceSetState" , args)
 end
 
 function Racer:Respawn()

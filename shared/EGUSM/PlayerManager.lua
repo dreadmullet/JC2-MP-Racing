@@ -6,7 +6,7 @@ function EGUSM.PlayerManager:__init() ; EGUSM.StateMachine.__init(self)
 	self.HasPlayer = EGUSM.PlayerManager.HasPlayer
 	self.GetPlayerCount = EGUSM.PlayerManager.GetPlayerCount
 	self.IteratePlayers = EGUSM.PlayerManager.IteratePlayers
-	self.Terminate = EGUSM.PlayerManager.Terminate
+	self.Destroy = EGUSM.PlayerManager.Destroy
 	
 	-- Key: Player id
 	-- Value: true
@@ -60,7 +60,7 @@ function EGUSM.PlayerManager:IteratePlayers(func)
 	end
 end
 
-function EGUSM.PlayerManager:Terminate()
+function EGUSM.PlayerManager:Destroy()
 	-- Return out if we've already terminated.
 	if self.playerManagerIsRunning == false then
 		return
@@ -75,7 +75,7 @@ function EGUSM.PlayerManager:Terminate()
 		self:RemovePlayer(Player.GetById(playerId))
 	end
 	
-	self:Destroy()
+	StateMachine.Destroy(self)
 end
 
 -- Events

@@ -7,7 +7,7 @@ function EGUSM.SubscribeUtility:__init()
 	self.NetworkUnsubscribe = EGUSM.SubscribeUtility.NetworkUnsubscribe
 	self.EventUnsubscribeAll = EGUSM.SubscribeUtility.EventUnsubscribeAll
 	self.NetworkUnsubscribeAll = EGUSM.SubscribeUtility.NetworkUnsubscribeAll
-	self.UnsubscribeAll = EGUSM.SubscribeUtility.UnsubscribeAll
+	self.Destroy = EGUSM.SubscribeUtility.Destroy
 	
 	-- Each element is like {eventName , event}.
 	self.subscribeUtilityEventSubs = {}
@@ -60,7 +60,7 @@ function EGUSM.SubscribeUtility:NetworkUnsubscribeAll()
 	self.subscribeUtilityNetSubs = {}
 end
 
-function EGUSM.SubscribeUtility:UnsubscribeAll()
+function EGUSM.SubscribeUtility:Destroy()
 	self:EventUnsubscribeAll()
 	self:NetworkUnsubscribeAll()
 end

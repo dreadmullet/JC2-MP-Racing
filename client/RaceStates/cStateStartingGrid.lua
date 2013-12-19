@@ -1,5 +1,5 @@
 
-function StateStartingGrid:__init(race , args)
+function StateStartingGrid:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self.race = race
 	self.delay = args.delay
 	self.race.numPlayers = args.numPlayers
@@ -15,7 +15,7 @@ function StateStartingGrid:__init(race , args)
 	self.race.courseInfo.grappleEnabled = args.courseInfo[7]
 	self.race.recordTime = args.recordTime
 	self.race.recordTimePlayerName = args.recordTimePlayerName
-	self.race.checkpoints = args.checkpointData
+	self.race.checkpoints = args.checkpointPositions
 	self.race.assignedVehicleId = args.assignedVehicleId
 	
 	self.timer = Timer()
@@ -39,11 +39,12 @@ function StateStartingGrid:__init(race , args)
 		end
 	end
 	
-	Utility.EventSubscribe(self , "LocalPlayerInput")
-	Utility.EventSubscribe(self , "InputPoll")
+	self:EventSubscribe("Render")
+	self:EventSubscribe("LocalPlayerInput")
+	self:EventSubscribe("InputPoll")
 end
 
-function StateStartingGrid:Run()
+function StateStartingGrid:Render()
 	-- Countdown timer
 	--
 	-- If there is a valid count down time left, and it's ready to be shown, show it.
@@ -60,9 +61,7 @@ function StateStartingGrid:Run()
 	end
 	-- If the timer is done, change our race's state to StateRacing.
 	if self.timer:GetSeconds() > self.delay then
-		local args = {}
-		args.stateName = "StateRacing"
-		self.race:SetState(args)
+		self.race:SetState("StateRacing")
 	end
 	
 	-- Draw GUI.
@@ -121,8 +120,7 @@ function StateStartingGrid:Run()
 end
 
 function StateStartingGrid:End()
-	Utility.EventUnsubscribeAll(self)
-	Utility.NetUnsubscribeAll(self)
+	self:Destroy()
 end
 
 -- Events

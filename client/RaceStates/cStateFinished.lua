@@ -1,16 +1,17 @@
 
-function StateFinished:__init(race , args)
+function StateFinished:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self.race = race
 	self.place = args.place
 	
 	local message = Utility.NumberToPlaceString(args.place).." place!"
 	self.largeMessage = LargeMessage(message , 7.5)
 	
-	Utility.EventSubscribe(self , "LocalPlayerInput")
-	Utility.NetSubscribe(self , "UpdateRacePositions")
+	self:EventSubscribe("Render")
+	self:EventSubscribe("LocalPlayerInput")
+	self:NetworkSubscribe("UpdateRacePositions")
 end
 
-function StateFinished:Run()
+function StateFinished:Render()
 	-- Draw GUI.
 	if Game:GetState() == GUIState.Game then
 		RaceGUI.DrawVersion(self.race.version)
@@ -60,8 +61,7 @@ end
 function StateFinished:End()
 	self.largeMessage:Destroy()
 	
-	Utility.EventUnsubscribeAll(self)
-	Utility.NetUnsubscribeAll(self)
+	self:Destroy()
 end
 
 -- Events
