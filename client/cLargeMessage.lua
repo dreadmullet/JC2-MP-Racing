@@ -2,14 +2,17 @@
 -- This class, on construction, will fancily draw large text near the center of the screen for a
 -- specified duration.
 LargeMessage.messageCount = 0
-function LargeMessage:__init(message , durationSeconds)
+function LargeMessage:__init(message , durationSeconds) ; EGUSM.SubscribeUtility.__init(self)
+	-- Fix for SubscribeUtility.Destroy.
+	self.Destroy = LargeMessage.Destroy
+	
 	self.message = message
 	self.durationSeconds = durationSeconds
 	
 	self.timer = Timer()
 	self.exists = true
 	
-	Utility.EventSubscribe(self , "Render")
+	self:EventSubscribe("Render")
 	
 	LargeMessage.messageCount = LargeMessage.messageCount + 1
 end
@@ -66,9 +69,9 @@ function LargeMessage:Draw()
 end
 
 function LargeMessage:Destroy()
-	LargeMessage.messageCount = LargeMessage.messageCount - 1
 	if self.exists then
-		Utility.EventUnsubscribeAll(self)
+		LargeMessage.messageCount = LargeMessage.messageCount - 1
+		EGUSM.SubscribeUtility.Destroy(self)
 		self.exists = false
 	end
 end
