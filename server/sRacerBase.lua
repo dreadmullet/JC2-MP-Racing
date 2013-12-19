@@ -1,11 +1,9 @@
 
-function RacerBase:__init(race , player , index)
+function RacerBase:__init(race , player)
 	self.Update = RacerBase.Update
 	
 	self.race = race
 	self.player = player
-	-- This helps with calling Racer:Update only one player per tick.
-	self.updateOffset = index
 	self.playerId = player:GetId()
 	self.name = player:GetName()
 	self.steamId = player:GetSteamId().id

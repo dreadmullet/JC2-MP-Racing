@@ -13,7 +13,14 @@ function StateRacing:__init(race)
 	self.eventSubs = {}
 	self.netSubs = {}
 	
-	self.racerUpdateInterval = math.max(10 , race.numPlayers)
+	-- Array of RacerBases. This is used to update one RacerBase per tick.
+	self.updateList = {}
+	for id , racer in pairs(self.race.playerIdToRacer) do
+		table.insert(self.updateList , racer)
+	end
+	for id , spectator in pairs(self.race.playerIdToSpectator) do
+		table.insert(self.updateList , spectator)
+	end
 	
 	self.racePosTracker[0] = {}
 	for id , racer in pairs(self.race.playerIdToRacer) do
@@ -53,12 +60,11 @@ function StateRacing:PlayerEnterVehicle(args)
 end
 
 function StateRacing:PostTick()
-	-- Loop through each Racer and call Update on them if its their turn. Only one Racer should be
-	-- chosen.
-	for id , racer in pairs(self.race.playerIdToRacer) do
-		if (self.numTicks + racer.updateOffset) % self.racerUpdateInterval == 0 then
-			racer:Update()
-		end
+	-- Call Update on one Racer or Spectator. If the list is less than 10, then sometimes skip.
+	local index = (self.numTicks % math.max(10 , #self.updateList)) + 1
+	if index <= #self.updateList then
+		local racerBase = self.updateList[index]
+		racerBase:Update()
 	end
 	
 	self.numTicks = self.numTicks + 1

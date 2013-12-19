@@ -5,22 +5,32 @@ function Race:__init(raceManager , playerArray , course , vehicleCollisions)
 	end
 	
 	self.raceManager = raceManager
-	self.vehicleCollisions = vehicleCollisions
+	
+	-- Contains both Racers and Spectators in an array.
+	self.participants = playerArray
 	self.playerIdToRacer = {}
 	self.numPlayers = #playerArray
 	for index , player in ipairs(playerArray) do
-		local newRacer = Racer(self , player , index)
+		local newRacer = Racer(self , player)
 		self.playerIdToRacer[player:GetId()] = newRacer
 	end
+	self.playerIdToSpectator = {}
+	self.finishedRacers = {}
+	
 	self.course = course
 	self.course.race = self
+	self.checkpointPositions = {}
+	for n = 1 , #self.course.checkpoints do
+		table.insert(self.checkpointPositions , self.course.checkpoints[n].position)
+	end
+	
 	-- Create world and randomise the time and weather.
 	self.world = World.Create()
 	self.world:SetTime(math.random(4, 21))
 	self.world:SetWeatherSeverity(math.pow(math.random() , 2.5) * 2)
 	
-	self.finishedRacers = {}
 	self.prizeMoneyCurrent = course.prizeMoney
+	self.vehicleCollisions = vehicleCollisions
 	
 	-- TODO: This will be replaced with EGUSM.StateMachine.
 	self:SetState("StateStartingGrid")
@@ -44,21 +54,41 @@ function Race:SetState(state , ...)
 	self.stateName = state
 end
 
+function Race:AddSpectator(player)
+	local spectator = Spectator(race , player)
+	self.playerIdToSpectator[player:GetId()] = spectator
+	table.insert(self.participants , spectator)
+end
+
 function Race:RemovePlayer(player)
 	local playerId = player:GetId()
 	
-	-- If the player isn't part of this Race, return.
-	if self.playerIdToRacer[playerId] == nil then
-		return
+	local racer = self.playerIdToRacer[playerId]
+	if racer then
+		self:RemoveRacer(racer)
+	else	
+		local spectator = self.playerIdToSpectator[playerId]
+		if spectator then
+			self:RemoveSpectator(spectator)
+		end
 	end
 	
-	-- If state is StateRacing, remove from state.racePosTracker.
-	-- TODO: This should be a part of a RacerRemove state callback.
+	-- Remove from self.participants.
+	for index , racerOrSpectator in ipairs(self.participants) do
+		if racerOrSpectator.player == player then
+			table.remove(self.participants , index)
+			break
+		end
+	end
+end
+
+function Race:RemoveRacer(racer)
+	-- If our state is StateRacing, remove from state.racePosTracker.
 	if self.stateName == "StateRacing" then
 		local removed = false
 		for cp , map in pairs(self.state.racePosTracker) do
 			for id , bool in pairs(self.state.racePosTracker[cp]) do
-				if id == playerId then
+				if id == racer.playerId then
 					self.state.racePosTracker[cp][id] = nil
 					removed = true
 					break
@@ -68,13 +98,7 @@ function Race:RemovePlayer(player)
 				break
 			end
 		end
-		
-		if not removed then
-			-- print("Error: " , player:GetName() , " could not be removed from the race pos tracker!")
-		end
 	end
-	
-	local racer = self.playerIdToRacer[playerId]
 	
 	-- If they haven't finished yet, add race result to database; their
 	-- position is -1 (DNF).
@@ -84,13 +108,18 @@ function Race:RemovePlayer(player)
 	end
 	
 	racer:Remove()
-	self.playerIdToRacer[playerId] = nil
+	self.playerIdToRacer[racer.playerId] = nil
 	self.numPlayers = self.numPlayers - 1
 	
 	-- If all players leave, end the race.
 	if self.numPlayers == 0 then
 		self:Terminate()
 	end
+end
+
+function Race:RemoveSpectator(spectator)
+	spectator:Remove()
+	self.playerIdToSpectator[spectator.playerId] = nil
 end
 
 -- This cleans up everything and can be called at any time.

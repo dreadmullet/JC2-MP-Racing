@@ -1,5 +1,5 @@
 
-function Racer:__init(race , player , index) ; RacerBase.__init(self , race , player , index)
+function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	self.Update = Racer.Update
 	
 	-- Pulled from database, and used to update database on our removal.
