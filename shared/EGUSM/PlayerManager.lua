@@ -75,7 +75,7 @@ function EGUSM.PlayerManager:Destroy()
 		self:RemovePlayer(Player.GetById(playerId))
 	end
 	
-	StateMachine.Destroy(self)
+	EGUSM.StateMachine.Destroy(self)
 end
 
 -- Events
