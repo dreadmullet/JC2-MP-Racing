@@ -73,9 +73,7 @@ function StateRacing:PlayerSpawn(args)
 	return false
 end
 
---
--- Network
---
+-- Network events
 
 function StateRacing:ReceiveCheckpointDistanceSqr(args)
 	local playerId = args[1]
@@ -87,6 +85,5 @@ function StateRacing:ReceiveCheckpointDistanceSqr(args)
 	-- If player is in race and they're sending us the correct checkpoint distance.
 	if racer and racer.targetCheckpoint == cpIndex then
 		racer.targetCheckpointDistanceSqr[1] = distSqr
-		-- print("Received distanceSqr from "..racer.name..": " , distSqr)
 	end
 end

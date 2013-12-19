@@ -18,9 +18,7 @@ function StateStartingGrid:__init(race)
 	Utility.EventSubscribe(self , "PlayerEnterVehicle")
 	Utility.EventSubscribe(self , "PlayerSpawn")
 	
-	--
 	-- Send info to clients.
-	--
 	
 	-- Loop through all racers:
 	--    Create each racer's raceTimer.
