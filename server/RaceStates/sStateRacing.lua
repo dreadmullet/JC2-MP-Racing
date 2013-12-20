@@ -37,6 +37,20 @@ function StateRacing:End()
 	self:Destroy()
 end
 
+function StateRacing:GetRacePosInfo()
+	-- TODO: the actual fuck
+	local finishedPlayerIds = {}
+	for index , racer in ipairs(self.race.finishedRacers) do
+		table.insert(finishedPlayerIds , racer.playerId)
+	end
+	
+	return {
+		self.race.state.racePosTracker ,
+		self.race.state.currentCheckpoint ,
+		finishedPlayerIds
+	}
+end
+
 -- Events
 
 function StateRacing:PlayerEnterCheckpoint(args)
@@ -61,7 +75,7 @@ function StateRacing:PostTick()
 	local index = (self.numTicks % math.max(10 , #self.updateList)) + 1
 	if index <= #self.updateList then
 		local racerBase = self.updateList[index]
-		racerBase:Update()
+		racerBase:Update(self:GetRacePosInfo())
 	end
 	
 	self.numTicks = self.numTicks + 1

@@ -12,20 +12,6 @@ function RacerBase:__init(race , player)
 	self.steamId = player:GetSteamId().id
 end
 
-function RacerBase:Update()
-	-- TODO: the actual fuck
-	local finishedPlayerIds = {}
-	for index , racer in ipairs(self.race.finishedRacers) do
-		table.insert(finishedPlayerIds , racer.playerId)
-	end
-	
-	Network:Send(
-		self.player ,
-		"UpdateRacePositions" ,
-		{
-			self.race.state.racePosTracker ,
-			self.race.state.currentCheckpoint ,
-			finishedPlayerIds
-		}
-	)
+function RacerBase:Update(racePosInfo)
+	Network:Send(self.player , "UpdateRacePositions" , racePosInfo)
 end

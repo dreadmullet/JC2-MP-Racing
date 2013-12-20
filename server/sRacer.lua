@@ -41,8 +41,8 @@ function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	Network:Send(self.player , "Initialise" , args)
 end
 
-function Racer:Update()
-	RacerBase.Update(self)
+function Racer:Update(racePosInfo)
+	RacerBase.Update(self , racePosInfo)
 	
 	if self.respawnTimer and self.respawnTimer:GetSeconds() < 7 then
 		-- Do nothing, we recently respawned, and we're likely in the enter vehicle animation.
