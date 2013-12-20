@@ -31,6 +31,7 @@ function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	end
 	
 	-- Update database.
+	-- TODO: why is this here
 	Stats.RaceStart(self.race)
 	
 	local startPositions = {}
@@ -63,12 +64,12 @@ function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 		Network:Send(racer.player , "RaceSetState" , args)
 	end
 	
-	self:EventSubscribe("PreTick")
+	self:EventSubscribe("PostTick")
 	self:EventSubscribe("PlayerEnterVehicle")
 	self:EventSubscribe("PlayerSpawn")
 end
 
-function StateStartingGrid:PreTick()
+function StateStartingGrid:PostTick()
 	if self.startTimer:GetSeconds() >= settings.startingGridWaitSeconds then
 		self.race:SetState("StateRacing")
 	end
