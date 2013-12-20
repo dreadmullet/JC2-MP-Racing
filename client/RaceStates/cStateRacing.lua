@@ -181,12 +181,8 @@ function StateRacing:SetTargetCheckpoint(targetCheckpoint)
 	end
 end
 
-function StateRacing:UpdateRacePositions(args)
-	local racePosTracker = args[1]
-	local currentCheckpoint = args[2]
-	local finishedPlayerIds = args[3]
-	
-	self.race:UpdateLeaderboard(racePosTracker , currentCheckpoint , finishedPlayerIds)
+function StateRacing:UpdateRacePositions(racePosInfo)
+	self.race:UpdateLeaderboard(racePosInfo)
 end
 
 function StateRacing:RaceTimePersonal(time)

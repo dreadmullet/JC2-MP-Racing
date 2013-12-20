@@ -104,10 +104,6 @@ end
 
 -- Network events
 
-function StateFinished:UpdateRacePositions(args)
-	local racePosTracker = args[1]
-	local currentCheckpoint = args[2]
-	local finishedPlayerIds = args[3]
-	
-	self.race:UpdateLeaderboard(racePosTracker , currentCheckpoint , finishedPlayerIds)
+function StateFinished:UpdateRacePositions(racePosInfo)
+	self.race:UpdateLeaderboard(racePosInfo)
 end

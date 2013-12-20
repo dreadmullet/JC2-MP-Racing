@@ -30,7 +30,11 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self:NetworkSubscribe("Terminate")
 end
 
-function RaceBase:UpdateLeaderboard(racePosTracker , currentCheckpoint , finishedPlayerIds)
+function RaceBase:UpdateLeaderboard(racePosInfo)
+	local racePosTracker = racePosInfo[1]
+	local currentCheckpoint = racePosInfo[2]
+	local finishedPlayerIds = racePosInfo[3]
+	
 	-- Transform the (playerId , bool) maps into arrays and fill checkpoint distance array.
 	
 	local racePosTrackerArray = {}
