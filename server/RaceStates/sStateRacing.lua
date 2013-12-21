@@ -31,6 +31,7 @@ function StateRacing:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	self:EventSubscribe("PostTick")
 	self:EventSubscribe("PlayerSpawn")
 	self:NetworkSubscribe("ReceiveCheckpointDistanceSqr")
+	self:NetworkSubscribe("RequestTargetPosition")
 end
 
 function StateRacing:End()
@@ -137,5 +138,12 @@ function StateRacing:ReceiveCheckpointDistanceSqr(args)
 	-- If player is in race and they're sending us the correct checkpoint distance.
 	if racer and racer.targetCheckpoint == cpIndex then
 		racer.targetCheckpointDistanceSqr[1] = distSqr
+	end
+end
+
+function StateRacing:RequestTargetPosition(playerId , player)
+	local spectator = self.race.playerIdToSpectator[playerId]
+	if spectator then
+		spectator:RequestTargetPosition(playerId)
 	end
 end

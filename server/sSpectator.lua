@@ -27,8 +27,6 @@ function Spectator:__init(race , player)
 	player:SetPosition(args.position + Vector3(0 , 2 , 0))
 	
 	Network:Send(self.player , "SpectateInitialise" , args)
-	
-	self:NetworkSubscribe("RequestTargetPosition")
 end
 
 function Spectator:Remove()
@@ -42,18 +40,16 @@ end
 
 -- Network events
 
-function Spectator:RequestTargetPosition(playerId , player)
-	if player == self.player then
-		if
-			self.requestTimer == nil or
-			self.requestTimer:GetSeconds() > settings.spectatorRequestInterval * 1.2 + 0.2
-		then
-			self.requestTimer = Timer()
-			
-			local targetPlayer = Player.GetById(playerId)
-			if IsValid(targetPlayer) then
-				Network:Send(player , "ReceiveTargetPosition" , targetPlayer:GetPosition())
-			end
+function Spectator:RequestTargetPosition(playerId)
+	if
+		self.requestTimer == nil or
+		self.requestTimer:GetSeconds() > settings.spectatorRequestInterval * 1.2 + 0.2
+	then
+		self.requestTimer = Timer()
+		
+		local targetPlayer = Player.GetById(playerId)
+		if IsValid(targetPlayer) then
+			Network:Send(self.player , "ReceiveTargetPosition" , targetPlayer:GetPosition())
 		end
 	end
 end
