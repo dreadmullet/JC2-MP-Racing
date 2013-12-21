@@ -4,8 +4,6 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 		print("Spectate:__init")
 	end
 	
-	self.Terminate = Spectate.Terminate
-	
 	self.version = args.version
 	
 	if args.stateName == "StateStartingGrid" then
@@ -28,7 +26,6 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	
 	self:EventSubscribe("Render")
 	self:NetworkSubscribe("ReceiveTargetPosition")
-	self:NetworkUnsubscribe("Terminate")
 	self:NetworkSubscribe("Terminate")
 end
 
@@ -41,9 +38,9 @@ function Spectate:Render()
 		
 		local vehicle = targetPlayer:GetVehicle()
 		if vehicle then
-			self.orbitCamera.targetPosition = vehicle:GetPosition() + Vector3(0 , 2 , 0)
+			self.orbitCamera.targetPosition = vehicle:GetPosition() + Vector3(0 , 0.2 , 0)
 		else
-			self.orbitCamera.targetPosition = targetPlayer:GetPosition() + Vector3(0 , 2 , 0)
+			self.orbitCamera.targetPosition = targetPlayer:GetPosition() + Vector3(0 , 1 , 0)
 		end
 	else
 		if

@@ -36,6 +36,8 @@ function Spectator:Remove()
 	self.player:SetWorld(DefaultWorld)
 	
 	Network:Send(self.player , "Terminate")
+	
+	self:Destroy()
 end
 
 -- Network events

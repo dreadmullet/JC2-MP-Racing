@@ -47,7 +47,6 @@ function RaceManagerMode:ManagedPlayerJoin(player)
 			self:CreateRace()
 		-- Otherwise, add them to the current race.
 		else
-			-- TODO: Add as spectator
 			self.race:AddSpectator(player)
 		end
 	end
