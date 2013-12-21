@@ -5,8 +5,6 @@ debug = {}
 -- debug.dontRemoveIfOutOfVehicle = true
 debug.oneLap = true
 
-settings = {}
-
 settings.tempDLC = true
 settings.forceCourse = ""
 

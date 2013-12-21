@@ -1,2 +1,3 @@
 
 VehicleList = {}
+settings = {}
