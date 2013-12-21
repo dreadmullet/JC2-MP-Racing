@@ -12,14 +12,14 @@ function ModulesLoad()
 	local args = {}
 	args.name = settings.gamemodeName
 	args.text = settings.gamemodeDescription
-	Events:FireRegisteredEvent("HelpAddItem" , args)
+	Events:Fire"HelpAddItem" , args)
 end
 
 function ModuleUnload()
 	-- Remove us from the help menu.
 	local args = {}
 	args.name = settings.gamemodeName
-	Events:FireRegisteredEvent("HelpRemoveItem" , args)
+	Events:Fire("HelpRemoveItem" , args)
 end
 
 Events:Subscribe("ModulesLoad" , ModulesLoad)
