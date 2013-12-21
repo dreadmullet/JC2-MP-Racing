@@ -28,6 +28,13 @@ Events:Subscribe("ModuleUnload" , ModuleUnload)
 Network:Subscribe(
 	"Initialise" ,
 	function(args)
-		local race = Race(args)
+		race = Race(args)
+	end
+)
+
+Network:Subscribe(
+	"SpectateInitialise" ,
+	function(args)
+		spectate = Spectate(args)
 	end
 )

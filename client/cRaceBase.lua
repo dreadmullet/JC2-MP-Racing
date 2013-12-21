@@ -9,6 +9,7 @@ RaceBase.modelCache = {}
 function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	-- Expose functions
 	self.UpdateLeaderboard = RaceBase.UpdateLeaderboard
+	self.Terminate = RaceBase.Terminate
 	
 	if settings.debugLevel >= 2 then
 		print("RaceBase:__init")
@@ -85,6 +86,6 @@ function RaceBase:ModelReceive(model , name)
 	RaceBase.modelCache[name] = model
 end
 
-function Race:Terminate()
+function RaceBase:Terminate()
 	self:Destroy()
 end

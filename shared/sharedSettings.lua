@@ -1,0 +1,2 @@
+
+settings.spectatorRequestInterval = 3

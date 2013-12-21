@@ -68,11 +68,7 @@ function RaceManagerMode:RacerFinish(racer)
 end
 
 function RaceManagerMode:RaceEnd(raceThatEnded)
-	-- Create a race if there are any players left.
-	local playerCount = self:GetPlayerCount()
-	if playerCount ~= 0 then
-		self:CreateRace()
-	end
+	self.raceInfo = nil
 end
 
 -- Events
@@ -107,6 +103,12 @@ function RaceManagerMode:PreTick(args)
 		then
 			self.raceInfo = nil
 			self.race:Terminate()
+		elseif self.raceInfo == nil then
+			-- If there isn't a race, and there are players, create a race.
+			local playerCount = self:GetPlayerCount()
+			if playerCount ~= 0 then
+				self:CreateRace()
+			end
 		end
 	end
 end

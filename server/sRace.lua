@@ -41,7 +41,7 @@ function Race:__init(raceManager , playerArray , course , vehicleCollisions)
 end
 
 function Race:AddSpectator(player)
-	local spectator = Spectator(race , player)
+	local spectator = Spectator(self , player)
 	self.playerIdToSpectator[player:GetId()] = spectator
 	table.insert(self.participants , spectator)
 end
@@ -69,21 +69,8 @@ function Race:RemovePlayer(player)
 end
 
 function Race:RemoveRacer(racer)
-	-- If our state is StateRacing, remove from state.racePosTracker.
-	if self.stateName == "StateRacing" then
-		local removed = false
-		for cp , map in pairs(self.state.racePosTracker) do
-			for id , bool in pairs(self.state.racePosTracker[cp]) do
-				if id == racer.playerId then
-					self.state.racePosTracker[cp][id] = nil
-					removed = true
-					break
-				end
-			end
-			if removed then
-				break
-			end
-		end
+	if self.state.RacerLeave then
+		self.state:RacerLeave(racer)
 	end
 	
 	-- If they haven't finished yet, add race result to database; their
@@ -104,6 +91,10 @@ function Race:RemoveRacer(racer)
 end
 
 function Race:RemoveSpectator(spectator)
+	if self.state.SpectatorLeave then
+		self.state:SpectatorLeave(spectator)
+	end
+	
 	spectator:Remove()
 	self.playerIdToSpectator[spectator.playerId] = nil
 end
@@ -116,9 +107,18 @@ function Race:Terminate()
 		return
 	end
 	
+	if settings.debugLevel >= 2 then
+		self:Message("Race ended with "..self.numPlayers.." players")
+	end
+	
 	-- Clean up Racers.
 	for id , racer in pairs(self.playerIdToRacer) do
 		self:RemovePlayer(racer.player)
+	end
+	
+	-- Clean up Spectators.
+	for id , spectator in pairs(self.playerIdToSpectator) do
+		self:RemovePlayer(spectator.player)
 	end
 	
 	-- Remove the world, which removes anything in it.

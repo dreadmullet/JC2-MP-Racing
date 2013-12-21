@@ -1,6 +1,7 @@
 
 class("RaceBase")
 	class("Race")
+	class("Spectate")
 
 -- Race states
 class("StateNone")
@@ -11,5 +12,6 @@ class("StateFinished")
 class("StateTerminate")
 
 class("LargeMessage")
+class("OrbitCamera")
 
 RaceGUI = {}

@@ -34,9 +34,9 @@ function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	-- TODO: why is this here
 	Stats.RaceStart(self.race)
 	
-	local startPositions = {}
+	self.startPositions = {}
 	for playerId , racer in pairs(self.race.playerIdToRacer) do
-		startPositions[racer.playerId] = racer.startPosition
+		self.startPositions[racer.playerId] = racer.startPosition
 	end
 	
 	-- TODO: Why is args created every iteration
@@ -46,7 +46,7 @@ function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 		args.delay = settings.startingGridWaitSeconds
 		args.numPlayers = self.race.numPlayers
 		args.playerIdToInfo = playerIdToInfo
-		args.startPositions = startPositions
+		args.startPositions = self.startPositions
 		args.courseInfo = {
 			race.course.name ,
 			race.course.type ,
@@ -77,6 +77,15 @@ end
 
 function StateStartingGrid:End()
 	self:Destroy()
+end
+
+function StateStartingGrid:RacerLeave(racer)
+	for playerId , startPosition in pairs(self.startPositions) do
+		if playerId == racer.playerId then
+			self.startPositions[playerId] = nil
+			break
+		end
+	end
 end
 
 -- Events

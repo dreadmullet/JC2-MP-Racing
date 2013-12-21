@@ -28,6 +28,7 @@ function EGUSM.StateMachine:SetState(stateName , ...)
 	end
 	-- Create new state.
 	if stateName then
+		self.stateName = stateName
 		local stateConstructor = _G[stateName]
 		self.state = stateConstructor(self , ...)
 	end

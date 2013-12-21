@@ -51,6 +51,41 @@ function StateRacing:GetRacePosInfo()
 	}
 end
 
+function StateRacing:RacerLeave(racer)
+	-- Remove them from self.updateList.
+	for index , raceBase in ipairs(self.updateList) do
+		if raceBase.player == racer.player then
+			table.remove(self.updateList , index)
+			break
+		end
+	end
+	
+	-- Remove them from the racePosTracker.
+	local removed = false
+	for cp , map in pairs(self.racePosTracker) do
+		for id , bool in pairs(self.racePosTracker[cp]) do
+			if id == racer.playerId then
+				self.racePosTracker[cp][id] = nil
+				removed = true
+				break
+			end
+		end
+		if removed then
+			break
+		end
+	end
+end
+
+function StateRacing:SpectatorLeave(spectator)
+	-- Remove them from self.updateList.
+	for index , raceBase in ipairs(self.updateList) do
+		if raceBase.player == spectator.player then
+			table.remove(self.updateList , index)
+			break
+		end
+	end
+end
+
 -- Events
 
 function StateRacing:PlayerEnterCheckpoint(args)
