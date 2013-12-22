@@ -231,6 +231,11 @@ function Racer:Respawn()
 		previousCheckpointIndex = #self.race.course.checkpoints
 	end
 	
+	-- Fix for courses with two checkpoints.
+	if #self.race.course.checkpoints == 2 then
+		previousCheckpointIndex = -1
+	end
+	
 	-- Get spawn position and angle.
 	local spawnPosition
 	local spawnAngle
