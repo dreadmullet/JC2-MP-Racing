@@ -9,6 +9,7 @@ RaceBase.modelCache = {}
 function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	-- Expose functions
 	self.UpdateLeaderboard = RaceBase.UpdateLeaderboard
+	self.Message = RaceBase.Message
 	
 	if settings.debugLevel >= 2 then
 		print("RaceBase:__init")
@@ -77,6 +78,11 @@ function RaceBase:UpdateLeaderboard(racePosInfo)
 			self.numPlayers = self.numPlayers + 1
 		end
 	end
+end
+
+function RaceBase:Message(message)
+	Chat:Print(message , settings.textColor)
+	print(message)
 end
 
 function RaceBase:ModelReceive(model , name)
