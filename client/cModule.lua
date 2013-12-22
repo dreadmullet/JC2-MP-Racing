@@ -12,7 +12,7 @@ function ModulesLoad()
 	local args = {}
 	args.name = settings.gamemodeName
 	args.text = settings.gamemodeDescription
-	Events:Fire"HelpAddItem" , args)
+	Events:Fire("HelpAddItem" , args)
 end
 
 function ModuleUnload()
