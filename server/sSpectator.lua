@@ -23,6 +23,21 @@ function Spectator:__init(race , player)
 		end
 		args.position = args.checkpointPositions[checkpointIndex]
 	end
+	args.courseInfo = {
+		race.course.name ,
+		race.course.type ,
+		race.course.numLaps ,
+		race.course.weatherSeverity ,
+		race.course.authors ,
+		race.course.parachuteEnabled ,
+		race.course.grappleEnabled ,
+	}
+	args.recordTime = race.course.topRecords[1].time
+	args.recordTimePlayerName = race.course.topRecords[1].playerName
+	args.playerIdToInfo = {}
+	for playerId , racer in pairs(self.race.playerIdToRacer) do
+		args.playerIdToInfo[playerId] = {name = racer.name , color = racer.player:GetColor()}
+	end
 	
 	player:SetPosition(Vector3(0 , 10000 , 0))
 	

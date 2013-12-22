@@ -4,8 +4,6 @@ function Race:__init(args) ; RaceBase.__init(self , args)
 		print("Race:__init")
 	end
 	
-	self.recordTime = -1
-	self.recordTimePlayerName = ""
 	self.assignedVehicleId = -2
 	
 	self:NetworkSubscribe("RaceSetState")

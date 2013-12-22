@@ -159,10 +159,12 @@ function RaceGUI.DrawTimers(args)
 		Utility.LapTimeString(args.recordTime)
 	)
 	
-	if args.courseType == "Circuit" then
+	if args.courseType == "Circuit" and args.previousTime then
 		AddLine("Previous:" , Utility.LapTimeString(args.previousTime))
 	end
-	AddLine("Current:" , Utility.LapTimeString(args.currentTime))
+	if args.currentTime then
+		AddLine("Current:" , Utility.LapTimeString(args.currentTime))
+	end
 end
 
 function RaceGUI.DrawLeaderboard(args)

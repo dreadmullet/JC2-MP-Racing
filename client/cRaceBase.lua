@@ -22,11 +22,15 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self.checkpoints = {}
 	self.lapTimes = {}
 	self.leaderboard = {}
+	self.recordTime = -1
+	self.recordTimePlayerName = ""
 	
 	-- Request Models from server, if we don't have them already.
 	if RaceBase.modelCache.TargetArrow == nil then
 		OBJLoader.Request("TargetArrow" , self , RaceBase.ModelReceive)
 	end
+	
+	self:NetworkSubscribe("ShowLargeMessage" , RaceBase.ShowLargeMessage)
 end
 
 function RaceBase:UpdateLeaderboard(racePosInfo)
@@ -87,4 +91,10 @@ end
 
 function RaceBase:ModelReceive(model , name)
 	RaceBase.modelCache[name] = model
+end
+
+-- Network events
+
+function RaceBase:ShowLargeMessage(args)
+	LargeMessage(args[1] , args[2])
 end

@@ -6,6 +6,20 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	end
 	
 	self.version = args.version
+	self.playerIdToInfo = args.playerIdToInfo
+	-- TODO: make this better
+	self.courseInfo = {}
+	self.courseInfo.name = args.courseInfo[1]
+	self.courseInfo.type = args.courseInfo[2]
+	self.courseInfo.numLaps = args.courseInfo[3]
+	self.courseInfo.weatherSeverity = args.courseInfo[4]
+	self.courseInfo.authors = args.courseInfo[5]
+	self.courseInfo.parachuteEnabled = args.courseInfo[6]
+	self.courseInfo.grappleEnabled = args.courseInfo[7]
+	self.recordTime = args.recordTime
+	self.recordTimePlayerName = args.recordTimePlayerName
+	self.checkpoints = args.checkpointPositions
+	self.assignedVehicleId = args.assignedVehicleId
 	
 	if args.stateName == "StateStartingGrid" then
 		-- TODO: wat
@@ -20,8 +34,8 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	
 	self.orbitCamera = OrbitCamera()
 	self.orbitCamera.minDistance = 1.5
-	self.orbitCamera.maxDistance = 30
-	self.orbitCamera.targetPosition = args.position
+	self.orbitCamera.maxDistance = 50
+	self.orbitCamera.targetPosition = args.position or Vector3(0 , 10000 , 0)
 	
 	self.requestTimer = nil
 	self.changeTargetInputPressed = false
@@ -55,7 +69,6 @@ function Spectate:Render()
 			self.orbitCamera.targetPosition = targetPlayer:GetPosition() + Vector3(0 , 1 , 0)
 		end
 		if self.orbitCamera.targetPosition:Distance(Vector3(0,0,0)) < 10 then
-			self:Message("WTF are you at the origin?")
 			self.orbitCamera.targetPosition = Vector3(100000 , 300 , 100000)
 		end
 	else
@@ -69,6 +82,26 @@ function Spectate:Render()
 			self:Message("Requesting target: "..self.targetPlayerId)
 		end
 	end
+	
+	local args
+	-- DrawVersion
+	RaceGUI.DrawVersion(self.version)
+	-- DrawCourseName
+	RaceGUI.DrawCourseName(self.courseInfo.name)
+	-- DrawTimers
+	args = {}
+	args.recordTime = self.recordTime
+	args.recordTimePlayerName = self.recordTimePlayerName
+	args.courseType = self.courseInfo.type
+	-- DrawLeaderboard
+	args = {}
+	args.leaderboard = self.leaderboard
+	args.playerIdToInfo = self.playerIdToInfo
+	RaceGUI.DrawLeaderboard(args)
+	-- DrawPositionTags
+	args = {}
+	args.leaderboard = self.leaderboard
+	RaceGUI.DrawPositionTags(args)
 end
 
 function Spectate:LocalPlayerInput(args)
