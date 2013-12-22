@@ -142,7 +142,7 @@ function StateRacing:ReceiveCheckpointDistanceSqr(args)
 end
 
 function StateRacing:RequestTargetPosition(playerId , player)
-	local spectator = self.race.playerIdToSpectator[playerId]
+	local spectator = self.race.playerIdToSpectator[player:GetId()]
 	if spectator then
 		spectator:RequestTargetPosition(playerId)
 	end
