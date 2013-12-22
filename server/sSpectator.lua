@@ -45,11 +45,14 @@ function Spectator:RequestTargetPosition(playerId)
 		self.requestTimer == nil or
 		self.requestTimer:GetSeconds() > settings.spectatorRequestInterval * 1.2 + 0.2
 	then
+		print("Giving target pos to "..tostring(self.player))
 		self.requestTimer = Timer()
 		
 		local targetPlayer = Player.GetById(playerId)
 		if IsValid(targetPlayer) then
 			Network:Send(self.player , "ReceiveTargetPosition" , targetPlayer:GetPosition())
+		else
+			Network:Send(self.player , "ReceiveTargetPosition" , nil)
 		end
 	end
 end

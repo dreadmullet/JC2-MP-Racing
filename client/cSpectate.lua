@@ -2,6 +2,7 @@
 function Spectate:__init(args) ; RaceBase.__init(self , args)
 	if settings.debugLevel >= 2 then
 		print("Spectate:__init")
+		print("args.position = "..tostring(args.position))
 	end
 	
 	self.version = args.version
@@ -23,8 +24,10 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	self.orbitCamera.targetPosition = args.position
 	
 	self.requestTimer = nil
+	self.changeTargetInputPressed = false
 	
 	self:EventSubscribe("Render")
+	self:EventSubscribe("LocalPlayerInput")
 	self:NetworkSubscribe("ReceiveTargetPosition")
 	self:NetworkSubscribe("Terminate")
 end
@@ -32,6 +35,14 @@ end
 -- Events
 
 function Spectate:Render()
+	if Input:GetValue(Action.FireRight) == 0 and Input:GetValue(Action.FireLeft) == 0 then
+		self.changeTargetInputPressed = false
+	end
+	
+	if self.targetPlayerId == -1 then
+		return
+	end
+	
 	local targetPlayer = Player.GetById(self.targetPlayerId)
 	if IsValid(targetPlayer) then
 		self.requestTimer = nil
@@ -50,14 +61,46 @@ function Spectate:Render()
 			self.requestTimer = Timer()
 			
 			Network:Send("RequestTargetPosition" , self.targetPlayerId)
+			self:Message("Requesting target: "..self.targetPlayerId)
 		end
 	end
+end
+
+function Spectate:LocalPlayerInput(args)
+	if self.changeTargetInputPressed == false then
+		if args.input == Action.VehicleFireRight then
+			self:ChangeTarget(1)
+			self.changeTargetInputPressed = true
+		elseif args.input == Action.VehicleFireLeft then
+			self:ChangeTarget(-1)
+			self.changeTargetInputPressed = true
+		end
+	end
+end
+
+function Spectate:ChangeTarget(delta)
+	local position = -1
+	for index , playerId in ipairs(self.leaderboard) do
+		if self.targetPlayerId == playerId then
+			position = index
+			break
+		end
+	end
+	position = position + delta
+	position = math.clamp(position , 1 , #self.leaderboard)
+	
+	self.targetPlayerId = self.leaderboard[position] or -1
+	self:Message("Target changed to "..self.playerId)
 end
 
 -- Network events
 
 function Spectate:ReceiveTargetPosition(position)
-	self.orbitCamera.targetPosition = position
+	if position then
+		self.orbitCamera.targetPosition = position
+	else
+		self:ChangeTarget(1)
+	end
 end
 
 function Spectate:Terminate()
