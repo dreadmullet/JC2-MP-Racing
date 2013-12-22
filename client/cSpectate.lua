@@ -50,6 +50,7 @@ function Spectate:Render()
 		local vehicle = targetPlayer:GetVehicle()
 		if vehicle then
 			self.orbitCamera.targetPosition = vehicle:GetPosition() + Vector3(0 , 0.2 , 0)
+			self.orbitCamera.targetPosition.y = targetPlayer:GetPosition().y
 		else
 			self.orbitCamera.targetPosition = targetPlayer:GetPosition() + Vector3(0 , 1 , 0)
 		end

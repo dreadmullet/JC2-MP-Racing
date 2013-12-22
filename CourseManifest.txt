@@ -1,37 +1,37 @@
-# BandarSelekeh
-# BerawanBesarSplit
+BandarSelekeh
+BerawanBesarSplit
 CapeCarnival
-# CarVHelicopter
+CarVHelicopter
 # CliffRacer -- not very good
-# CliffsOfFear
+CliffsOfFear
 # ClusterfuckingLimousines
-# DasPhailenring
-# DesertBus
-# DirtTrackEast
-# EastBerawanTouge
-# EndlessCoast
-# FacepalmPond
-# HillclimbDesertHighlands
+DasPhailenring
+DesertBus
+DirtTrackEast
+EastBerawanTouge
+EndlessCoast
+FacepalmPond
+HillclimbDesertHighlands
 Icewheels
 INeverAskedForThis
-# LostIslandRally
+LostIslandRally
 MileHighClubMadness
 MileHighClubDive1
-# PanauCanals
-# ReapersRun
+PanauCanals
+ReapersRun
 RedMountainPlunge
-# SaladIslandHovercrafting
-# SelatanBackcountry
-# SidewalkBlazer
-# SkiSlopeSkydive
-# SkullIslandRollercoaster
-# SonOfABeach
-# SoutheastBerawanTouge
-# SpiderRico
-# ThreeKingsComplex
-# ThreeKingsHighJinks
-# ThreeKingsTriangle
-# Vortex
-# WestBerawanTouge
+SaladIslandHovercrafting
+SelatanBackcountry
+SidewalkBlazer
+SkiSlopeSkydive
+SkullIslandRollercoaster
+SonOfABeach
+SoutheastBerawanTouge
+SpiderRico
+ThreeKingsComplex
+ThreeKingsHighJinks
+ThreeKingsTriangle
+Vortex
+WestBerawanTouge
 
 # DLCTest

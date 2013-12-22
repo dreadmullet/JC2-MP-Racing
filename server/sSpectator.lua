@@ -24,7 +24,7 @@ function Spectator:__init(race , player)
 		args.position = args.checkpointPositions[checkpointIndex]
 	end
 	
-	player:SetPosition(args.position + Vector3(0 , 2 , 0))
+	player:SetPosition(Vector3(0 , 10000 , 0))
 	
 	Network:Send(self.player , "SpectateInitialise" , args)
 end
