@@ -1,10 +1,10 @@
 
-EGUSM.debug = false
+EGUSM.debug = true
 
 EGUSM.Print = function(message)
 	message = tostring(message)
-	message = "[EGUSM] "..message
 	print(message)
+	message = "["..module_name.."] "..message
 	if Server then
 		Chat:Broadcast(message , Color(64 , 107 , 128))
 	else
