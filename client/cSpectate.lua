@@ -33,7 +33,7 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	self.targetPlayerId = self.leaderboard[1] or -1
 	
 	self.orbitCamera = OrbitCamera()
-	self.orbitCamera.minDistance = 1.5
+	self.orbitCamera.minDistance = 3
 	self.orbitCamera.maxDistance = 50
 	self.orbitCamera.targetPosition = args.position or Vector3(0 , 10000 , 0)
 	
@@ -63,8 +63,7 @@ function Spectate:Render()
 		
 		local vehicle = targetPlayer:GetVehicle()
 		if vehicle then
-			self.orbitCamera.targetPosition = vehicle:GetPosition() + Vector3(0 , 0.2 , 0)
-			self.orbitCamera.targetPosition.y = targetPlayer:GetPosition().y
+			self.orbitCamera.targetPosition = vehicle:GetPosition() + Vector3(0 , 1 , 0)
 		else
 			self.orbitCamera.targetPosition = targetPlayer:GetPosition() + Vector3(0 , 1 , 0)
 		end
