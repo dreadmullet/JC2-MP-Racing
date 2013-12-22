@@ -1,6 +1,6 @@
 # BandarSelekeh
 # BerawanBesarSplit
-# CapeCarnival
+CapeCarnival
 # CarVHelicopter
 # CliffRacer -- not very good
 # CliffsOfFear
@@ -13,12 +13,13 @@
 # FacepalmPond
 # HillclimbDesertHighlands
 Icewheels
+INeverAskedForThis
 # LostIslandRally
-# MileHighClubMadness
-# MileHighClubDive1
+MileHighClubMadness
+MileHighClubDive1
 # PanauCanals
 # ReapersRun
-# RedMountainPlunge
+RedMountainPlunge
 # SaladIslandHovercrafting
 # SelatanBackcountry
 # SidewalkBlazer

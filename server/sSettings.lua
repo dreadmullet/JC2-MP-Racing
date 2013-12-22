@@ -3,7 +3,7 @@ debug = {}
 -- Helps with testing starting grids.
 -- debug.alwaysMaxPlayers = true
 -- debug.dontRemoveIfOutOfVehicle = true
-debug.oneLap = true
+-- debug.oneLap = true
 
 settings.tempDLC = true
 settings.forceCourse = ""
@@ -30,7 +30,7 @@ settings.outOfVehicleMaxSeconds = 20
 settings.prizeMoneyDefault = 10000
 settings.prizeMoneyMultiplier = 0.75
 settings.playerFinishRemoveDelay = 12
-settings.lapsMult = 1
+settings.lapsMult = 0.75
 if debug.oneLap then settings.lapsMult = 0 end
 
 settings.admins = {
