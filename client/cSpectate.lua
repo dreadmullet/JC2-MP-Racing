@@ -53,6 +53,10 @@ function Spectate:Render()
 		else
 			self.orbitCamera.targetPosition = targetPlayer:GetPosition() + Vector3(0 , 1 , 0)
 		end
+		if self.orbitCamera.targetPosition:Distance(Vector3(0,0,0)) < 10 then
+			self:Message("WTF are you at the origin?")
+			self.orbitCamera.targetPosition = Vector3(100000 , 300 , 100000)
+		end
 	else
 		if
 			self.requestTimer == nil or
@@ -90,12 +94,13 @@ function Spectate:ChangeTarget(delta)
 	position = math.clamp(position , 1 , #self.leaderboard)
 	
 	self.targetPlayerId = self.leaderboard[position] or -1
-	self:Message("Target changed to "..self.playerId)
+	self:Message("Target changed to "..self.targetPlayerId)
 end
 
 -- Network events
 
 function Spectate:ReceiveTargetPosition(position)
+	self:Message("Received target: "..tostring(position))
 	if position then
 		self.orbitCamera.targetPosition = position
 	else
