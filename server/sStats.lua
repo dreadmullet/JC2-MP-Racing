@@ -31,8 +31,10 @@ Stats.DebugTimerEnd = function(description)
 end
 
 Stats.LogLine = function(message)
-	Stats.logFile:write(os.date("%c").." | "..message.."\n")
-	Stats.logFile:flush()
+	if Stats.logFile then
+		Stats.logFile:write(os.date("%c").." | "..message.."\n")
+		Stats.logFile:flush()
+	end
 end
 
 Stats.GetTableExists = function(tableName)
