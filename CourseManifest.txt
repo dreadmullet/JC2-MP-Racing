@@ -14,8 +14,8 @@ FacepalmPond
 HillclimbDesertHighlands
 Icewheels
 INeverAskedForThis
-LostIslandRally
-MileHighClubMadness
+# LostIslandRally -- Cars start on fire because the EMP tower activates.
+# MileHighClubMadness -- Spawns are broken.
 MileHighClubDive1
 PanauCanals
 ReapersRun
@@ -28,7 +28,7 @@ SkullIslandRollercoaster
 SonOfABeach
 SoutheastBerawanTouge
 SpiderRico
-ThreeKingsComplex
+# ThreeKingsComplex -- Bad
 ThreeKingsHighJinks
 ThreeKingsTriangle
 Vortex
