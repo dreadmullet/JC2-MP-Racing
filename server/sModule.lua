@@ -10,9 +10,9 @@ Events:Subscribe(
 			settings.textColor
 		)
 		
-		Stats.Init()
-		
 		raceManager = settings.raceManager()
+		
+		Stats.Init()
 	end
 )
 

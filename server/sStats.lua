@@ -48,13 +48,14 @@ end
 ----------------------------------------------------------------------------------------------------
 
 Stats.Init = function()
+	local errorMessage = nil
 	if Stats.debug then
-		Stats.logFile = io.open("Stats.log" , "a+")
+		Stats.logFile , openError = io.open("Stats.log" , "a+")
 		if Stats.logFile then
 			Stats.logFile:write("\n")
 		else
-			error("Cannot open Stats.log. Are permissions set correctly?")
-			Stats.debug = nil
+			errorMessage = "Cannot open Stats.log. (Are permissions set correctly?) "..openError
+			Stats.debug = false
 		end
 	end
 	
@@ -81,6 +82,10 @@ Stats.Init = function()
 	Stats.CreateTables()
 	
 	Stats.DebugTimerEnd("Init")
+	
+	if errorMessage then
+		error(errorMessage)
+	end
 end
 
 Stats.CreateTables = function()
