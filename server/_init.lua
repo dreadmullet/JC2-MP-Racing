@@ -25,3 +25,6 @@ class("CourseEditorManager")
 class("CourseEditor")
 
 Stats = {}
+
+math.randomseed(os.time())
+math.tau = math.pi * 2

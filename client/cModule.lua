@@ -1,12 +1,3 @@
-
-parachuteActions = {}
-parachuteActions[Action.ActivateParachuteThrusters] = true
-parachuteActions[Action.ExitToStuntposParachute] = true
-parachuteActions[Action.ParachuteOpenClose] = true
-parachuteActions[Action.ParachuteLandOnVehicle] = true
-parachuteActions[Action.StuntposToParachute] = true
-parachuteActions[Action.DeployParachuteWhileReelingAction] = true
-
 function ModulesLoad()
 	-- Add us to the help menu.
 	local args = {}
