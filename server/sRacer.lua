@@ -23,12 +23,6 @@ function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	-- Helps with preventing respawning the player every tick.
 	self.respawnTimer = nil
 	
-	-- if race.raceManager:GetIsAdmin(player) then
-		-- player:SetModelId(settings.playerModelIdAdmin)
-	-- else
-		-- player:SetModelId(table.randomvalue(settings.playerModelIds))
-	-- end
-	
 	-- Disable collisions, if applicable.
 	if self.race.vehicleCollisions == false then
 		self.player:DisableCollision(CollisionGroup.Vehicle)

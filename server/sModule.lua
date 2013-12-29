@@ -6,12 +6,13 @@ Events:Subscribe(
 	"ModuleLoad" ,
 	function()
 		Chat:Broadcast(
-			settings.name.." "..settings.version.." loaded." ,
+			"JC2-MP-Racing "..settings.version.." loaded." ,
 			settings.textColor
 		)
 		
 		Stats.Init()
-		raceManager = _G[settings.raceManager]()
+		
+		raceManager = settings.raceManager()
 	end
 )
 
