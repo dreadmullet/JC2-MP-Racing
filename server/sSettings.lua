@@ -13,7 +13,7 @@ settings.forceCourse = ""
 settings.debugLevel = 1
 
 settings.name = "JC2-MP-Racing"
-settings.version = "0.7.5"
+settings.version = "0.7.5a"
 if settings.debugLevel > 1 then
 	settings.version = settings.version.." (debug)"
 end

@@ -32,7 +32,6 @@ function RaceManager:__init()
 	EventSub("PlayerChat")
 	EventSub("ModuleUnload")
 	
-	Events:Register("JoinGamemode")
 	EventSub("JoinGamemode")
 	
 end

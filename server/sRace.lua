@@ -103,7 +103,7 @@ function Race:AddPlayer(player , message)
 	local args = {}
 	args.player = player
 	args.name = "Racing"
-	Events:FireRegisteredEvent("JoinGamemode" , args)
+	Events:Fire("JoinGamemode" , args)
 	
 	player = Racing.Player(player)
 	local playerId = Racing.PlayerId(player)
