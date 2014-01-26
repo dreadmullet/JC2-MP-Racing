@@ -2,7 +2,8 @@ RaceManagerMode.settings = {}
 RaceManagerMode.settings.initialiseDelay = 1
 
 class("RaceInfo")
-function RaceInfo:__init()
+function RaceInfo:__init(race)
+	self.id = race.id
 	self.hasWinner = false
 	self.timer = Timer()
 	self.raceEndTime = -1
@@ -16,6 +17,8 @@ function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
 	-- Helps with delaying the first race.
 	self.initialiseTimer = Timer()
 	
+	self:EventSubscribe("RacerFinish")
+	self:EventSubscribe("RaceEnd")
 	self:EventSubscribe("ClientModuleLoad")
 	self:EventSubscribe("PreTick")
 end
@@ -29,11 +32,12 @@ function RaceManagerMode:CreateRace(playerArray)
 	for player in Server:GetPlayers() do
 		table.insert(playerArray , player)
 	end
-	local doCollisions = math.random() > 0.55
+	-- local doCollisions = math.random() > 0.55
+	local doCollisions = true -- temporary
 	
-	self.race = Race(self , playerArray , course , doCollisions)
+	self.race = Race(playerArray , course , doCollisions)
 	
-	self.raceInfo = RaceInfo()
+	self.raceInfo = RaceInfo(self.race)
 end
 
 -- PlayerManager callbacks
@@ -56,9 +60,14 @@ function RaceManagerMode:ManagedPlayerLeave(player)
 	self.race:RemovePlayer(player)
 end
 
--- Race callbacks
+-- Race events
 
-function RaceManagerMode:RacerFinish(racer)
+function RaceManagerMode:RacerFinish(args)
+	-- Make sure a race is running and this is our race.
+	if self.raceInfo == nil or args.id ~= self.raceInfo.id then
+		return
+	end
+	
 	-- If this is the first finisher, set the race end time.
 	if self.raceInfo.hasWinner == false then
 		self.raceInfo.hasWinner = true
@@ -66,7 +75,12 @@ function RaceManagerMode:RacerFinish(racer)
 	end
 end
 
-function RaceManagerMode:RaceEnd(raceThatEnded)
+function RaceManagerMode:RaceEnd(args)
+	-- Make sure a race is running and this is our race.
+	if self.raceInfo == nil or args.id ~= self.raceInfo.id then
+		return
+	end
+	
 	self.raceInfo = nil
 end
 

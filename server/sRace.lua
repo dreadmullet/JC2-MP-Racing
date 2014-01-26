@@ -1,13 +1,15 @@
 
--- raceManager and vehicleCollisions are optional.
-function Race:__init(raceManager , playerArray , course , vehicleCollisions)
+Race.idCounter = 1
+
+function Race:__init(playerArray , course , vehicleCollisions)
 	EGUSM.StateMachine.__init(self)
 	
 	if settings.debugLevel >= 2 then
 		print("Race:__init")
 	end
 	
-	self.raceManager = raceManager
+	self.id = Race.idCounter
+	Race.idCounter = Race.idCounter + 1
 	
 	-- Contains both Racers and Spectators in an array.
 	self.participants = playerArray
@@ -128,12 +130,13 @@ function Race:Terminate()
 		self.world = nil
 	end
 	
-	-- Tell our RaceManager that we ended.
-	if self.raceManager and self.raceManager.RaceEnd then
-		self.raceManager:RaceEnd(self)
-		self.raceManager = nil
-	end
+	-- Fire RaceEnd event.
+	local args = {
+		id = self.id
+	}
+	Events:Fire("RaceEnd" , args)
 	
+	-- Call EGUSM Destroy method.
 	self:Destroy()
 end
 
@@ -152,6 +155,10 @@ function Race:NetworkSendRace(name , ...)
 		end
 		Network:Send(racer.player , name , ...)
 	end
+end
+
+function Race:GetRacerFromPlayerId(id)
+	return self.playerIdToRacer[id]
 end
 
 -- Racer callbacks
@@ -178,10 +185,12 @@ function Race:RacerFinish(racer)
 		self:Message(racer.name.." finishes "..Utility.NumberToPlaceString(#self.finishedRacers))
 	end
 	
-	-- Tell our RaceManager that a Racer finished.
-	if self.raceManager and self.raceManager.RacerFinish then
-		self.raceManager:RacerFinish(racer)
-	end
+	-- Fire the RacerFinish event.
+	local args = {
+		id = self.id ,
+		playerId = racer.playerId
+	}
+	Events:Fire("RacerFinish" , args)
 end
 
 -- CreateRace event.

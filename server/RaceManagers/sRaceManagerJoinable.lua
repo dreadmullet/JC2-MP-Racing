@@ -3,8 +3,7 @@ RaceManagerJoinable.startDelay = 120
 
 function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 	self.courseManager = CourseManager("CourseManifest.txt")
-	-- Array of Races.
-	self.races = {}
+	self.raceIdToRace = {}
 	-- Array of Players.
 	self.playerQueue = {}
 	self.nextCourse = nil
@@ -15,6 +14,8 @@ function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 	
 	self:SetupNextRace()
 	
+	self:EventSubscribe("RacerFinish")
+	self:EventSubscribe("RaceEnd")
 	self:EventSubscribe("PlayerChat")
 	self:EventSubscribe("PreTick")
 end
@@ -50,8 +51,8 @@ function RaceManagerJoinable:CreateRace()
 		end
 	)
 	
-	local race = Race(self , self.playerQueue , self.nextCourse , self.nextCourseCollisions)
-	table.insert(self.races , race)
+	local race = Race(self.playerQueue , self.nextCourse , self.nextCourseCollisions)
+	self.raceIdToRace[race.id] = race
 	self:SetupNextRace()
 end
 
@@ -78,7 +79,7 @@ function RaceManagerJoinable:ManagedPlayerLeave(player)
 		end
 	end
 	-- Search all Races for this player and remove them.
-	for index , race in ipairs(self.races) do
+	for raceId , race in pairs(self.raceIdToRace) do
 		race:RemovePlayer(player)
 	end
 	-- Give them back their position, model, and inventory, if applicable.
@@ -97,22 +98,37 @@ function RaceManagerJoinable:PlayerManagerTerminate()
 		EGUSM.Print("PlayerManagerTerminate")
 	end
 	-- Terminate all Races.
-	for index , race in ipairs(self.races) do
+	for raceId , race in pairs(self.raceIdToRace) do
 		race:Terminate()
 	end
 end
 
--- Race callbacks
+-- Race events
 
-function RaceManagerJoinable:RacerFinish(racer)
+function RaceManagerJoinable:RacerFinish(args)
+	-- Attempt to find the race.
+	local race = self.raceIdToRace[args.id]
+	-- Make sure this is one of our races.
+	if race == nil then
+		return
+	end
+	
+	local racer = race:GetRacerFromPlayerId(args.playerId)
 	racer:Message("Use "..RaceManagerJoinable.command.." to leave the race")
 end
 
-function RaceManagerJoinable:RaceEnd(raceThatEnded)
-	-- Remove this race from self.races.
-	for index , race in ipairs(self.races) do
+function RaceManagerJoinable:RaceEnd(args)
+	-- Attempt to find the race.
+	local race = self.raceIdToRace[args.id]
+	-- Make sure this is one of our races.
+	if race == nil then
+		return
+	end
+	
+	-- Remove this race from self.raceIdToRace.
+	for raceId , race in pairs(self.raceIdToRace) do
 		if race == raceThatEnded then
-			table.remove(self.races , index)
+			raceIdToRace[raceId] = nil
 			break
 		end
 	end
