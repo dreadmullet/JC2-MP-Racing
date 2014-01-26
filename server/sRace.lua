@@ -32,7 +32,7 @@ function Race:__init(raceManager , playerArray , course , vehicleCollisions)
 	self.world:SetWeatherSeverity(math.pow(math.random() , 2.5) * 2)
 	
 	self.prizeMoneyCurrent = course.prizeMoney
-	self.vehicleCollisions = vehicleCollisions
+	self.vehicleCollisions = vehicleCollisions or true
 	
 	-- Prevents terminating twice.
 	self.isValid = true
@@ -178,7 +178,7 @@ function Race:RacerFinish(racer)
 	end
 	
 	-- Tell our RaceManager that a Racer finished.
-	if self.raceManager.RacerFinish then
+	if self.raceManager and self.raceManager.RacerFinish then
 		self.raceManager:RacerFinish(racer)
 	end
 end
