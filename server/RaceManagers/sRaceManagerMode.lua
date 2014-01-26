@@ -1,5 +1,4 @@
-RaceManagerMode.settings = {}
-RaceManagerMode.settings.initialiseDelay = 1
+RaceManagerMode.initialiseDelay = 1
 
 class("RaceInfo")
 function RaceInfo:__init(race)
@@ -94,7 +93,7 @@ function RaceManagerMode:PreTick(args)
 	-- We will not be initialised when the module is first loaded.
 	if self.isInitialised == false then
 		-- Delay the first race to make sure everyone's client has loaded.
-		if self.initialiseTimer:GetSeconds() > RaceManagerMode.settings.initialiseDelay then
+		if self.initialiseTimer:GetSeconds() > RaceManagerMode.initialiseDelay then
 			-- Add all players to us.
 			for player in Server:GetPlayers() do
 				self:AddPlayer(player)
