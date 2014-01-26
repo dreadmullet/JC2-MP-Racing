@@ -1,4 +1,5 @@
 
+-- raceManager and vehicleCollisions are optional.
 function Race:__init(raceManager , playerArray , course , vehicleCollisions)
 	EGUSM.StateMachine.__init(self)
 	
@@ -182,3 +183,25 @@ function Race:RacerFinish(racer)
 		self.raceManager:RacerFinish(racer)
 	end
 end
+
+-- CreateRace event.
+
+CreateRaceFromEvent = function(args)
+	local playerArray = args.players
+	if playerArray == nil then
+		error("Could not create race: players is nil")
+		return
+	end
+	
+	local course = Course.Load(args.course)
+	if course == nil then
+		error("Could not create race: course not found")
+		return
+	end
+	
+	local collisions = args.collisions or true
+	
+	Race(nil , playerArray , course , collisions)
+end
+
+Events:Subscribe("CreateRace" , CreateRaceFromEvent)
