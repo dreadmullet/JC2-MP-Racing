@@ -39,6 +39,13 @@ end
 
 -- Draws a 3D arrow at the top of the screen that points to the target checkpoint.
 function RaceGUI.DrawTargetArrow(args)
+	-- Temporary hack that compensates for the fact that Camera functions return the pos/angle of
+	-- the next frame.
+	lastCameraPosition = cameraPosition or Vector3(0,0,0)
+	lastCameraAngle = cameraAngle or Angle(0,0,0)
+	cameraPosition = Camera:GetPosition()
+	cameraAngle = Camera:GetAngle()
+	
 	-- Calculate position, compensating for change in FOV.
 	local z = -8.25
 	local y = 3
@@ -47,7 +54,7 @@ function RaceGUI.DrawTargetArrow(args)
 		z = z + vehicle:GetLinearVelocity():Length() / 25
 		y = y + vehicle:GetLinearVelocity():Length() / 350
 	end
-	local position = Camera:GetPosition() + Camera:GetAngle() * Vector3(0 , y , z)
+	local position = lastCameraPosition + lastCameraAngle * Vector3(0 , y , z)
 	-- Calculate angle.
 	local angle = Angle.FromVectors(
 		Vector3(0 , 0 , -1) ,
