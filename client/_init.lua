@@ -10,6 +10,8 @@ class("StateRacing")
 class("StateFinished")
 class("StateTerminate")
 
+class("RaceMenu")
+
 class("LargeMessage")
 class("OrbitCamera")
 

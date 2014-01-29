@@ -58,17 +58,11 @@ settings.blockedInputsInVehicle = {
 settings.sendCheckpointDistanceInterval = 0.4 + math.random() * 0.027
 
 settings.gamemodeName = "Racing"
-settings.gamemodeDescription = [[
-The Racing gamemode lets you race other players in a variety of races, using vehicles from sports cars to buses to planes. It comes with a fully-featured GUI, letting you focus on the race.
- 
-Command list:
-   "/race" - Begins a race.
- 
-Earning money: You receive $10000 for winning a race. Each following finisher receives 75% of the last finisher (2nd place receives $7500, for example).
- 
-Known issues:
-During races, sometimes the checkpoint arrow will be invisible. You can probably fix this by reconnecting to the server (press ~ to open the console and enter "reconnect").
-]]
+settings.gamemodeDescription = [====[In publishing and graphic design, lorem ipsum[1] is a placeholder text commonly used to demonstrate the graphic elements of a document or visual presentation. By replacing the distraction of meaningful content with filler text of scrambled Latin it allows viewers to focus on graphical elements such as font, typography, and layout.
+
+The lorem ipsum text is typically a mangled section of De finibus bonorum et malorum, a 1st-century BC Latin text by Cicero, with words altered, added, and removed that make it nonsensical, improper Latin.[1]
+
+A variation of the common lorem ipsum text has been used during typesetting since the 1960s or earlier,[1] when it was popularized by advertisements for Letraset transfer sheets. It was introduced to the Digital Age by Aldus Corporation in the mid-1980s, which employed it in graphics and word processing templates for its breakthrough desktop publishing program, PageMaker for the Apple Macintosh.[1]]====]
 
 ----------------------------------------------------------------------------------------------------
 -- GUI
