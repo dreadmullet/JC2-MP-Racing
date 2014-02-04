@@ -22,6 +22,7 @@ RaceMenu.allowedActions = {
 	Action.MoveLeft ,
 	Action.MoveRight ,
 	Action.ParachuteOpenClose ,
+	Action.Jump ,
 }
 
 function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
@@ -50,7 +51,7 @@ function RaceMenu:CreateWindow()
 	local homeTabButton = tabControl:AddPage("Home")
 	
 	local homePage = homeTabButton:GetPage()
-	-- homePage:SetPadding(Vector2.One*4 , Vector2.One * 4)
+	homePage:SetPadding(Vector2.One*2 , Vector2.One * 2)
 	
 	local topArea = Rectangle.Create(homePage)
 	topArea:SetPadding(Vector2.One * 8 , Vector2.One * 8)
@@ -72,6 +73,11 @@ function RaceMenu:CreateWindow()
 	githubLabel:SizeToContents()
 	
 	topArea:SizeToChildren()
+	
+	local bindMenu = BindMenu.Create(homePage)
+	bindMenu:SetDock(GwenPosition.Left)
+	bindMenu:AddControl("TestControl" , "SoundHornSiren")
+	bindMenu:AddControl("This has a longer name" , "H")
 end
 
 function RaceMenu:SetEnabled(enabled)
