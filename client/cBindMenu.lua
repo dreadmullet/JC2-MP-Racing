@@ -36,7 +36,7 @@ BindMenu.Create = function(...)
 		control.name = name
 		control.valueString = defaultControl
 		table.insert(self.controls , control)
-		Controls.Add(control)
+		Controls.Set(control)
 		
 		local button = Button.Create(self)
 		button:SetDock(GwenPosition.Top)
@@ -74,7 +74,7 @@ BindMenu.Create = function(...)
 		label:SizeToContents()
 		self.activatedButton = nil
 		
-		Controls.Add(control)
+		Controls.Set(control)
 		
 		Events:Unsubscribe(self.eventInput)
 		Events:Unsubscribe(self.eventKeyUp)

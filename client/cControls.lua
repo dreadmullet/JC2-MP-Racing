@@ -8,16 +8,17 @@ Controls.controls = {}
 -- These three are arrays of tables. Similar to above, but [1] is type and [2] is value.
 Controls.held = {}
 
--- This should be called to add controls. Used by BindMenu.
-Controls.Add = function(controlToAdd)
-	-- Check for a duplicate
+-- This should be called to add or change controls. Used by BindMenu.
+Controls.Set = function(controlToSet)
+	-- If a control with this name already exists, modify it.
 	for index , control in ipairs(Controls.controls) do
-		if control.type == controlToAdd.type and control.value == controlToAdd.value then
+		if control.name == controlToSet.name then
+			Controls.controls[index] = controlToSet
 			return
 		end
 	end
 	
-	table.insert(Controls.controls , Copy(controlToAdd))
+	table.insert(Controls.controls , Copy(controlToSet))
 end
 
 Controls.Down = function(controlInfo)
