@@ -7,10 +7,7 @@ BindMenu.Create = function(...)
 	window:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
 	window:SetSize(Vector2(276 , 128))
 	
-	-- Array of tables.
-	-- Example values:
-	-- {name = "Jump"  , type = "Action" , value = 44  , valueString = "SoundHornSiren"}
-	-- {name = "Boost" , type = "Key"    , value = 160 , valueString = "LShift"        }
+	-- Array of tables. See Controls.
 	window.controls = {}
 	window.state = "Idle"
 	window.eventInput = nil
@@ -39,6 +36,7 @@ BindMenu.Create = function(...)
 		control.name = name
 		control.valueString = defaultControl
 		table.insert(self.controls , control)
+		Controls.Add(control)
 		
 		local button = Button.Create(self)
 		button:SetDock(GwenPosition.Top)
@@ -75,6 +73,8 @@ BindMenu.Create = function(...)
 		label:SetText(control.valueString)
 		label:SizeToContents()
 		self.activatedButton = nil
+		
+		Controls.Add(control)
 		
 		Events:Unsubscribe(self.eventInput)
 		Events:Unsubscribe(self.eventKeyUp)

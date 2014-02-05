@@ -34,6 +34,7 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self:EventSubscribe("KeyUp")
 	self:EventSubscribe("LocalPlayerInput")
 	self:EventSubscribe("InputPoll")
+	self:EventSubscribe("ControlUp")
 end
 
 function RaceMenu:CreateWindow()
@@ -104,6 +105,13 @@ function RaceMenu:KeyUp(args)
 	if args.key == string.byte(RaceMenu.testKey) then
 		self:SetEnabled(not self.isEnabled)
 	end
+end
+
+function RaceMenu:ControlUp(control)
+	Chat:Print(
+		"ControlUp: "..control.name.." ("..control.valueString..")" ,
+		Color.FromHSV(math.random(360) , 0.5 , 1)
+	)
 end
 
 function RaceMenu:LocalPlayerInput(args)
