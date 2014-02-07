@@ -1,5 +1,3 @@
-RaceMenu.testKey = "K"
-
 RaceMenu.allowedActions = {
 	Action.Accelerate ,
 	Action.Reverse ,
@@ -31,10 +29,9 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	self:CreateWindow()
 	
-	self:EventSubscribe("KeyUp")
 	self:EventSubscribe("LocalPlayerInput")
 	self:EventSubscribe("InputPoll")
-	self:EventSubscribe("ControlUp")
+	self:EventSubscribe("ControlDown")
 end
 
 function RaceMenu:CreateWindow()
@@ -77,8 +74,7 @@ function RaceMenu:CreateWindow()
 	
 	local bindMenu = BindMenu.Create(homePage)
 	bindMenu:SetDock(GwenPosition.Left)
-	bindMenu:AddControl("TestControl" , "SoundHornSiren")
-	bindMenu:AddControl("This has a longer name" , "H")
+	bindMenu:AddControl("Toggle this menu" , "K")
 end
 
 function RaceMenu:SetEnabled(enabled)
@@ -101,22 +97,15 @@ end
 
 -- Events
 
-function RaceMenu:KeyUp(args)
-	if args.key == string.byte(RaceMenu.testKey) then
+function RaceMenu:ControlDown(control)
+	if control.name == "Toggle this menu" then
 		self:SetEnabled(not self.isEnabled)
 	end
 end
 
-function RaceMenu:ControlUp(control)
-	Chat:Print(
-		"ControlUp: "..control.name.." ("..control.valueString..")" ,
-		Color.FromHSV(math.random(360) , 0.5 , 1)
-	)
-end
-
 function RaceMenu:LocalPlayerInput(args)
 	if self.isEnabled == false then
-		return
+		return true
 	end
 	
 	for index , action in ipairs(RaceMenu.allowedActions) do
@@ -128,19 +117,21 @@ function RaceMenu:LocalPlayerInput(args)
 	return false
 end
 
+-- This allows you to control helicopters with left/right instead of the mouse.
 function RaceMenu:InputPoll()
 	if self.isEnabled == false then
 		return
 	end
 	
+	-- TODO: GetValue returns 0 - 65535 as of 0.1.3. Blame Trix.
 	local inputRollRight = Input:GetValue(Action.HeliRollRight)
 	if inputRollRight > 0 then
-		Input:SetValue(Action.HeliTurnRight , inputRollRight)
+		Input:SetValue(Action.HeliTurnRight , inputRollRight / 65535 / 2)
 	end
 	
 	local inputRollLeft = Input:GetValue(Action.HeliRollLeft)
 	if inputRollLeft > 0 then
-		Input:SetValue(Action.HeliTurnLeft , inputRollLeft)
+		Input:SetValue(Action.HeliTurnLeft , inputRollLeft / 65535 / 2)
 	end
 end
 
