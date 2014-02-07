@@ -1,3 +1,5 @@
+RaceMenu.command = "/racemenu"
+
 RaceMenu.allowedActions = {
 	Action.Accelerate ,
 	Action.Reverse ,
@@ -29,9 +31,10 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	self:CreateWindow()
 	
+	self:EventSubscribe("ControlDown")
 	self:EventSubscribe("LocalPlayerInput")
 	self:EventSubscribe("InputPoll")
-	self:EventSubscribe("ControlDown")
+	self:EventSubscribe("LocalPlayerChat")
 end
 
 function RaceMenu:CreateWindow()
@@ -132,6 +135,12 @@ function RaceMenu:InputPoll()
 	local inputRollLeft = Input:GetValue(Action.HeliRollLeft)
 	if inputRollLeft > 0 then
 		Input:SetValue(Action.HeliTurnLeft , inputRollLeft / 65535 / 2)
+	end
+end
+
+function RaceMenu:LocalPlayerChat(args)
+	if args.text:lower() == RaceMenu.command then
+		self:SetEnabled(not self.isEnabled)
 	end
 end
 
