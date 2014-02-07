@@ -1,6 +1,16 @@
 
 BindMenu = {}
 
+-- Controls cannot be assigned to these if allowMouse is false (default).
+BindMenu.blockedMouseActions = {
+	Action.LookUp ,
+	Action.LookDown ,
+	Action.LookLeft ,
+	Action.LookRight ,
+	Action.HeliTurnLeft ,
+	Action.HeliTurnRight ,
+}
+
 BindMenu.Create = function(...)
 	local window = Rectangle.Create(...)
 	window:SetColor(Color(16 , 16 , 16))
@@ -13,6 +23,7 @@ BindMenu.Create = function(...)
 	window.eventInput = nil
 	window.eventKeyUp = nil
 	window.activatedButton = nil
+	window.allowMouse = false
 	
 	-- defaultControl can be an Action name, a Key name, or nil.
 	-- Examples: "SoundHornSiren", "LShift", "C", nil
@@ -46,6 +57,7 @@ BindMenu.Create = function(...)
 		button:SetText(name)
 		button:SetDataObject("control" , control)
 		button:Subscribe("Press" , self , self.ButtonPressed)
+		button:Subscribe("RightPress" , self , self.ButtonPressed)
 		
 		local unassignButton = Button.Create(button)
 		unassignButton:SetDock(GwenPosition.Right)
@@ -131,6 +143,14 @@ BindMenu.Create = function(...)
 	-- Events
 	
 	function window:LocalPlayerInput(args)
+		if self.allowMouse == false then
+			for index , action in ipairs(BindMenu.blockedMouseActions) do
+				if args.input == action then
+					return true
+				end
+			end
+		end
+		
 		local control = self.activatedButton:GetDataObject("control")
 		
 		control.type = "Action"
@@ -145,6 +165,8 @@ BindMenu.Create = function(...)
 		
 		self:Assign(self.activatedButton)
 		self.activatedButton = nil
+		
+		return true
 	end
 	
 	function window:KeyUp(args)
