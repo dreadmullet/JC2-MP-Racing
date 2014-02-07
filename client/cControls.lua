@@ -23,6 +23,15 @@ Controls.Set = function(controlToSet)
 	table.insert(Controls.controls , Copy(controlToSet))
 end
 
+Controls.Remove = function(controlName)
+	for index , control in ipairs(Controls.controls) do
+		if control.name == controlName then
+			table.remove(Controls.controls , index)
+			break
+		end
+	end
+end
+
 Controls.Down = function(controlInfo)
 	-- If this is one of our controls, fire ControlDown.
 	for index , control in ipairs(Controls.controls) do
