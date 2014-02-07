@@ -7,6 +7,8 @@ Controls = {}
 Controls.controls = {}
 -- These three are arrays of tables. Similar to above, but [1] is type and [2] is value.
 Controls.held = {}
+-- Like above, but for all Actions.
+Controls.actionsBuffer = {}
 
 -- This should be called to add or change controls. Used by BindMenu.
 Controls.Set = function(controlToSet)
@@ -42,16 +44,20 @@ end
 -- Events
 
 Controls.LocalPlayerInput = function(args)
-	-- Make sure this key isn't held down.
+	table.insert(Controls.actionsBuffer , args.input)
+	
+	-- Make sure this action isn't held down.
 	for index , controlInfo in ipairs(Controls.held) do
 		if controlInfo[1] == "Action" and controlInfo[2] == args.input then
-			return
+			return true
 		end
 	end
 	
 	local controlInfo = {"Action" , args.input}
 	Controls.Down(controlInfo)
 	table.insert(Controls.held , controlInfo)
+	
+	return true
 end
 
 Controls.KeyDown = function(args)
@@ -81,13 +87,25 @@ Controls.KeyUp = function(args)
 end
 
 Controls.InputPoll = function(args)
-	-- Remove all actions from Controls.held if their state is 0.
+	-- Remove any Action from Controls.held if it wasn't held down this frame.
 	for n = #Controls.held , 1 , -1 do
 		local controlInfo = Controls.held[n]
-		if controlInfo[1] == "Action" and Input:GetValue(controlInfo[2]) == 0 then
-			table.remove(Controls.held , n)
-			Controls.Up(controlInfo)
+		if controlInfo[1] ~= "Action" then
+			goto continue -- May the programming gods have mercy.
 		end
+		
+		local actionToRemove = controlInfo[2]
+		for index , action in ipairs(Controls.actionsBuffer) do
+			if action == actionToRemove then
+				goto continue
+			end
+		end
+		-- If we make it here, it means the action has been unpressed.
+		
+		table.remove(Controls.held , n)
+		Controls.Up(controlInfo)
+		
+		::continue::
 	end
 	
 	-- Fire the ControlHeld event for all of our controls.
@@ -98,6 +116,9 @@ Controls.InputPoll = function(args)
 			end
 		end
 	end
+	
+	-- Clear the Action buffer.
+	Controls.actionsBuffer = {}
 end
 
 Events:Subscribe("LocalPlayerInput" , Controls.LocalPlayerInput)
