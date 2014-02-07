@@ -14,27 +14,30 @@ BindMenu.Create = function(...)
 	window.eventKeyUp = nil
 	window.activatedButton = nil
 	
-	-- defaultControl can be an Action name or a Key name.
-	-- Examples: "SoundHornSiren", "LShift", "C"
+	-- defaultControl can be an Action name, a Key name, or nil.
+	-- Examples: "SoundHornSiren", "LShift", "C", nil
 	function window:AddControl(name , defaultControl)
-		if not name or not defaultControl then
+		if not name then
 			error("Invalid arguments")
 		end
 		
 		local control = {}
 		
-		if Action[defaultControl] then
+		if defaultControl == nil then
+			control.type = "Unassigned"
+			control.value = -1
+		elseif Action[defaultControl] then
 			control.type = "Action"
 			control.value = Action[defaultControl]
 		elseif VirtualKey[defaultControl] or defaultControl:len() == 1 then
 			control.type = "Key"
 			control.value = VirtualKey[defaultControl] or string.byte(defaultControl:upper())
 		else
-			error("defaultControl is not an Action or Key")
+			error("defaultControl is not a valid Action or Key")
 		end
 		
 		control.name = name
-		control.valueString = defaultControl
+		control.valueString = defaultControl or "Unassigned"
 		table.insert(self.controls , control)
 		Controls.Set(control)
 		
@@ -50,7 +53,7 @@ BindMenu.Create = function(...)
 		labelValue:SetAlignment(GwenPosition.Right)
 		labelValue:SetDock(GwenPosition.Right)
 		labelValue:SetPadding(Vector2(4 , 4) , Vector2(4 , 4))
-		labelValue:SetText(defaultControl)
+		labelValue:SetText(control.valueString)
 		labelValue:SizeToContents()
 		
 		button:SetDataObject("label" , labelValue)

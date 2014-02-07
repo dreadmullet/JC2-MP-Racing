@@ -77,7 +77,7 @@ function RaceMenu:CreateWindow()
 	
 	local bindMenu = BindMenu.Create(homePage)
 	bindMenu:SetDock(GwenPosition.Left)
-	bindMenu:AddControl("Toggle this menu" , "K")
+	bindMenu:AddControl("Toggle this menu" , nil)
 end
 
 function RaceMenu:SetEnabled(enabled)
