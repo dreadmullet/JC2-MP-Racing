@@ -67,7 +67,7 @@ BindMenu.Create = function(...)
 		unassignButton:SetTextNormalColor(Color(220 , 50 , 50))
 		unassignButton:SetTextPressedColor(Color(150 , 40 , 40))
 		unassignButton:SetTextHoveredColor(Color(255 , 70 , 70))
-		unassignButton:Subscribe("Press" , self , self.UnassignButtonPressed)
+		unassignButton:Subscribe("Down" , self , self.UnassignButtonPressed)
 		
 		local labelValue = Label.Create(button)
 		labelValue:SetTextColor(button:GetTextColor())
