@@ -3,12 +3,9 @@ class("RaceBase")
 	class("Spectate")
 
 -- Race states
-class("StateNone")
-class("StateAddPlayers")
 class("StateStartingGrid")
 class("StateRacing")
 class("StateFinished")
-class("StateTerminate")
 
 class("RaceMenu")
 
