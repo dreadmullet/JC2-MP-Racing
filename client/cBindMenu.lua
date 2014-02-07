@@ -39,7 +39,6 @@ BindMenu.Create = function(...)
 		control.name = name
 		control.valueString = defaultControl or "Unassigned"
 		table.insert(self.controls , control)
-		Controls.Set(control)
 		
 		local button = Button.Create(self)
 		button:SetDock(GwenPosition.Top)
@@ -47,6 +46,16 @@ BindMenu.Create = function(...)
 		button:SetText(name)
 		button:SetDataObject("control" , control)
 		button:Subscribe("Press" , self , self.ButtonPressed)
+		
+		local unassignButton = Button.Create(button)
+		unassignButton:SetDock(GwenPosition.Right)
+		unassignButton:SetText(" X ")
+		unassignButton:SizeToContents()
+		unassignButton:SetToolTip("Unassign")
+		unassignButton:SetTextNormalColor(Color(220 , 50 , 50))
+		unassignButton:SetTextPressedColor(Color(150 , 40 , 40))
+		unassignButton:SetTextHoveredColor(Color(255 , 70 , 70))
+		unassignButton:Subscribe("Press" , self , self.UnassignButtonPressed)
 		
 		local labelValue = Label.Create(button)
 		labelValue:SetTextColor(button:GetTextColor())
@@ -57,30 +66,31 @@ BindMenu.Create = function(...)
 		labelValue:SizeToContents()
 		
 		button:SetDataObject("label" , labelValue)
+		
+		self:Assign(button)
 	end
 	
-	function window:Assign()
-		if self.state ~= "Activated" then
-			return
-		end
-		
+	function window:Assign(activeButton)
 		self.state = "Idle"
 		
-		local children = self:GetChildren()
-		for index , child in ipairs(children) do
-			child:SetEnabled(true)
-		end
+		BindMenu.SetEnabledRecursive(self , true)
 		
-		local control = self.activatedButton:GetDataObject("control")
-		local label = self.activatedButton:GetDataObject("label")
+		local control = activeButton:GetDataObject("control")
+		local label = activeButton:GetDataObject("label")
 		label:SetText(control.valueString)
 		label:SizeToContents()
-		self.activatedButton = nil
+		if control.type == "Unassigned" then
+			label:SetTextColor(Color(255 , 127 , 127))
+		else
+			label:SetTextColor(activeButton:GetTextColor())
+		end
 		
 		Controls.Set(control)
 		
-		Events:Unsubscribe(self.eventInput)
-		Events:Unsubscribe(self.eventKeyUp)
+		if IsValid(self.eventInput) then
+			Events:Unsubscribe(self.eventInput)
+			Events:Unsubscribe(self.eventKeyUp)
+		end
 	end
 	
 	-- GWEN events
@@ -92,10 +102,7 @@ BindMenu.Create = function(...)
 		
 		self.state = "Activated"
 		
-		local children = self:GetChildren()
-		for index , child in ipairs(children) do
-			child:SetEnabled(false)
-		end
+		BindMenu.SetEnabledRecursive(self , false)
 		
 		local label = button:GetDataObject("label")
 		label:SetText("...")
@@ -104,6 +111,21 @@ BindMenu.Create = function(...)
 		
 		self.eventInput = Events:Subscribe("LocalPlayerInput" , self , self.LocalPlayerInput)
 		self.eventKeyUp = Events:Subscribe("KeyUp" , self , self.KeyUp)
+	end
+	
+	function window:UnassignButtonPressed(button)
+		if self.state ~= "Idle" then
+			return
+		end
+		
+		local activeButton = button:GetParent()
+		local control = activeButton:GetDataObject("control")
+		
+		control.type = "Unassigned"
+		control.value = -1
+		control.valueString = "Unassigned"
+		
+		self:Assign(activeButton)
 	end
 	
 	-- Events
@@ -121,7 +143,8 @@ BindMenu.Create = function(...)
 			end
 		end
 		
-		self:Assign()
+		self:Assign(self.activatedButton)
+		self.activatedButton = nil
 	end
 	
 	function window:KeyUp(args)
@@ -141,8 +164,18 @@ BindMenu.Create = function(...)
 			control.valueString = string.char(args.key) or "Unknown"
 		end
 		
-		self:Assign()
+		self:Assign(self.activatedButton)
+		self.activatedButton = nil
 	end
 	
 	return window
+end
+
+BindMenu.SetEnabledRecursive = function(window , enabled)
+	window:SetEnabled(enabled)
+	
+	local children = window:GetChildren()
+	for index , child in ipairs(children) do
+		BindMenu.SetEnabledRecursive(child , enabled)
+	end
 end
