@@ -1,5 +1,25 @@
 InputNames = {}
 
+InputNames.GetActionName = function(action)
+	for index , actionName in ipairs(InputNames.Action) do
+		if Action[actionName] == action then
+			return actionName
+		end
+	end
+	
+	return "INVALID"
+end
+
+InputNames.GetKeyName = function(key)
+	for index , keyName in ipairs(InputNames.Key) do
+		if VirtualKey[keyName] == key then
+			return keyName
+		end
+	end
+	
+	return "INVALID"
+end
+
 InputNames.Action = {
 	"Accelerate" ,
 	"ActivateBlackMarketBeacon" ,

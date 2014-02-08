@@ -78,6 +78,9 @@ function RaceMenu:CreateWindow()
 	local bindMenu = BindMenu.Create(homePage)
 	bindMenu:SetDock(GwenPosition.Left)
 	bindMenu:AddControl("Toggle this menu" , nil)
+	bindMenu:AddControl("TestAction" , "SoundHornSiren")
+	bindMenu:AddControl("TestKey" , "H")
+	bindMenu:RequestSettings()
 end
 
 function RaceMenu:SetEnabled(enabled)
@@ -144,8 +147,6 @@ function RaceMenu:LocalPlayerChat(args)
 	end
 end
 
--- Testing
 Events:Subscribe("ModuleLoad" , function()
 	raceMenu = RaceMenu()
-	raceMenu:SetEnabled(true)
 end)

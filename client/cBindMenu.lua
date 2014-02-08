@@ -19,11 +19,16 @@ BindMenu.Create = function(...)
 	
 	-- Array of tables. See Controls.
 	window.controls = {}
+	window.buttons = {}
 	window.state = "Idle"
 	window.eventInput = nil
 	window.eventKeyUp = nil
 	window.activatedButton = nil
 	window.allowMouse = false
+	window.receiveEvent = nil
+	window.tickEvent = nil
+	window.dirtySettings = false
+	window.saveTimer = Timer()
 	
 	-- defaultControl can be an Action name, a Key name, or nil.
 	-- Examples: "SoundHornSiren", "LShift", "C", nil
@@ -58,6 +63,7 @@ BindMenu.Create = function(...)
 		button:SetDataObject("control" , control)
 		button:Subscribe("Press" , self , self.ButtonPressed)
 		button:Subscribe("RightPress" , self , self.ButtonPressed)
+		table.insert(self.buttons , button)
 		
 		local unassignButton = Button.Create(button)
 		unassignButton:SetDock(GwenPosition.Right)
@@ -138,6 +144,37 @@ BindMenu.Create = function(...)
 		control.valueString = "Unassigned"
 		
 		self:Assign(activeButton)
+		
+		self.dirtySettings = true
+	end
+	
+	function window:RequestSettings()
+		Network:Send("BindMenuRequestSettings" , 12345)
+	end
+	
+	function window:SaveSettings()
+		local settings = ""
+		
+		-- Marshal every control into a format that will be stored in the database.
+		for index , control in ipairs(Controls.controls) do
+			local type = "0"
+			if control.type == "Action" then
+				type = "1"
+			elseif control.type == "Key" then
+				type = "2"
+			end
+			settings = settings..control.name.."|"..type.."|"..tostring(control.value).."\n"
+		end
+		
+		Network:Send("BindMenuSaveSettings" , settings)
+	end
+	
+	window._Remove = window.Remove
+	function window:Remove()
+		Events:Unsubscribe(self.tickEvent)
+		Network:Unsubscribe(self.receiveEvent)
+		
+		self:_Remove()
 	end
 	
 	-- Events
@@ -155,16 +192,12 @@ BindMenu.Create = function(...)
 		
 		control.type = "Action"
 		control.value = args.input
-		control.valueString = "INVALID"
-		
-		for index , actionName in ipairs(InputNames.Action) do
-			if Action[actionName] == args.input then
-				control.valueString = actionName
-			end
-		end
+		control.valueString = InputNames.GetActionName(args.input)
 		
 		self:Assign(self.activatedButton)
 		self.activatedButton = nil
+		
+		self.dirtySettings = true
 		
 		return true
 	end
@@ -173,14 +206,8 @@ BindMenu.Create = function(...)
 		local control = self.activatedButton:GetDataObject("control")
 		
 		control.type = "Key"
-		control.value = args.key
-		control.valueString = "INVALID"
-		
-		for index , keyname in ipairs(InputNames.Key) do
-			if VirtualKey[keyname] == args.key then
-				control.valueString = keyname
-			end
-		end
+		control.value = args.key		
+		control.valueString = InputNames.GetKeyName(args.key)
 		
 		if control.valueString == "INVALID" then
 			control.valueString = string.char(args.key) or "Unknown"
@@ -188,7 +215,66 @@ BindMenu.Create = function(...)
 		
 		self:Assign(self.activatedButton)
 		self.activatedButton = nil
+		
+		self.dirtySettings = true
 	end
+	
+	function window:PostTick()
+		if self.saveTimer:GetSeconds() > 9 then
+			self.saveTimer:Restart()
+			
+			if self.dirtySettings then
+				self.dirtySettings = false
+				self:SaveSettings()
+			end
+		end
+	end
+	
+	function window:ReceiveSettings(settings)
+		if settings == "Empty" then
+			return
+		end
+		
+		local settingsTable = settings:split("\n")
+		for index , setting in ipairs(settingsTable) do
+			if setting:len() < 4 then
+				goto continue
+			end
+			
+			local control = {}
+			local name , type , value = table.unpack(setting:split("|"))
+			control.name = name
+			if type == "0" then
+				control.type = "Unassigned"
+				control.value = -1
+				control.valueString = "Unassigned"
+			elseif type == "1" then
+				control.type = "Action"
+				control.value = tonumber(value) or -1
+				control.valueString = InputNames.GetActionName(control.value)
+			elseif type == "2" then
+				control.type = "Key"
+				control.value = tonumber(value) or -1
+				control.valueString = InputNames.GetKeyName(control.value)
+			end
+			
+			for index , button in ipairs(self.buttons) do
+				local controlToAssign = button:GetDataObject("control")
+				if controlToAssign.name == control.name then
+					button:SetDataObject("control" , control)
+					self:Assign(button)
+					break
+				end
+			end
+			
+			::continue::
+		end
+	end
+	
+	window.tickEvent = Events:Subscribe("PostTick" , window , window.PostTick)
+	window.receiveEvent = Network:Subscribe(
+		"BindMenuReceiveSettings" , window , window.ReceiveSettings
+	)
 	
 	return window
 end
