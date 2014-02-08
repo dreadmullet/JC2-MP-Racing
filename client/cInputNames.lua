@@ -11,6 +11,10 @@ InputNames.GetActionName = function(action)
 end
 
 InputNames.GetKeyName = function(key)
+	if string.char(key) then
+		return string.char(key)
+	end
+	
 	for index , keyName in ipairs(InputNames.Key) do
 		if VirtualKey[keyName] == key then
 			return keyName
