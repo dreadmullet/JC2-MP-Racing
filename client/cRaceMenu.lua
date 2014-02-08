@@ -33,7 +33,6 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	self:EventSubscribe("ControlDown")
 	self:EventSubscribe("LocalPlayerInput")
-	self:EventSubscribe("InputPoll")
 	self:EventSubscribe("LocalPlayerChat")
 end
 
@@ -121,24 +120,6 @@ function RaceMenu:LocalPlayerInput(args)
 	end
 	
 	return false
-end
-
--- This allows you to control helicopters with left/right instead of the mouse.
-function RaceMenu:InputPoll()
-	if self.isEnabled == false then
-		return
-	end
-	
-	-- TODO: GetValue returns 0 - 65535 as of 0.1.3. Blame Trix.
-	local inputRollRight = Input:GetValue(Action.HeliRollRight)
-	if inputRollRight > 0 then
-		Input:SetValue(Action.HeliTurnRight , inputRollRight / 65535 / 2)
-	end
-	
-	local inputRollLeft = Input:GetValue(Action.HeliRollLeft)
-	if inputRollLeft > 0 then
-		Input:SetValue(Action.HeliTurnLeft , inputRollLeft / 65535 / 2)
-	end
 end
 
 function RaceMenu:LocalPlayerChat(args)
