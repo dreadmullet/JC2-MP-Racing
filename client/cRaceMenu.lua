@@ -144,7 +144,10 @@ end
 function RaceMenu:LocalPlayerChat(args)
 	if args.text:lower() == RaceMenu.command then
 		self:SetEnabled(not self.isEnabled)
+		return false
 	end
+	
+	return true
 end
 
 Events:Subscribe("ModuleLoad" , function()
