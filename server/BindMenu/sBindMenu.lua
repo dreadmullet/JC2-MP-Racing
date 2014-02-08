@@ -69,7 +69,7 @@ end
 BindMenu.CheckSpam = function(player)
 	local timer = BindMenu.requests[player:GetId()]
 	if timer ~= nil and timer:GetSeconds() < BindMenu.networkLimit then
-		warn(player:GetName().." is requesting bind menu settings too quickly!")
+		warn(player:GetName().." is requesting or saving bind menu settings too quickly!")
 		return false
 	end
 	
