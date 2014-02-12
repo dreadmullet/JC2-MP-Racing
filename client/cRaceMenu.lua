@@ -74,11 +74,14 @@ function RaceMenu:CreateWindow()
 	
 	topArea:SizeToChildren()
 	
-	local bindMenu = BindMenu.Create(homePage)
-	bindMenu:SetDock(GwenPosition.Left)
+	local groupBoxBindMenu = GroupBox.Create(homePage)
+	groupBoxBindMenu:SetDock(GwenPosition.Left)
+	groupBoxBindMenu:SetText("Controls")
+	groupBoxBindMenu:SetMargin(Vector2.One * 4 , Vector2.One * 4)
+	
+	local bindMenu = BindMenu.Create(groupBoxBindMenu)
+	bindMenu:SetDock(GwenPosition.Fill)
 	bindMenu:AddControl("Toggle this menu" , nil)
-	bindMenu:AddControl("TestAction" , "SoundHornSiren")
-	bindMenu:AddControl("TestKey" , "H")
 	bindMenu:RequestSettings()
 end
 
