@@ -46,5 +46,3 @@ function M.DrawGreyCheckpoint(pos)
 	Render:FillArea(pos + Vector2(-3 , -3) , Vector2(7 , 7) , settings.minimapCheckpointColorGrey2)
 	Render:FillArea(pos + Vector2(-2 , -2) , Vector2(5 , 5) , settings.minimapCheckpointColorGrey1)
 end
-
-

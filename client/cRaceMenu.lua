@@ -208,8 +208,6 @@ function RaceMenu:ReceivePersonalStats(stats)
 		stats.Wins = 0
 	end
 	
-	
-	
 	self.statLabels["Time spent racing"]:SetText(timePlayedString)
 	self.statLabels.Starts:SetText("Starts: "..tostring(stats.Starts))
 	self.statLabels.Finishes:SetText("Finishes: "..tostring(stats.Finishes))

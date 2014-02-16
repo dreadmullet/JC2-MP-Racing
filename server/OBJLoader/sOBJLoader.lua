@@ -13,7 +13,6 @@ OBJLoader.TrimCommentsFromLine = function(line)
 	return line
 end
 
-
 OBJLoader.Load = function(path)
 	-- Remove ".obj" from path, if possible.
 	if path:sub(path:len() - 3) == ".obj" then
