@@ -27,6 +27,11 @@ RaceMenu.allowedActions = {
 	Action.Jump ,
 }
 
+RaceMenu.topAreaColor = Color.FromHSV(25 , 0.95 , 0.85)
+RaceMenu.topAreaBorderColor = Color(144 , 144 , 144)
+RaceMenu.groupBoxColor = Color.FromHSV(150 , 0.06 , 0.775)
+RaceMenu.githubLabelColor = Color(255 , 255 , 255 , 228)
+
 function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.size = Vector2(650 , 500)
 	self.isEnabled = false
@@ -64,12 +69,12 @@ function RaceMenu:CreateWindow()
 	local topAreaBackground = Rectangle.Create(homePage)
 	topAreaBackground:SetPadding(Vector2.One * 2 , Vector2.One * 2)
 	topAreaBackground:SetDock(GwenPosition.Top)
-	topAreaBackground:SetColor(Color(144 , 144 , 144 , 255))
+	topAreaBackground:SetColor(RaceMenu.topAreaBorderColor)
 	
 	local topArea = ShadedRectangle.Create(topAreaBackground)
 	topArea:SetPadding(Vector2.One * 8 , Vector2.One * 8)
 	topArea:SetDock(GwenPosition.Top)
-	topArea:SetColor(Color.FromHSV(25 , 0.95 , 0.85))
+	topArea:SetColor(RaceMenu.topAreaColor)
 	
 	local largeName = Label.Create(topArea)
 	largeName:SetDock(GwenPosition.Top)
@@ -81,7 +86,7 @@ function RaceMenu:CreateWindow()
 	local githubLabel = Label.Create(topArea)
 	githubLabel:SetDock(GwenPosition.Top)
 	githubLabel:SetAlignment(GwenPosition.CenterH)
-	githubLabel:SetTextColor(Color(255 , 255 , 255 , 228))
+	githubLabel:SetTextColor(RaceMenu.githubLabelColor)
 	githubLabel:SetText("github.com/dreadmullet/JC2-MP-Racing")
 	githubLabel:SizeToContents()
 	
@@ -90,8 +95,11 @@ function RaceMenu:CreateWindow()
 	
 	local groupBoxBindMenu = GroupBox.Create(homePage)
 	groupBoxBindMenu:SetDock(GwenPosition.Left)
+	groupBoxBindMenu:SetMargin(Vector2(4 , 7) , Vector2(4 , 4))
+	groupBoxBindMenu:SetPadding(Vector2(1 , 3) , Vector2(1 , 1))
+	groupBoxBindMenu:SetTextColor(RaceMenu.groupBoxColor)
 	groupBoxBindMenu:SetText("Controls")
-	groupBoxBindMenu:SetMargin(Vector2.One * 4 , Vector2.One * 4)
+	groupBoxBindMenu:SetTextSize(24)
 	
 	local bindMenu = BindMenu.Create(groupBoxBindMenu)
 	bindMenu:SetDock(GwenPosition.Fill)
@@ -102,9 +110,11 @@ function RaceMenu:CreateWindow()
 	
 	local groupBoxStats = GroupBox.Create(homePage)
 	groupBoxStats:SetDock(GwenPosition.Fill)
+	groupBoxStats:SetMargin(Vector2(4 , 7) , Vector2(4 , 4))
+	groupBoxStats:SetPadding(Vector2(4 , 7) , Vector2(4 , 4))
+	groupBoxStats:SetTextColor(RaceMenu.groupBoxColor)
 	groupBoxStats:SetText("Personal stats")
-	groupBoxStats:SetMargin(Vector2(4 , 4) , Vector2(4 , 4))
-	groupBoxStats:SetPadding(Vector2(4 , 4) , Vector2(4 , 4))
+	groupBoxStats:SetTextSize(24)
 	
 	local CreateStatLabel = function(name)
 		local label = Label.Create(groupBoxStats)
