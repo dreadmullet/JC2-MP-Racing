@@ -6,10 +6,10 @@ Events:Subscribe(
 			settings.textColor
 		)
 		
+		Stats.Init()
+		
 		if settings.raceManager then
 			raceManager = settings.raceManager()
 		end
-		
-		Stats.Init()
 	end
 )
