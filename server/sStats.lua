@@ -10,7 +10,7 @@ Stats.timer = nil
 Stats.logFile = nil
 
 -- Minimum interval that a client is allowed to request, to prevent spam.
-Stats.requestLimitSeconds = 2
+Stats.requestLimitSeconds = 1.8
 -- Map that helps with preventing request spam.
 -- Key: player id
 -- Value: timer

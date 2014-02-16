@@ -1,6 +1,6 @@
 RaceMenu.command = "/racemenu"
 
-RaceMenu.requestLimitSeconds = 3.3
+RaceMenu.requestLimitSeconds = 2.6
 
 RaceMenu.allowedActions = {
 	Action.Accelerate ,
@@ -36,9 +36,6 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.requests = {}
 	
 	self:CreateWindow()
-	
-	-- Note: All other stats requests should be done using self.requests.
-	Network:Send("RequestPersonalStats" , "unused")
 	
 	self:EventSubscribe("ControlDown")
 	self:EventSubscribe("LocalPlayerInput")
@@ -123,6 +120,7 @@ function RaceMenu:SetEnabled(enabled)
 	
 	if self.isEnabled then
 		self.window:BringToFront()
+		table.insert(self.requests , {"RequestPersonalStats" , "unused"})
 	end
 	
 	Mouse:SetVisible(self.isEnabled)
