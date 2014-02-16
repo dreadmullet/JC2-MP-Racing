@@ -17,6 +17,10 @@ Stats.UpdateFromOldVersion = function(version)
 		Stats.UpdateFromV0(database)
 		version = 1
 	end
+	if version == 1 then
+		Stats.UpdateFromV1(database)
+		version = 2
+	end
 	
 	print(".")
 	
@@ -38,10 +42,13 @@ Stats.UpdateFromOldVersion = function(version)
 	
 	-- RacePlayers
 	for index , racePlayer in ipairs(database.RacePlayers) do
-		local command = SQL:Command("insert into RacePlayers values(?,?,?)")
+		local command = SQL:Command("insert into RacePlayers values(?,?,?,?,?,?)")
 		command:Bind(1 , racePlayer.SteamId)
 		command:Bind(2 , racePlayer.Name)
 		command:Bind(3 , racePlayer.PlayTime)
+		command:Bind(4 , racePlayer.Starts)
+		command:Bind(5 , racePlayer.Finishes)
+		command:Bind(6 , racePlayer.Wins)
 		command:Execute()
 	end
 	print(".")
@@ -83,5 +90,32 @@ Stats.UpdateFromV0 = function(database)
 	for index , racePlayer in ipairs(database.RacePlayers) do
 		racePlayer.PlayTime = racePlayer.Playtime
 		racePlayer.Playtime = nil
+	end
+end
+
+Stats.UpdateFromV1 = function(database)
+	for index , racePlayer in ipairs(database.RacePlayers) do
+		local starts = 0
+		local finishes = 0
+		local wins = 0
+		
+		local query = SQL:Query("select Place from RaceResults where SteamId = (?)")
+		query:Bind(1 , racePlayer.SteamId)
+		local results = query:Execute()
+		
+		starts = #results
+		
+		for index , result in ipairs(results) do
+			if tonumber(result.Place) >= 1 then
+				finishes = finishes + 1
+			end
+			if tonumber(result.Place) == 1 then
+				wins = wins + 1
+			end
+		end
+		
+		racePlayer.Starts = starts
+		racePlayer.Finishes = finishes
+		racePlayer.Wins = wins
 	end
 end

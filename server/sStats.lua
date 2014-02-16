@@ -2,7 +2,7 @@
 -- All database interactions are done here.
 ----------------------------------------------------------------------------------------------------
 
-Stats.version = 1
+Stats.version = 2
 
 -- Logs time elapsed for each function.
 Stats.debug = true
@@ -70,13 +70,12 @@ end
 ----------------------------------------------------------------------------------------------------
 
 Stats.Init = function()
-	local errorMessage = nil
 	if Stats.debug then
 		Stats.logFile , openError = io.open("Stats.log" , "a+")
 		if Stats.logFile then
 			Stats.logFile:write("\n")
 		else
-			errorMessage = "Cannot open Stats.log. (Are permissions set correctly?) "..openError
+			warn("Cannot open Stats.log. (Are permissions set correctly?) "..openError)
 			Stats.debug = false
 		end
 	end
@@ -104,10 +103,6 @@ Stats.Init = function()
 	Stats.CreateTables()
 	
 	Stats.DebugTimerEnd("Init")
-	
-	if errorMessage then
-		error(errorMessage)
-	end
 end
 
 Stats.CreateTables = function()
@@ -115,9 +110,12 @@ Stats.CreateTables = function()
 	SQL:Execute(
 		"create table if not exists "..
 		"RacePlayers("..
-			"SteamId  integer primary key,"..
+			"SteamId  integer primary key ,"..
 			"Name     text ,"..
-			"PlayTime integer default 0".. -- Seconds
+			"PlayTime integer default 0 ,".. -- Seconds
+			"Starts   integer default 0 ,"..
+			"Finishes integer default 0 ,"..
+			"Wins     integer default 0"..
 		")"
 	)
 	-- RaceResults
@@ -192,6 +190,8 @@ end
 Stats.AddRaceResult = function(racer , place , course)
 	Stats.DebugTimerStart()
 	
+	-- Add to RaceResults.
+	
 	local vehicleId = racer.assignedVehicleId
 	-- Vehicle model id of -1 means on-foot. -2 means no assigned vehicle.
 	local vehicleModelId = -2
@@ -218,6 +218,26 @@ Stats.AddRaceResult = function(racer , place , course)
 	command:Bind(3 , FNV(course.fileName))
 	command:Bind(4 , vehicleModelId)
 	command:Bind(5 , bestTime)
+	command:Execute()
+	
+	-- Update RacePlayers with player stats (starts, finishes, and wins).
+	
+	local playerStats = Stats.GetPersonalStats(racer.steamId)
+	playerStats.Starts = playerStats.Starts + 1
+	if place >= 1 then
+		playerStats.Finishes = playerStats.Finishes + 1
+	end
+	if place == 1 then
+		playerStats.Wins = playerStats.Wins + 1
+	end
+	
+	command = SQL:Command(
+		"update RacePlayers set Starts = (?) , Finishes = (?) , Wins = (?) where SteamId = (?)"
+	)
+	command:Bind(1 , playerStats.Starts)
+	command:Bind(2 , playerStats.Finishes)
+	command:Bind(3 , playerStats.Wins)
+	command:Bind(4 , racer.steamId)
 	command:Execute()
 	
 	Stats.DebugTimerEnd("AddRaceResult")
@@ -318,18 +338,16 @@ Stats.PlayerExit = function(racer)
 	Stats.DebugTimerEnd("PlayerExit")
 end
 
-Stats.GetPersonalStats = function(player)
+Stats.GetPersonalStats = function(steamId)
 	local stats = {}
 	
-	local query = SQL:Query("select PlayTime from RacePlayers where SteamId = (?)")
-	query:Bind(1 , player:GetSteamId().id)
+	local query = SQL:Query(
+		"select PlayTime , Starts , Finishes , Wins from RacePlayers where SteamId = (?)"
+	)
+	query:Bind(1 , steamId)
 	local results = query:Execute()
 	
-	if results[1] then
-		stats[1] = results[1].PlayTime
-	end
-	
-	return stats
+	return results[1]
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -341,7 +359,7 @@ Stats.RequestPersonalStats = function(unused , player)
 		return
 	end
 	
-	Network:Send(player , "ReceivePersonalStats" , Stats.GetPersonalStats(player))
+	Network:Send(player , "ReceivePersonalStats" , Stats.GetPersonalStats(player:GetSteamId().id))
 end
 
 Network:Subscribe("RequestPersonalStats" , Stats.RequestPersonalStats)

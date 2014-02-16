@@ -30,7 +30,7 @@ RaceMenu.allowedActions = {
 function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.size = Vector2(650 , 500)
 	self.isEnabled = false
-	self.timePlayedLabel = nil
+	self.statLabels = {}
 	-- These two help with only sending network requests every few seconds. Used in PostTick.
 	self.requestTimer = Timer()
 	self.requests = {}
@@ -100,17 +100,27 @@ function RaceMenu:CreateWindow()
 	
 	groupBoxBindMenu:SetWidth(bindMenu:GetWidth())
 	
-	local groupBoxInfo = GroupBox.Create(homePage)
-	groupBoxInfo:SetDock(GwenPosition.Fill)
-	groupBoxInfo:SetText("Information")
-	groupBoxInfo:SetMargin(Vector2(4 , 4) , Vector2(4 , 4))
-	groupBoxInfo:SetPadding(Vector2(4 , 4) , Vector2(4 , 4))
+	local groupBoxStats = GroupBox.Create(homePage)
+	groupBoxStats:SetDock(GwenPosition.Fill)
+	groupBoxStats:SetText("Personal stats")
+	groupBoxStats:SetMargin(Vector2(4 , 4) , Vector2(4 , 4))
+	groupBoxStats:SetPadding(Vector2(4 , 4) , Vector2(4 , 4))
 	
-	self.timePlayedLabel = Label.Create(groupBoxInfo)
-	self.timePlayedLabel:SetDock(GwenPosition.Fill)
-	self.timePlayedLabel:SetTextSize(20)
-	self.timePlayedLabel:SetText("Time played: ????")
-	self.timePlayedLabel:SizeToContents()
+	local CreateStatLabel = function(name)
+		local label = Label.Create(groupBoxStats)
+		label:SetMargin(Vector2(0 , 0) , Vector2(0 , 3))
+		label:SetDock(GwenPosition.Top)
+		label:SetTextSize(18)
+		label:SetText(name..": ????")
+		label:SizeToContents()
+		
+		self.statLabels[name] = label
+	end
+	
+	CreateStatLabel("Time spent racing")
+	CreateStatLabel("Starts")
+	CreateStatLabel("Finishes")
+	CreateStatLabel("Wins")
 end
 
 function RaceMenu:SetEnabled(enabled)
@@ -176,12 +186,16 @@ end
 -- Network events
 
 function RaceMenu:ReceivePersonalStats(stats)
-	local totalSeconds = stats[1]
-	local timePlayedString = "INVALID"
-	if totalSeconds then
-		local hours , minutes = Utility.SplitSeconds(stats[1] or 0)
-		timePlayedString = string.format("%i hours, %i minutes" , hours , minutes)
+	if stats == nil then
+		return
 	end
 	
-	self.timePlayedLabel:SetText(timePlayedString)
+	local timePlayedString = "INVALID"
+	local hours , minutes = Utility.SplitSeconds(tonumber(stats.PlayTime))
+	timePlayedString = string.format("Time spent racing: %ih, %im" , hours , minutes)
+	
+	self.statLabels["Time spent racing"]:SetText(timePlayedString)
+	self.statLabels.Starts:SetText("Starts: "..tostring(stats.Starts))
+	self.statLabels.Finishes:SetText("Finishes: "..tostring(stats.Finishes))
+	self.statLabels.Wins:SetText("Wins: "..tostring(stats.Wins))
 end
