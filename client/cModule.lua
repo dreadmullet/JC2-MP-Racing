@@ -1,18 +1,25 @@
-function ModulesLoad()
+ModuleLoad = function()
+	raceMenu = RaceMenu()
+end
+
+ModulesLoad = function()
 	-- Add us to the help menu.
-	local args = {}
-	args.name = settings.gamemodeName
-	args.text = settings.gamemodeDescription
+	local args = {
+		name = settings.gamemodeName ,
+		text = settings.gamemodeDescription
+	}
 	Events:Fire("HelpAddItem" , args)
 end
 
-function ModuleUnload()
+ModuleUnload = function()
 	-- Remove us from the help menu.
-	local args = {}
-	args.name = settings.gamemodeName
+	local args = {
+		name = settings.gamemodeName
+	}
 	Events:Fire("HelpRemoveItem" , args)
 end
 
+Events:Subscribe("ModuleLoad" , ModuleLoad)
 Events:Subscribe("ModulesLoad" , ModulesLoad)
 Events:Subscribe("ModuleUnload" , ModuleUnload)
 

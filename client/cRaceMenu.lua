@@ -185,8 +185,3 @@ function RaceMenu:ReceivePersonalStats(stats)
 	
 	self.timePlayedLabel:SetText(timePlayedString)
 end
-
--- TODO: This should probably be moved.
-Events:Subscribe("ModuleLoad" , function()
-	raceMenu = RaceMenu()
-end)
