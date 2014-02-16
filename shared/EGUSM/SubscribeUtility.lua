@@ -1,12 +1,19 @@
 
 function EGUSM.SubscribeUtility:__init()
 	-- Expose functions.
+	
 	self.EventSubscribe = EGUSM.SubscribeUtility.EventSubscribe
 	self.NetworkSubscribe = EGUSM.SubscribeUtility.NetworkSubscribe
+	self.NetSubscribe = self.NetworkSubscribe
+	
 	self.EventUnsubscribe = EGUSM.SubscribeUtility.EventUnsubscribe
 	self.NetworkUnsubscribe = EGUSM.SubscribeUtility.NetworkUnsubscribe
+	self.NetUnsubscribe = self.NetworkUnsubscribe
+	
 	self.EventUnsubscribeAll = EGUSM.SubscribeUtility.EventUnsubscribeAll
 	self.NetworkUnsubscribeAll = EGUSM.SubscribeUtility.NetworkUnsubscribeAll
+	self.NetUnsubscribeAll = self.NetworkUnsubscribeAll
+	
 	self.Destroy = EGUSM.SubscribeUtility.Destroy
 	
 	-- Each element is like {eventName , event}.
