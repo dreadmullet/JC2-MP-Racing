@@ -1,17 +1,21 @@
 ----------------------------------------------------------------------------------------------------
 -- Manages backward compatibility. If a database from an old Racing version is loaded, it is
--- converted to use the new version. In theory, /all/ database versions are compatible with the
--- newest version of Racing.
+-- converted to use the new version. In theory, /all/ database versions are backwards compatible.
 ----------------------------------------------------------------------------------------------------
 
-Stats.UpdateFromOldVersion = function(oldVersion)
+Stats.UpdateFromOldVersion = function(version)
 	print("Updating database...")
 	local timer = Timer()
 	
 	-- This is /the entire database/ marshalled into a table.
-	local database
-	if oldVersion == 0 then
-		database = Stats.UpdateFromV0()
+	local database = {}
+	database.RacePlayers = SQL:Query("select * from RacePlayers"):Execute()
+	database.RaceResults = SQL:Query("select * from RaceResults"):Execute()
+	database.RaceCourses = SQL:Query("select * from RaceCourses"):Execute()
+	
+	if version == 0 then
+		Stats.UpdateFromV0(database)
+		version = 1
 	end
 	
 	print(".")
@@ -75,22 +79,9 @@ Stats.UpdateFromOldVersion = function(oldVersion)
 	print("Done. Time elapsed: "..string.format("%.3f" , timer:GetSeconds()).." seconds")
 end
 
-Stats.UpdateFromV0 = function(oldDatabase)
-	if oldDatabase == nil then
-		oldDatabase = {}
-		oldDatabase.RacePlayers = SQL:Query("select * from RacePlayers"):Execute()
-		oldDatabase.RaceResults = SQL:Query("select * from RaceResults"):Execute()
-		oldDatabase.RaceCourses = SQL:Query("select * from RaceCourses"):Execute()
-	end
-	
-	local returnDatabase = {}
-	returnDatabase.RacePlayers = oldDatabase.RacePlayers
-	for index , racePlayer in ipairs(returnDatabase.RacePlayers) do
+Stats.UpdateFromV0 = function(database)
+	for index , racePlayer in ipairs(database.RacePlayers) do
 		racePlayer.PlayTime = racePlayer.Playtime
 		racePlayer.Playtime = nil
 	end
-	returnDatabase.RaceResults = oldDatabase.RaceResults
-	returnDatabase.RaceCourses = oldDatabase.RaceCourses
-	
-	return returnDatabase
 end
