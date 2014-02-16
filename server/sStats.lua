@@ -16,6 +16,10 @@ Stats.requestLimitSeconds = 1.8
 -- Value: timer
 Stats.requests = {}
 
+-- Used to commit everything in a transaction every so often (settings.statsCommitInterval).
+Stats.sqlCommands = {}
+Stats.sqlCommitTimer = Timer()
+
 ----------------------------------------------------------------------------------------------------
 -- Utility
 ----------------------------------------------------------------------------------------------------
@@ -103,6 +107,8 @@ Stats.Init = function()
 	Stats.CreateTables()
 	
 	Stats.DebugTimerEnd("Init")
+	
+	Events:Subscribe("PostTick" , Stats.PostTick)
 end
 
 Stats.CreateTables = function()
@@ -170,7 +176,7 @@ Stats.AddPlayer = function(racer)
 	command = SQL:Command("update RacePlayers set Name = (?) where SteamId = (?)")
 	command:Bind(1 , racer.name)
 	command:Bind(2 , racer.steamId)
-	command:Execute()
+	table.insert(Stats.sqlCommands , command)
 	
 	Stats.DebugTimerEnd("AddPlayer")
 end
@@ -218,7 +224,7 @@ Stats.AddRaceResult = function(racer , place , course)
 	command:Bind(3 , FNV(course.fileName))
 	command:Bind(4 , vehicleModelId)
 	command:Bind(5 , bestTime)
-	command:Execute()
+	table.insert(Stats.sqlCommands , command)
 	
 	-- Update RacePlayers with player stats (starts, finishes, and wins).
 	
@@ -238,7 +244,7 @@ Stats.AddRaceResult = function(racer , place , course)
 	command:Bind(2 , playerStats.Finishes)
 	command:Bind(3 , playerStats.Wins)
 	command:Bind(4 , racer.steamId)
-	command:Execute()
+	table.insert(Stats.sqlCommands , command)
 	
 	Stats.DebugTimerEnd("AddRaceResult")
 end
@@ -250,14 +256,14 @@ Stats.AddCourse = function(course)
 		"insert or ignore into RaceCourses(FileNameHash) values(?)"
 	)
 	command:Bind(1 , FNV(course.fileName))
-	command:Execute()
+	table.insert(Stats.sqlCommands , command)
 	
 	command = SQL:Command(
 		"update RaceCourses set Name = (?) where FileNameHash = (?)"
 	)
 	command:Bind(1 , course.name)
 	command:Bind(2 , FNV(course.fileName))
-	command:Execute()
+	table.insert(Stats.sqlCommands , command)
 	
 	Stats.DebugTimerEnd("AddCourse")
 end
@@ -311,7 +317,7 @@ Stats.RaceStart = function(race)
 	)
 	command:Bind(1 , timesPlayed)
 	command:Bind(2 , FNV(race.course.fileName))
-	command:Execute()
+	table.insert(Stats.sqlCommands , command)
 	
 	-- Get each racer's PlayTime.
 	-- NOTE: This is probably inefficient. Would a transaction even work here?
@@ -333,7 +339,7 @@ Stats.PlayerExit = function(racer)
 	)
 	command:Bind(1 , racer.playTime)
 	command:Bind(2 , racer.steamId)
-	command:Execute()
+	table.insert(Stats.sqlCommands , command)
 	
 	Stats.DebugTimerEnd("PlayerExit")
 end
@@ -348,6 +354,25 @@ Stats.GetPersonalStats = function(steamId)
 	local results = query:Execute()
 	
 	return results[1]
+end
+
+----------------------------------------------------------------------------------------------------
+-- Events
+----------------------------------------------------------------------------------------------------
+
+Stats.PostTick = function()
+	if Stats.sqlCommitTimer:GetSeconds() > settings.statsCommitInterval then
+		Stats.sqlCommitTimer:Restart()
+		
+		if #Stats.sqlCommands ~= 0 then
+			local transaction = SQL:Transaction()
+			for index , command in ipairs(Stats.sqlCommands) do
+				command:Execute()
+			end
+			Stats.sqlCommands = {}
+			transaction:Commit()
+		end
+	end
 end
 
 ----------------------------------------------------------------------------------------------------

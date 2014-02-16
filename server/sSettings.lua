@@ -10,16 +10,18 @@ if settings.debugLevel > 1 then
 	settings.version = settings.version.." (debug)"
 end
 
--- settings.raceManager = RaceManagerMode
+settings.raceManager = RaceManagerJoinable
 
 settings.coursesPath = "courses/"
+
+settings.statsCommitInterval = 10 -- Seconds
 
 settings.textColor = Color(250 , 157 , 133 , 255) -- Light red-orange.
 
 settings.startingGridWaitSeconds = 11
 settings.prizeMoneyDefault = 10000
 settings.prizeMoneyMultiplier = 0.75
-settings.lapsMult = 0.75
+settings.lapsMult = 1
 if debug.oneLap then settings.lapsMult = 0 end
 
 settings.numLapsFunc = function(numPlayers , maxPlayers , courseLaps)
