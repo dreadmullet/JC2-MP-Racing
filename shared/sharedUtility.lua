@@ -58,7 +58,7 @@ Utility.PrintTable = function(t , depth , tableList)
 			if tableList[value] then
 				print(tab.."(already printed)")
 			else
-				M.PrintTable(value , depth + 1 , tableList)
+				Utility.PrintTable(value , depth + 1 , tableList)
 			end
 		elseif type == "boolean" then
 			if value then
