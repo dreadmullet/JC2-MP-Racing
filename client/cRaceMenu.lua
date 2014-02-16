@@ -196,13 +196,19 @@ end
 -- Network events
 
 function RaceMenu:ReceivePersonalStats(stats)
-	if stats == nil then
-		return
+	local timePlayedString = "INVALID"
+	if stats then
+		local hours , minutes = Utility.SplitSeconds(tonumber(stats.PlayTime))
+		timePlayedString = string.format("Time spent racing: %ih, %im" , hours , minutes)
+	else
+		stats = {}
+		timePlayedString = "Time spent racing: none"
+		stats.Starts = 0
+		stats.Finishes = 0
+		stats.Wins = 0
 	end
 	
-	local timePlayedString = "INVALID"
-	local hours , minutes = Utility.SplitSeconds(tonumber(stats.PlayTime))
-	timePlayedString = string.format("Time spent racing: %ih, %im" , hours , minutes)
+	
 	
 	self.statLabels["Time spent racing"]:SetText(timePlayedString)
 	self.statLabels.Starts:SetText("Starts: "..tostring(stats.Starts))
