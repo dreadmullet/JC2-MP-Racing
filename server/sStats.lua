@@ -9,6 +9,13 @@ Stats.debug = true
 Stats.timer = nil
 Stats.logFile = nil
 
+-- Minimum interval that a client is allowed to request, to prevent spam.
+Stats.requestLimitSeconds = 2
+-- Map that helps with preventing request spam.
+-- Key: player id
+-- Value: timer
+Stats.requests = {}
+
 ----------------------------------------------------------------------------------------------------
 -- Utility
 ----------------------------------------------------------------------------------------------------
@@ -43,6 +50,19 @@ Stats.GetTableExists = function(tableName)
 	local results = query:Execute()
 	
 	return results[1] ~= nil
+end
+
+-- Returns false if they are spamming requests and should be refused.
+Stats.CheckSpam = function(player)
+	local timer = Stats.requests[player:GetId()]
+	if timer ~= nil and timer:GetSeconds() < Stats.requestLimitSeconds then
+		warn(player:GetName().." is requesting stats too quickly!")
+		return false
+	end
+	
+	Stats.requests[player:GetId()] = Timer()
+	
+	return true
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -297,3 +317,31 @@ Stats.PlayerExit = function(racer)
 	
 	Stats.DebugTimerEnd("PlayerExit")
 end
+
+Stats.GetPersonalStats = function(player)
+	local stats = {}
+	
+	local query = SQL:Query("select PlayTime from RacePlayers where SteamId = (?)")
+	query:Bind(1 , player:GetSteamId().id)
+	local results = query:Execute()
+	
+	if results[1] then
+		stats[1] = results[1].PlayTime
+	end
+	
+	return stats
+end
+
+----------------------------------------------------------------------------------------------------
+-- Network
+----------------------------------------------------------------------------------------------------
+
+Stats.RequestPersonalStats = function(unused , player)
+	if Stats.CheckSpam(player) == false then
+		return
+	end
+	
+	Network:Send(player , "ReceivePersonalStats" , Stats.GetPersonalStats(player))
+end
+
+Network:Subscribe("RequestPersonalStats" , Stats.RequestPersonalStats)
