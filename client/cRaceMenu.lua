@@ -26,7 +26,7 @@ RaceMenu.allowedActions = {
 }
 
 function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
-	self.size = Vector2(704 , 496)
+	self.size = Vector2(650 , 500)
 	self.isEnabled = false
 	
 	self:CreateWindow()
@@ -53,26 +53,32 @@ function RaceMenu:CreateWindow()
 	local homePage = homeTabButton:GetPage()
 	homePage:SetPadding(Vector2.One*2 , Vector2.One * 2)
 	
-	local topArea = Rectangle.Create(homePage)
+	local topAreaBackground = Rectangle.Create(homePage)
+	topAreaBackground:SetPadding(Vector2.One * 2 , Vector2.One * 2)
+	topAreaBackground:SetDock(GwenPosition.Top)
+	topAreaBackground:SetColor(Color(144 , 144 , 144 , 255))
+	
+	local topArea = ShadedRectangle.Create(topAreaBackground)
 	topArea:SetPadding(Vector2.One * 8 , Vector2.One * 8)
 	topArea:SetDock(GwenPosition.Top)
-	topArea:SetColor(Color(179 , 112 , 54 , 192))
+	topArea:SetColor(Color(217 , 110 , 43 , 255))
 	
 	local largeName = Label.Create(topArea)
 	largeName:SetDock(GwenPosition.Top)
 	largeName:SetAlignment(GwenPosition.CenterH)
 	largeName:SetTextSize(TextSize.VeryLarge)
-	largeName:SizeToContents()
 	largeName:SetText(settings.gamemodeName)
+	largeName:SizeToContents()
 	
 	local githubLabel = Label.Create(topArea)
 	githubLabel:SetDock(GwenPosition.Top)
 	githubLabel:SetAlignment(GwenPosition.CenterH)
-	githubLabel:SetTextColor(Color(192 , 192 , 192))
+	githubLabel:SetTextColor(Color(200 , 200 , 200))
 	githubLabel:SetText("github.com/dreadmullet/JC2-MP-Racing")
 	githubLabel:SizeToContents()
 	
 	topArea:SizeToChildren()
+	topAreaBackground:SizeToChildren()
 	
 	local groupBoxBindMenu = GroupBox.Create(homePage)
 	groupBoxBindMenu:SetDock(GwenPosition.Left)
@@ -83,6 +89,14 @@ function RaceMenu:CreateWindow()
 	bindMenu:SetDock(GwenPosition.Fill)
 	bindMenu:AddControl("Toggle this menu" , nil)
 	bindMenu:RequestSettings()
+	
+	groupBoxBindMenu:SetWidth(bindMenu:GetWidth())
+	
+	local groupBoxInfo = GroupBox.Create(homePage)
+	groupBoxInfo:SetDock(GwenPosition.Fill)
+	groupBoxInfo:SetText("Information")
+	groupBoxInfo:SetMargin(Vector2(4 , 4) , Vector2(4 , 4))
+	groupBoxInfo:SetPadding(Vector2(4 , 4) , Vector2(4 , 4))
 end
 
 function RaceMenu:SetEnabled(enabled)
