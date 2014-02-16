@@ -89,11 +89,10 @@ Utility.NumberToPlaceString = function(number)
 	end
 end
 
-Utility.LapTimeString = function(totalSeconds)
-	if totalSeconds == nil then
-		return "N/A"
-	end
-	
+-- Returns hours, minutes, seconds, hundredths
+Utility.SplitSeconds = function(totalSeconds)
+	local hours = math.floor(totalSeconds / 3600)
+	totalSeconds = totalSeconds - hours * 3600
 	local minutes = math.floor(totalSeconds / 60)
 	totalSeconds = totalSeconds - minutes * 60
 	local seconds = math.floor(totalSeconds)
@@ -108,6 +107,16 @@ Utility.LapTimeString = function(totalSeconds)
 		seconds = seconds + 1
 		hundredths = hundredths - 100
 	end
+	
+	return hours , minutes , seconds , hundredths
+end
+
+Utility.LapTimeString = function(totalSeconds)
+	if totalSeconds == nil then
+		return "N/A"
+	end
+	
+	local hours , minutes , seconds , hundredths = Utility.SplitSeconds(totalSeconds)
 	
 	return string.format("%.2i:%.2i.%.2i" , minutes , seconds , hundredths)
 end
