@@ -15,7 +15,7 @@ ShadedRectangle.Create = function(...)
 	baseRect:SetDataObject("lightRect" , lightRect)
 	
 	function baseRect:SetColor(color)
-		local colorLight = math.lerp(color , Color.White , 0.125)
+		local colorLight = math.lerp(color , Color.White , 0.1)
 		colorLight.a = color.a
 		
 		local darkRect = self:GetDataObject("darkRect")
