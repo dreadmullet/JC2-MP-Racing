@@ -6,6 +6,8 @@ Stats.version = 2
 
 -- Logs time elapsed for each function.
 Stats.debug = true
+-- Print to console as well.
+Stats.debugPrint = true
 Stats.timer = nil
 Stats.logFile = nil
 
@@ -45,6 +47,10 @@ Stats.LogLine = function(message)
 	if Stats.logFile then
 		Stats.logFile:write(os.date("%c").." | "..message.."\n")
 		Stats.logFile:flush()
+		
+		if Stats.debugPrint then
+			print("[Stats] "..message)
+		end
 	end
 end
 
