@@ -21,6 +21,8 @@ function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 end
 
 function RaceManagerJoinable:SetupNextRace()
+	Stats.UpdateCache()
+	
 	self.playerQueue = {}
 	self.nextCourse = self.courseManager:LoadCourseRandom()
 	self.nextCourseCollisions = math.random() > 0.55

@@ -115,6 +115,8 @@ function RaceManagerMode:PreTick(args)
 		then
 			self.raceInfo = nil
 			self.race:Terminate()
+			
+			Stats.UpdateCache()
 		elseif self.raceInfo == nil then
 			-- If there isn't a race, and there are players, create a race.
 			local playerCount = self:GetPlayerCount()
