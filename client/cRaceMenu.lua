@@ -33,9 +33,10 @@ RaceMenu.groupBoxColor = Color.FromHSV(150 , 0.06 , 0.775)
 RaceMenu.githubLabelColor = Color(255 , 255 , 255 , 228)
 
 function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
-	self.size = Vector2(650 , 500)
+	self.size = Vector2(680 , 464)
 	self.isEnabled = false
 	self.statLabels = {}
+	self.rankLabels = {}
 	-- These two help with only sending network requests every few seconds. Used in PostTick.
 	self.requestTimer = Timer()
 	self.requests = {}
@@ -116,21 +117,71 @@ function RaceMenu:CreateWindow()
 	groupBoxStats:SetText("Personal stats")
 	groupBoxStats:SetTextSize(24)
 	
-	local CreateStatLabel = function(name)
-		local label = Label.Create(groupBoxStats)
-		label:SetMargin(Vector2(0 , 0) , Vector2(0 , 3))
-		label:SetDock(GwenPosition.Top)
-		label:SetTextSize(18)
-		label:SetText(name..": ????")
-		label:SizeToContents()
+	local statFontSize = 16
+	local rowHeight = Render:GetTextHeight("W" , statFontSize) + 4
+	local count = 1
+	
+	local CreateStat = function(name , isHeader)
+		local row = Rectangle.Create(groupBoxStats)
+		row:SetPadding(Vector2(4 , 2) , Vector2(5 , 2))
+		row:SetDock(GwenPosition.Top)
+		row:SetHeight(rowHeight)
 		
-		self.statLabels[name] = label
+		local labelName = Label.Create(row)
+		labelName:SetDock(GwenPosition.Left)
+		labelName:SetTextSize(statFontSize)
+		labelName:SetText(name)
+		labelName:SetHeight(rowHeight)
+		labelName:SetWidthRel(0.5)
+		
+		local labelValue = Label.Create(row)
+		labelValue:SetDock(GwenPosition.Left)
+		labelValue:SetTextSize(statFontSize)
+		labelValue:SetText("?")
+		labelValue:SetHeight(rowHeight)
+		labelValue:SetWidthRel(0.25)
+		
+		local labelRank = Label.Create(row)
+		labelRank:SetDock(GwenPosition.Right)
+		labelRank:SetAlignment(GwenPosition.Right)
+		labelRank:SetTextSize(statFontSize)
+		labelRank:SetText("?")
+		labelRank:SetHeight(rowHeight)
+		labelRank:SetWidthRel(0.25)
+		
+		local rowColor
+		
+		if isHeader then
+			rowColor = Color.FromHSV(0 , 0 , 0)
+			rowColor.a = 40
+			row:SetHeight(rowHeight + 2)
+			
+			labelName:SetText("Stat")
+			labelValue:SetText("Value")
+			labelRank:SetText("Rank")
+		else
+			if count % 2 == 0 then
+				rowColor = Color.FromHSV(0 , 0 , 1)
+				rowColor.a = 16
+			else
+				rowColor = Color.FromHSV(0 , 0 , 0.5)
+				rowColor.a = 16
+			end
+			
+			self.statLabels[name] = labelValue
+			self.rankLabels[name] = labelRank
+		end
+		
+		row:SetColor(rowColor)
+		
+		count = count + 1
 	end
 	
-	CreateStatLabel("Time spent racing")
-	CreateStatLabel("Starts")
-	CreateStatLabel("Finishes")
-	CreateStatLabel("Wins")
+	CreateStat("." , true)
+	CreateStat("Time spent racing")
+	CreateStat("Starts")
+	CreateStat("Finishes")
+	CreateStat("Wins")
 end
 
 function RaceMenu:SetEnabled(enabled)
@@ -195,21 +246,36 @@ end
 
 -- Network events
 
-function RaceMenu:ReceivePersonalStats(stats)
-	local timePlayedString = "INVALID"
-	if stats then
-		local hours , minutes = Utility.SplitSeconds(tonumber(stats.PlayTime))
-		timePlayedString = string.format("Time spent racing: %ih, %im" , hours , minutes)
-	else
-		stats = {}
-		timePlayedString = "Time spent racing: none"
-		stats.Starts = 0
-		stats.Finishes = 0
-		stats.Wins = 0
-	end
+function RaceMenu:ReceivePersonalStats(personalStats)
+	local stats = personalStats.stats
+	local ranks = personalStats.ranks
+	
+	local hours , minutes = Utility.SplitSeconds(tonumber(stats.PlayTime))
+	local timePlayedString = string.format("%ih, %im" , hours , minutes)
 	
 	self.statLabels["Time spent racing"]:SetText(timePlayedString)
-	self.statLabels.Starts:SetText("Starts: "..tostring(stats.Starts))
-	self.statLabels.Finishes:SetText("Finishes: "..tostring(stats.Finishes))
-	self.statLabels.Wins:SetText("Wins: "..tostring(stats.Wins))
+	self.statLabels.Starts:SetText(tostring(stats.Starts))
+	self.statLabels.Finishes:SetText(tostring(stats.Finishes))
+	self.statLabels.Wins:SetText(tostring(stats.Wins))
+	
+	local UpdateRankLabel = function(rankLabel , rank)
+		local textColor
+		if rank == 1 then
+			textColor = Color.FromHSV(60 , 0.75 , 1)
+		elseif rank == 2 then
+			textColor = Color.FromHSV(190 , 0.1 , 1)
+		elseif rank == 3 then
+			textColor = Color.FromHSV(42 , 0.65 , 0.95)
+		else
+			textColor = Color.FromHSV(0 , 0 , 0.85)
+		end
+		
+		rankLabel:SetTextColor(textColor)
+		rankLabel:SetText(tostring(rank))
+	end
+	
+	UpdateRankLabel(self.rankLabels["Time spent racing"] , ranks.PlayTime)
+	UpdateRankLabel(self.rankLabels.Starts , ranks.Starts)
+	UpdateRankLabel(self.rankLabels.Finishes , ranks.Finishes)
+	UpdateRankLabel(self.rankLabels.Wins , ranks.Wins)
 end

@@ -6,7 +6,7 @@ Stats.version = 2
 
 -- Logs time elapsed for each function.
 Stats.debug = true
--- Print to console as well.
+-- Print to console as well. This can get very spammy.
 Stats.debugPrint = true
 Stats.timer = nil
 Stats.logFile = nil
@@ -21,6 +21,18 @@ Stats.requests = {}
 -- Used to commit everything in a transaction every so often (settings.statsCommitInterval).
 Stats.sqlCommands = {}
 Stats.sqlCommitTimer = Timer()
+
+-- Used to make rank requests faster. Updated with UpdateCache.
+-- Contains arrays: PlayTime, Starts, Finishes, Wins
+-- Each array goes from 0 to x, where x is the top value reached. For example, if the top person
+--    has 500 wins, Wins will have 501 elements. The value of each element is the rank. So, if the
+--    second best has 450 wins, there will be 50 elements with a value of 2. [500] is 1, while
+--    [450] and above is 2. This will, of course, use a decent chunk of memory, but it's for
+--    performance reasons, especially since SQL is blocking.
+-- PlayTime is a multiple of 6 minutes. Or something. It's just to make it so the table doesn't have
+--    an entry for every single second played, just one every 6 minute interval. For instance, 12
+--    minutes, 37 seconds would be 2.
+Stats.playerRankTables = nil
 
 ----------------------------------------------------------------------------------------------------
 -- Utility
@@ -111,6 +123,8 @@ Stats.Init = function()
 	end
 	
 	Stats.CreateTables()
+	
+	Stats.UpdateCache()
 	
 	Stats.DebugTimerEnd("Init")
 	
@@ -234,7 +248,7 @@ Stats.AddRaceResult = function(racer , place , course)
 	
 	-- Update RacePlayers with player stats (starts, finishes, and wins).
 	
-	local playerStats = Stats.GetPersonalStats(racer.steamId)
+	local playerStats = Stats.GetPersonalStats(racer.steamId).stats
 	playerStats.Starts = playerStats.Starts + 1
 	if place >= 1 then
 		playerStats.Finishes = playerStats.Finishes + 1
@@ -351,15 +365,105 @@ Stats.PlayerExit = function(racer)
 end
 
 Stats.GetPersonalStats = function(steamId)
-	local stats = {}
+	local returnTable = {}
 	
 	local query = SQL:Query(
 		"select PlayTime , Starts , Finishes , Wins from RacePlayers where SteamId = (?)"
 	)
 	query:Bind(1 , steamId)
-	local results = query:Execute()
+	local result = query:Execute()[1]
 	
-	return results[1]
+	if result then
+		returnTable.stats = {
+			PlayTime = tonumber(result.PlayTime) ,
+			Starts = tonumber(result.Starts) ,
+			Finishes = tonumber(result.Finishes) ,
+			Wins = tonumber(result.Wins)
+		}
+	else
+		returnTable.stats = {
+			PlayTime = 0 ,
+			Starts = 0 ,
+			Finishes = 0 ,
+			Wins = 0
+		}
+	end
+	
+	local rankTables = Stats.playerRankTables
+	
+	-- Rounded to 6 minutes.
+	local playTimeRounded = math.floor(returnTable.stats.PlayTime / 360)
+	
+	returnTable.ranks = {
+		-- 'or 1' at the end should only happen if they're above the cached first place.
+		PlayTime = rankTables.PlayTime[playTimeRounded] or -1 ,
+		Starts = rankTables.Starts[returnTable.stats.Starts] or -1 ,
+		Finishes = rankTables.Finishes[returnTable.stats.Finishes] or -1 ,
+		Wins = rankTables.Wins[returnTable.stats.Wins] or -1
+	}
+	
+	return returnTable
+end
+
+Stats.UpdateCache = function()
+	Stats.DebugTimerStart()
+	
+	print("Updating stats cache...")
+	
+	Stats.playerRankTables = {}
+	
+	local query = SQL:Query("select PlayTime , Starts , Finishes , Wins from RacePlayers")
+	local racePlayers = query:Execute()
+	
+	local GetSortedColumn = function(columnName)
+		local query = SQL:Query(
+			"select "..columnName.." from RacePlayers "..
+			"order by "..columnName.." desc "
+		)
+		local results = query:Execute()
+		
+		local returnTable = {}
+		if columnName == "PlayTime" then
+			for index , result in ipairs(results) do
+				table.insert(returnTable , math.floor(tonumber(result[columnName]) / 360))
+			end
+		else
+			for index , result in ipairs(results) do
+				table.insert(returnTable , tonumber(result[columnName]))
+			end
+		end
+		
+		return returnTable
+	end
+	
+	-- Complicated brain-stuff, just assume it works.
+	local Fill = function(name)
+		Stats.playerRankTables[name] = {}
+		
+		local source = GetSortedColumn(name)
+		local max = source[1] or 0 
+		local t = Stats.playerRankTables[name]
+		local currentRank = 1
+		
+		for n = max , 1 , -1 do
+			t[n] = currentRank
+			
+			if n <= source[currentRank] then
+				currentRank = currentRank + 1
+			end
+		end
+		
+		t[0] = currentRank
+	end
+	
+	Fill("PlayTime")
+	Fill("Starts")
+	Fill("Finishes")
+	Fill("Wins")
+	
+	print("Done")
+	
+	Stats.DebugTimerEnd("UpdateCache")
 end
 
 ----------------------------------------------------------------------------------------------------
