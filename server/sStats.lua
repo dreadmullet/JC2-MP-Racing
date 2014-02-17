@@ -396,10 +396,10 @@ Stats.GetPersonalStats = function(steamId)
 	
 	returnTable.ranks = {
 		-- 'or 1' at the end should only happen if they're above the cached first place.
-		PlayTime = rankTables.PlayTime[playTimeRounded] or -1 ,
-		Starts = rankTables.Starts[returnTable.stats.Starts] or -1 ,
-		Finishes = rankTables.Finishes[returnTable.stats.Finishes] or -1 ,
-		Wins = rankTables.Wins[returnTable.stats.Wins] or -1
+		PlayTime = rankTables.PlayTime[playTimeRounded] or 1 ,
+		Starts = rankTables.Starts[returnTable.stats.Starts] or 1 ,
+		Finishes = rankTables.Finishes[returnTable.stats.Finishes] or 1 ,
+		Wins = rankTables.Wins[returnTable.stats.Wins] or 1
 	}
 	
 	return returnTable
@@ -448,7 +448,7 @@ Stats.UpdateCache = function()
 		for n = max , 1 , -1 do
 			t[n] = currentRank
 			
-			if n <= source[currentRank] then
+			while source[currentRank] and n <= source[currentRank] do
 				currentRank = currentRank + 1
 			end
 		end
