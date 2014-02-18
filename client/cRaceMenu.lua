@@ -42,6 +42,7 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.requests = {}
 	
 	self:CreateWindow()
+	self:CreateHomeTab()
 	
 	self:EventSubscribe("ControlDown")
 	self:EventSubscribe("LocalPlayerInput")
@@ -58,11 +59,13 @@ function RaceMenu:CreateWindow()
 	self.window:SetVisible(self.isEnabled)
 	self.window:Subscribe("WindowClosed" , self , self.WindowClosed)
 	
-	local tabControl = TabControl.Create(self.window)
-	tabControl:SetDock(GwenPosition.Fill)
-	tabControl:SetTabStripPosition(GwenPosition.Top)
-	
-	local homeTabButton = tabControl:AddPage("Home")
+	self.tabControl = TabControl.Create(self.window)
+	self.tabControl:SetDock(GwenPosition.Fill)
+	self.tabControl:SetTabStripPosition(GwenPosition.Top)
+end
+
+function RaceMenu:CreateHomeTab()
+	local homeTabButton = self.tabControl:AddPage("Home")
 	
 	local homePage = homeTabButton:GetPage()
 	homePage:SetPadding(Vector2.One*2 , Vector2.One * 2)
