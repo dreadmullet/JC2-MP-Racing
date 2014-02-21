@@ -33,6 +33,8 @@ Stats.sqlCommitTimer = Timer()
 --    an entry for every single second played, just one every 6 minute interval. For instance, 12
 --    minutes, 37 seconds would be 2.
 Stats.playerRankTables = nil
+-- Updated with UpdateCache
+Stats.courses = nil
 
 ----------------------------------------------------------------------------------------------------
 -- Utility
@@ -410,6 +412,11 @@ Stats.UpdateCache = function()
 	
 	print("Updating stats cache...")
 	
+	Stats.courses = io.files(settings.coursesPath)
+	for index , course in ipairs(Stats.courses) do
+		Stats.courses[index] = course:sub(1 , course:len() - 7)
+	end
+	
 	Stats.playerRankTables = {}
 	
 	local query = SQL:Query("select PlayTime , Starts , Finishes , Wins from RacePlayers")
@@ -497,4 +504,13 @@ Stats.RequestPersonalStats = function(unused , player)
 	Network:Send(player , "ReceivePersonalStats" , Stats.GetPersonalStats(player:GetSteamId().id))
 end
 
+Stats.RequestCourseList = function(unused , player)
+	if Stats.CheckSpam(player) == false then
+		return
+	end
+	
+	Network:Send(player , "ReceiveCourseList" , Stats.courses)
+end
+
 Network:Subscribe("RequestPersonalStats" , Stats.RequestPersonalStats)
+Network:Subscribe("RequestCourseList" , Stats.RequestCourseList)
