@@ -292,7 +292,7 @@ end
 
 -- Example: from 1 to 10 returns top 10 times.
 -- Each item is {time = 123.45 , playerName = ""}
-Stats.GetCourseRecords = function(course , from , to)
+Stats.GetCourseRecords = function(courseFileName , from , to)
 	Stats.DebugTimerStart()
 	
 	local count = to - from + 1
@@ -303,7 +303,7 @@ Stats.GetCourseRecords = function(course , from , to)
 		"limit "..string.format("%i" , math.floor(count + 0.5)).." "..
 		"offset "..string.format("%i" , math.floor(from - 1 + 0.5))
 	)
-	query:Bind(1 , FNV(course.fileName))
+	query:Bind(1 , FNV(courseFileName))
 	local results = query:Execute()
 	
 	local records = {}
@@ -413,9 +413,6 @@ Stats.UpdateCache = function()
 	print("Updating stats cache...")
 	
 	Stats.courses = io.files(settings.coursesPath)
-	for index , course in ipairs(Stats.courses) do
-		Stats.courses[index] = course:sub(1 , course:len() - 7)
-	end
 	
 	Stats.playerRankTables = {}
 	
@@ -512,5 +509,14 @@ Stats.RequestCourseList = function(unused , player)
 	Network:Send(player , "ReceiveCourseList" , Stats.courses)
 end
 
+Stats.RequestCourseRecords = function(courseName , player)
+	if Stats.CheckSpam(player) == false then
+		return
+	end
+	
+	Network:Send(player , "ReceiveCourseRecords" , Stats.GetCourseRecords(courseName , 1 , 10))
+end
+
 Network:Subscribe("RequestPersonalStats" , Stats.RequestPersonalStats)
 Network:Subscribe("RequestCourseList" , Stats.RequestCourseList)
+Network:Subscribe("RequestCourseRecords" , Stats.RequestCourseRecords)

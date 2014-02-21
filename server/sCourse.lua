@@ -274,7 +274,7 @@ function Course.Load(name)
 	Stats.AddCourse(course)
 	
 	-- Load top times from database.
-	course.topRecords = Stats.GetCourseRecords(course , 1 , 10)
+	course.topRecords = Stats.GetCourseRecords(course.fileName , 1 , 10)
 	-- If there are no records yet, use a fake one.
 	if #course.topRecords == 0 then
 		local newRecord = {}
