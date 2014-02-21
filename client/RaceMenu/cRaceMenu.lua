@@ -1,0 +1,138 @@
+RaceMenu.command = "/racemenu"
+
+RaceMenu.requestLimitSeconds = 2.6
+
+RaceMenu.allowedActions = {
+	Action.Accelerate ,
+	Action.Reverse ,
+	Action.TurnLeft ,
+	Action.TurnRight ,
+	Action.HeliForward ,
+	Action.HeliBackward ,
+	Action.HeliRollLeft ,
+	Action.HeliRollRight ,
+	Action.HeliIncAltitude ,
+	Action.HeliDecAltitude ,
+	Action.PlaneIncTrust ,
+	Action.PlaneDecTrust ,
+	Action.PlanePitchUp ,
+	Action.PlanePitchDown ,
+	Action.PlaneTurnLeft ,
+	Action.PlaneTurnRight ,
+	Action.MoveForward ,
+	Action.MoveBackward ,
+	Action.MoveLeft ,
+	Action.MoveRight ,
+	Action.ParachuteOpenClose ,
+	Action.Jump ,
+}
+
+function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
+	self.size = Vector2(680 , 464)
+	self.isEnabled = false
+	-- These two help with only sending network requests every few seconds. Used in PostTick.
+	self.requestTimer = Timer()
+	self.requests = {}
+	self.tabs = {}
+	
+	self:CreateWindow()
+	self:AddTab(HomeTab)
+	self:AddTab(CourseRecordsTab)
+	
+	self:EventSubscribe("ControlDown")
+	self:EventSubscribe("LocalPlayerInput")
+	self:EventSubscribe("LocalPlayerChat")
+	self:EventSubscribe("PostTick")
+end
+
+function RaceMenu:CreateWindow()
+	self.window = Window.Create("RaceMenu")
+	self.window:SetTitle("Race Menu")
+	self.window:SetSize(self.size)
+	self.window:SetPosition(Render.Size/2 - self.size/2) -- Center of screen.
+	self.window:SetVisible(self.isEnabled)
+	self.window:Subscribe("WindowClosed" , self , self.WindowClosed)
+	
+	self.tabControl = TabControl.Create(self.window)
+	self.tabControl:SetDock(GwenPosition.Fill)
+	self.tabControl:SetTabStripPosition(GwenPosition.Top)
+end
+
+function RaceMenu:SetEnabled(enabled)
+	local wasEnabled = self.isEnabled
+	self.isEnabled = enabled
+	
+	self.window:SetVisible(self.isEnabled)
+	
+	if self.isEnabled then
+		self.window:BringToFront()
+		
+		if wasEnabled == false then
+			-- Try to call OnActivate on the current tab.
+			for index , tab in ipairs(self.tabs) do
+				if tab.tabButton and tab.tabButton == self.tabControl:GetCurrentTab() then
+					if tab.OnActivate then
+						tab:OnActivate()
+					end
+				end
+			end
+		end
+	end
+	
+	Mouse:SetVisible(self.isEnabled)
+end
+
+function RaceMenu:AddRequest(networkName , arg)
+	table.insert(self.requests , {networkName , arg or "."})
+end
+
+function RaceMenu:AddTab(tabClass)
+	table.insert(self.tabs , tabClass(self))
+end
+
+-- Gwen events
+
+function RaceMenu:WindowClosed()
+	self:SetEnabled(false)
+end
+
+-- Events
+
+function RaceMenu:ControlDown(control)
+	if control.name == "Toggle this menu" then
+		self:SetEnabled(not self.isEnabled)
+	end
+end
+
+function RaceMenu:LocalPlayerInput(args)
+	if self.isEnabled == false then
+		return true
+	end
+	
+	for index , action in ipairs(RaceMenu.allowedActions) do
+		if args.input == action then
+			return true
+		end
+	end
+	
+	return false
+end
+
+function RaceMenu:LocalPlayerChat(args)
+	if args.text:lower() == RaceMenu.command then
+		self:SetEnabled(not self.isEnabled)
+		return false
+	end
+	
+	return true
+end
+
+function RaceMenu:PostTick()
+	if #self.requests > 0 and self.requestTimer:GetSeconds() > RaceMenu.requestLimitSeconds then
+		local request = self.requests[1]
+		Network:Send(request[1] , request[2])
+		
+		table.remove(self.requests , 1)
+		self.requestTimer:Restart()
+	end
+end

@@ -1,84 +1,34 @@
-RaceMenu.command = "/racemenu"
+class("HomeTab")
 
-RaceMenu.requestLimitSeconds = 2.6
+HomeTab.topAreaColor = Color.FromHSV(25 , 0.95 , 0.85)
+HomeTab.topAreaBorderColor = Color(144 , 144 , 144)
+HomeTab.groupBoxColor = Color.FromHSV(150 , 0.06 , 0.775)
+HomeTab.githubLabelColor = Color(255 , 255 , 255 , 228)
 
-RaceMenu.allowedActions = {
-	Action.Accelerate ,
-	Action.Reverse ,
-	Action.TurnLeft ,
-	Action.TurnRight ,
-	Action.HeliForward ,
-	Action.HeliBackward ,
-	Action.HeliRollLeft ,
-	Action.HeliRollRight ,
-	Action.HeliIncAltitude ,
-	Action.HeliDecAltitude ,
-	Action.PlaneIncTrust ,
-	Action.PlaneDecTrust ,
-	Action.PlanePitchUp ,
-	Action.PlanePitchDown ,
-	Action.PlaneTurnLeft ,
-	Action.PlaneTurnRight ,
-	Action.MoveForward ,
-	Action.MoveBackward ,
-	Action.MoveLeft ,
-	Action.MoveRight ,
-	Action.ParachuteOpenClose ,
-	Action.Jump ,
-}
-
-RaceMenu.topAreaColor = Color.FromHSV(25 , 0.95 , 0.85)
-RaceMenu.topAreaBorderColor = Color(144 , 144 , 144)
-RaceMenu.groupBoxColor = Color.FromHSV(150 , 0.06 , 0.775)
-RaceMenu.githubLabelColor = Color(255 , 255 , 255 , 228)
-
-function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
-	self.size = Vector2(680 , 464)
-	self.isEnabled = false
+function HomeTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
+	self.raceMenu = raceMenu
+	
 	self.statLabels = {}
 	self.rankLabels = {}
-	-- These two help with only sending network requests every few seconds. Used in PostTick.
-	self.requestTimer = Timer()
-	self.requests = {}
 	
-	self:CreateWindow()
-	self:CreateHomeTab()
-	
-	self:EventSubscribe("ControlDown")
-	self:EventSubscribe("LocalPlayerInput")
-	self:EventSubscribe("LocalPlayerChat")
-	self:EventSubscribe("PostTick")
 	self:NetworkSubscribe("ReceivePersonalStats")
-end
-
-function RaceMenu:CreateWindow()
-	self.window = Window.Create("RaceMenu")
-	self.window:SetTitle("Race Menu")
-	self.window:SetSize(self.size)
-	self.window:SetPosition(Render.Size/2 - self.size/2) -- Center of screen.
-	self.window:SetVisible(self.isEnabled)
-	self.window:Subscribe("WindowClosed" , self , self.WindowClosed)
 	
-	self.tabControl = TabControl.Create(self.window)
-	self.tabControl:SetDock(GwenPosition.Fill)
-	self.tabControl:SetTabStripPosition(GwenPosition.Top)
-end
-
-function RaceMenu:CreateHomeTab()
-	local homeTabButton = self.tabControl:AddPage("Home")
+	-- Create the tab.
 	
-	local homePage = homeTabButton:GetPage()
-	homePage:SetPadding(Vector2.One*2 , Vector2.One * 2)
+	self.tabButton = self.raceMenu.tabControl:AddPage("Home")
+	
+	local homePage = self.tabButton:GetPage()
+	homePage:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
 	
 	local topAreaBackground = Rectangle.Create(homePage)
 	topAreaBackground:SetPadding(Vector2.One * 2 , Vector2.One * 2)
 	topAreaBackground:SetDock(GwenPosition.Top)
-	topAreaBackground:SetColor(RaceMenu.topAreaBorderColor)
+	topAreaBackground:SetColor(HomeTab.topAreaBorderColor)
 	
 	local topArea = ShadedRectangle.Create(topAreaBackground)
 	topArea:SetPadding(Vector2.One * 8 , Vector2.One * 8)
 	topArea:SetDock(GwenPosition.Top)
-	topArea:SetColor(RaceMenu.topAreaColor)
+	topArea:SetColor(HomeTab.topAreaColor)
 	
 	local largeName = Label.Create(topArea)
 	largeName:SetDock(GwenPosition.Top)
@@ -90,7 +40,7 @@ function RaceMenu:CreateHomeTab()
 	local githubLabel = Label.Create(topArea)
 	githubLabel:SetDock(GwenPosition.Top)
 	githubLabel:SetAlignment(GwenPosition.CenterH)
-	githubLabel:SetTextColor(RaceMenu.githubLabelColor)
+	githubLabel:SetTextColor(HomeTab.githubLabelColor)
 	githubLabel:SetText("github.com/dreadmullet/JC2-MP-Racing")
 	githubLabel:SizeToContents()
 	
@@ -101,7 +51,7 @@ function RaceMenu:CreateHomeTab()
 	groupBoxBindMenu:SetDock(GwenPosition.Left)
 	groupBoxBindMenu:SetMargin(Vector2(4 , 7) , Vector2(4 , 4))
 	groupBoxBindMenu:SetPadding(Vector2(1 , 3) , Vector2(1 , 1))
-	groupBoxBindMenu:SetTextColor(RaceMenu.groupBoxColor)
+	groupBoxBindMenu:SetTextColor(HomeTab.groupBoxColor)
 	groupBoxBindMenu:SetText("Controls")
 	groupBoxBindMenu:SetTextSize(24)
 	
@@ -116,7 +66,7 @@ function RaceMenu:CreateHomeTab()
 	groupBoxStats:SetDock(GwenPosition.Fill)
 	groupBoxStats:SetMargin(Vector2(4 , 7) , Vector2(4 , 4))
 	groupBoxStats:SetPadding(Vector2(4 , 7) , Vector2(4 , 4))
-	groupBoxStats:SetTextColor(RaceMenu.groupBoxColor)
+	groupBoxStats:SetTextColor(HomeTab.groupBoxColor)
 	groupBoxStats:SetText("Personal stats")
 	groupBoxStats:SetTextSize(24)
 	
@@ -187,69 +137,15 @@ function RaceMenu:CreateHomeTab()
 	CreateStat("Wins")
 end
 
-function RaceMenu:SetEnabled(enabled)
-	self.isEnabled = enabled
-	
-	self.window:SetVisible(self.isEnabled)
-	
-	if self.isEnabled then
-		self.window:BringToFront()
-		table.insert(self.requests , {"RequestPersonalStats" , "unused"})
-	end
-	
-	Mouse:SetVisible(self.isEnabled)
-end
-
--- Gwen events
-
-function RaceMenu:WindowClosed()
-	self:SetEnabled(false)
-end
-
--- Events
-
-function RaceMenu:ControlDown(control)
-	if control.name == "Toggle this menu" then
-		self:SetEnabled(not self.isEnabled)
-	end
-end
-
-function RaceMenu:LocalPlayerInput(args)
-	if self.isEnabled == false then
-		return true
-	end
-	
-	for index , action in ipairs(RaceMenu.allowedActions) do
-		if args.input == action then
-			return true
-		end
-	end
-	
-	return false
-end
-
-function RaceMenu:LocalPlayerChat(args)
-	if args.text:lower() == RaceMenu.command then
-		self:SetEnabled(not self.isEnabled)
-		return false
-	end
-	
-	return true
-end
-
-function RaceMenu:PostTick()
-	if #self.requests > 0 and self.requestTimer:GetSeconds() > RaceMenu.requestLimitSeconds then
-		local request = self.requests[1]
-		Network:Send(request[1] , request[2])
-		
-		table.remove(self.requests , 1)
-		self.requestTimer:Restart()
-	end
+function HomeTab:OnActivate()
+	self.raceMenu:AddRequest("RequestPersonalStats")
 end
 
 -- Network events
 
-function RaceMenu:ReceivePersonalStats(personalStats)
+function HomeTab:ReceivePersonalStats(personalStats)
+	Chat:Print("ReceivePersonalStats" , Color.LawnGreen)
+	
 	local stats = personalStats.stats
 	local ranks = personalStats.ranks
 	
