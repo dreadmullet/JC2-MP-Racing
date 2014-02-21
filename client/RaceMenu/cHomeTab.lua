@@ -2,7 +2,6 @@ class("HomeTab")
 
 HomeTab.topAreaColor = Color.FromHSV(25 , 0.95 , 0.85)
 HomeTab.topAreaBorderColor = Color(144 , 144 , 144)
-HomeTab.groupBoxColor = Color.FromHSV(150 , 0.06 , 0.775)
 HomeTab.githubLabelColor = Color(255 , 255 , 255 , 228)
 
 function HomeTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
@@ -17,10 +16,10 @@ function HomeTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	
 	self.tabButton = self.raceMenu.tabControl:AddPage("Home")
 	
-	local homePage = self.tabButton:GetPage()
-	homePage:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
+	local page = self.tabButton:GetPage()
+	page:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
 	
-	local topAreaBackground = Rectangle.Create(homePage)
+	local topAreaBackground = Rectangle.Create(page)
 	topAreaBackground:SetPadding(Vector2.One * 2 , Vector2.One * 2)
 	topAreaBackground:SetDock(GwenPosition.Top)
 	topAreaBackground:SetColor(HomeTab.topAreaBorderColor)
@@ -47,13 +46,9 @@ function HomeTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	topArea:SizeToChildren()
 	topAreaBackground:SizeToChildren()
 	
-	local groupBoxBindMenu = GroupBox.Create(homePage)
+	local groupBoxBindMenu = RaceMenu.CreateGroupBox(page)
 	groupBoxBindMenu:SetDock(GwenPosition.Left)
-	groupBoxBindMenu:SetMargin(Vector2(4 , 7) , Vector2(4 , 4))
-	groupBoxBindMenu:SetPadding(Vector2(1 , 3) , Vector2(1 , 1))
-	groupBoxBindMenu:SetTextColor(HomeTab.groupBoxColor)
 	groupBoxBindMenu:SetText("Controls")
-	groupBoxBindMenu:SetTextSize(24)
 	
 	local bindMenu = BindMenu.Create(groupBoxBindMenu)
 	bindMenu:SetDock(GwenPosition.Fill)
@@ -62,13 +57,9 @@ function HomeTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	
 	groupBoxBindMenu:SetWidth(bindMenu:GetWidth())
 	
-	local groupBoxStats = GroupBox.Create(homePage)
+	local groupBoxStats = RaceMenu.CreateGroupBox(page)
 	groupBoxStats:SetDock(GwenPosition.Fill)
-	groupBoxStats:SetMargin(Vector2(4 , 7) , Vector2(4 , 4))
-	groupBoxStats:SetPadding(Vector2(4 , 7) , Vector2(4 , 4))
-	groupBoxStats:SetTextColor(HomeTab.groupBoxColor)
 	groupBoxStats:SetText("Personal stats")
-	groupBoxStats:SetTextSize(24)
 	
 	local statFontSize = 16
 	local rowHeight = Render:GetTextHeight("W" , statFontSize) + 4
@@ -144,8 +135,6 @@ end
 -- Network events
 
 function HomeTab:ReceivePersonalStats(personalStats)
-	Chat:Print("ReceivePersonalStats" , Color.LawnGreen)
-	
 	local stats = personalStats.stats
 	local ranks = personalStats.ranks
 	

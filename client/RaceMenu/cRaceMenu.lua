@@ -27,6 +27,20 @@ RaceMenu.allowedActions = {
 	Action.Jump ,
 }
 
+-- Static functions
+
+RaceMenu.CreateGroupBox = function(...)
+	local groupBox = GroupBox.Create(...)
+	groupBox:SetMargin(Vector2(4 , 7) , Vector2(4 , 4))
+	groupBox:SetPadding(Vector2(1 , 3) , Vector2(1 , 1))
+	groupBox:SetTextColor(Color.FromHSV(150 , 0.06 , 0.775))
+	groupBox:SetTextSize(24)
+	
+	return groupBox
+end
+
+-- Instance functions
+
 function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.size = Vector2(680 , 464)
 	self.isEnabled = false
@@ -37,7 +51,7 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	self:CreateWindow()
 	self:AddTab(HomeTab)
-	self:AddTab(CourseRecordsTab)
+	-- self:AddTab(CoursesTab)
 	
 	self:EventSubscribe("ControlDown")
 	self:EventSubscribe("LocalPlayerInput")
@@ -56,6 +70,7 @@ function RaceMenu:CreateWindow()
 	self.tabControl = TabControl.Create(self.window)
 	self.tabControl:SetDock(GwenPosition.Fill)
 	self.tabControl:SetTabStripPosition(GwenPosition.Top)
+	self.tabControl:Subscribe("TabSwitch" , self , self.TabSwitch)
 end
 
 function RaceMenu:SetEnabled(enabled)
@@ -68,14 +83,7 @@ function RaceMenu:SetEnabled(enabled)
 		self.window:BringToFront()
 		
 		if wasEnabled == false then
-			-- Try to call OnActivate on the current tab.
-			for index , tab in ipairs(self.tabs) do
-				if tab.tabButton and tab.tabButton == self.tabControl:GetCurrentTab() then
-					if tab.OnActivate then
-						tab:OnActivate()
-					end
-				end
-			end
+			self:ActivateCurrentTab()
 		end
 	end
 	
@@ -90,10 +98,25 @@ function RaceMenu:AddTab(tabClass)
 	table.insert(self.tabs , tabClass(self))
 end
 
+function RaceMenu:ActivateCurrentTab()
+	-- Try to call OnActivate on the current tab.
+	for index , tab in ipairs(self.tabs) do
+		if tab.tabButton and tab.tabButton == self.tabControl:GetCurrentTab() then
+			if tab.OnActivate then
+				tab:OnActivate()
+			end
+		end
+	end
+end
+
 -- Gwen events
 
 function RaceMenu:WindowClosed()
 	self:SetEnabled(false)
+end
+
+function RaceMenu:TabSwitch()
+	self:ActivateCurrentTab()
 end
 
 -- Events
