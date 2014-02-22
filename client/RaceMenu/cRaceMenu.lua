@@ -42,7 +42,7 @@ end
 -- Instance functions
 
 function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
-	self.size = Vector2(680 , 464)
+	self.size = Vector2(720 , 416)
 	self.isEnabled = false
 	-- These two help with only sending network requests every few seconds. Used in PostTick.
 	self.requestTimer = Timer()

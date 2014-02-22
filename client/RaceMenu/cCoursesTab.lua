@@ -26,6 +26,7 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	self.coursesListBox:SetDock(GwenPosition.Fill)
 	self.coursesListBox:SetAutoHideBars(false)
 	self.coursesListBox:Subscribe("RowSelected" , self , self.CourseSelected)
+	self.coursesListBox:AddItem("Requesting course list...")
 	
 	self.tabControl = TabControl.Create(page)
 	self.tabControl:SetDock(GwenPosition.Fill)
@@ -70,11 +71,14 @@ end
 
 function CoursesTab:CourseSelected()
 	local courseName = self.coursesListBox:GetSelectedRow():GetCellText(0)
+	if courseName == "Requesting course list..." then
+		return
+	end
 	
 	self.raceMenu:AddRequest("RequestCourseRecords" , courseName)
 	
 	self.recordsList:Clear()
-	self.recordsList:AddItem("Requesting data...")
+	self.recordsList:AddItem("Requesting records...")
 end
 
 -- Network events
