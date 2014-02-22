@@ -27,6 +27,7 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	self.coursesListBox:SetAutoHideBars(false)
 	self.coursesListBox:Subscribe("RowSelected" , self , self.CourseSelected)
 	self.coursesListBox:AddItem("Requesting course list...")
+	self.coursesListBox:SetDataBool("isValid" , false)
 	
 	self.tabControl = TabControl.Create(page)
 	self.tabControl:SetDock(GwenPosition.Fill)
@@ -70,10 +71,12 @@ end
 -- GWEN events
 
 function CoursesTab:CourseSelected()
-	local courseName = self.coursesListBox:GetSelectedRow():GetCellText(0)
-	if courseName == "Requesting course list..." then
+	-- Make sure the course list has actual courses, and not "Requesting course list" or whatever.
+	if self.coursesListBox:GetDataBool("isValid") == false then
 		return
 	end
+	
+	local courseName = self.coursesListBox:GetSelectedRow():GetCellText(0)
 	
 	self.raceMenu:AddRequest("RequestCourseRecords" , courseName)
 	
@@ -86,8 +89,14 @@ end
 function CoursesTab:ReceiveCourseList(courses)
 	self.coursesListBox:Clear()
 	
-	for index , course in ipairs(courses) do
-		self.coursesListBox:AddItem(course)
+	if #courses > 0 then
+		for index , course in ipairs(courses) do
+			self.coursesListBox:AddItem(course)
+		end
+		self.coursesListBox:SetDataBool("isValid" , true)
+	else
+		self.coursesListBox:AddItem("No courses found")
+		self.coursesListBox:SetDataBool("isValid" , false)
 	end
 end
 
