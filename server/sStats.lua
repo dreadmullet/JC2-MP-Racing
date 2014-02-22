@@ -7,15 +7,16 @@ Stats.version = 2
 -- Logs time elapsed for each function.
 Stats.debug = true
 -- Print to console as well. This can get very spammy.
-Stats.debugPrint = true
+Stats.debugPrint = false
 Stats.timer = nil
 Stats.logFile = nil
 
--- Minimum interval that a client is allowed to request, to prevent spam.
-Stats.requestLimitSeconds = 1.8
+-- Count per second that a client is allowed to request, to prevent spam.
+Stats.requestLimitSeconds = 3
+Stats.requestLimitCount = 3
 -- Map that helps with preventing request spam.
 -- Key: player id
--- Value: timer
+-- Value: array of timers
 Stats.requests = {}
 
 -- Used to commit everything in a transaction every so often (settings.statsCommitInterval).
@@ -78,13 +79,25 @@ end
 
 -- Returns false if they are spamming requests and should be refused.
 Stats.CheckSpam = function(player)
-	local timer = Stats.requests[player:GetId()]
-	if timer ~= nil and timer:GetSeconds() < Stats.requestLimitSeconds then
-		warn(player:GetName().." is requesting stats too quickly!")
+	local timers = Stats.requests[player:GetId()]
+	if timers then
+		-- Expire any old timers.
+		for n = #timers , 1 , -1 do
+			if timers[n]:GetSeconds() > Stats.requestLimitSeconds then
+				table.remove(timers , n)
+			end
+		end
+	else
+		timers = {}
+		Stats.requests[player:GetId()] = timers
+	end
+	
+	if #timers >= Stats.requestLimitCount then
+		warn(player:GetName().." is requesting stats too quickly! "..player:GetIP())
 		return false
 	end
 	
-	Stats.requests[player:GetId()] = Timer()
+	table.insert(timers , Timer())
 	
 	return true
 end

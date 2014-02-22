@@ -1,6 +1,7 @@
 RaceMenu.command = "/racemenu"
 
-RaceMenu.requestLimitSeconds = 2.6
+RaceMenu.requestLimitSeconds = 3
+RaceMenu.requestLimitCount = 3
 
 RaceMenu.allowedActions = {
 	Action.Accelerate ,
@@ -45,7 +46,7 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.size = Vector2(720 , 416)
 	self.isEnabled = false
 	-- These two help with only sending network requests every few seconds. Used in PostTick.
-	self.requestTimer = Timer()
+	self.requestTimers = {}
 	self.requests = {}
 	self.tabs = {}
 	
@@ -151,11 +152,23 @@ function RaceMenu:LocalPlayerChat(args)
 end
 
 function RaceMenu:PostTick()
-	if #self.requests > 0 and self.requestTimer:GetSeconds() > RaceMenu.requestLimitSeconds then
+	if #self.requests > 0 then
+		-- Expire any old timers.
+		for n = #self.requestTimers , 1 , -1 do
+			if self.requestTimers[n]:GetSeconds() > RaceMenu.requestLimitSeconds then
+				table.remove(self.requestTimers , n)
+			end
+		end
+		
+		if #self.requestTimers >= RaceMenu.requestLimitCount then
+			return
+		end
+		
+		table.insert(self.requestTimers , Timer())
+		
 		local request = self.requests[1]
 		Network:Send(request[1] , request[2])
 		
 		table.remove(self.requests , 1)
-		self.requestTimer:Restart()
 	end
 end
