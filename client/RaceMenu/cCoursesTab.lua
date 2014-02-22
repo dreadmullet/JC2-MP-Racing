@@ -76,9 +76,9 @@ function CoursesTab:CourseSelected()
 		return
 	end
 	
-	local courseName = self.coursesListBox:GetSelectedRow():GetCellText(0)
+	local courseHash = self.coursesListBox:GetSelectedRow():GetDataNumber("FileNameHash")
 	
-	self.raceMenu:AddRequest("RequestCourseRecords" , courseName)
+	self.raceMenu:AddRequest("RequestCourseRecords" , courseHash)
 	
 	self.recordsList:Clear()
 	self.recordsList:AddItem("Requesting records...")
@@ -91,7 +91,8 @@ function CoursesTab:ReceiveCourseList(courses)
 	
 	if #courses > 0 then
 		for index , course in ipairs(courses) do
-			self.coursesListBox:AddItem(course)
+			local row = self.coursesListBox:AddItem(course[2])
+			row:SetDataNumber("FileNameHash" , course[1])
 		end
 		self.coursesListBox:SetDataBool("isValid" , true)
 	else
