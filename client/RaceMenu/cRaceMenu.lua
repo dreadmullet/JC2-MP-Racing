@@ -2,7 +2,7 @@
 
 RaceMenu.command = "/racemenu"
 
-RaceMenu.requestLimitSeconds = 3
+RaceMenu.requestLimitSeconds = 3.5
 RaceMenu.requestLimitCount = 3
 
 RaceMenu.allowedActions = {
