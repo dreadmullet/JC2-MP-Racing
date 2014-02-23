@@ -443,6 +443,8 @@ Stats.UpdateCache = function()
 		table.insert(Stats.courses , course)
 	end
 	
+	table.sort(Stats.courses , function(a , b) return a[2] < b[2] end)
+	
 	Stats.playerRankTables = {}
 	
 	local query = SQL:Query("select PlayTime , Starts , Finishes , Wins from RacePlayers")
