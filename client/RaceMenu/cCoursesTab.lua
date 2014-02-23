@@ -69,7 +69,9 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	
 	CreateLabel("Votes up"):SetDock(GwenPosition.Left)
 	CreateLabel("Votes down"):SetDock(GwenPosition.Left)
-	CreateLabel("Times played"):SetDock(GwenPosition.Left)
+	local timesPlayed = CreateLabel("Times played")
+	timesPlayed:SetDock(GwenPosition.Left)
+	timesPlayed:SetToolTip("Server-wide number of races ran on this course")
 	
 	self.courseInfoLabels["Votes up"]:SetTextColor(Color.FromHSV(105 , 0.5 , 1))
 	self.courseInfoLabels["Votes down"]:SetTextColor(Color.FromHSV(0 , 0.5 , 1))
