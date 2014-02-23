@@ -37,10 +37,53 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	-- This entire area is hidden until a course is selected.
 	self.rightArea:SetVisible(false)
 	
-	local topArea = BaseWindow.Create(self.rightArea)
-	topArea:SetDock(GwenPosition.Top)
-	topArea:SetHeight(50)
-	topArea:SetVisible(true)
+	local courseInfoArea = BaseWindow.Create(self.rightArea)
+	courseInfoArea:SetDock(GwenPosition.Top)
+	courseInfoArea:SetHeight(50)
+	
+	self.courseInfoLabels = {}
+	
+	local CreateLabel = function(name)
+		local base = BaseWindow.Create(courseInfoArea)
+		base:SetMargin(Vector2(2 , 2) , Vector2(6 , 2))
+		
+		local title = Label.Create(base)
+		title:SetDock(GwenPosition.Left)
+		title:SetTextSize(16)
+		title:SetText(name..": ")
+		title:SizeToContents()
+		
+		local label = Label.Create(base)
+		label:SetDock(GwenPosition.Left)
+		label:SetTextSize(18)
+		label:SetText("??????")
+		label:SizeToContents()
+		
+		base:SizeToChildren()
+		base:SetHeight(title:GetTextHeight())
+		
+		self.courseInfoLabels[name] = label
+		
+		return base
+	end
+	
+	CreateLabel("Times played"):SetDock(GwenPosition.Top)
+	
+	local votesBase = BaseWindow.Create(courseInfoArea)
+	votesBase:SetDock(GwenPosition.Top)
+	
+	local votesUp = CreateLabel("Votes up")
+	votesUp:SetParent(votesBase)
+	votesUp:SetDock(GwenPosition.Left)
+	
+	local votesDown = CreateLabel("Votes down")
+	votesDown:SetParent(votesBase)
+	votesDown:SetDock(GwenPosition.Left)
+	
+	votesBase:SetHeight(votesUp:GetHeight() + 6)
+	
+	self.courseInfoLabels["Votes up"]:SetTextColor(Color.FromHSV(105 , 0.5 , 1))
+	self.courseInfoLabels["Votes down"]:SetTextColor(Color.FromHSV(0 , 0.5 , 1))
 	
 	self.tabControl = TabControl.Create(self.rightArea)
 	self.tabControl:SetDock(GwenPosition.Fill)
@@ -88,18 +131,21 @@ function CoursesTab:CourseSelected()
 	end
 	
 	local row = self.coursesList:GetSelectedRow()
-	local courseName = row:GetCellText(0)
-	local courseHash = row:GetDataNumber("FileNameHash")
+	local courseInfo = row:GetDataObject("courseInfo")
 	
-	self.raceMenu:AddRequest("RequestCourseRecords" , courseHash)
+	self.courseInfoLabels["Times played"]:SetText(string.format("%i" , courseInfo[3]))
+	self.courseInfoLabels["Votes up"]:SetText(string.format("%i" , courseInfo[4]))
+	self.courseInfoLabels["Votes down"]:SetText(string.format("%i" , courseInfo[5]))
 	
-	self.courseGroupBox:SetText(courseName)
+	self.courseGroupBox:SetText(courseInfo[2])
 	self.courseGroupBox:SetTextColor(RaceMenu.groupBoxColor)
 	
 	self.rightArea:SetVisible(true)
 	
 	self.recordsList:Clear()
 	self.recordsList:AddItem("Requesting records...")
+	
+	self.raceMenu:AddRequest("RequestCourseRecords" , courseInfo[1])
 end
 
 -- Network events
@@ -110,7 +156,7 @@ function CoursesTab:ReceiveCourseList(courses)
 	if #courses > 0 then
 		for index , course in ipairs(courses) do
 			local row = self.coursesList:AddItem(course[2])
-			row:SetDataNumber("FileNameHash" , course[1])
+			row:SetDataObject("courseInfo" , course)
 		end
 		self.coursesList:SetDataBool("isValid" , true)
 	else
