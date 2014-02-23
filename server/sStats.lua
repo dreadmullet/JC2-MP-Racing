@@ -437,8 +437,8 @@ Stats.UpdateCache = function()
 			tonumber(result.FileNameHash) ,
 			result.Name ,
 			tonumber(result.TimesPlayed) ,
-			tonumber(results.VotesUp) ,
-			tonumber(results.VotesDown)
+			tonumber(result.VotesUp) ,
+			tonumber(result.VotesDown)
 		}
 		table.insert(Stats.courses , course)
 	end
