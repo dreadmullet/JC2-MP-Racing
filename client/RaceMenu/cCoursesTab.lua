@@ -39,13 +39,13 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	
 	local courseInfoArea = BaseWindow.Create(self.rightArea)
 	courseInfoArea:SetDock(GwenPosition.Top)
-	courseInfoArea:SetHeight(50)
+	courseInfoArea:SetHeight(28)
 	
 	self.courseInfoLabels = {}
 	
 	local CreateLabel = function(name)
 		local base = BaseWindow.Create(courseInfoArea)
-		base:SetMargin(Vector2(2 , 2) , Vector2(6 , 2))
+		base:SetMargin(Vector2(2 , 2) , Vector2(4 , 2))
 		
 		local title = Label.Create(base)
 		title:SetDock(GwenPosition.Left)
@@ -56,7 +56,7 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 		local label = Label.Create(base)
 		label:SetDock(GwenPosition.Left)
 		label:SetTextSize(18)
-		label:SetText("??????")
+		label:SetText("?????")
 		label:SizeToContents()
 		
 		base:SizeToChildren()
@@ -67,20 +67,9 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 		return base
 	end
 	
-	CreateLabel("Times played"):SetDock(GwenPosition.Top)
-	
-	local votesBase = BaseWindow.Create(courseInfoArea)
-	votesBase:SetDock(GwenPosition.Top)
-	
-	local votesUp = CreateLabel("Votes up")
-	votesUp:SetParent(votesBase)
-	votesUp:SetDock(GwenPosition.Left)
-	
-	local votesDown = CreateLabel("Votes down")
-	votesDown:SetParent(votesBase)
-	votesDown:SetDock(GwenPosition.Left)
-	
-	votesBase:SetHeight(votesUp:GetHeight() + 6)
+	CreateLabel("Votes up"):SetDock(GwenPosition.Left)
+	CreateLabel("Votes down"):SetDock(GwenPosition.Left)
+	CreateLabel("Times played"):SetDock(GwenPosition.Left)
 	
 	self.courseInfoLabels["Votes up"]:SetTextColor(Color.FromHSV(105 , 0.5 , 1))
 	self.courseInfoLabels["Votes down"]:SetTextColor(Color.FromHSV(0 , 0.5 , 1))
