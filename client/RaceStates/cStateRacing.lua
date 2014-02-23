@@ -11,6 +11,8 @@ function StateRacing:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	
 	LargeMessage("GO!" , 2)
 	
+	Events:Fire("RaceStart")
+	
 	self:EventSubscribe("Render")
 	self:EventSubscribe("PostTick")
 	self:EventSubscribe("LocalPlayerInput")

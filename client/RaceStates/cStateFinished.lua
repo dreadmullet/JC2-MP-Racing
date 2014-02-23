@@ -6,6 +6,8 @@ function StateFinished:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	local message = Utility.NumberToPlaceString(args.place).." place!"
 	self.largeMessage = LargeMessage(message , 7.5)
 	
+	Events:Fire("RaceFinish")
+	
 	self:EventSubscribe("Render")
 	self:EventSubscribe("LocalPlayerInput")
 	self:NetworkSubscribe("UpdateRacePositions")
