@@ -26,6 +26,8 @@ function StateRacing:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 		self.racePosTracker[0][id] = racer.targetCheckpointDistanceSqr -- wut
 	end
 	
+	Events:Fire("RaceStart" , {id = self.race.id})
+	
 	self:EventSubscribe("PlayerEnterCheckpoint")
 	self:EventSubscribe("PlayerEnterVehicle")
 	self:EventSubscribe("PostTick")

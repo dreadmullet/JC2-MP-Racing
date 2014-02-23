@@ -41,6 +41,8 @@ function Race:__init(playerArray , course , vehicleCollisions)
 	self.isValid = true
 	
 	self:SetState("StateStartingGrid")
+	
+	Events:Fire("RaceCreate" , {id = self.id})
 end
 
 function Race:AddSpectator(player)
