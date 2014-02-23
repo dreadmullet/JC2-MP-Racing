@@ -20,12 +20,12 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	groupBoxCourseSelect:SetText("Select course")
 	groupBoxCourseSelect:SetWidth(250)
 	
-	self.coursesListBox = ListBox.Create(groupBoxCourseSelect)
-	self.coursesListBox:SetDock(GwenPosition.Fill)
-	self.coursesListBox:SetAutoHideBars(false)
-	self.coursesListBox:Subscribe("RowSelected" , self , self.CourseSelected)
-	self.coursesListBox:AddItem("Requesting course list...")
-	self.coursesListBox:SetDataBool("isValid" , false)
+	self.coursesList = ListBox.Create(groupBoxCourseSelect)
+	self.coursesList:SetDock(GwenPosition.Fill)
+	self.coursesList:SetAutoHideBars(false)
+	self.coursesList:Subscribe("RowSelected" , self , self.CourseSelected)
+	self.coursesList:AddItem("Requesting course list...")
+	self.coursesList:SetDataBool("isValid" , false)
 	
 	self.courseGroupBox = RaceMenu.CreateGroupBox(page)
 	self.courseGroupBox:SetDock(GwenPosition.Fill)
@@ -34,6 +34,7 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	
 	self.rightArea = BaseWindow.Create(self.courseGroupBox)
 	self.rightArea:SetDock(GwenPosition.Fill)
+	-- This entire area is hidden until a course is selected.
 	self.rightArea:SetVisible(false)
 	
 	local topArea = BaseWindow.Create(self.rightArea)
@@ -82,11 +83,11 @@ end
 
 function CoursesTab:CourseSelected()
 	-- Make sure the course list has actual courses, and not "Requesting course list" or whatever.
-	if self.coursesListBox:GetDataBool("isValid") == false then
+	if self.coursesList:GetDataBool("isValid") == false then
 		return
 	end
 	
-	local row = self.coursesListBox:GetSelectedRow()
+	local row = self.coursesList:GetSelectedRow()
 	local courseName = row:GetCellText(0)
 	local courseHash = row:GetDataNumber("FileNameHash")
 	
@@ -104,17 +105,17 @@ end
 -- Network events
 
 function CoursesTab:ReceiveCourseList(courses)
-	self.coursesListBox:Clear()
+	self.coursesList:Clear()
 	
 	if #courses > 0 then
 		for index , course in ipairs(courses) do
-			local row = self.coursesListBox:AddItem(course[2])
+			local row = self.coursesList:AddItem(course[2])
 			row:SetDataNumber("FileNameHash" , course[1])
 		end
-		self.coursesListBox:SetDataBool("isValid" , true)
+		self.coursesList:SetDataBool("isValid" , true)
 	else
-		self.coursesListBox:AddItem("No courses found")
-		self.coursesListBox:SetDataBool("isValid" , false)
+		self.coursesList:AddItem("No courses found")
+		self.coursesList:SetDataBool("isValid" , false)
 	end
 end
 
