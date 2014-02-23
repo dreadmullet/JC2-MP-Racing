@@ -328,8 +328,9 @@ Stats.GetCourseRecords = function(courseFileNameOrHash , from , to)
 		local playerInfo = Stats.GetPlayerInfoFromSteamId(result.SteamId)
 		
 		local newRecord = {}
-		newRecord.time = result.BestTime * 0.001
+		newRecord.time = tonumber(result.BestTime) * 0.001
 		newRecord.playerName = playerInfo.Name
+		newRecord.vehicle = tonumber(result.Vehicle)
 		
 		table.insert(records , newRecord)
 	end

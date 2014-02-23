@@ -91,9 +91,10 @@ function CoursesTab:CreateRecordsTab()
 	
 	self.recordsList = SortedList.Create(page)
 	self.recordsList:SetDock(GwenPosition.Fill)
+	self.recordsList:AddColumn("Rank" , 40)
 	self.recordsList:AddColumn("Player")
 	self.recordsList:AddColumn("Time" , 65)
-	-- self.recordsList:AddColumn("Vehicle" , 65)
+	self.recordsList:AddColumn("Vehicle")
 end
 
 function CoursesTab:CreateMapTab()
@@ -134,7 +135,9 @@ function CoursesTab:CourseSelected()
 	self.rightArea:SetVisible(true)
 	
 	self.recordsList:Clear()
-	self.recordsList:AddItem("Requesting records...")
+	local row = self.recordsList:AddItem("")
+	row:SetColumnCount(2)
+	row:SetCellText(1 , "Requesting records...")
 	
 	self.raceMenu:AddRequest("RequestCourseRecords" , courseInfo[1])
 end
@@ -160,8 +163,14 @@ function CoursesTab:ReceiveCourseRecords(records)
 	self.recordsList:Clear()
 	
 	for index , record in ipairs(records) do
-		local row = self.recordsList:AddItem(record.playerName)
-		row:SetColumnCount(2)
-		row:SetCellText(1 , Utility.LapTimeString(record.time))
+		local row = self.recordsList:AddItem(string.format("%i" , index))
+		row:SetColumnCount(4)
+		row:SetCellText(1 , record.playerName)
+		row:SetCellText(2 , Utility.LapTimeString(record.time))
+		local vehicleName = "On-foot"
+		if record.vehicle > 0 then
+			vehicleName = VehicleList[record.vehicle].name
+		end
+		row:SetCellText(3 , vehicleName)
 	end
 end
