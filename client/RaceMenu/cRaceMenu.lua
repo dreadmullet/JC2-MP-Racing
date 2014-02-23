@@ -1,3 +1,5 @@
+-- Static constants
+
 RaceMenu.command = "/racemenu"
 
 RaceMenu.requestLimitSeconds = 3
@@ -28,13 +30,15 @@ RaceMenu.allowedActions = {
 	Action.Jump ,
 }
 
+RaceMenu.groupBoxColor = Color.FromHSV(150 , 0.06 , 0.775)
+
 -- Static functions
 
 RaceMenu.CreateGroupBox = function(...)
 	local groupBox = GroupBox.Create(...)
 	groupBox:SetMargin(Vector2(4 , 7) , Vector2(4 , 4))
-	groupBox:SetPadding(Vector2(1 , 3) , Vector2(1 , 1))
-	groupBox:SetTextColor(Color.FromHSV(150 , 0.06 , 0.775))
+	groupBox:SetPadding(Vector2(1 , 7) , Vector2(1 , 1))
+	groupBox:SetTextColor(RaceMenu.groupBoxColor)
 	groupBox:SetTextSize(24)
 	
 	return groupBox
@@ -45,7 +49,7 @@ end
 function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.size = Vector2(720 , 416)
 	self.isEnabled = false
-	-- These two help with only sending network requests every few seconds. Used in PostTick.
+	-- These two help with limiting network requests. Used in PostTick.
 	self.requestTimers = {}
 	self.requests = {}
 	self.tabs = {}

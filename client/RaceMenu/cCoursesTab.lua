@@ -1,7 +1,5 @@
 class("CoursesTab")
 
-CoursesTab.titleColor = Color.FromHSV(25 , 0.95 , 0.85)
-
 function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	self.raceMenu = raceMenu
 	
@@ -29,7 +27,21 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	self.coursesListBox:AddItem("Requesting course list...")
 	self.coursesListBox:SetDataBool("isValid" , false)
 	
-	self.tabControl = TabControl.Create(page)
+	self.courseGroupBox = RaceMenu.CreateGroupBox(page)
+	self.courseGroupBox:SetDock(GwenPosition.Fill)
+	self.courseGroupBox:SetText("No course selected")
+	self.courseGroupBox:SetColorDark()
+	
+	self.rightArea = BaseWindow.Create(self.courseGroupBox)
+	self.rightArea:SetDock(GwenPosition.Fill)
+	self.rightArea:SetVisible(false)
+	
+	local topArea = BaseWindow.Create(self.rightArea)
+	topArea:SetDock(GwenPosition.Top)
+	topArea:SetHeight(50)
+	topArea:SetVisible(true)
+	
+	self.tabControl = TabControl.Create(self.rightArea)
 	self.tabControl:SetDock(GwenPosition.Fill)
 	self.tabControl:SetTabStripPosition(GwenPosition.Top)
 	
@@ -45,10 +57,8 @@ function CoursesTab:CreateRecordsTab()
 	self.recordsList = SortedList.Create(page)
 	self.recordsList:SetDock(GwenPosition.Fill)
 	self.recordsList:AddColumn("Player")
-	self.recordsList:AddColumn("Time" , 75)
-	-- self.recordsList:AddColumn("Vehicle")
-	
-	self.recordsList:AddItem("No course selected")
+	self.recordsList:AddColumn("Time" , 65)
+	-- self.recordsList:AddColumn("Vehicle" , 65)
 end
 
 function CoursesTab:CreateMapTab()
@@ -76,9 +86,16 @@ function CoursesTab:CourseSelected()
 		return
 	end
 	
-	local courseHash = self.coursesListBox:GetSelectedRow():GetDataNumber("FileNameHash")
+	local row = self.coursesListBox:GetSelectedRow()
+	local courseName = row:GetCellText(0)
+	local courseHash = row:GetDataNumber("FileNameHash")
 	
 	self.raceMenu:AddRequest("RequestCourseRecords" , courseHash)
+	
+	self.courseGroupBox:SetText(courseName)
+	self.courseGroupBox:SetTextColor(RaceMenu.groupBoxColor)
+	
+	self.rightArea:SetVisible(true)
 	
 	self.recordsList:Clear()
 	self.recordsList:AddItem("Requesting records...")
