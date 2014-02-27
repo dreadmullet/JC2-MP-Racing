@@ -1,5 +1,7 @@
 
 function Race:__init(args) ; RaceBase.__init(self , args)
+	Race.instance = self
+	
 	if settings.debugLevel >= 2 then
 		print("Race:__init")
 	end

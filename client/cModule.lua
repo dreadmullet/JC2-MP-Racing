@@ -1,5 +1,5 @@
 ModuleLoad = function()
-	raceMenu = RaceMenu()
+	RaceMenu()
 end
 
 ModulesLoad = function()
@@ -26,13 +26,13 @@ Events:Subscribe("ModuleUnload" , ModuleUnload)
 Network:Subscribe(
 	"Initialise" ,
 	function(args)
-		race = Race(args)
+		Race(args)
 	end
 )
 
 Network:Subscribe(
 	"SpectateInitialise" ,
 	function(args)
-		spectate = Spectate(args)
+		Spectate(args)
 	end
 )

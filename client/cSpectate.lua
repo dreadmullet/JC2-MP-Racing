@@ -1,5 +1,7 @@
 
 function Spectate:__init(args) ; RaceBase.__init(self , args)
+	Spectate.instance = self
+	
 	if settings.debugLevel >= 2 then
 		print("Spectate:__init")
 		print("args.position = "..tostring(args.position))
