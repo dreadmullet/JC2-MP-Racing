@@ -1,4 +1,3 @@
-
 Race.idCounter = 1
 
 function Race:__init(playerArray , course , vehicleCollisions)
@@ -8,34 +7,63 @@ function Race:__init(playerArray , course , vehicleCollisions)
 		print("Race:__init")
 	end
 	
+	-- Id
+	
 	self.id = Race.idCounter
 	Race.idCounter = Race.idCounter + 1
+	
+	-- Players
 	
 	-- Contains both Racers and Spectators in an array.
 	self.participants = playerArray
 	self.playerIdToRacer = {}
 	self.numPlayers = #playerArray
-	for index , player in ipairs(playerArray) do
-		local newRacer = Racer(self , player)
-		self.playerIdToRacer[player:GetId()] = newRacer
-	end
 	self.playerIdToSpectator = {}
 	self.finishedRacers = {}
+	-- This is sent to Racers now and any Spectators who join later.
+	self.info = {}
+	
+	-- Course
 	
 	self.course = course
 	self.course.race = self
+	-- TODO: Is this necessary?
 	self.checkpointPositions = {}
 	for n = 1 , #self.course.checkpoints do
 		table.insert(self.checkpointPositions , self.course.checkpoints[n].position)
 	end
+	self.numLaps = settings.numLapsFunc(
+		self.numPlayers ,
+		#self.course.spawns ,
+		self.course.numLaps
+	)
 	
-	-- Create world and randomise the time and weather.
+	-- World
+	
 	self.world = World.Create()
 	self.world:SetTime(math.random(4, 21))
 	self.world:SetWeatherSeverity(math.pow(math.random() , 2.5) * 2)
 	
-	self.prizeMoneyCurrent = course.prizeMoney
+	-- Misc
+	
+	self.prizeMoneyCurrent = settings.prizeMoneyDefault
 	self.vehicleCollisions = vehicleCollisions or true
+	
+	self.info = self:MarshalForClient()
+	self.info.playerIdToInfo = {}
+	for index , player in ipairs(playerArray) do
+		self.info.playerIdToInfo[player:GetId()] = {
+			name = player:GetName() ,
+			color = player:GetColor()
+		}
+	end
+	
+	-- Initialize Racers.
+	
+	for index , player in ipairs(playerArray) do
+		local newRacer = Racer(self , player)
+		self.playerIdToRacer[player:GetId()] = newRacer
+	end
 	
 	-- Prevents terminating twice.
 	self.isValid = true
@@ -163,6 +191,29 @@ function Race:GetRacerFromPlayerId(id)
 	return self.playerIdToRacer[id]
 end
 
+function Race:MarshalForClient()
+	local info = {
+		scriptVersion = settings.version ,
+		numPlayers = self.numPlayers ,
+		numLaps = self.numLaps ,
+		playerIdToInfo = self.playerIdToInfo ,
+		course = self.course:MarshalForClient()
+	}
+	
+	-- Load the top time from the database.
+	local topRecord = Stats.GetCourseRecords(self.course.fileName , 1 , 1)[1]
+	if topRecord then
+		info.topRecordTime = topRecord.time
+		info.topRecordPlayerName = topRecord.playerName
+	else -- If there are no records yet, use a fake one.
+		topRecord = {}
+		info.topRecordTime = 59 * 60 + 59 + 0.99
+		info.topRecordPlayerName = "xXxSUpA1337r4c3rxXx"
+	end
+	
+	return info
+end
+
 -- Racer callbacks
 
 -- TODO: Move parts of this to race manager.
@@ -197,7 +248,7 @@ end
 
 -- CreateRace event.
 
-CreateRaceFromEvent = function(args)
+Race.CreateRaceFromEvent = function(args)
 	local playerArray = args.players
 	if playerArray == nil then
 		error("Could not create race: players is nil")
@@ -215,4 +266,4 @@ CreateRaceFromEvent = function(args)
 	Race(nil , playerArray , course , collisions)
 end
 
-Events:Subscribe("CreateRace" , CreateRaceFromEvent)
+Events:Subscribe("CreateRace" , Race.CreateRaceFromEvent)

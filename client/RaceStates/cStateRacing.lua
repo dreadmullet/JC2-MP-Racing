@@ -46,22 +46,22 @@ function StateRacing:Render()
 	-- Draw GUI.
 	if Game:GetState() == GUIState.Game then
 		-- DrawVersion
-		RaceGUI.DrawVersion(self.race.version)
+		RaceGUI.DrawVersion(self.race.scriptVersion)
 		-- DrawCourseName
-		RaceGUI.DrawCourseName(self.race.courseInfo.name)
+		RaceGUI.DrawCourseName(self.race.course.name)
 		-- DrawTargetArrow
 		args = {}
 		args.targetArrowValue = self.targetArrowValue
 		args.numTicks = self.numTicks
-		args.checkpointPosition = self.race.checkpoints[self.targetCheckpoint]
+		args.checkpointPosition = self.race.course.checkpoints[self.targetCheckpoint][1]
 		args.model = RaceBase.modelCache.TargetArrow
 		RaceGUI.DrawTargetArrow(args)
 		-- DrawLapCounter
 		args = {}
-		args.courseType = self.race.courseInfo.type
+		args.courseType = self.race.course.type
 		args.currentLap = self.currentLap
-		args.totalLaps = self.race.courseInfo.numLaps
-		args.numCheckpoints = #self.race.checkpoints
+		args.totalLaps = self.race.numLaps
+		args.numCheckpoints = #self.race.course.checkpoints
 		args.targetCheckpoint = self.targetCheckpoint
 		args.isFinished = false
 		RaceGUI.DrawLapCounter(args)
@@ -74,7 +74,7 @@ function StateRacing:Render()
 		args = {}
 		args.recordTime = self.race.recordTime
 		args.recordTimePlayerName = self.race.recordTimePlayerName
-		args.courseType = self.race.courseInfo.type
+		args.courseType = self.race.course.type
 		args.previousTime = self.race.lapTimes[#self.race.lapTimes]
 		args.currentTime = self.timer:GetSeconds()
 		RaceGUI.DrawTimers(args)
@@ -90,18 +90,18 @@ function StateRacing:Render()
 		-- DrawMinimapIcons
 		args = {}
 		args.targetCheckpoint = self.targetCheckpoint
-		args.checkpoints = self.race.checkpoints
-		args.courseType = self.race.courseInfo.type
+		args.checkpoints = self.race.course.checkpoints
+		args.courseType = self.race.course.type
 		args.currentLap = self.currentLap
-		args.numLaps = self.race.courseInfo.numLaps
+		args.numLaps = self.race.numLaps
 		RaceGUI.DrawMinimapIcons(args)
 		-- DrawNextCheckpointArrow
 		args = {}
 		args.targetCheckpoint = self.targetCheckpoint
-		args.checkpoints = self.race.checkpoints
-		args.courseType = self.race.courseInfo.type
+		args.checkpoints = self.race.course.checkpoints
+		args.courseType = self.race.course.type
 		args.currentLap = self.currentLap
-		args.numLaps = self.race.courseInfo.numLaps
+		args.numLaps = self.race.numLaps
 		RaceGUI.DrawNextCheckpointArrow(args)
 	end
 end
@@ -111,7 +111,7 @@ function StateRacing:End()
 end
 
 function StateRacing:GetTargetCheckpointDistanceSqr()
-	local targetCheckpointPos = self.race.checkpoints[self.targetCheckpoint]
+	local targetCheckpointPos = self.race.course.checkpoints[self.targetCheckpoint][1]
 	return (targetCheckpointPos - LocalPlayer:GetPosition()):LengthSqr()
 end
 
@@ -141,14 +141,14 @@ function StateRacing:LocalPlayerInput(args)
 		end
 		-- Block parachuting if the course disabled it.
 		if
-			self.race.courseInfo.parachuteEnabled == false and
+			self.race.course.parachuteEnabled == false and
 			parachuteActions[args.input]
 		then
 			return false
 		end
 		-- Block grappling if the course disabled it.
 		if
-			self.race.courseInfo.grappleEnabled == false and
+			self.race.course.grappleEnabled == false and
 			args.input == Action.FireGrapple
 		then
 			return false

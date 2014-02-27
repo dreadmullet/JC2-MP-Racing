@@ -5,22 +5,6 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 		print("args.position = "..tostring(args.position))
 	end
 	
-	self.version = args.version
-	self.playerIdToInfo = args.playerIdToInfo
-	-- TODO: make this better
-	self.courseInfo = {}
-	self.courseInfo.name = args.courseInfo[1]
-	self.courseInfo.type = args.courseInfo[2]
-	self.courseInfo.numLaps = args.courseInfo[3]
-	self.courseInfo.weatherSeverity = args.courseInfo[4]
-	self.courseInfo.authors = args.courseInfo[5]
-	self.courseInfo.parachuteEnabled = args.courseInfo[6]
-	self.courseInfo.grappleEnabled = args.courseInfo[7]
-	self.recordTime = args.recordTime
-	self.recordTimePlayerName = args.recordTimePlayerName
-	self.checkpoints = args.checkpointPositions
-	self.assignedVehicleId = args.assignedVehicleId
-	
 	if args.stateName == "StateStartingGrid" then
 		-- TODO: wat
 		for playerId , startPosition in pairs(args.startPositions) do
@@ -84,14 +68,14 @@ function Spectate:Render()
 	
 	local args
 	-- DrawVersion
-	RaceGUI.DrawVersion(self.version)
+	RaceGUI.DrawVersion(self.scriptVersion)
 	-- DrawCourseName
-	RaceGUI.DrawCourseName(self.courseInfo.name)
+	RaceGUI.DrawCourseName(self.course.name)
 	-- DrawTimers
 	args = {}
 	args.recordTime = self.recordTime
 	args.recordTimePlayerName = self.recordTimePlayerName
-	args.courseType = self.courseInfo.type
+	args.courseType = self.course.type
 	-- DrawLeaderboard
 	args = {}
 	args.leaderboard = self.leaderboard

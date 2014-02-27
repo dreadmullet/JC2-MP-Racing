@@ -234,7 +234,7 @@ end
 
 function RaceGUI.DrawMinimapIcons(args)
 	for n = 1 , #args.checkpoints do
-		local pos , success = Render:WorldToMinimap(args.checkpoints[n])
+		local pos , success = Render:WorldToMinimap(args.checkpoints[n][1])
 		if success then
 			
 			pos = Vector2(math.floor(pos.x + 0.5) , math.floor(pos.y + 0.5))
@@ -322,8 +322,8 @@ function RaceGUI.DrawNextCheckpointArrow(args)
 		nextCheckpointIndex = 1
 	end
 	
-	local cpTarget = args.checkpoints[args.targetCheckpoint]
-	local cpNext = args.checkpoints[nextCheckpointIndex]
+	local cpTarget = args.checkpoints[args.targetCheckpoint][1]
+	local cpNext = args.checkpoints[nextCheckpointIndex][1]
 	
 	local angle = Angle.FromVectors(
 		Vector3(0 , 0 , -1) ,

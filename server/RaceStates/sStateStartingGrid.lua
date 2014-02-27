@@ -7,59 +7,32 @@ function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	race.course:SpawnVehicles()
 	race.course:SpawnRacers()
 	race.course:SpawnCheckpoints()
-	race.course.numLaps = settings.numLapsFunc(
-		race.numPlayers ,
-		#race.course.spawns ,
-		race.course.numLaps
-	)
 	
 	self.startTimer = Timer()
 	
-	-- Send info to clients.
-	
-	-- Loop through all racers:
-	--    Create each racer's raceTimer.
-	--    Add ourselves to the database.
-	--    Get names of racers and whatnot, which will be sent to clients.
-	local playerIdToInfo = {}
+	-- Loop through all racers and create their raceTimer.
 	for playerId , racer in pairs(self.race.playerIdToRacer) do
 		racer.raceTimer = Timer()
-		
-		Stats.AddPlayer(racer)
-		
-		playerIdToInfo[playerId] = {["name"] = racer.name , ["color"] = racer.player:GetColor()}
 	end
 	
 	-- Update database.
 	-- TODO: why is this here
 	Stats.RaceStart(self.race)
 	
+	-- TODO: This is completely broken.
 	self.startPositions = {}
 	for playerId , racer in pairs(self.race.playerIdToRacer) do
 		self.startPositions[racer.playerId] = racer.startPosition
 	end
 	
-	-- TODO: Why is args created every iteration
+	-- Send info to clients.
+	
+	local args = {
+		stateName = "StateStartingGrid" ,
+		delay = settings.startingGridWaitSeconds ,
+		startPositions = self.startPositions
+	}
 	for id , racer in pairs(self.race.playerIdToRacer) do
-		local args = {}
-		args.stateName = "StateStartingGrid"
-		args.delay = settings.startingGridWaitSeconds
-		args.numPlayers = self.race.numPlayers
-		args.playerIdToInfo = playerIdToInfo
-		args.startPositions = self.startPositions
-		args.courseInfo = {
-			race.course.name ,
-			race.course.type ,
-			race.course.numLaps ,
-			race.course.weatherSeverity ,
-			race.course.authors ,
-			race.course.parachuteEnabled ,
-			race.course.grappleEnabled ,
-		}
-		args.recordTime = race.course.topRecords[1].time
-		args.recordTimePlayerName = race.course.topRecords[1].playerName
-		args.checkpointPositions = self.race.checkpointPositions
-		-- Player-specific.
 		args.assignedVehicleId = racer.assignedVehicleId
 		Network:Send(racer.player , "RaceSetState" , args)
 	end

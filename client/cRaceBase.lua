@@ -15,15 +15,17 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 		print("RaceBase:__init")
 	end
 	
-	self.version = args.version
-	self.numPlayers = -1
-	self.playerIdToInfo = {}
-	self.courseInfo = {}
-	self.checkpoints = {}
+	local raceInfo = args.raceInfo
+	self.scriptVersion = raceInfo.scriptVersion
+	self.numPlayers = raceInfo.numPlayers
+	self.numLaps = raceInfo.numLaps
+	self.playerIdToInfo = raceInfo.playerIdToInfo
+	self.course = raceInfo.course
+	self.recordTime = raceInfo.topRecordTime
+	self.recordTimePlayerName = raceInfo.topRecordPlayerName
+	
 	self.lapTimes = {}
 	self.leaderboard = {}
-	self.recordTime = -1
-	self.recordTimePlayerName = ""
 	
 	-- Request Models from server, if we don't have them already.
 	if RaceBase.modelCache.TargetArrow == nil then

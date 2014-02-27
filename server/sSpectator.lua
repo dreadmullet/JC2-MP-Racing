@@ -5,13 +5,14 @@ function Spectator:__init(race , player)
 	
 	player:SetStreamDistance(0)
 	player:SetWorld(self.race.world)
+	player:SetPosition(Vector3(0 , 10000 , 0))
 	
 	self.requestTimer = nil
 	
-	local args = {}
-	args.version = settings.version
-	args.checkpointPositions = self.race.checkpointPositions
-	args.stateName = self.race.stateName
+	local args = {
+		raceInfo = self.race.info ,
+		stateName = self.race.stateName
+	}
 	if args.stateName == "StateStartingGrid" then
 		args.startPositions = self.race.state.startPositions
 		args.position = self.race.course.spawns[1].position
@@ -21,25 +22,8 @@ function Spectator:__init(race , player)
 		if checkpointIndex == 0 then
 			checkpointIndex = 1
 		end
-		args.position = args.checkpointPositions[checkpointIndex]
+		args.position = self.race.checkpointPositions[checkpointIndex]
 	end
-	args.courseInfo = {
-		race.course.name ,
-		race.course.type ,
-		race.course.numLaps ,
-		race.course.weatherSeverity ,
-		race.course.authors ,
-		race.course.parachuteEnabled ,
-		race.course.grappleEnabled ,
-	}
-	args.recordTime = race.course.topRecords[1].time
-	args.recordTimePlayerName = race.course.topRecords[1].playerName
-	args.playerIdToInfo = {}
-	for playerId , racer in pairs(self.race.playerIdToRacer) do
-		args.playerIdToInfo[playerId] = {name = racer.name , color = racer.player:GetColor()}
-	end
-	
-	player:SetPosition(Vector3(0 , 10000 , 0))
 	
 	Network:Send(self.player , "SpectateInitialise" , args)
 end

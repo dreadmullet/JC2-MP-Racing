@@ -1,4 +1,3 @@
-
 function CourseSpawn:__init(course)
 	self.course = course
 	self.position = nil
@@ -54,18 +53,6 @@ function CourseSpawn:SpawnRacer()
 	
 	self.racer.player:Teleport(teleportPos , self.angle)
 	self.racer.player:SetWorld(self.course.race.world)
-end
-
--- For use with sending course checkpoint info to clients.
-function CourseSpawn:Marshal()
-	local info = {}
-	
-	info.courseEditorId = self.courseEditorId
-	info.position = self.position
-	info.angle = self.angle
-	info.modelIds = self.modelIds
-	
-	return info
 end
 
 function CourseSpawn:MarshalJSON()

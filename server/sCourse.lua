@@ -1,27 +1,34 @@
 function Course:__init()
-	self.race = nil
-	-- Includes finish or start/finish.
-	self.name = "unnamed course"
+	-- Course properties which are saved and loaded.
+	
+	self.name = "Unnamed Course"
 	self.type = "Invalid"
+	self.numLaps = -1
+	-- -1 is random.
+	-- TODO: This isn't even used.
+	self.weatherSeverity = -1
+	self.parachuteEnabled = true
+	self.grappleEnabled = true
+	self.authors = {}
 	-- Array of CourseCheckpoints.
 	self.checkpoints = {}
-	self.weatherSeverity = 0.5
-	self.authors = {}
-	self.numLaps = -1
-	-- Map of CourseCheckpoints, useful for mapping PlayerEnterCheckpoint event to a CourseCheckpoint
+	-- Array of CourseSpawns. Determines max player count.
+	self.spawns = {}
+	
+	-- Other variables.
+	-- TODO: Some of these should be in Race.
+	
+	self.race = nil
+	self.fileName = "Invalid file name"
+	-- Map of CourseCheckpoints.
+	-- Useful for mapping PlayerEnterCheckpoint events to a CourseCheckpoint.
 	-- Key = checkpointId
 	-- Value = CourseCheckpoint
 	-- Checkpoints add themselves to this.
 	self.checkpointMap = {}
-	-- Array of CourseSpawns. Determines max player count.
-	self.spawns = {}
-	self.prizeMoney = settings.prizeMoneyDefault
-	self.parachuteEnabled = true
-	self.grappleEnabled = true
 	-- Key = modelId
 	-- value = true
 	self.dlcVehicles = {}
-	
 	-- Note: if two races are running at the same time with the same course, lap records could be
 	-- overwritten, because lap records are stored when a course is loaded. Not a huge issue, since
 	-- most servers won't be running more than one race at a time. Could always loop through every
@@ -87,43 +94,20 @@ function Course:SpawnRacers()
 	end
 end
 
-function Course:GetSpawnPositionAverage()
-	local average = Vector3(0 , 0 , 0)
+-- Used to send course info to clients at the start of a race.
+function Course:MarshalForClient()
+	local info = {
+		name = self.name ,
+		type = self.type ,
+		parachuteEnabled = self.parachuteEnabled ,
+		grappleEnabled = self.grappleEnabled ,
+		authors = self.authors ,
+		checkpoints = {}
+	}
 	
-	for index , spawn in ipairs(self.spawns) do
-		average = average + spawn.position
-	end
-	
-	average = average / #self.spawns
-	
-	return average
-end
-
--- For use with sending course info to clients.
-function Course:Marshal()
-	local info = self:MarshalInfo()
-	
-	info.checkpoints = {}
 	for index , checkpoint in ipairs(self.checkpoints) do
-		table.insert(info.checkpoints , checkpoint:Marshal())
+		table.insert(info.checkpoints , checkpoint:MarshalForClient())
 	end
-	
-	info.spawns = {}
-	for index , spawn in ipairs(self.spawns) do
-		table.insert(info.spawns , spawn:Marshal())
-	end
-	
-	return info
-end
-
--- Marshals variables like name and numLaps, but not checkpoints and such.
-function Course:MarshalInfo()
-	local info = {}
-	
-	info.name = self.name
-	info.type = self.type
-	info.numLaps = self.numLaps
-	info.prizeMoney = self.prizeMoney
 	
 	return info
 end
@@ -133,12 +117,11 @@ function Course:Save(name)
 	
 	ctable.name = self.name
 	ctable.type = self.type
-	ctable.weatherSeverity = self.weatherSeverity
-	ctable.authors = self.authors
 	ctable.numLaps = self.numLaps
-	ctable.prizeMoney = self.prizeMoney
+	ctable.weatherSeverity = self.weatherSeverity
 	ctable.parachuteEnabled = self.parachuteEnabled
 	ctable.grappleEnabled = self.grappleEnabled
+	ctable.authors = self.authors
 	
 	ctable.checkpoints = {}
 	
@@ -202,12 +185,11 @@ function Course.Load(name)
 	
 	course.name = ctable.name
 	course.type = ctable.type
-	course.weatherSeverity = ctable.weatherSeverity
-	course.authors = ctable.authors
 	course.numLaps = ctable.numLaps
-	course.prizeMoney = ctable.prizeMoney
+	course.weatherSeverity = ctable.weatherSeverity
 	course.parachuteEnabled = ctable.parachuteEnabled
 	course.grappleEnabled = ctable.grappleEnabled
+	course.authors = ctable.authors
 	-- Temporary because I'm not going to change every course just for this.
 	if course.parachuteEnabled == nil then course.parachuteEnabled = true end
 	if course.grappleEnabled == nil then course.grappleEnabled = true end
@@ -272,16 +254,6 @@ function Course.Load(name)
 	
 	-- Add to database.
 	Stats.AddCourse(course)
-	
-	-- Load top times from database.
-	course.topRecords = Stats.GetCourseRecords(course.fileName , 1 , 10)
-	-- If there are no records yet, use a fake one.
-	if #course.topRecords == 0 then
-		local newRecord = {}
-		newRecord.time = 59 * 60 + 59 + 0.99
-		newRecord.playerName = "xXxSUpA1337r4c3rxXx"
-		table.insert(course.topRecords , newRecord)
-	end
 	
 	return course
 end

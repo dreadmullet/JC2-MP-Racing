@@ -30,8 +30,13 @@ function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	-- Always disable player collisions.
 	self.player:DisableCollision(CollisionGroup.Player)
 	
-	local args = {}
-	args.version = settings.version
+	-- Add ourselves to Stats.
+	Stats.AddPlayer(self)
+	
+	-- Send info to client.
+	local args = {
+		raceInfo = self.race.info
+	}
 	Network:Send(self.player , "Initialise" , args)
 end
 
@@ -141,19 +146,17 @@ function Racer:AdvanceLap()
 	
 	Network:Send(self.player , "RaceTimePersonal" , lapTime)
 	
-	-- If this is a new record, send every racer the new time/player and store the new time in the
-	-- database.
-	-- TODO: Change topRecords if we make it into the top x, not just the very top.
-	if lapTime < self.race.course.topRecords[1].time then
+	-- If this is a new record, send every racer the new time/player.
+	if lapTime < self.race.info.topRecordTime then
 		self.race:NetworkSendRace("NewRecordTime" , {lapTime , self.name})
-		self.race.course.topRecords[1].time = lapTime
-		self.race.course.topRecords[1].playerName = self.name
+		self.race.info.topRecordTime = lapTime
+		self.race.topRecordPlayerName = self.name
 	end
 	
 	self.bestTimeTimer:Restart()
 	
 	-- Finish the race if we've completed all laps.
-	if self.numLapsCompleted >= self.race.course.numLaps and self.hasFinished == false then
+	if self.numLapsCompleted >= self.race.numLaps and self.hasFinished == false then
 		self:Finish()
 	end
 end
@@ -172,10 +175,10 @@ function Racer:Finish()
 		
 		-- If this is a new record, send every racer the new time/player and store the new time in the
 		-- database.
-		if raceTime < self.race.course.topRecords[1].time then
+		if raceTime < self.race.info.topRecordTime then
 			self.race:NetworkSendRace("NewRecordTime" , {raceTime , self.name})
-			self.race.course.topRecords[1].time = raceTime
-			self.race.course.topRecords[1].playerName = self.name
+			self.race.info.topRecordTime = raceTime
+			self.race.topRecordPlayerName = self.name
 		end
 	end
 	

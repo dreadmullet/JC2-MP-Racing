@@ -16,14 +16,14 @@ end
 function StateFinished:Render()
 	-- Draw GUI.
 	if Game:GetState() == GUIState.Game then
-		RaceGUI.DrawVersion(self.race.version)
-		RaceGUI.DrawCourseName(self.race.courseInfo.name)
+		RaceGUI.DrawVersion(self.race.scriptVersion)
+		RaceGUI.DrawCourseName(self.race.course.name)
 		-- DrawLapCounter
 		args = {}
-		args.courseType = self.race.courseInfo.type
+		args.courseType = self.race.course.type
 		args.currentLap = 1
-		args.totalLaps = self.race.courseInfo.numLaps
-		args.numCheckpoints = #self.race.checkpoints
+		args.totalLaps = self.race.numLaps
+		args.numCheckpoints = #self.race.course.checkpoints
 		args.targetCheckpoint = 1
 		args.isFinished = true
 		RaceGUI.DrawLapCounter(args)
@@ -36,7 +36,7 @@ function StateFinished:Render()
 		args = {}
 		args.recordTime = self.race.recordTime
 		args.recordTimePlayerName = self.race.recordTimePlayerName
-		args.courseType = self.race.courseInfo.type
+		args.courseType = self.race.course.type
 		args.previousTime = self.race.lapTimes[#self.race.lapTimes - 1] or nil
 		args.currentTime = self.race.lapTimes[#self.race.lapTimes]
 		RaceGUI.DrawTimers(args)
@@ -51,11 +51,11 @@ function StateFinished:Render()
 		RaceGUI.DrawPositionTags(args)
 		-- DrawMinimapIcons
 		args = {}
-		args.targetCheckpoint = #self.race.checkpoints
-		args.checkpoints = self.race.checkpoints
-		args.courseType = self.race.courseInfo.type
-		args.currentLap = self.race.courseInfo.numLaps
-		args.numLaps = self.race.courseInfo.numLaps
+		args.targetCheckpoint = #self.race.course.checkpoints
+		args.checkpoints = self.race.course.checkpoints
+		args.courseType = self.race.course.type
+		args.currentLap = self.race.numLaps
+		args.numLaps = self.race.numLaps
 		RaceGUI.DrawMinimapIcons(args)
 	end
 end
@@ -79,14 +79,14 @@ function StateFinished:LocalPlayerInput(args)
 		end
 		-- Block parachuting if the course disabled it.
 		if
-			self.race.courseInfo.parachuteEnabled == false and
+			self.race.course.parachuteEnabled == false and
 			parachuteActions[args.input]
 		then
 			return false
 		end
 		-- Block grappling if the course disabled it.
 		if
-			self.race.courseInfo.grappleEnabled == false and
+			self.race.course.grappleEnabled == false and
 			args.input == Action.FireGrapple
 		then
 			return false

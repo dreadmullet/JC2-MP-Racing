@@ -1,21 +1,9 @@
 
 function StateStartingGrid:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self.race = race
+	
 	self.delay = args.delay
-	self.race.numPlayers = args.numPlayers
-	self.race.playerIdToInfo = args.playerIdToInfo
 	self.startPositions = args.startPositions
-	self.race.courseInfo = {}
-	self.race.courseInfo.name = args.courseInfo[1]
-	self.race.courseInfo.type = args.courseInfo[2]
-	self.race.courseInfo.numLaps = args.courseInfo[3]
-	self.race.courseInfo.weatherSeverity = args.courseInfo[4]
-	self.race.courseInfo.authors = args.courseInfo[5]
-	self.race.courseInfo.parachuteEnabled = args.courseInfo[6]
-	self.race.courseInfo.grappleEnabled = args.courseInfo[7]
-	self.race.recordTime = args.recordTime
-	self.race.recordTimePlayerName = args.recordTimePlayerName
-	self.race.checkpoints = args.checkpointPositions
 	self.race.assignedVehicleId = args.assignedVehicleId
 	
 	self.timer = Timer()
@@ -67,14 +55,14 @@ function StateStartingGrid:Render()
 	-- Draw GUI.
 	if Game:GetState() == GUIState.Game then
 		local args = {}
-		RaceGUI.DrawVersion(self.race.version)
-		RaceGUI.DrawCourseName(self.race.courseInfo.name)
+		RaceGUI.DrawVersion(self.race.scriptVersion)
+		RaceGUI.DrawCourseName(self.race.course.name)
 		-- DrawLapCounter
 		args = {}
-		args.courseType = self.race.courseInfo.type
+		args.courseType = self.race.course.type
 		args.currentLap = 1
-		args.totalLaps = self.race.courseInfo.numLaps
-		args.numCheckpoints = #self.race.checkpoints
+		args.totalLaps = self.race.numLaps
+		args.numCheckpoints = #self.race.course.checkpoints
 		args.targetCheckpoint = 1
 		args.isFinished = false
 		RaceGUI.DrawLapCounter(args)
@@ -87,7 +75,7 @@ function StateStartingGrid:Render()
 		args = {}
 		args.recordTime = self.race.recordTime
 		args.recordTimePlayerName = self.race.recordTimePlayerName
-		args.courseType = self.race.courseInfo.type
+		args.courseType = self.race.course.type
 		args.previousTime = nil
 		args.currentTime = nil
 		RaceGUI.DrawTimers(args)
@@ -103,18 +91,18 @@ function StateStartingGrid:Render()
 		-- DrawMinimapIcons
 		args = {}
 		args.targetCheckpoint = 1
-		args.checkpoints = self.race.checkpoints
-		args.courseType = self.race.courseInfo.type
+		args.checkpoints = self.race.course.checkpoints
+		args.courseType = self.race.course.type
 		args.currentLap = 1
-		args.numLaps = self.race.courseInfo.numLaps
+		args.numLaps = self.race.numLaps
 		RaceGUI.DrawMinimapIcons(args)
 		-- DrawNextCheckpointArrow
 		args = {}
 		args.targetCheckpoint = 1
-		args.checkpoints = self.race.checkpoints
-		args.courseType = self.race.courseInfo.type
+		args.checkpoints = self.race.course.checkpoints
+		args.courseType = self.race.course.type
 		args.currentLap = 1
-		args.numLaps = self.race.courseInfo.numLaps
+		args.numLaps = self.race.numLaps
 		RaceGUI.DrawNextCheckpointArrow(args)
 	end
 end
