@@ -5,7 +5,7 @@ debug = {}
 
 settings.debugLevel = 1
 
-settings.version = "0.8.2"
+settings.version = "0.9.1"
 if settings.debugLevel > 1 then
 	settings.version = settings.version.." (debug)"
 end
