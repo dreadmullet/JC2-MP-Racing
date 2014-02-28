@@ -39,13 +39,34 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	
 	local courseInfoArea = BaseWindow.Create(self.rightArea)
 	courseInfoArea:SetDock(GwenPosition.Top)
-	courseInfoArea:SetHeight(28)
+	courseInfoArea:SetHeight(29)
 	
-	self.courseInfoLabels = {}
+	local cells = {}
+	
+	local CreateCell = function()
+		local cell = Rectangle.Create(courseInfoArea)
+		cell:SetPadding(Vector2(4 , 3) , Vector2(4 , 0))
+		cell:SetDock(GwenPosition.Left)
+		cell:SetSize(Vector2(1000 , 1000))
+		
+		local color
+		if #cells % 2 == 0 then
+			color = Color.FromHSV(0 , 0 , 0.75)
+		else
+			color = Color.FromHSV(0 , 0 , 0)
+		end
+		color.a = 24
+		cell:SetColor(color)
+		
+		table.insert(cells , cell)
+	end
+	
+	CreateCell()
+	CreateCell()
 	
 	local CreateLabel = function(name)
-		local base = BaseWindow.Create(courseInfoArea)
-		base:SetMargin(Vector2(2 , 2) , Vector2(4 , 2))
+		local base = BaseWindow.Create()
+		base:SetMargin(Vector2(2 , 3) , Vector2(8 , 0))
 		
 		local title = Label.Create(base)
 		title:SetDock(GwenPosition.Left)
@@ -55,28 +76,30 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 		
 		local label = Label.Create(base)
 		label:SetDock(GwenPosition.Left)
-		label:SetTextSize(18)
+		label:SetTextSize(16)
 		label:SetText("?????")
 		label:SizeToContents()
 		
 		base:SizeToChildren()
 		base:SetHeight(title:GetTextHeight())
 		
-		self.courseInfoLabels[name] = label
-		
 		return base
 	end
 	
-	CreateLabel("Votes up"):SetDock(GwenPosition.Left)
-	CreateLabel("Votes down"):SetDock(GwenPosition.Left)
 	local timesPlayed = CreateLabel("Times played")
+	timesPlayed:SetParent(cells[1])
 	timesPlayed:SetDock(GwenPosition.Left)
 	timesPlayed:SetToolTip("Server-wide number of races ran on this course")
 	
-	self.courseInfoLabels["Votes up"]:SetTextColor(Color.FromHSV(105 , 0.5 , 1))
-	self.courseInfoLabels["Votes down"]:SetTextColor(Color.FromHSV(0 , 0.5 , 1))
+	self.courseVoteControl = RaceMenuUtility.CreateCourseVoteControl()
+	self.courseVoteControl.base:SetParent(cells[2])
+	self.courseVoteControl.base:SetDock(GwenPosition.Left)
+	
+	cells[1]:SizeToChildren()
+	cells[2]:SizeToChildren()
 	
 	self.tabControl = TabControl.Create(self.rightArea)
+	self.tabControl:SetMargin(Vector2(0 , 4) , Vector2(0 , 0))
 	self.tabControl:SetDock(GwenPosition.Fill)
 	self.tabControl:SetTabStripPosition(GwenPosition.Top)
 	
@@ -125,9 +148,7 @@ function CoursesTab:CourseSelected()
 	local row = self.coursesList:GetSelectedRow()
 	local courseInfo = row:GetDataObject("courseInfo")
 	
-	self.courseInfoLabels["Times played"]:SetText(string.format("%i" , courseInfo[3]))
-	self.courseInfoLabels["Votes up"]:SetText(string.format("%i" , courseInfo[4]))
-	self.courseInfoLabels["Votes down"]:SetText(string.format("%i" , courseInfo[5]))
+	self.courseVoteControl:SetCourseInfo(courseInfo)
 	
 	self.courseGroupBox:SetText(courseInfo[2])
 	self.courseGroupBox:SetTextColor(RaceMenu.groupBoxColor)
@@ -139,6 +160,7 @@ function CoursesTab:CourseSelected()
 	row:SetColumnCount(2)
 	row:SetCellText(1 , "Requesting records...")
 	
+	-- TODO: RaceMenu.instance
 	self.raceMenu:AddRequest("RequestCourseRecords" , courseInfo[1])
 end
 
