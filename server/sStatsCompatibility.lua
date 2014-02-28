@@ -7,11 +7,21 @@ Stats.UpdateFromOldVersion = function(version)
 	print("Updating database...")
 	local timer = Timer()
 	
+	local tableNames = {
+		"RacePlayers" ,
+		"RaceResults" ,
+		"RaceCourses" ,
+		"RaceCourseVotes" ,
+		"RaceVersion"
+	}
+	
 	-- This is /the entire database/ marshalled into a table.
 	local database = {}
-	database.RacePlayers = SQL:Query("select * from RacePlayers"):Execute()
-	database.RaceResults = SQL:Query("select * from RaceResults"):Execute()
-	database.RaceCourses = SQL:Query("select * from RaceCourses"):Execute()
+	for index , tableName in ipairs(tableNames) do
+		if Stats.GetTableExists(tableName) then
+			database[tableName] = SQL:Query("select * from "..tableName):Execute()
+		end
+	end
 	
 	if version == 0 then
 		Stats.UpdateFromV0(database)
@@ -26,10 +36,9 @@ Stats.UpdateFromOldVersion = function(version)
 	
 	-- Drop all tables.
 	local transaction = SQL:Transaction()
-	SQL:Execute("drop table if exists RacePlayers")
-	SQL:Execute("drop table if exists RaceResults")
-	SQL:Execute("drop table if exists RaceCourses")
-	SQL:Execute("drop table if exists RaceVersion")
+	for index , tableName in ipairs(tableNames) do
+		SQL:Execute("drop table if exists "..tableName)
+	end
 	transaction:Commit()
 	
 	print(".")
