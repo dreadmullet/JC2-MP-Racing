@@ -158,7 +158,7 @@ function CoursesTab:CourseSelected()
 	row:SetColumnCount(2)
 	row:SetCellText(1 , "Requesting records...")
 	
-	RaceMenu.instance("RequestCourseRecords" , courseInfo[1])
+	RaceMenu.instance:AddRequest("RequestCourseRecords" , courseInfo[1])
 end
 
 -- Network events
