@@ -31,6 +31,10 @@ Stats.UpdateFromOldVersion = function(version)
 		Stats.UpdateFromV1(database)
 		version = 2
 	end
+	if version == 2 then
+		Stats.UpdateFromV2(database)
+		version = 3
+	end
 	
 	print(".")
 	
@@ -51,13 +55,14 @@ Stats.UpdateFromOldVersion = function(version)
 	
 	-- RacePlayers
 	for index , racePlayer in ipairs(database.RacePlayers) do
-		local command = SQL:Command("insert into RacePlayers values(?,?,?,?,?,?)")
+		local command = SQL:Command("insert into RacePlayers values(?,?,?,?,?,?,?)")
 		command:Bind(1 , racePlayer.SteamId)
 		command:Bind(2 , racePlayer.Name)
 		command:Bind(3 , racePlayer.PlayTime)
-		command:Bind(4 , racePlayer.Starts)
-		command:Bind(5 , racePlayer.Finishes)
-		command:Bind(6 , racePlayer.Wins)
+		command:Bind(4 , racePlayer.LastPlayed)
+		command:Bind(5 , racePlayer.Starts)
+		command:Bind(6 , racePlayer.Finishes)
+		command:Bind(7 , racePlayer.Wins)
 		command:Execute()
 	end
 	print(".")
@@ -78,13 +83,21 @@ Stats.UpdateFromOldVersion = function(version)
 	-- RaceCourses
 	for index , raceCourse in ipairs(database.RaceCourses) do
 		local command = SQL:Command(
-			"insert into RaceCourses values(?,?,?,?,?)"
+			"insert into RaceCourses values(?,?,?)"
 		)
 		command:Bind(1 , raceCourse.FileNameHash)
 		command:Bind(2 , raceCourse.Name)
 		command:Bind(3 , raceCourse.TimesPlayed)
-		command:Bind(4 , raceCourse.VotesUp)
-		command:Bind(5 , raceCourse.VotesDown)
+		command:Execute()
+	end
+	-- RaceCourseVotes
+	for index , raceCourseVote in ipairs(database.RaceCourseVotes) do
+		local command = SQL:Command(
+			"insert into RaceCourseVotes values(?,?,?)"
+		)
+		command:Bind(1 , raceCourseVote.FileNameHash)
+		command:Bind(2 , raceCourseVote.SteamId)
+		command:Bind(3 , raceCourseVote.Type)
 		command:Execute()
 	end
 	
@@ -127,4 +140,12 @@ Stats.UpdateFromV1 = function(database)
 		racePlayer.Finishes = finishes
 		racePlayer.Wins = wins
 	end
+end
+
+Stats.UpdateFromV2 = function(database)
+	for index , racePlayer in ipairs(database.RacePlayers) do
+		racePlayer.LastPlayed = 1269302400
+	end
+	
+	database.RaceCourseVotes = {}
 end

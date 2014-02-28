@@ -2,7 +2,7 @@
 -- All database interactions are done here.
 ----------------------------------------------------------------------------------------------------
 
-Stats.version = 2
+Stats.version = 3
 
 -- Logs time elapsed for each function.
 Stats.debug = true
@@ -34,7 +34,7 @@ Stats.sqlCommitTimer = Timer()
 --    an entry for every single second played, just one every 6 minute interval. For instance, 12
 --    minutes, 37 seconds would be 2.
 Stats.playerRankTables = nil
--- Updated with UpdateCache
+-- Updated with UpdateCache.
 Stats.courses = nil
 
 ----------------------------------------------------------------------------------------------------
@@ -77,7 +77,8 @@ Stats.GetTableExists = function(tableName)
 	return results[1] ~= nil
 end
 
--- Returns false if they are spamming requests and should be refused.
+-- Returns false if they are spamming requests and should be refused. (The client already checks to
+-- make sure this never happens, but just to be sure.)
 Stats.CheckSpam = function(player)
 	local timers = Stats.requests[player:GetId()]
 	if timers then
@@ -151,12 +152,14 @@ Stats.CreateTables = function()
 	SQL:Execute(
 		"create table if not exists "..
 		"RacePlayers("..
-			"SteamId  integer primary key ,"..
-			"Name     text ,"..
-			"PlayTime integer default 0 ,".. -- Seconds
-			"Starts   integer default 0 ,"..
-			"Finishes integer default 0 ,"..
-			"Wins     integer default 0"..
+			"SteamId    integer primary key ,"..
+			"Name       text ,"..
+			"PlayTime   integer default 0 ,".. -- Seconds
+			"LastPlayed integer ,".. -- Unix time
+			"Starts     integer default 0 ,"..
+			"Finishes   integer default 0 ,"..
+			"Wins       integer default 0"..
+			
 		")"
 	)
 	-- RaceResults
@@ -184,11 +187,19 @@ Stats.CreateTables = function()
 		"RaceCourses("..
 			"FileNameHash integer primary key ,"..
 			"Name         text default 'Invalid course name' ,"..
-			"TimesPlayed  integer default 0 ,"..
-			"VotesUp      integer default 0 ,"..
-			"VotesDown    integer default 0"..
+			"TimesPlayed  integer default 0"..
 		")"
 	)
+	-- RaceCourseVotes
+	SQL:Execute(
+		"create table if not exists "..
+		"RaceCourseVotes("..
+			"FileNameHash integer primary key ,"..
+			"SteamId      integer ,"..
+			"Type         integer default 1".. -- Uses the VoteType enum defined in sharedStats.lua.
+		")"
+	)
+	SQL:Execute("create index if not exists RaceCourseVotesSteamId on RaceCourseVotes(SteamId)")
 	-- Version
 	SQL:Execute(
 		"create table if not exists "..
@@ -375,10 +386,11 @@ Stats.PlayerExit = function(racer)
 	Stats.DebugTimerStart()
 	
 	local command = SQL:Command(
-		"update RacePlayers set PlayTime = (?) where SteamId = (?)"
+		"update RacePlayers set PlayTime = (?), LastPlayed = (?) where SteamId = (?)"
 	)
 	command:Bind(1 , racer.playTime)
-	command:Bind(2 , racer.steamId)
+	command:Bind(2 , os.time())
+	command:Bind(3 , racer.steamId)
 	table.insert(Stats.sqlCommands , command)
 	
 	Stats.DebugTimerEnd("PlayerExit")
@@ -434,12 +446,16 @@ Stats.UpdateCache = function()
 	local query = SQL:Query("select * from RaceCourses")
 	local results = query:Execute()
 	for index , result in ipairs(results) do
+		local fileNameHash = tonumber(result.FileNameHash)
+		local votesUp = Stats.GetCourseVotes(fileNameHash , VoteType.Up)
+		local votesDown = Stats.GetCourseVotes(fileNameHash , VoteType.Down)
+		
 		local course = {
-			tonumber(result.FileNameHash) ,
+			fileNameHash ,
 			result.Name ,
 			tonumber(result.TimesPlayed) ,
-			tonumber(result.VotesUp) ,
-			tonumber(result.VotesDown)
+			votesUp ,
+			votesDown
 		}
 		table.insert(Stats.courses , course)
 	end
@@ -502,6 +518,14 @@ Stats.UpdateCache = function()
 	Stats.DebugTimerEnd("UpdateCache")
 end
 
+Stats.GetCourseVotes = function(fileNameHash , voteType)
+	local query = SQL:Query("select * from RaceCourseVotes where FileNameHash = (?) and Type = (?)")
+	query:Bind(1 , fileNameHash)
+	query:Bind(2 , voteType)
+	local results = query:Execute()
+	return #results
+end
+
 ----------------------------------------------------------------------------------------------------
 -- Events
 ----------------------------------------------------------------------------------------------------
@@ -543,6 +567,11 @@ end
 
 Stats.RequestCourseRecords = function(courseHash , player)
 	if Stats.CheckSpam(player) == false then
+		return
+	end
+	
+	-- Check arguments from client.
+	if type(courseHash) ~= "number" then
 		return
 	end
 	
