@@ -1,8 +1,6 @@
 class("CoursesTab")
 
-function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
-	self.raceMenu = raceMenu
-	
+function CoursesTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.recordsList = nil
 	
 	self:NetworkSubscribe("ReceiveCourseList")
@@ -10,7 +8,7 @@ function CoursesTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	
 	-- Create the tab.
 	
-	self.tabButton = self.raceMenu.tabControl:AddPage("Course records")
+	self.tabButton = RaceMenu.instance.tabControl:AddPage("Course records")
 	
 	local page = self.tabButton:GetPage()
 	page:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
@@ -134,7 +132,7 @@ function CoursesTab:CreateMapTab()
 end
 
 function CoursesTab:OnActivate()
-	self.raceMenu:AddRequest("RequestCourseList")
+	RaceMenu.instance:AddRequest("RequestCourseList")
 end
 
 -- GWEN events
@@ -160,8 +158,7 @@ function CoursesTab:CourseSelected()
 	row:SetColumnCount(2)
 	row:SetCellText(1 , "Requesting records...")
 	
-	-- TODO: RaceMenu.instance
-	self.raceMenu:AddRequest("RequestCourseRecords" , courseInfo[1])
+	RaceMenu.instance("RequestCourseRecords" , courseInfo[1])
 end
 
 -- Network events

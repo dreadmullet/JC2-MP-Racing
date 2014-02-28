@@ -4,9 +4,7 @@ HomeTab.topAreaColor = Color.FromHSV(25 , 0.95 , 0.85)
 HomeTab.topAreaBorderColor = Color(144 , 144 , 144)
 HomeTab.githubLabelColor = Color(255 , 255 , 255 , 228)
 
-function HomeTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
-	self.raceMenu = raceMenu
-	
+function HomeTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.statLabels = {}
 	self.rankLabels = {}
 	
@@ -14,7 +12,7 @@ function HomeTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 	
 	-- Create the tab.
 	
-	self.tabButton = self.raceMenu.tabControl:AddPage("Home")
+	self.tabButton = RaceMenu.instance.tabControl:AddPage("Home")
 	
 	local page = self.tabButton:GetPage()
 	page:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
@@ -129,7 +127,7 @@ function HomeTab:__init(raceMenu) ; EGUSM.SubscribeUtility.__init(self)
 end
 
 function HomeTab:OnActivate()
-	self.raceMenu:AddRequest("RequestPersonalStats")
+	RaceMenu.instance:AddRequest("RequestPersonalStats")
 end
 
 -- Network events
