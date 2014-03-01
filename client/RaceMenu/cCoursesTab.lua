@@ -64,7 +64,7 @@ function CoursesTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	local CreateLabel = function(name)
 		local base = BaseWindow.Create()
-		base:SetMargin(Vector2(2 , 3) , Vector2(8 , 0))
+		base:SetMargin(Vector2(2 , 4) , Vector2(8 , 0))
 		
 		local title = Label.Create(base)
 		title:SetDock(GwenPosition.Left)
