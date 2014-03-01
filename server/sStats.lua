@@ -13,7 +13,7 @@ Stats.logFile = nil
 
 -- Count per second that a client is allowed to request, to prevent spam.
 Stats.requestLimitSeconds = 3
-Stats.requestLimitCount = 3
+Stats.requestLimitCount = 5
 -- Map that helps with preventing request spam.
 -- Key: player id
 -- Value: array of timers
@@ -519,6 +519,7 @@ Stats.UpdateCache = function()
 end
 
 Stats.GetCourseVotes = function(fileNameHash , voteType)
+	-- TODO: don't select *
 	local query = SQL:Query("select * from RaceCourseVotes where FileNameHash = (?) and Type = (?)")
 	query:Bind(1 , fileNameHash)
 	query:Bind(2 , voteType)
@@ -562,7 +563,16 @@ Stats.RequestCourseList = function(unused , player)
 		return
 	end
 	
-	Network:Send(player , "ReceiveCourseList" , Stats.courses)
+	local personalCourseVotes = {}
+	
+	local query = SQL:Query("select FileNameHash , Type from RaceCourseVotes where SteamId = (?)")
+	query:Bind(1 , player:GetSteamId().id)
+	local results = query:Execute()
+	for index , result in ipairs(results) do
+		table.insert(personalCourseVotes , {tonumber(result.FileNameHash) , tonumber(result.Type)})
+	end
+	
+	Network:Send(player , "ReceiveCourseList" , {Stats.courses , personalCourseVotes})
 end
 
 Stats.RequestCourseRecords = function(courseHash , player)
@@ -578,6 +588,64 @@ Stats.RequestCourseRecords = function(courseHash , player)
 	Network:Send(player , "ReceiveCourseRecords" , Stats.GetCourseRecords(courseHash , 1 , 10))
 end
 
+Stats.VoteCourse = function(args , player)
+	if Stats.CheckSpam(player) == false then
+		return
+	end
+	
+	-- Check arguments from client.
+	if
+		type(args) ~= "table" or
+		type(args[1]) ~= "number" or
+		type(args[2]) ~= "number" or
+		(args[2] > 1 and args[2] < VoteType.EnumCount) == false
+	then
+		return
+	end
+	
+	local courseHash = args[1]
+	local voteType = args[2]
+	
+	-- Make sure the course exists.
+	local query = SQL:Query("Select count(1) from RaceCourses where FileNameHash = (?)")
+	query:Bind(1 , courseHash)
+	results = query:Execute()
+	-- That's some interesting syntax...
+	if results[1]["count(1)"] == 0 then
+		return
+	end
+	
+	-- Insert a new vote into the course votes table or update their previous vote. If they want to
+	-- remove their vote, it's updated as VoteType.RemoveUp or RemoveDown instead of having the row
+	-- removed. It just seems easier this way.
+	local command = SQL:Command(
+		"insert or replace into RaceCourseVotes(FileNameHash , SteamId , Type) values(?,?,?)"
+	)
+	command:Bind(1 , courseHash)
+	command:Bind(2 , player:GetSteamId().id)
+	command:Bind(3 , voteType)
+	-- Execute immediately because we want the new vote counts.
+	command:Execute()
+	
+	-- Get the new vote counts.
+	local newVotesUp = Stats.GetCourseVotes(courseHash , VoteType.Up)
+	local newVotesDown = Stats.GetCourseVotes(courseHash , VoteType.Down)
+	
+	-- Update the cache.
+	for index , courseInfo in ipairs(Stats.courses) do
+		if courseInfo[1] == courseHash then
+			courseInfo[4] = newVotesUp
+			courseInfo[5] = newVotesDown
+			break
+		end
+	end
+	
+	-- Broadcast the VotedCourse network event so clients update in realtime and so the person who
+	-- voted can change their current vote.
+	Network:Broadcast("VotedCourse" , {courseHash , voteType , player , newVotesUp , newVotesDown})
+end
+
 Network:Subscribe("RequestPersonalStats" , Stats.RequestPersonalStats)
 Network:Subscribe("RequestCourseList" , Stats.RequestCourseList)
 Network:Subscribe("RequestCourseRecords" , Stats.RequestCourseRecords)
+Network:Subscribe("VoteCourse" , Stats.VoteCourse)

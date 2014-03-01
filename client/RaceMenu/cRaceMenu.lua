@@ -3,7 +3,10 @@
 RaceMenu.command = "/racemenu"
 
 RaceMenu.requestLimitSeconds = 3.5
-RaceMenu.requestLimitCount = 3
+RaceMenu.requestLimitCount = 5
+
+-- Helps with requesting courses and votes only once.
+RaceMenu.cache = {}
 
 RaceMenu.allowedActions = {
 	Action.Accelerate ,

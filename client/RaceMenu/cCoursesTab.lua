@@ -81,10 +81,11 @@ function CoursesTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 		base:SizeToChildren()
 		base:SetHeight(title:GetTextHeight())
 		
-		return base
+		return base , label
 	end
 	
-	local timesPlayed = CreateLabel("Times played")
+	local timesPlayed
+	timesPlayed , self.timesPlayedLabel = CreateLabel("Times played")
 	timesPlayed:SetParent(cells[1])
 	timesPlayed:SetDock(GwenPosition.Left)
 	timesPlayed:SetToolTip("Server-wide number of races ran on this course")
@@ -132,7 +133,9 @@ function CoursesTab:CreateMapTab()
 end
 
 function CoursesTab:OnActivate()
-	RaceMenu.instance:AddRequest("RequestCourseList")
+	if RaceMenu.cache.courses == nil or RaceMenu.cache.personalCourseVotes == nil then
+		RaceMenu.instance:AddRequest("RequestCourseList")
+	end
 end
 
 -- GWEN events
@@ -146,12 +149,14 @@ function CoursesTab:CourseSelected()
 	local row = self.coursesList:GetSelectedRow()
 	local courseInfo = row:GetDataObject("courseInfo")
 	
-	self.courseVoteControl:SetCourseInfo(courseInfo)
-	
 	self.courseGroupBox:SetText(courseInfo[2])
 	self.courseGroupBox:SetTextColor(RaceMenu.groupBoxColor)
 	
 	self.rightArea:SetVisible(true)
+	
+	self.timesPlayedLabel:SetText(string.format("%i" , courseInfo[3]))
+	
+	self.courseVoteControl:SetCourseInfo(courseInfo)
 	
 	self.recordsList:Clear()
 	local row = self.recordsList:AddItem("")
@@ -163,11 +168,14 @@ end
 
 -- Network events
 
-function CoursesTab:ReceiveCourseList(courses)
+function CoursesTab:ReceiveCourseList(coursesAndVotes)
+	RaceMenu.cache.courses = coursesAndVotes[1]
+	RaceMenu.cache.personalCourseVotes = coursesAndVotes[2]
+	
 	self.coursesList:Clear()
 	
-	if #courses > 0 then
-		for index , course in ipairs(courses) do
+	if #RaceMenu.cache.courses > 0 then
+		for index , course in ipairs(RaceMenu.cache.courses) do
 			local row = self.coursesList:AddItem(course[2])
 			row:SetDataObject("courseInfo" , course)
 		end
