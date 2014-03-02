@@ -53,7 +53,12 @@ function RaceManagerJoinable:CreateRace()
 		end
 	)
 	
-	local race = Race(self.playerQueue , self.nextCourse , self.nextCourseCollisions)
+	local args = {
+		players = self.playerQueue ,
+		course = self.nextCourse ,
+		collisions = self.nextCourseCollisions
+	}
+	local race = Race(args)
 	self.raceIdToRace[race.id] = race
 	self:SetupNextRace()
 end

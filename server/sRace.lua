@@ -1,6 +1,6 @@
 Race.idCounter = 1
 
-function Race:__init(playerArray , course , vehicleCollisions)
+function Race:__init(args)
 	EGUSM.StateMachine.__init(self)
 	
 	if settings.debugLevel >= 2 then
@@ -15,9 +15,9 @@ function Race:__init(playerArray , course , vehicleCollisions)
 	-- Players
 	
 	-- Contains both Racers and Spectators in an array.
-	self.participants = playerArray
+	self.participants = args.players
 	self.playerIdToRacer = {}
-	self.numPlayers = #playerArray
+	self.numPlayers = #args.players
 	self.playerIdToSpectator = {}
 	self.finishedRacers = {}
 	-- This is sent to Racers now and any Spectators who join later.
@@ -25,7 +25,7 @@ function Race:__init(playerArray , course , vehicleCollisions)
 	
 	-- Course
 	
-	self.course = course
+	self.course = args.course
 	self.course.race = self
 	-- TODO: Is this necessary?
 	self.checkpointPositions = {}
@@ -47,11 +47,11 @@ function Race:__init(playerArray , course , vehicleCollisions)
 	-- Misc
 	
 	self.prizeMoneyCurrent = settings.prizeMoneyDefault
-	self.vehicleCollisions = vehicleCollisions or true
+	self.vehicleCollisions = args.collisions or true
 	
 	self.info = self:MarshalForClient()
 	self.info.playerIdToInfo = {}
-	for index , player in ipairs(playerArray) do
+	for index , player in ipairs(args.players) do
 		self.info.playerIdToInfo[player:GetId()] = {
 			name = player:GetName() ,
 			color = player:GetColor()
@@ -60,7 +60,7 @@ function Race:__init(playerArray , course , vehicleCollisions)
 	
 	-- Initialize Racers.
 	
-	for index , player in ipairs(playerArray) do
+	for index , player in ipairs(args.players) do
 		local newRacer = Racer(self , player)
 		self.playerIdToRacer[player:GetId()] = newRacer
 	end

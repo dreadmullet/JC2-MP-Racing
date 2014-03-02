@@ -26,15 +26,17 @@ end
 function RaceManagerMode:CreateRace(playerArray)
 	self:Message("Starting race with "..Server:GetPlayerCount().." players")
 	
-	local course = self.courseManager:LoadCourseRandom()
 	local playerArray = {}
 	for player in Server:GetPlayers() do
 		table.insert(playerArray , player)
 	end
-	-- local doCollisions = math.random() > 0.55
-	local doCollisions = true -- temporary
 	
-	self.race = Race(playerArray , course , doCollisions)
+	local args = {
+		players = playerArray ,
+		course = self.courseManager:LoadCourseRandom() ,
+		collisions = true -- temporary
+	}
+	self.race = Race(args)
 	
 	self.raceInfo = RaceInfo(self.race)
 end
