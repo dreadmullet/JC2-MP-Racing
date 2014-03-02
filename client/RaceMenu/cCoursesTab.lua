@@ -8,7 +8,7 @@ function CoursesTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	-- Create the tab.
 	
-	self.tabButton = RaceMenu.instance.tabControl:AddPage("Course records")
+	self.tabButton = RaceMenu.instance.tabControl:AddPage("Courses")
 	
 	local page = self.tabButton:GetPage()
 	page:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
