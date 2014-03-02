@@ -576,17 +576,28 @@ Stats.RequestCourseList = function(unused , player)
 	Network:Send(player , "ReceiveCourseList" , {Stats.courses , personalCourseVotes})
 end
 
-Stats.RequestCourseRecords = function(courseHash , player)
+Stats.RequestCourseRecords = function(args , player)
 	if Stats.CheckSpam(player) == false then
 		return
 	end
 	
 	-- Check arguments from client.
-	if type(courseHash) ~= "number" then
+	if
+		type(args) ~= "table" or
+		type(args[1]) ~= "number" or
+		type(args[2]) ~= "number"
+	then
 		return
 	end
 	
-	Network:Send(player , "ReceiveCourseRecords" , Stats.GetCourseRecords(courseHash , 1 , 10))
+	local courseHash = args[1]
+	local startIndex = args[2]
+	
+	Network:Send(
+		player ,
+		"ReceiveCourseRecords" ,
+		{Stats.GetCourseRecords(courseHash , startIndex , startIndex + 9) , startIndex}
+	)
 end
 
 Stats.VoteCourse = function(args , player)

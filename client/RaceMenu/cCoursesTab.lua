@@ -3,6 +3,9 @@ class("CoursesTab")
 function CoursesTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.recordsList = nil
 	
+	self.recordsIndex = nil
+	self.selectedCourseInfo = nil
+	
 	self:NetworkSubscribe("ReceiveCourseList")
 	self:NetworkSubscribe("ReceiveCourseRecords")
 	
@@ -109,14 +112,38 @@ end
 function CoursesTab:CreateRecordsTab()
 	local tabButton = self.tabControl:AddPage("Records")
 	
-	local page = tabButton:GetPage()
+	self.recordsPage = tabButton:GetPage()
 	
-	self.recordsList = SortedList.Create(page)
+	self.recordsList = SortedList.Create(self.recordsPage)
+	self.recordsList:SetMargin(Vector2(0 , 0) , Vector2(0 , 4))
 	self.recordsList:SetDock(GwenPosition.Fill)
 	self.recordsList:AddColumn("Rank" , 40)
 	self.recordsList:AddColumn("Player")
 	self.recordsList:AddColumn("Time" , 65)
 	self.recordsList:AddColumn("Vehicle")
+	
+	local buttonsBase = BaseWindow.Create(self.recordsPage)
+	buttonsBase:SetDock(GwenPosition.Bottom)
+	buttonsBase:SetHeight(24)
+	
+	local CreateButton = function(text , dock)
+		local button = Button.Create(buttonsBase)
+		if dock ~= GwenPosition.Right then
+			button:SetMargin(Vector2(0 , 0) , Vector2(40 , 0))
+		end
+		button:SetPadding(Vector2(2 , 0) , Vector2(2 , 0))
+		button:SetDock(dock)
+		button:SetText(text)
+		button:SizeToContents()
+		button:SetEnabled(false)
+		button:Subscribe("Press" , self , self.RecordButtonPressed)
+		
+		return button
+	end
+	
+	self.previousRecordsButton = CreateButton("Previous 10" , GwenPosition.Left)
+	self.topRecordsButton = CreateButton("Top 10" , GwenPosition.Left)
+	self.nextRecordsButton = CreateButton("Next 10" , GwenPosition.Right)
 end
 
 function CoursesTab:CreateMapTab()
@@ -130,6 +157,12 @@ function CoursesTab:CreateMapTab()
 	todoLabel:SetAlignment(GwenPosition.Center)
 	todoLabel:SetColorDark()
 	todoLabel:SetText("TODO")
+end
+
+function CoursesTab:SetRecordButtonsEnabled(enabled)
+	self.previousRecordsButton:SetEnabled(enabled)
+	self.topRecordsButton:SetEnabled(enabled)
+	self.nextRecordsButton:SetEnabled(enabled)
 end
 
 -- RaceMenu callbacks
@@ -150,6 +183,7 @@ function CoursesTab:CourseSelected()
 	
 	local row = self.coursesList:GetSelectedRow()
 	local courseInfo = row:GetDataObject("courseInfo")
+	self.selectedCourseInfo = courseInfo
 	
 	self.courseGroupBox:SetText(courseInfo[2])
 	self.courseGroupBox:SetTextColor(RaceMenu.groupBoxColor)
@@ -165,7 +199,30 @@ function CoursesTab:CourseSelected()
 	row:SetColumnCount(2)
 	row:SetCellText(1 , "Requesting records...")
 	
-	RaceMenu.instance:AddRequest("RequestCourseRecords" , courseInfo[1])
+	self.recordsIndex = 1
+	RaceMenu.instance:AddRequest("RequestCourseRecords" , {courseInfo[1] , 1})
+	
+	self:SetRecordButtonsEnabled(false)
+end
+
+function CoursesTab:RecordButtonPressed(button)
+	if button == self.previousRecordsButton then
+		self.recordsIndex = self.recordsIndex - 10
+	elseif button == self.nextRecordsButton then
+		self.recordsIndex = self.recordsIndex + 10
+	elseif button == self.topRecordsButton then
+		self.recordsIndex = 1
+	end
+	
+	if self.recordsIndex < 1 then
+		self.recordsIndex = 1
+	end
+	
+	RaceMenu.instance:AddRequest(
+		"RequestCourseRecords" ,
+		{self.selectedCourseInfo[1] , self.recordsIndex}
+	)
+	self:SetRecordButtonsEnabled(false)
 end
 
 -- Network events
@@ -188,11 +245,14 @@ function CoursesTab:ReceiveCourseList(coursesAndVotes)
 	end
 end
 
-function CoursesTab:ReceiveCourseRecords(records)
+function CoursesTab:ReceiveCourseRecords(args)
+	local records = args[1]
+	local startIndex = args[2]
+	
 	self.recordsList:Clear()
 	
 	for index , record in ipairs(records) do
-		local row = self.recordsList:AddItem(string.format("%i" , index))
+		local row = self.recordsList:AddItem(string.format("%i" , startIndex + index - 1))
 		row:SetColumnCount(4)
 		row:SetCellText(1 , record.playerName)
 		row:SetCellText(2 , Utility.LapTimeString(record.time))
@@ -202,4 +262,6 @@ function CoursesTab:ReceiveCourseRecords(records)
 		end
 		row:SetCellText(3 , vehicleName)
 	end
+	
+	self:SetRecordButtonsEnabled(true)
 end
