@@ -249,21 +249,12 @@ end
 -- CreateRace event.
 
 Race.CreateRaceFromEvent = function(args)
-	local playerArray = args.players
-	if playerArray == nil then
-		error("Could not create race: players is nil")
-		return
-	end
-	
-	local course = Course.Load(args.course)
-	if course == nil then
-		error("Could not create race: course not found")
-		return
-	end
-	
-	local collisions = args.collisions or true
-	
-	Race(nil , playerArray , course , collisions)
+	local raceArgs = {
+		players = args.players ,
+		course = Course.Load(args.courseName) ,
+		collisions = args.collisions or true
+	}
+	Race(raceArgs)
 end
 
 Events:Subscribe("CreateRace" , Race.CreateRaceFromEvent)
