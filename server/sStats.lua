@@ -219,9 +219,10 @@ Stats.AddPlayer = function(racer)
 	command:Bind(1 , racer.steamId)
 	command:Execute()
 	
-	command = SQL:Command("update RacePlayers set Name = (?) where SteamId = (?)")
+	command = SQL:Command("update RacePlayers set Name = (?), LastPlayed = (?) where SteamId = (?)")
 	command:Bind(1 , racer.name)
-	command:Bind(2 , racer.steamId)
+	command:Bind(2 , os.time())
+	command:Bind(3 , racer.steamId)
 	table.insert(Stats.sqlCommands , command)
 	
 	Stats.DebugTimerEnd("AddPlayer")
