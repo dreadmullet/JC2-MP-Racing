@@ -149,6 +149,8 @@ function Course.Load(name)
 		print("Loading course file: "..name)
 	end
 	
+	local timer = Timer()
+	
 	local path = settings.coursesPath..name..".course"
 	
 	--
@@ -178,9 +180,9 @@ function Course.Load(name)
 		string = string..line
 	end
 	
-	local json = require 'JSON'
+	local json = require("JSON")
 	
-	local ctable = json.decode(string)
+	local ctable = json:decode(string)
 	local course = Course()
 	
 	course.name = ctable.name
@@ -254,6 +256,8 @@ function Course.Load(name)
 	
 	-- Add to database.
 	Stats.AddCourse(course)
+	
+	print(string.format("%s loaded in %.3f seconds" , course.name , timer:GetSeconds()))
 	
 	return course
 end
