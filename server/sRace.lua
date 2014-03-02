@@ -258,9 +258,14 @@ end
 -- CreateRace event.
 
 Race.CreateRaceFromEvent = function(args)
+	local course = Course.Load(args.courseName)
+	if #args.players > course:GetMaxPlayers() then
+		error("Cannot create race: too many players for course")
+	end
+	
 	local raceArgs = {
 		players = args.players ,
-		course = Course.Load(args.courseName) ,
+		course = course ,
 		collisions = args.collisions
 	}
 	Race(raceArgs)

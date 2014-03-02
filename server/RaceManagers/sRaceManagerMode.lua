@@ -23,7 +23,7 @@ function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
 end
 
 -- Adds all players in the server to a new Race.
-function RaceManagerMode:CreateRace(playerArray)
+function RaceManagerMode:CreateRace()
 	self:Message("Starting race with "..Server:GetPlayerCount().." players")
 	
 	local playerArray = {}
@@ -31,9 +31,14 @@ function RaceManagerMode:CreateRace(playerArray)
 		table.insert(playerArray , player)
 	end
 	
+	local course = self.courseManager:LoadCourseRandom()
+	if #playerArray > course:GetMaxPlayers() then
+		error("Too many players for course, "..course.name.." can only fit "..course:GetMaxPlayers())
+	end
+	
 	local args = {
 		players = playerArray ,
-		course = self.courseManager:LoadCourseRandom() ,
+		course = course ,
 		collisions = true -- temporary
 	}
 	self.race = Race(args)
