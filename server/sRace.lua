@@ -69,7 +69,7 @@ function Race:__init(args)
 	for index , moduleName in ipairs(self.moduleNames) do
 		local class = RaceModules[moduleName]
 		if class then
-			class()
+			class(self)
 		end
 	end
 	
