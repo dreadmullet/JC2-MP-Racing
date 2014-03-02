@@ -3,13 +3,16 @@
 function CourseManager:__init(manifestPath)
 	self.manifestPath = manifestPath
 	self.courseNames = {}
-	self.numCourses = 0
 	
 	self:LoadManifest()
 end
 
 function CourseManager:LoadCourseRandom()
-	return Course.Load(table.randomvalue(self.courseNames))
+	if #self.courseNames > 0 then
+		return Course.Load(table.randomvalue(self.courseNames))
+	else
+		return error("No available courses!")
+	end
 end
 
 function CourseManager:LoadManifest()
@@ -35,7 +38,6 @@ function CourseManager:LoadManifest()
 	-- Erase courseNames if it's already been filled. This allows it to be updated just by
 	-- calling this function again.
 	self.courseNames = {}
-	self.numCourses = 0
 	
 	-- Loop through each line in the manifest.
 	for line in io.lines(path) do
@@ -45,11 +47,19 @@ function CourseManager:LoadManifest()
 		if string.find(line , "%S") then
 			-- Add the entire line, sans comments, to self.courseNames
 			table.insert(self.courseNames , line)
-			self.numCourses = self.numCourses + 1
 		end
 	end
 	
 	if settings.debugLevel >= 1 then
-		print("Course manifest loaded - "..self.numCourses.." courses found")
+		print("Course manifest loaded - "..#self.courseNames.." courses found")
+	end
+end
+
+function CourseManager:RemoveCourse(courseNameToRemove)
+	for index , courseName in ipairs(self.courseNames) do
+		if courseNameToRemove == courseName then
+			table.remove(self.courseNames , index)
+			break
+		end
 	end
 end

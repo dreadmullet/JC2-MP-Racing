@@ -33,6 +33,7 @@ function RaceManagerMode:CreateRace()
 	
 	local course = self.courseManager:LoadCourseRandom()
 	if #playerArray > course:GetMaxPlayers() then
+		self.courseManager:RemoveCourse(course.name)
 		error("Too many players for course, "..course.name.." can only fit "..course:GetMaxPlayers())
 	end
 	
