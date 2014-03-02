@@ -150,9 +150,25 @@ RaceMenuUtility.CreateCourseVoteControl = function()
 			
 			if player == LocalPlayer then
 				self.ourVote = voteType
+				-- Update vote cache.
+				for index , vote in ipairs(RaceMenu.cache.personalCourseVotes) do
+					if vote[1] == self.courseNameHash then
+						vote[2] = self.ourVote
+						break
+					end
+				end
 			end
 			
 			self:Update()
+			
+			-- Update course cache.
+			for index , course in ipairs(RaceMenu.cache.courses) do
+				if course[1] == self.courseNameHash then
+					course[4] = newVotesUp
+					course[5] = newVotesDown
+					break
+				end
+			end
 		end
 	end
 	

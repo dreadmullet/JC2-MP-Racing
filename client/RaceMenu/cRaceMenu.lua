@@ -105,7 +105,27 @@ function RaceMenu:AddRequest(networkName , arg)
 end
 
 function RaceMenu:AddTab(tabClass)
-	table.insert(self.tabs , tabClass(self))
+	local instance = tabClass(self)
+	table.insert(self.tabs , instance)
+	
+	instance.__id = {}
+	
+	return instance
+end
+
+function RaceMenu:RemoveTab(tabToRemove)
+	for index , tab in ipairs(self.tabs) do
+		if tab.__id == tabToRemove.__id then
+			self.tabControl:RemovePage(tab.tabButton)
+			if tab.OnRemove then
+				tab:OnRemove()
+			end
+			
+			table.remove(self.tabs)
+			
+			break
+		end
+	end
 end
 
 function RaceMenu:ActivateCurrentTab()

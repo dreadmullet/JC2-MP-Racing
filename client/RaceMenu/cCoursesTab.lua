@@ -132,6 +132,8 @@ function CoursesTab:CreateMapTab()
 	todoLabel:SetText("TODO")
 end
 
+-- RaceMenu callbacks
+
 function CoursesTab:OnActivate()
 	if RaceMenu.cache.courses == nil or RaceMenu.cache.personalCourseVotes == nil then
 		RaceMenu.instance:AddRequest("RequestCourseList")

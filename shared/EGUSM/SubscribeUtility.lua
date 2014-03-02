@@ -15,6 +15,7 @@ function EGUSM.SubscribeUtility:__init()
 	self.NetUnsubscribeAll = self.NetworkUnsubscribeAll
 	
 	self.Destroy = EGUSM.SubscribeUtility.Destroy
+	self.UnsubscribeAll = self.Destroy
 	
 	-- Each element is like {eventName , event}.
 	self.subscribeUtilityEventSubs = {}

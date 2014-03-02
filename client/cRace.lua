@@ -8,6 +8,8 @@ function Race:__init(args) ; RaceBase.__init(self , args)
 	
 	self.assignedVehicleId = -2
 	
+	Race.currentRaceTab = RaceMenu.instance:AddTab(CurrentRaceTab)
+	
 	Events:Fire("RaceCreate")
 	
 	self:NetworkSubscribe("RaceSetState")
@@ -26,6 +28,8 @@ function Race:Terminate()
 	if settings.debugLevel >= 2 then
 		print("Race:Terminate")
 	end
+	
+	RaceMenu.instance:RemoveTab(self.currentRaceTab)
 	
 	self:Destroy()
 end
