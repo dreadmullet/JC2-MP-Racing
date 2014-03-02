@@ -7,12 +7,12 @@ function CurrentRaceTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	self.tabButton = RaceMenu.instance.tabControl:AddPage("Current race")
 	
-	local page = self.tabButton:GetPage()
-	page:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
+	self.page = self.tabButton:GetPage()
+	self.page:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
 	
 	self.course = Race.instance.course
 	
-	local groupBoxCourse = RaceMenu.CreateGroupBox(page)
+	local groupBoxCourse = RaceMenu.CreateGroupBox(self.page)
 	groupBoxCourse:SetDock(GwenPosition.Top)
 	groupBoxCourse:SetText(self.course.name)
 	groupBoxCourse:SetHeight(60)

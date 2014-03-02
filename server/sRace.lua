@@ -48,6 +48,7 @@ function Race:__init(args)
 	
 	self.prizeMoneyCurrent = settings.prizeMoneyDefault
 	self.vehicleCollisions = args.collisions or true
+	self.moduleNames = args.modules or {}
 	
 	self.info = self:MarshalForClient()
 	self.info.playerIdToInfo = {}
@@ -59,10 +60,17 @@ function Race:__init(args)
 	end
 	
 	-- Initialize Racers.
-	
 	for index , player in ipairs(args.players) do
 		local newRacer = Racer(self , player)
 		self.playerIdToRacer[player:GetId()] = newRacer
+	end
+	
+	-- Initialize RaceModules.
+	for index , moduleName in ipairs(self.moduleNames) do
+		local class = RaceModules[moduleName]
+		if class then
+			class()
+		end
 	end
 	
 	-- Prevents terminating twice.
@@ -197,7 +205,8 @@ function Race:MarshalForClient()
 		numPlayers = self.numPlayers ,
 		numLaps = self.numLaps ,
 		playerIdToInfo = self.playerIdToInfo ,
-		course = self.course:MarshalForClient()
+		course = self.course:MarshalForClient() ,
+		modules = self.moduleNames
 	}
 	
 	-- Load the top time from the database.
@@ -252,7 +261,7 @@ Race.CreateRaceFromEvent = function(args)
 	local raceArgs = {
 		players = args.players ,
 		course = Course.Load(args.courseName) ,
-		collisions = args.collisions or true
+		collisions = args.collisions
 	}
 	Race(raceArgs)
 end

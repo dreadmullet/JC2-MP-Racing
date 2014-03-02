@@ -10,6 +10,14 @@ function Race:__init(args) ; RaceBase.__init(self , args)
 	
 	Race.currentRaceTab = RaceMenu.instance:AddTab(CurrentRaceTab)
 	
+	-- Initialize RaceModules.
+	for index , moduleName in ipairs(args.raceInfo.modules) do
+		local class = RaceModules[moduleName]
+		if class then
+			class()
+		end
+	end
+	
 	Events:Fire("RaceCreate")
 	
 	self:NetworkSubscribe("RaceSetState")

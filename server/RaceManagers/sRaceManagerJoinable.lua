@@ -18,6 +18,8 @@ function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 	self:EventSubscribe("RaceEnd")
 	self:EventSubscribe("PlayerChat")
 	self:EventSubscribe("PreTick")
+	
+	self:NetworkSubscribe("LeaveRace")
 end
 
 function RaceManagerJoinable:SetupNextRace()
@@ -56,7 +58,8 @@ function RaceManagerJoinable:CreateRace()
 	local args = {
 		players = self.playerQueue ,
 		course = self.nextCourse ,
-		collisions = self.nextCourseCollisions
+		collisions = self.nextCourseCollisions ,
+		modules = {"RaceManagerJoinable"}
 	}
 	local race = Race(args)
 	self.raceIdToRace[race.id] = race
@@ -164,4 +167,10 @@ function RaceManagerJoinable:PreTick()
 	else
 		self.startTimer = Timer()
 	end
+end
+
+-- Network events
+
+function RaceManagerJoinable:LeaveRace(unused , player)
+	self:RemovePlayer(player)
 end
