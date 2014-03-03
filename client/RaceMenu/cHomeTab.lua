@@ -74,14 +74,14 @@ function HomeTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 		labelName:SetTextSize(statFontSize)
 		labelName:SetText(name)
 		labelName:SetHeight(rowHeight)
-		labelName:SetWidthRel(0.5)
+		labelName:SetWidthAutoRel(0.5)
 		
 		local labelValue = Label.Create(row)
 		labelValue:SetDock(GwenPosition.Left)
 		labelValue:SetTextSize(statFontSize)
 		labelValue:SetText("?")
 		labelValue:SetHeight(rowHeight)
-		labelValue:SetWidthRel(0.25)
+		labelValue:SetWidthAutoRel(0.25)
 		
 		local labelRank = Label.Create(row)
 		labelRank:SetDock(GwenPosition.Right)
@@ -89,7 +89,7 @@ function HomeTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 		labelRank:SetTextSize(statFontSize)
 		labelRank:SetText("?")
 		labelRank:SetHeight(rowHeight)
-		labelRank:SetWidthRel(0.25)
+		labelRank:SetWidthAutoRel(0.25)
 		
 		local rowColor
 		

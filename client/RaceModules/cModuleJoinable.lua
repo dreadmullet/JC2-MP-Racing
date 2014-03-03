@@ -1,5 +1,5 @@
 
-RaceModules.Class("RaceManagerJoinable")
+class("RaceManagerJoinable" , RaceModules)
 
 function RaceModules.RaceManagerJoinable:__init()
 	-- Add a leave button to the current race tab.

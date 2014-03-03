@@ -5,10 +5,10 @@ ShadedRectangle.Create = function(...)
 	local baseRect = BaseWindow.Create(...)
 	
 	local darkRect = Rectangle.Create(baseRect)
-	darkRect:SetSizeRel(Vector2.One)
+	darkRect:SetSizeAutoRel(Vector2.One)
 	
 	local lightRect = Rectangle.Create(darkRect)
-	lightRect:SetHeightRel(0.25)
+	lightRect:SetHeightAutoRel(0.25)
 	lightRect:SetDock(GwenPosition.Top)
 	
 	baseRect:SetDataObject("darkRect" , darkRect)
