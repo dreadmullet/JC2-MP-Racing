@@ -461,7 +461,7 @@ Stats.UpdateCache = function()
 		table.insert(Stats.courses , course)
 	end
 	
-	table.sort(Stats.courses , function(a , b) return a[2] < b[2] end)
+	table.sort(Stats.courses , function(a , b) return a[2]:lower() < b[2]:lower() end)
 	
 	Stats.playerRankTables = {}
 	
