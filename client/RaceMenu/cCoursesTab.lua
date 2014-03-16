@@ -2,9 +2,11 @@ class("CoursesTab")
 
 function CoursesTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.recordsList = nil
-	
 	self.recordsIndex = nil
 	self.selectedCourseInfo = nil
+	self.previousRecordsButton = nil
+	self.topRecordsButton = nil
+	self.nextRecordsButton = nil
 	
 	self:NetworkSubscribe("ReceiveCourseList")
 	self:NetworkSubscribe("ReceiveCourseRecords")
@@ -18,8 +20,8 @@ function CoursesTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	local groupBoxCourseSelect = RaceMenu.CreateGroupBox(page)
 	groupBoxCourseSelect:SetDock(GwenPosition.Left)
-	groupBoxCourseSelect:SetText("Select course")
 	groupBoxCourseSelect:SetWidth(250)
+	groupBoxCourseSelect:SetText("Select course")
 	
 	self.coursesList = ListBox.Create(groupBoxCourseSelect)
 	self.coursesList:SetDock(GwenPosition.Fill)

@@ -40,7 +40,7 @@ RaceMenu.groupBoxColor = Color.FromHSV(150 , 0.06 , 0.775)
 RaceMenu.CreateGroupBox = function(...)
 	local groupBox = GroupBox.Create(...)
 	groupBox:SetMargin(Vector2(4 , 7) , Vector2(4 , 4))
-	groupBox:SetPadding(Vector2(1 , 7) , Vector2(1 , 1))
+	groupBox:SetPadding(Vector2(1 , 7) , Vector2(1 , 3))
 	groupBox:SetTextColor(RaceMenu.groupBoxColor)
 	groupBox:SetTextSize(24)
 	
@@ -52,7 +52,7 @@ end
 function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	RaceMenu.instance = self
 	
-	self.size = Vector2(736 , 426)
+	self.size = Vector2(736 , 430)
 	self.isEnabled = false
 	-- These two help with limiting network requests. Used in PostTick.
 	self.requestTimers = {}
@@ -61,6 +61,7 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	self:CreateWindow()
 	self:AddTab(HomeTab)
+	self:AddTab(PlayersTab)
 	self:AddTab(CoursesTab)
 	
 	self:EventSubscribe("ControlDown")

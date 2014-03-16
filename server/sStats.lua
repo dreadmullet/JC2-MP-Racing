@@ -33,6 +33,8 @@ Stats.sqlCommitTimer = Timer()
 -- PlayTime is a multiple of 6 minutes. Or something. It's just to make it so the table doesn't have
 --    an entry for every single second played, just one every 6 minute interval. For instance, 12
 --    minutes, 37 seconds would be 2.
+
+--TODO: top players have ranks of 2 for some reason.
 Stats.playerRankTables = nil
 -- Updated with UpdateCache.
 Stats.courses = nil
@@ -275,7 +277,7 @@ Stats.AddRaceResult = function(racer , place , course)
 	
 	-- Update RacePlayers with player stats (starts, finishes, and wins).
 	
-	local playerStats = Stats.GetPersonalStats(racer.steamId).stats
+	local playerStats = Stats.GetPlayerStats(racer.steamId).stats
 	playerStats.Starts = playerStats.Starts + 1
 	if place >= 1 then
 		playerStats.Finishes = playerStats.Finishes + 1
@@ -355,6 +357,9 @@ end
 Stats.RaceStart = function(race)
 	Stats.DebugTimerStart()
 	
+	-- Commit any database changes now, in case a new course was just queued.
+	Stats.Commit()
+	
 	-- Increment RaceCourses.TimesPlayed.
 	
 	local query = SQL:Query("select TimesPlayed from RaceCourses where FileNameHash = (?)")
@@ -397,16 +402,18 @@ Stats.PlayerExit = function(racer)
 	Stats.DebugTimerEnd("PlayerExit")
 end
 
-Stats.GetPersonalStats = function(steamId)
+Stats.GetPlayerStats = function(steamId)
 	local returnTable = {}
+	returnTable.steamId = steamId
 	
 	local query = SQL:Query(
-		"select PlayTime , Starts , Finishes , Wins from RacePlayers where SteamId = (?)"
+		"select Name , PlayTime , Starts , Finishes , Wins from RacePlayers where SteamId = (?)"
 	)
 	query:Bind(1 , steamId)
 	local result = query:Execute()[1]
 	
 	if result then
+		returnTable.name = result.Name
 		returnTable.stats = {
 			PlayTime = tonumber(result.PlayTime) ,
 			Starts = tonumber(result.Starts) ,
@@ -414,6 +421,7 @@ Stats.GetPersonalStats = function(steamId)
 			Wins = tonumber(result.Wins)
 		}
 	else
+		returnTable.name = "Ex Istsnot, Esq."
 		returnTable.stats = {
 			PlayTime = 0 ,
 			Starts = 0 ,
@@ -528,6 +536,17 @@ Stats.GetCourseVotes = function(fileNameHash , voteType)
 	return #results
 end
 
+Stats.Commit = function()
+	Stats.sqlCommitTimer:Restart()
+	
+	local transaction = SQL:Transaction()
+	for index , command in ipairs(Stats.sqlCommands) do
+		command:Execute()
+	end
+	Stats.sqlCommands = {}
+	transaction:Commit()
+end
+
 ----------------------------------------------------------------------------------------------------
 -- Events
 ----------------------------------------------------------------------------------------------------
@@ -537,12 +556,7 @@ Stats.PostTick = function()
 		Stats.sqlCommitTimer:Restart()
 		
 		if #Stats.sqlCommands ~= 0 then
-			local transaction = SQL:Transaction()
-			for index , command in ipairs(Stats.sqlCommands) do
-				command:Execute()
-			end
-			Stats.sqlCommands = {}
-			transaction:Commit()
+			Stats.Commit()
 		end
 	end
 end
@@ -551,12 +565,82 @@ end
 -- Network
 ----------------------------------------------------------------------------------------------------
 
-Stats.RequestPersonalStats = function(unused , player)
+Stats.RequestPlayerStats = function(steamId , player)
 	if Stats.CheckSpam(player) == false then
 		return
 	end
 	
-	Network:Send(player , "ReceivePersonalStats" , Stats.GetPersonalStats(player:GetSteamId().id))
+	-- Check arguments from client.
+	
+	if type(steamId) ~= "string" then
+		return
+	end
+	
+	Network:Send(player , "ReceivePlayerStats" , Stats.GetPlayerStats(steamId))
+end
+
+Stats.RequestSortedPlayers = function(args , player)
+	if Stats.CheckSpam(player) == false then
+		return
+	end
+	
+	-- Check arguments from client.
+	
+	if type(args) ~= "table" then
+		return
+	end
+	
+	local playerSortType = args[1]
+	local startIndex = args[2]
+	local name = args[3]
+	
+	if
+		type(playerSortType) ~= "number" or
+		type(startIndex) ~= "number" or
+		(playerSortType > 1 and playerSortType < PlayerSortType.EnumCount) == false or
+		startIndex < 1 or
+		(playerSortType == PlayerSortType.Name and (name == nil or name == ""))
+	then
+		return
+	end
+	
+	-- Get tableName from the request's playerSortType.
+	
+	Stats.playerSortTypeMap = Stats.playerSortTypeMap or {
+		[PlayerSortType.Name] = "Name" ,
+		[PlayerSortType.Starts] = "Starts" ,
+		[PlayerSortType.Finishes] = "Finishes" ,
+		[PlayerSortType.Wins] = "Wins" ,
+		[PlayerSortType.PlayTime] = "PlayTime"
+	}
+	local tableName = Stats.playerSortTypeMap[playerSortType]
+	
+	-- This will be filled and sent to the client.
+	local sortedPlayers = {}
+	
+	if tableName == "Name" then
+		local query = SQL:Query("select SteamId from RacePlayers where Name = (?)")
+		query:Bind(1 , name)
+		local results = query:Execute()
+		
+		for index , result in ipairs(results) do
+			table.insert(sortedPlayers , {result.SteamId , name})
+		end
+	else
+		local query = SQL:Query(
+			"select SteamId , Name , "..tableName.." from RacePlayers "..
+			"order by "..tableName.." desc "..
+			"limit 10 "..
+			"offset "..string.format("%i" , startIndex)
+		)
+		local results = query:Execute()
+		
+		for index , result in ipairs(results) do
+			table.insert(sortedPlayers , {result.SteamId , result.Name , result[tableName]})
+		end
+	end
+	
+	Network:Send(player , "ReceiveSortedPlayers" , {playerSortType , sortedPlayers})
 end
 
 Stats.RequestCourseList = function(unused , player)
@@ -657,7 +741,8 @@ Stats.VoteCourse = function(args , player)
 	Network:Broadcast("VotedCourse" , {courseHash , voteType , player , newVotesUp , newVotesDown})
 end
 
-Network:Subscribe("RequestPersonalStats" , Stats.RequestPersonalStats)
+Network:Subscribe("RequestPlayerStats" , Stats.RequestPlayerStats)
+Network:Subscribe("RequestSortedPlayers" , Stats.RequestSortedPlayers)
 Network:Subscribe("RequestCourseList" , Stats.RequestCourseList)
 Network:Subscribe("RequestCourseRecords" , Stats.RequestCourseRecords)
 Network:Subscribe("VoteCourse" , Stats.VoteCourse)

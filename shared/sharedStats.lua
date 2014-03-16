@@ -6,3 +6,13 @@ VoteType = {
 	RemoveDown = 5 ,
 	EnumCount = 6
 }
+
+PlayerSortType = {
+	None = 1 ,
+	Name = 2 ,
+	Starts = 3 ,
+	Finishes = 4 ,
+	Wins = 5 ,
+	PlayTime = 6 ,
+	EnumCount = 7
+}
