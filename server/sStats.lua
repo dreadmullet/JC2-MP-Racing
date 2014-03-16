@@ -33,8 +33,6 @@ Stats.sqlCommitTimer = Timer()
 -- PlayTime is a multiple of 6 minutes. Or something. It's just to make it so the table doesn't have
 --    an entry for every single second played, just one every 6 minute interval. For instance, 12
 --    minutes, 37 seconds would be 2.
-
---TODO: top players have ranks of 2 for some reason.
 Stats.playerRankTables = nil
 -- Updated with UpdateCache.
 Stats.courses = nil
