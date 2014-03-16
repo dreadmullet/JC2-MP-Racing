@@ -449,7 +449,9 @@ end
 Stats.UpdateCache = function()
 	Stats.DebugTimerStart()
 	
-	print("Updating stats cache...")
+	print("Updating stats cache")
+	
+	-- Courses
 	
 	Stats.courses = {}
 	local query = SQL:Query("select * from RaceCourses")
@@ -471,6 +473,8 @@ Stats.UpdateCache = function()
 	
 	table.sort(Stats.courses , function(a , b) return a[2]:lower() < b[2]:lower() end)
 	
+	-- Ranks
+	
 	Stats.playerRankTables = {}
 	
 	local query = SQL:Query("select PlayTime , Starts , Finishes , Wins from RacePlayers")
@@ -479,7 +483,7 @@ Stats.UpdateCache = function()
 	local GetSortedColumn = function(columnName)
 		local query = SQL:Query(
 			"select "..columnName.." from RacePlayers "..
-			"order by "..columnName.." desc "
+			"order by "..columnName.." desc"
 		)
 		local results = query:Execute()
 		
@@ -498,12 +502,12 @@ Stats.UpdateCache = function()
 	end
 	
 	-- Complicated brain-stuff, just assume it works.
+	-- See explanation for Stats.playerRankTables at top of file.
 	local Fill = function(name)
 		Stats.playerRankTables[name] = {}
-		
+		local t = Stats.playerRankTables[name]
 		local source = GetSortedColumn(name)
 		local max = source[1] or 0 
-		local t = Stats.playerRankTables[name]
 		local currentRank = 1
 		
 		for n = max , 1 , -1 do
@@ -521,8 +525,6 @@ Stats.UpdateCache = function()
 	Fill("Starts")
 	Fill("Finishes")
 	Fill("Wins")
-	
-	print("Done")
 	
 	Stats.DebugTimerEnd("UpdateCache")
 end
@@ -631,7 +633,7 @@ Stats.RequestSortedPlayers = function(args , player)
 			"select SteamId , Name , "..tableName.." from RacePlayers "..
 			"order by "..tableName.." desc "..
 			"limit 10 "..
-			"offset "..string.format("%i" , startIndex)
+			"offset "..string.format("%i" , startIndex - 1)
 		)
 		local results = query:Execute()
 		
