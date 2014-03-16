@@ -4,11 +4,8 @@ HomeTab.topAreaColor = Color.FromHSV(25 , 0.95 , 0.85)
 HomeTab.topAreaBorderColor = Color(144 , 144 , 144)
 HomeTab.githubLabelColor = Color(255 , 255 , 255 , 228)
 
-function HomeTab:__init() ; EGUSM.SubscribeUtility.__init(self)
-	self.statLabels = {}
-	self.rankLabels = {}
-	
-	self:NetworkSubscribe("ReceivePersonalStats")
+function HomeTab:__init() ; EGUSM.SubscribeUtility.__init(self)	
+	self:NetworkSubscribe("ReceivePlayerStats")
 	
 	-- Create the tab.
 	
@@ -59,109 +56,20 @@ function HomeTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	groupBoxStats:SetDock(GwenPosition.Fill)
 	groupBoxStats:SetText("Personal stats")
 	
-	local statFontSize = 16
-	local rowHeight = Render:GetTextHeight("W" , statFontSize) + 4
-	local count = 1
-	
-	local CreateStat = function(name , isHeader)
-		local row = Rectangle.Create(groupBoxStats)
-		row:SetPadding(Vector2(4 , 2) , Vector2(5 , 2))
-		row:SetDock(GwenPosition.Top)
-		row:SetHeight(rowHeight)
-		
-		local labelName = Label.Create(row)
-		labelName:SetDock(GwenPosition.Left)
-		labelName:SetTextSize(statFontSize)
-		labelName:SetText(name)
-		labelName:SetHeight(rowHeight)
-		labelName:SetWidthAutoRel(0.5)
-		
-		local labelValue = Label.Create(row)
-		labelValue:SetDock(GwenPosition.Left)
-		labelValue:SetTextSize(statFontSize)
-		labelValue:SetText("?")
-		labelValue:SetHeight(rowHeight)
-		labelValue:SetWidthAutoRel(0.25)
-		
-		local labelRank = Label.Create(row)
-		labelRank:SetDock(GwenPosition.Right)
-		labelRank:SetAlignment(GwenPosition.Right)
-		labelRank:SetTextSize(statFontSize)
-		labelRank:SetText("?")
-		labelRank:SetHeight(rowHeight)
-		labelRank:SetWidthAutoRel(0.25)
-		
-		local rowColor
-		
-		if isHeader then
-			rowColor = Color.FromHSV(0 , 0 , 0)
-			rowColor.a = 40
-			row:SetHeight(rowHeight + 2)
-			
-			labelName:SetText("Stat")
-			labelValue:SetText("Value")
-			labelRank:SetText("Rank")
-		else
-			if count % 2 == 0 then
-				rowColor = Color.FromHSV(0 , 0 , 1)
-				rowColor.a = 16
-			else
-				rowColor = Color.FromHSV(0 , 0 , 0.5)
-				rowColor.a = 16
-			end
-			
-			self.statLabels[name] = labelValue
-			self.rankLabels[name] = labelRank
-		end
-		
-		row:SetColor(rowColor)
-		
-		count = count + 1
-	end
-	
-	CreateStat("." , true)
-	CreateStat("Time spent racing")
-	CreateStat("Starts")
-	CreateStat("Finishes")
-	CreateStat("Wins")
+	self.playerStatsControl = RaceMenuUtility.CreatePlayerStatsControl(groupBoxStats)
+	self.playerStatsControl.base:SetDock(GwenPosition.Fill)
 end
 
 function HomeTab:OnActivate()
-	RaceMenu.instance:AddRequest("RequestPersonalStats")
+	RaceMenu.instance:AddRequest("RequestPlayerStats" , LocalPlayer:GetSteamId().id)
 end
 
 -- Network events
 
-function HomeTab:ReceivePersonalStats(personalStats)
-	local stats = personalStats.stats
-	local ranks = personalStats.ranks
-	
-	local hours , minutes = Utility.SplitSeconds(tonumber(stats.PlayTime))
-	local timePlayedString = string.format("%ih, %im" , hours , minutes)
-	
-	self.statLabels["Time spent racing"]:SetText(timePlayedString)
-	self.statLabels.Starts:SetText(tostring(stats.Starts))
-	self.statLabels.Finishes:SetText(tostring(stats.Finishes))
-	self.statLabels.Wins:SetText(tostring(stats.Wins))
-	
-	local UpdateRankLabel = function(rankLabel , rank)
-		local textColor
-		if rank == 1 then
-			textColor = Color.FromHSV(60 , 0.75 , 1)
-		elseif rank == 2 then
-			textColor = Color.FromHSV(190 , 0.1 , 1)
-		elseif rank == 3 then
-			textColor = Color.FromHSV(42 , 0.65 , 0.95)
-		else
-			textColor = Color.FromHSV(0 , 0 , 0.85)
-		end
-		
-		rankLabel:SetTextColor(textColor)
-		rankLabel:SetText(tostring(rank))
+function HomeTab:ReceivePlayerStats(playerStats)
+	if playerStats.steamId ~= LocalPlayer:GetSteamId().id then
+		return
 	end
 	
-	UpdateRankLabel(self.rankLabels["Time spent racing"] , ranks.PlayTime)
-	UpdateRankLabel(self.rankLabels.Starts , ranks.Starts)
-	UpdateRankLabel(self.rankLabels.Finishes , ranks.Finishes)
-	UpdateRankLabel(self.rankLabels.Wins , ranks.Wins)
+	self.playerStatsControl:Update(playerStats)
 end

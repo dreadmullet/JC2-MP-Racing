@@ -3,20 +3,20 @@ RaceMenuUtility = {}
 -- Example:
 -- 	Opinion: 70% [ 7 ] [ 3 ]
 RaceMenuUtility.CreateCourseVoteControl = function()
-	local miniClass = {}
+	local self = {}
 	
 	-- Button:SetToggleState fires the Toggle event. Argh.
-	miniClass.isUpdating = false
+	self.isUpdating = false
 	
-	miniClass.courseNameHash = nil
-	miniClass.courseName = nil
-	miniClass.votesUp = nil
-	miniClass.votesDown = nil
-	miniClass.ourVote = nil
+	self.courseNameHash = nil
+	self.courseName = nil
+	self.votesUp = nil
+	self.votesDown = nil
+	self.ourVote = nil
 	
-	miniClass.base = BaseWindow.Create("Course votes")
+	self.base = BaseWindow.Create("Course votes")
 	
-	local subBase = BaseWindow.Create(miniClass.base)
+	local subBase = BaseWindow.Create(self.base)
 	subBase:SetSize(Vector2(1000 , 1000))
 	
 	local spacing = 4
@@ -28,45 +28,45 @@ RaceMenuUtility.CreateCourseVoteControl = function()
 	opinion:SetText("Opinion: ")
 	opinion:SizeToContents()
 	
-	miniClass.percent = Label.Create(subBase)
-	miniClass.percent:SetMargin(Vector2(2 , 4) , Vector2(spacing , 0))
-	miniClass.percent:SetDock(GwenPosition.Left)
-	miniClass.percent:SetTextSize(16)
-	miniClass.percent:SetText("???% ")
-	miniClass.percent:SizeToContents()
+	self.percent = Label.Create(subBase)
+	self.percent:SetMargin(Vector2(2 , 4) , Vector2(spacing , 0))
+	self.percent:SetDock(GwenPosition.Left)
+	self.percent:SetTextSize(16)
+	self.percent:SetText("???% ")
+	self.percent:SizeToContents()
 	
-	miniClass.votesUpButton = Button.Create(subBase)
-	miniClass.votesUpButton:SetMargin(Vector2(spacing , 0) , Vector2(spacing , 0))
-	miniClass.votesUpButton:SetDock(GwenPosition.Left)
-	miniClass.votesUpButton:SetText("??????")
-	miniClass.votesUpButton:SizeToContents()
-	miniClass.votesUpButton:SetTextNormalColor(Color.FromHSV(105 , 0.5 , 0.9))
-	miniClass.votesUpButton:SetTextHoveredColor(Color.FromHSV(105 , 0.6 , 1))
-	miniClass.votesUpButton:SetTextPressedColor(Color.FromHSV(105 , 0.7 , 0.9))
-	miniClass.votesUpButton:SetToolTip("Likes")
-	miniClass.votesUpButton:SetToggleable(true)
-	miniClass.votesUpButton:SetEnabled(false)
+	self.votesUpButton = Button.Create(subBase)
+	self.votesUpButton:SetMargin(Vector2(spacing , 0) , Vector2(spacing , 0))
+	self.votesUpButton:SetDock(GwenPosition.Left)
+	self.votesUpButton:SetText("??????")
+	self.votesUpButton:SizeToContents()
+	self.votesUpButton:SetTextNormalColor(Color.FromHSV(105 , 0.5 , 0.9))
+	self.votesUpButton:SetTextHoveredColor(Color.FromHSV(105 , 0.6 , 1))
+	self.votesUpButton:SetTextPressedColor(Color.FromHSV(105 , 0.7 , 0.9))
+	self.votesUpButton:SetToolTip("Likes")
+	self.votesUpButton:SetToggleable(true)
+	self.votesUpButton:SetEnabled(false)
 	
-	miniClass.votesDownButton = Button.Create(subBase)
-	miniClass.votesDownButton:SetMargin(Vector2(spacing , 0) , Vector2(spacing , 0))
-	miniClass.votesDownButton:SetDock(GwenPosition.Left)
-	miniClass.votesDownButton:SetText("??????")
-	miniClass.votesDownButton:SizeToContents()
-	miniClass.votesDownButton:SetTextNormalColor(Color.FromHSV(0 , 0.5 , 0.9))
-	miniClass.votesDownButton:SetTextHoveredColor(Color.FromHSV(0 , 0.6 , 1))
-	miniClass.votesDownButton:SetTextPressedColor(Color.FromHSV(0 , 0.7 , 0.9))
-	miniClass.votesDownButton:SetToolTip("Dislikes")
-	miniClass.votesDownButton:SetToggleable(true)
-	miniClass.votesDownButton:SetEnabled(false)
+	self.votesDownButton = Button.Create(subBase)
+	self.votesDownButton:SetMargin(Vector2(spacing , 0) , Vector2(spacing , 0))
+	self.votesDownButton:SetDock(GwenPosition.Left)
+	self.votesDownButton:SetText("??????")
+	self.votesDownButton:SizeToContents()
+	self.votesDownButton:SetTextNormalColor(Color.FromHSV(0 , 0.5 , 0.9))
+	self.votesDownButton:SetTextHoveredColor(Color.FromHSV(0 , 0.6 , 1))
+	self.votesDownButton:SetTextPressedColor(Color.FromHSV(0 , 0.7 , 0.9))
+	self.votesDownButton:SetToolTip("Dislikes")
+	self.votesDownButton:SetToggleable(true)
+	self.votesDownButton:SetEnabled(false)
 	
 	subBase:SizeToChildren()
 	subBase:SetHeight(opinion:GetTextHeight() + 4)
 	
-	miniClass.base:SizeToChildren()
+	self.base:SizeToChildren()
 	
 	-- Functions
 	
-	function miniClass:SetCourseInfo(courseInfo)
+	function self:SetCourseInfo(courseInfo)
 		self.courseNameHash = courseInfo[1]
 		self.courseName = courseInfo[2]
 		self.votesUp = courseInfo[4]
@@ -83,8 +83,8 @@ RaceMenuUtility.CreateCourseVoteControl = function()
 		self:Update()
 	end
 	
-	function miniClass:Update()
-		miniClass.isUpdating = true
+	function self:Update()
+		self.isUpdating = true
 		
 		self.votesUpButton:SetText(string.format("%i" , self.votesUp))
 		self.votesDownButton:SetText(string.format("%i" , self.votesDown))
@@ -108,7 +108,7 @@ RaceMenuUtility.CreateCourseVoteControl = function()
 	
 	-- Events
 	
-	function miniClass:Voted(button)
+	function self:Voted(button)
 		if self.isUpdating then
 			return
 		end
@@ -132,12 +132,12 @@ RaceMenuUtility.CreateCourseVoteControl = function()
 		RaceMenu.instance:AddRequest("VoteCourse" , {self.courseNameHash , voteType})
 	end
 	
-	miniClass.votesUpButton:Subscribe("Toggle" , miniClass , miniClass.Voted)
-	miniClass.votesDownButton:Subscribe("Toggle" , miniClass , miniClass.Voted)
+	self.votesUpButton:Subscribe("Toggle" , self , self.Voted)
+	self.votesDownButton:Subscribe("Toggle" , self , self.Voted)
 	
 	-- Network events
 	
-	function miniClass:VotedCourse(args)
+	function self:VotedCourse(args)
 		local courseHash = args[1]
 		local voteType = args[2]
 		local player = args[3]
@@ -172,7 +172,118 @@ RaceMenuUtility.CreateCourseVoteControl = function()
 		end
 	end
 	
-	Network:Subscribe("VotedCourse" , miniClass , miniClass.VotedCourse)
+	Network:Subscribe("VotedCourse" , self , self.VotedCourse)
 	
-	return miniClass
+	return self
+end
+
+RaceMenuUtility.CreatePlayerStatsControl = function(parent)
+	local self = {}
+	
+	self.statLabels = {}
+	self.rankLabels = {}
+	
+	self.base = BaseWindow.Create(parent , "Player stats")
+	
+	local statFontSize = 16
+	local rowHeight = Render:GetTextHeight("W" , statFontSize) + 4
+	local count = 1
+	
+	local CreateStat = function(name , isHeader)
+		local row = Rectangle.Create(self.base)
+		row:SetPadding(Vector2(4 , 2) , Vector2(5 , 2))
+		row:SetDock(GwenPosition.Top)
+		row:SetHeight(rowHeight)
+		
+		local labelName = Label.Create(row)
+		labelName:SetDock(GwenPosition.Left)
+		labelName:SetTextSize(statFontSize)
+		labelName:SetText(name)
+		labelName:SetHeight(rowHeight)
+		labelName:SetWidthAutoRel(0.5)
+		
+		local labelValue = Label.Create(row)
+		labelValue:SetDock(GwenPosition.Left)
+		labelValue:SetTextSize(statFontSize)
+		labelValue:SetText("?")
+		labelValue:SetHeight(rowHeight)
+		labelValue:SetWidthAutoRel(0.25)
+		
+		local labelRank = Label.Create(row)
+		labelRank:SetDock(GwenPosition.Right)
+		labelRank:SetAlignment(GwenPosition.Right)
+		labelRank:SetTextSize(statFontSize)
+		labelRank:SetText("?")
+		labelRank:SetHeight(rowHeight)
+		labelRank:SetWidthAutoRel(0.25)
+		
+		local rowColor
+		
+		if isHeader then
+			rowColor = Color.FromHSV(0 , 0 , 0)
+			rowColor.a = 40
+			row:SetHeight(rowHeight + 2)
+			
+			labelName:SetText("Stat")
+			labelValue:SetText("Value")
+			labelRank:SetText("Rank")
+		else
+			if count % 2 == 0 then
+				rowColor = Color.FromHSV(0 , 0 , 1)
+				rowColor.a = 16
+			else
+				rowColor = Color.FromHSV(0 , 0 , 0.5)
+				rowColor.a = 16
+			end
+			
+			self.statLabels[name] = labelValue
+			self.rankLabels[name] = labelRank
+		end
+		
+		row:SetColor(rowColor)
+		
+		count = count + 1
+	end
+	
+	CreateStat("." , true)
+	CreateStat("Time spent racing")
+	CreateStat("Starts")
+	CreateStat("Finishes")
+	CreateStat("Wins")
+	
+	function self:Update(playerStats)
+		local stats = playerStats.stats
+		local ranks = playerStats.ranks
+		
+		local hours , minutes = Utility.SplitSeconds(tonumber(stats.PlayTime))
+		local timePlayedString = string.format("%ih, %im" , hours , minutes)
+		
+		self.statLabels["Time spent racing"]:SetText(timePlayedString)
+		self.statLabels.Starts:SetText(tostring(stats.Starts))
+		self.statLabels.Finishes:SetText(tostring(stats.Finishes))
+		self.statLabels.Wins:SetText(tostring(stats.Wins))
+		
+		local UpdateRankLabel = function(rankLabel , rank)
+			local textColor
+			if rank == 1 then
+				textColor = Color.FromHSV(60 , 0.75 , 1)
+			elseif rank == 2 then
+				textColor = Color.FromHSV(190 , 0.1 , 1)
+			elseif rank == 3 then
+				textColor = Color.FromHSV(42 , 0.65 , 0.95)
+			else
+				textColor = Color.FromHSV(0 , 0 , 0.85)
+			end
+			
+			rankLabel:SetTextColor(textColor)
+			rankLabel:SetText(tostring(rank))
+		end
+		
+		UpdateRankLabel(self.rankLabels["Time spent racing"] , ranks.PlayTime)
+		UpdateRankLabel(self.rankLabels.Starts , ranks.Starts)
+		UpdateRankLabel(self.rankLabels.Finishes , ranks.Finishes)
+		UpdateRankLabel(self.rankLabels.Wins , ranks.Wins)
+	end
+	
+	return self
 end
