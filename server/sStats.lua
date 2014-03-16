@@ -539,6 +539,10 @@ end
 Stats.Commit = function()
 	Stats.sqlCommitTimer:Restart()
 	
+	if #Stats.sqlCommands == 0 then
+		return
+	end
+	
 	local transaction = SQL:Transaction()
 	for index , command in ipairs(Stats.sqlCommands) do
 		command:Execute()
@@ -553,11 +557,7 @@ end
 
 Stats.PostTick = function()
 	if Stats.sqlCommitTimer:GetSeconds() > settings.statsCommitInterval then
-		Stats.sqlCommitTimer:Restart()
-		
-		if #Stats.sqlCommands ~= 0 then
-			Stats.Commit()
-		end
+		Stats.Commit()
 	end
 end
 
