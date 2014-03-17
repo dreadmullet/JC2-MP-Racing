@@ -2,7 +2,7 @@
 -- All database interactions are done here.
 ----------------------------------------------------------------------------------------------------
 
-Stats.version = 3
+Stats.version = 4
 
 -- Logs time elapsed for each function.
 Stats.debug = true
@@ -194,10 +194,13 @@ Stats.CreateTables = function()
 	SQL:Execute(
 		"create table if not exists "..
 		"RaceCourseVotes("..
-			"FileNameHash integer primary key ,"..
+			"FileNameHash integer ,"..
 			"SteamId      integer ,"..
 			"Type         integer default 1".. -- Uses the VoteType enum defined in sharedStats.lua.
 		")"
+	)
+	SQL:Execute(
+		"create index if not exists RaceCourseVotesFileNameHash on RaceCourseVotes(FileNameHash)"
 	)
 	SQL:Execute("create index if not exists RaceCourseVotesSteamId on RaceCourseVotes(SteamId)")
 	-- Version

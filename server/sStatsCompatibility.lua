@@ -35,6 +35,10 @@ Stats.UpdateFromOldVersion = function(version)
 		Stats.UpdateFromV2(database)
 		version = 3
 	end
+	if version == 3 then
+		Stats.UpdateFromV3(database)
+		version = 4
+	end
 	
 	print(".")
 	
@@ -148,4 +152,9 @@ Stats.UpdateFromV2 = function(database)
 	end
 	
 	database.RaceCourseVotes = {}
+end
+
+Stats.UpdateFromV3 = function(database)
+	-- Nothing to do here, it was just changing RaceCourseVotes(FileNameHash) from a primary key to
+	-- an index.
 end
