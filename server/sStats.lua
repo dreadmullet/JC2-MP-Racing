@@ -528,8 +528,9 @@ Stats.UpdateCache = function()
 end
 
 Stats.GetCourseVotes = function(fileNameHash , voteType)
-	-- TODO: don't select *
-	local query = SQL:Query("select * from RaceCourseVotes where FileNameHash = (?) and Type = (?)")
+	local query = SQL:Query(
+		"select Type from RaceCourseVotes where FileNameHash = (?) and Type = (?)"
+	)
 	query:Bind(1 , fileNameHash)
 	query:Bind(2 , voteType)
 	local results = query:Execute()
@@ -703,23 +704,38 @@ Stats.VoteCourse = function(args , player)
 	local voteType = args[2]
 	
 	-- Make sure the course exists.
-	local query = SQL:Query("Select count(1) from RaceCourses where FileNameHash = (?)")
+	local query = SQL:Query("select FileNameHash from RaceCourses where FileNameHash = (?)")
 	query:Bind(1 , courseHash)
-	results = query:Execute()
-	-- That's some interesting syntax...
-	if results[1]["count(1)"] == 0 then
+	local results = query:Execute()
+	if #results == 0 then
 		return
 	end
+	
+	-- Get hasVote.
+	local query = SQL:Query(
+		"select SteamId from RaceCourseVotes where SteamId = (?) and FileNameHash = (?)"
+	)
+	query:Bind(1 , player:GetSteamId().id)
+	query:Bind(2 , courseHash)
+	local results = query:Execute()
+	local hasVote = #results ~= 0
 	
 	-- Insert a new vote into the course votes table or update their previous vote. If they want to
 	-- remove their vote, it's updated as VoteType.RemoveUp or RemoveDown instead of having the row
 	-- removed. It just seems easier this way.
-	local command = SQL:Command(
-		"insert or replace into RaceCourseVotes(FileNameHash , SteamId , Type) values(?,?,?)"
-	)
-	command:Bind(1 , courseHash)
-	command:Bind(2 , player:GetSteamId().id)
-	command:Bind(3 , voteType)
+	local command
+	if hasVote then
+		command = SQL:Command(
+			"update RaceCourseVotes set Type = (?) where FileNameHash = (?) and SteamId = (?)"
+		)
+	else
+		command = SQL:Command(
+			"insert into RaceCourseVotes(Type , FileNameHash , SteamId) values(?,?,?)"
+		)
+	end
+	command:Bind(1 , voteType)
+	command:Bind(2 , courseHash)
+	command:Bind(3 , player:GetSteamId().id)
 	-- Execute immediately because we want the new vote counts.
 	command:Execute()
 	
