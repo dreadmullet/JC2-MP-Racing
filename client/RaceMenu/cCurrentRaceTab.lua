@@ -1,15 +1,6 @@
 class("CurrentRaceTab")
 
-function CurrentRaceTab:__init() ; EGUSM.SubscribeUtility.__init(self)
-	self:NetworkSubscribe("ReceiveCourseList")
-	
-	-- Create the tab.
-	
-	self.tabButton = RaceMenu.instance.tabControl:AddPage("Current race")
-	
-	self.page = self.tabButton:GetPage()
-	self.page:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
-	
+function CurrentRaceTab:__init() ; TabBase.__init(self , "Current race")
 	self.course = Race.instance.course
 	
 	local groupBoxCourse = RaceMenu.CreateGroupBox(self.page)
@@ -34,11 +25,17 @@ end
 -- RaceMenu callbacks
 
 function CurrentRaceTab:OnActivate()
+	self:NetworkSubscribe("ReceiveCourseList")
+	
 	if RaceMenu.cache.courses == nil or RaceMenu.cache.personalCourseVotes == nil then
 		RaceMenu.instance:AddRequest("RequestCourseList")
 	else
 		self:SetCourseInfo()
 	end
+end
+
+function CurrentRaceTab:OnDeactivate()
+	self:NetworkUnsubscribeAll()
 end
 
 function CurrentRaceTab:OnRemove()

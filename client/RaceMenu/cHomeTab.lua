@@ -4,17 +4,8 @@ HomeTab.topAreaColor = Color.FromHSV(25 , 0.95 , 0.85)
 HomeTab.topAreaBorderColor = Color(144 , 144 , 144)
 HomeTab.githubLabelColor = Color(255 , 255 , 255 , 228)
 
-function HomeTab:__init() ; EGUSM.SubscribeUtility.__init(self)	
-	self:NetworkSubscribe("ReceivePlayerStats")
-	
-	-- Create the tab.
-	
-	self.tabButton = RaceMenu.instance.tabControl:AddPage("Home")
-	
-	local page = self.tabButton:GetPage()
-	page:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
-	
-	local topAreaBackground = Rectangle.Create(page)
+function HomeTab:__init() ; TabBase.__init(self , "Home")
+	local topAreaBackground = Rectangle.Create(self.page)
 	topAreaBackground:SetPadding(Vector2.One * 2 , Vector2.One * 2)
 	topAreaBackground:SetDock(GwenPosition.Top)
 	topAreaBackground:SetColor(HomeTab.topAreaBorderColor)
@@ -41,7 +32,7 @@ function HomeTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	topArea:SizeToChildren()
 	topAreaBackground:SizeToChildren()
 	
-	local groupBoxBindMenu = RaceMenu.CreateGroupBox(page)
+	local groupBoxBindMenu = RaceMenu.CreateGroupBox(self.page)
 	groupBoxBindMenu:SetDock(GwenPosition.Left)
 	groupBoxBindMenu:SetText("Controls")
 	
@@ -52,7 +43,7 @@ function HomeTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	groupBoxBindMenu:SetWidth(bindMenu:GetWidth())
 	
-	local groupBoxStats = RaceMenu.CreateGroupBox(page)
+	local groupBoxStats = RaceMenu.CreateGroupBox(self.page)
 	groupBoxStats:SetDock(GwenPosition.Fill)
 	groupBoxStats:SetText("Personal stats")
 	
@@ -60,8 +51,16 @@ function HomeTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.playerStatsControl.base:SetDock(GwenPosition.Fill)
 end
 
+-- RaceMenu callbacks
+
 function HomeTab:OnActivate()
+	self:NetworkSubscribe("ReceivePlayerStats")
+	
 	RaceMenu.instance:AddRequest("RequestPlayerStats" , LocalPlayer:GetSteamId().id)
+end
+
+function HomeTab:OnDeactivate()
+	self:NetworkUnsubscribeAll()
 end
 
 -- Network events

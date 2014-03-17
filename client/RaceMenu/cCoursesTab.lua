@@ -1,6 +1,6 @@
 class("CoursesTab")
 
-function CoursesTab:__init() ; EGUSM.SubscribeUtility.__init(self)
+function CoursesTab:__init() ; TabBase.__init(self , "Courses")
 	self.recordsList = nil
 	self.recordsIndex = nil
 	self.selectedCourseInfo = nil
@@ -8,17 +8,7 @@ function CoursesTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.topRecordsButton = nil
 	self.nextRecordsButton = nil
 	
-	self:NetworkSubscribe("ReceiveCourseList")
-	self:NetworkSubscribe("ReceiveCourseRecords")
-	
-	-- Create the tab.
-	
-	self.tabButton = RaceMenu.instance.tabControl:AddPage("Courses")
-	
-	local page = self.tabButton:GetPage()
-	page:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
-	
-	local groupBoxCourseSelect = RaceMenu.CreateGroupBox(page)
+	local groupBoxCourseSelect = RaceMenu.CreateGroupBox(self.page)
 	groupBoxCourseSelect:SetDock(GwenPosition.Left)
 	groupBoxCourseSelect:SetWidth(250)
 	groupBoxCourseSelect:SetText("Select course")
@@ -30,7 +20,7 @@ function CoursesTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.coursesList:AddItem("Requesting course list...")
 	self.coursesList:SetDataBool("isValid" , false)
 	
-	self.courseGroupBox = RaceMenu.CreateGroupBox(page)
+	self.courseGroupBox = RaceMenu.CreateGroupBox(self.page)
 	self.courseGroupBox:SetDock(GwenPosition.Fill)
 	self.courseGroupBox:SetText("No course selected")
 	self.courseGroupBox:SetColorDark()
@@ -170,9 +160,16 @@ end
 -- RaceMenu callbacks
 
 function CoursesTab:OnActivate()
+	self:NetworkSubscribe("ReceiveCourseList")
+	self:NetworkSubscribe("ReceiveCourseRecords")
+	
 	if RaceMenu.cache.courses == nil or RaceMenu.cache.personalCourseVotes == nil then
 		RaceMenu.instance:AddRequest("RequestCourseList")
 	end
+end
+
+function CoursesTab:OnDeactivate()
+	self:NetworkUnsubscribeAll()
 end
 
 -- GWEN events

@@ -58,6 +58,7 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.requestTimers = {}
 	self.requests = {}
 	self.tabs = {}
+	self.currentTab = nil
 	
 	self:CreateWindow()
 	self:AddTab(HomeTab)
@@ -81,21 +82,19 @@ function RaceMenu:CreateWindow()
 	self.tabControl = TabControl.Create(self.window)
 	self.tabControl:SetDock(GwenPosition.Fill)
 	self.tabControl:SetTabStripPosition(GwenPosition.Top)
-	self.tabControl:Subscribe("TabSwitch" , self , self.TabSwitch)
+	self.addTabSub = self.tabControl:Subscribe("AddTab" , self , self.OnAddTab)
 end
 
 function RaceMenu:SetEnabled(enabled)
-	local wasEnabled = self.isEnabled
 	self.isEnabled = enabled
 	
 	self.window:SetVisible(self.isEnabled)
 	
 	if self.isEnabled then
+		self:ActivateCurrentTab()
 		self.window:BringToFront()
-		
-		if wasEnabled == false then
-			self:ActivateCurrentTab()
-		end
+	else
+		self:DeactivateCurrentTab()
 	end
 	
 	Mouse:SetVisible(self.isEnabled)
@@ -122,7 +121,7 @@ function RaceMenu:RemoveTab(tabToRemove)
 				tab:OnRemove()
 			end
 			
-			table.remove(self.tabs)
+			table.remove(self.tabs , index)
 			
 			break
 		end
@@ -130,13 +129,16 @@ function RaceMenu:RemoveTab(tabToRemove)
 end
 
 function RaceMenu:ActivateCurrentTab()
-	-- Try to call OnActivate on the current tab.
-	for index , tab in ipairs(self.tabs) do
-		if tab.tabButton and tab.tabButton == self.tabControl:GetCurrentTab() then
-			if tab.OnActivate then
-				tab:OnActivate()
-			end
-		end
+	self.currentTab = self.tabControl:GetCurrentTab():GetDataObject("tab")
+	
+	if self.currentTab.OnActivate then
+		self.currentTab:OnActivate()
+	end
+end
+
+function RaceMenu:DeactivateCurrentTab()
+	if self.currentTab.OnDeactivate then
+		self.currentTab:OnDeactivate()
 	end
 end
 
@@ -146,7 +148,16 @@ function RaceMenu:WindowClosed()
 	self:SetEnabled(false)
 end
 
+function RaceMenu:OnAddTab()
+	self.tabControl:Unsubscribe(self.addTabSub)
+	self.tabControl:Subscribe("TabSwitch" , self , self.TabSwitch)
+end
+
 function RaceMenu:TabSwitch()
+	if self.currentTab then
+		self:DeactivateCurrentTab()
+	end
+	
 	self:ActivateCurrentTab()
 end
 

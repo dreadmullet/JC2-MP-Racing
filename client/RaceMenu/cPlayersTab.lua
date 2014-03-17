@@ -1,6 +1,6 @@
 class("PlayersTab")
 
-function PlayersTab:__init() ; EGUSM.SubscribeUtility.__init(self)
+function PlayersTab:__init() ; TabBase.__init(self , "Players")
 	self.sortType = PlayerSortType.None
 	self.searchBox = nil
 	self.sortByComboBox = nil
@@ -10,17 +10,7 @@ function PlayersTab:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.topRecordsButton = nil
 	self.nextRecordsButton = nil
 	
-	-- TODO: Subscribe on activate, unsubscribe on deactivate (todo for all tabs)
-	self:NetworkSubscribe("ReceiveSortedPlayers")
-	self:NetworkSubscribe("ReceivePlayerStats")
-	
 	-- Create the tab.
-	
-	self.tabButton = RaceMenu.instance.tabControl:AddPage("Players")
-	
-	self.page = self.tabButton:GetPage()
-	self.page:SetPadding(Vector2(2 , 2) , Vector2(2 , 2))
-	
 	self:CreateSearchArea()
 	self:CreateResultsArea()
 	self:CreateDetailsArea()
@@ -124,6 +114,17 @@ function PlayersTab:SetRecordButtonsEnabled(enabled)
 	self.previousRecordsButton:SetEnabled(enabled)
 	self.topRecordsButton:SetEnabled(enabled)
 	self.nextRecordsButton:SetEnabled(enabled)
+end
+
+-- RaceMenu callbacks
+
+function PlayersTab:OnActivate()
+	self:NetworkSubscribe("ReceiveSortedPlayers")
+	self:NetworkSubscribe("ReceivePlayerStats")
+end
+
+function PlayersTab:OnDeactivate()
+	self:NetworkUnsubscribeAll()
 end
 
 -- GWEN events
