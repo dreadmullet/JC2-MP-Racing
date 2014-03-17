@@ -10,6 +10,7 @@ function Spectator:__init(race , player)
 	self.requestTimer = nil
 	
 	local args = {
+		className = "Spectate" ,
 		raceInfo = self.race.info ,
 		stateName = self.race.stateName
 	}
@@ -25,7 +26,7 @@ function Spectator:__init(race , player)
 		args.position = self.race.checkpointPositions[checkpointIndex]
 	end
 	
-	Network:Send(self.player , "SpectateInitialise" , args)
+	Network:Send(self.player , "InitializeClass" , args)
 end
 
 function Spectator:Remove()

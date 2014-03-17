@@ -35,9 +35,10 @@ function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	
 	-- Send info to client.
 	local args = {
+		className = "Race" ,
 		raceInfo = self.race.info
 	}
-	Network:Send(self.player , "Initialise" , args)
+	Network:Send(self.player , "InitializeClass" , args)
 end
 
 function Racer:Update(racePosInfo)

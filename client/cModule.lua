@@ -24,15 +24,8 @@ Events:Subscribe("ModulesLoad" , ModulesLoad)
 Events:Subscribe("ModuleUnload" , ModuleUnload)
 
 Network:Subscribe(
-	"Initialise" ,
+	"InitializeClass" ,
 	function(args)
-		Race(args)
-	end
-)
-
-Network:Subscribe(
-	"SpectateInitialise" ,
-	function(args)
-		Spectate(args)
+		_G[args.className](args)
 	end
 )
