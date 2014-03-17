@@ -70,7 +70,7 @@ Stats.LogLine = function(message)
 end
 
 Stats.GetTableExists = function(tableName)
-	local query = SQL:Query("select name from sqlite_master where type = 'table' and name = (?)")
+	local query = SQL:Query("select name from sqlite_master where type = 'table' and name = ?")
 	query:Bind(1 , tableName)
 	local results = query:Execute()
 	
@@ -222,7 +222,7 @@ Stats.AddPlayer = function(racer)
 	command:Bind(1 , racer.steamId)
 	command:Execute()
 	
-	command = SQL:Command("update RacePlayers set Name = (?), LastPlayed = (?) where SteamId = (?)")
+	command = SQL:Command("update RacePlayers set Name = ?, LastPlayed = ? where SteamId = ?")
 	command:Bind(1 , racer.name)
 	command:Bind(2 , os.time())
 	command:Bind(3 , racer.steamId)
@@ -234,7 +234,7 @@ end
 Stats.GetPlayerInfoFromSteamId = function(steamId)
 	Stats.DebugTimerStart()
 	
-	local query = SQL:Query("select * from RacePlayers where SteamId = (?)")
+	local query = SQL:Query("select * from RacePlayers where SteamId = ?")
 	query:Bind(1 , steamId)
 	local results = query:Execute()
 	
@@ -288,7 +288,7 @@ Stats.AddRaceResult = function(racer , place , course)
 	end
 	
 	command = SQL:Command(
-		"update RacePlayers set Starts = (?) , Finishes = (?) , Wins = (?) where SteamId = (?)"
+		"update RacePlayers set Starts = ? , Finishes = ? , Wins = ? where SteamId = ?"
 	)
 	command:Bind(1 , playerStats.Starts)
 	command:Bind(2 , playerStats.Finishes)
@@ -309,7 +309,7 @@ Stats.AddCourse = function(course)
 	table.insert(Stats.sqlCommands , command)
 	
 	command = SQL:Command(
-		"update RaceCourses set Name = (?) where FileNameHash = (?)"
+		"update RaceCourses set Name = ? where FileNameHash = ?"
 	)
 	command:Bind(1 , course.name)
 	command:Bind(2 , FNV(course.fileName))
@@ -330,7 +330,7 @@ Stats.GetCourseRecords = function(courseFileNameOrHash , from , to)
 	local count = to - from + 1
 	
 	local query = SQL:Query(
-		"select * from RaceResults where CourseFileNameHash = (?) and Place > 0 "..
+		"select * from RaceResults where CourseFileNameHash = ? and Place > 0 "..
 		"order by BestTime asc "..
 		"limit "..string.format("%i" , math.floor(count + 0.5)).." "..
 		"offset "..string.format("%i" , math.floor(from - 1 + 0.5))
@@ -363,7 +363,7 @@ Stats.RaceStart = function(race)
 	
 	-- Increment RaceCourses.TimesPlayed.
 	
-	local query = SQL:Query("select TimesPlayed from RaceCourses where FileNameHash = (?)")
+	local query = SQL:Query("select TimesPlayed from RaceCourses where FileNameHash = ?")
 	query:Bind(1 , FNV(race.course.fileName))
 	local results = query:Execute()
 	
@@ -371,7 +371,7 @@ Stats.RaceStart = function(race)
 	timesPlayed = timesPlayed + 1
 	
 	local command = SQL:Command(
-		"update RaceCourses set TimesPlayed = (?) where FileNameHash = (?)"
+		"update RaceCourses set TimesPlayed = ? where FileNameHash = ?"
 	)
 	command:Bind(1 , timesPlayed)
 	command:Bind(2 , FNV(race.course.fileName))
@@ -380,7 +380,7 @@ Stats.RaceStart = function(race)
 	-- Get each racer's PlayTime.
 	-- NOTE: This is probably inefficient. Would a transaction even work here?
 	for id , racer in pairs(race.playerIdToRacer) do
-		local query = SQL:Query("select PlayTime from RacePlayers where SteamId = (?)")
+		local query = SQL:Query("select PlayTime from RacePlayers where SteamId = ?")
 		query:Bind(1 , racer.steamId)
 		local results = query:Execute()
 		racer.playTime = results[1].PlayTime
@@ -393,7 +393,7 @@ Stats.PlayerExit = function(racer)
 	Stats.DebugTimerStart()
 	
 	local command = SQL:Command(
-		"update RacePlayers set PlayTime = (?), LastPlayed = (?) where SteamId = (?)"
+		"update RacePlayers set PlayTime = ?, LastPlayed = ? where SteamId = ?"
 	)
 	command:Bind(1 , racer.playTime)
 	command:Bind(2 , os.time())
@@ -408,7 +408,7 @@ Stats.GetPlayerStats = function(steamId)
 	returnTable.steamId = steamId
 	
 	local query = SQL:Query(
-		"select Name , PlayTime , Starts , Finishes , Wins from RacePlayers where SteamId = (?)"
+		"select Name , PlayTime , Starts , Finishes , Wins from RacePlayers where SteamId = ?"
 	)
 	query:Bind(1 , steamId)
 	local result = query:Execute()[1]
@@ -532,7 +532,7 @@ end
 
 Stats.GetCourseVotes = function(fileNameHash , voteType)
 	local query = SQL:Query(
-		"select Type from RaceCourseVotes where FileNameHash = (?) and Type = (?)"
+		"select Type from RaceCourseVotes where FileNameHash = ? and Type = ?"
 	)
 	query:Bind(1 , fileNameHash)
 	query:Bind(2 , voteType)
@@ -623,7 +623,7 @@ Stats.RequestSortedPlayers = function(args , player)
 	local sortedPlayers = {}
 	
 	if tableName == "Name" then
-		local query = SQL:Query("select SteamId from RacePlayers where Name = (?)")
+		local query = SQL:Query("select SteamId from RacePlayers where Name = ?")
 		query:Bind(1 , name)
 		local results = query:Execute()
 		
@@ -654,7 +654,7 @@ Stats.RequestCourseList = function(unused , player)
 	
 	local personalCourseVotes = {}
 	
-	local query = SQL:Query("select FileNameHash , Type from RaceCourseVotes where SteamId = (?)")
+	local query = SQL:Query("select FileNameHash , Type from RaceCourseVotes where SteamId = ?")
 	query:Bind(1 , player:GetSteamId().id)
 	local results = query:Execute()
 	for index , result in ipairs(results) do
@@ -707,7 +707,7 @@ Stats.VoteCourse = function(args , player)
 	local voteType = args[2]
 	
 	-- Make sure the course exists.
-	local query = SQL:Query("select FileNameHash from RaceCourses where FileNameHash = (?)")
+	local query = SQL:Query("select FileNameHash from RaceCourses where FileNameHash = ?")
 	query:Bind(1 , courseHash)
 	local results = query:Execute()
 	if #results == 0 then
@@ -716,7 +716,7 @@ Stats.VoteCourse = function(args , player)
 	
 	-- Get hasVote.
 	local query = SQL:Query(
-		"select SteamId from RaceCourseVotes where SteamId = (?) and FileNameHash = (?)"
+		"select SteamId from RaceCourseVotes where SteamId = ? and FileNameHash = ?"
 	)
 	query:Bind(1 , player:GetSteamId().id)
 	query:Bind(2 , courseHash)
@@ -729,7 +729,7 @@ Stats.VoteCourse = function(args , player)
 	local command
 	if hasVote then
 		command = SQL:Command(
-			"update RaceCourseVotes set Type = (?) where FileNameHash = (?) and SteamId = (?)"
+			"update RaceCourseVotes set Type = ? where FileNameHash = ? and SteamId = ?"
 		)
 	else
 		command = SQL:Command(
