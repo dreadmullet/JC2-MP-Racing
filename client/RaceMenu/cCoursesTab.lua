@@ -157,14 +157,32 @@ function CoursesTab:SetRecordButtonsEnabled(enabled)
 	self.nextRecordsButton:SetEnabled(enabled)
 end
 
+-- Called when we receive the course list or when we're activated and already have the list cached.
+function CoursesTab:FillCourseList()
+	self.coursesList:Clear()
+	
+	if #RaceMenu.cache.courses > 0 then
+		for index , course in ipairs(RaceMenu.cache.courses) do
+			local row = self.coursesList:AddItem(course[2])
+			row:SetDataObject("courseInfo" , course)
+		end
+		self.coursesList:SetDataBool("isValid" , true)
+	else
+		self.coursesList:AddItem("No courses found")
+		self.coursesList:SetDataBool("isValid" , false)
+	end
+end
+
 -- RaceMenu callbacks
 
 function CoursesTab:OnActivate()
-	self:NetworkSubscribe("ReceiveCourseList")
 	self:NetworkSubscribe("ReceiveCourseRecords")
 	
 	if RaceMenu.cache.courses == nil or RaceMenu.cache.personalCourseVotes == nil then
+		self:NetworkSubscribe("ReceiveCourseList")
 		RaceMenu.instance:AddRequest("RequestCourseList")
+	else
+		self:FillCourseList()
 	end
 end
 
@@ -230,18 +248,7 @@ function CoursesTab:ReceiveCourseList(coursesAndVotes)
 	RaceMenu.cache.courses = coursesAndVotes[1]
 	RaceMenu.cache.personalCourseVotes = coursesAndVotes[2]
 	
-	self.coursesList:Clear()
-	
-	if #RaceMenu.cache.courses > 0 then
-		for index , course in ipairs(RaceMenu.cache.courses) do
-			local row = self.coursesList:AddItem(course[2])
-			row:SetDataObject("courseInfo" , course)
-		end
-		self.coursesList:SetDataBool("isValid" , true)
-	else
-		self.coursesList:AddItem("No courses found")
-		self.coursesList:SetDataBool("isValid" , false)
-	end
+	self:FillCourseList()
 end
 
 function CoursesTab:ReceiveCourseRecords(args)
