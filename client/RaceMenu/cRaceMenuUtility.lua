@@ -287,3 +287,25 @@ RaceMenuUtility.CreatePlayerStatsControl = function(parent)
 	
 	return self
 end
+
+Utility.CreateTitledLabel = function(titleText)
+	local base = BaseWindow.Create()
+	base:SetMargin(Vector2(2 , 4) , Vector2(8 , 0))
+	
+	local title = Label.Create(base)
+	title:SetDock(GwenPosition.Left)
+	title:SetTextSize(16)
+	title:SetText(titleText..": ")
+	title:SizeToContents()
+	
+	local label = Label.Create(base)
+	label:SetDock(GwenPosition.Left)
+	label:SetTextSize(16)
+	label:SetText("?????")
+	label:SizeToContents()
+	
+	base:SizeToChildren()
+	base:SetHeight(title:GetTextHeight())
+	
+	return base , title , label
+end

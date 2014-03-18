@@ -57,30 +57,8 @@ function CoursesTab:__init() ; TabBase.__init(self , "Courses")
 	CreateCell()
 	CreateCell()
 	
-	local CreateLabel = function(name)
-		local base = BaseWindow.Create()
-		base:SetMargin(Vector2(2 , 4) , Vector2(8 , 0))
-		
-		local title = Label.Create(base)
-		title:SetDock(GwenPosition.Left)
-		title:SetTextSize(16)
-		title:SetText(name..": ")
-		title:SizeToContents()
-		
-		local label = Label.Create(base)
-		label:SetDock(GwenPosition.Left)
-		label:SetTextSize(16)
-		label:SetText("?????")
-		label:SizeToContents()
-		
-		base:SizeToChildren()
-		base:SetHeight(title:GetTextHeight())
-		
-		return base , label
-	end
-	
-	local timesPlayed
-	timesPlayed , self.timesPlayedLabel = CreateLabel("Times played")
+	local timesPlayed , title
+	timesPlayed , title , self.timesPlayedLabel = Utility.CreateTitledLabel("Times played")
 	timesPlayed:SetParent(cells[1])
 	timesPlayed:SetDock(GwenPosition.Left)
 	timesPlayed:SetToolTip("Server-wide number of races ran on this course")
