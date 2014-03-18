@@ -39,7 +39,15 @@ function HomeTab:__init() ; TabBase.__init(self , "Home")
 	
 	local leftSide = BaseWindow.Create(self.page)
 	leftSide:SetDock(GwenPosition.Left)
-	leftSide:SetWidth(330)
+	leftSide:SetWidth(350)
+	
+	local groupBoxStats = RaceMenu.CreateGroupBox(leftSide)
+	groupBoxStats:SetHeight(136)
+	groupBoxStats:SetDock(GwenPosition.Top)
+	groupBoxStats:SetText("Personal stats")
+	
+	self.playerStatsControl = RaceMenuUtility.CreatePlayerStatsControl(groupBoxStats)
+	self.playerStatsControl.base:SetDock(GwenPosition.Fill)
 	
 	local groupBoxBindMenu = RaceMenu.CreateGroupBox(leftSide)
 	groupBoxBindMenu:SetDock(GwenPosition.Fill)
@@ -51,14 +59,6 @@ function HomeTab:__init() ; TabBase.__init(self , "Home")
 	bindMenu:RequestSettings()
 	
 	groupBoxBindMenu:SetWidth(bindMenu:GetWidth())
-	
-	local groupBoxStats = RaceMenu.CreateGroupBox(leftSide)
-	groupBoxStats:SetHeight(136)
-	groupBoxStats:SetDock(GwenPosition.Bottom)
-	groupBoxStats:SetText("Personal stats")
-	
-	self.playerStatsControl = RaceMenuUtility.CreatePlayerStatsControl(groupBoxStats)
-	self.playerStatsControl.base:SetDock(GwenPosition.Fill)
 	
 	-- Right side
 	
