@@ -96,20 +96,24 @@ end
 
 -- Used to send course info to clients at the start of a race.
 function Course:MarshalForClient()
-	local info = {
-		name = self.name ,
-		type = self.type ,
-		parachuteEnabled = self.parachuteEnabled ,
-		grappleEnabled = self.grappleEnabled ,
-		authors = self.authors ,
-		checkpoints = {}
-	}
+	local info = self:MarshalInfo()
 	
+	info.checkpoints = {}
 	for index , checkpoint in ipairs(self.checkpoints) do
 		table.insert(info.checkpoints , checkpoint:MarshalForClient())
 	end
 	
 	return info
+end
+
+function Course:MarshalInfo()
+	return {
+		name = self.name ,
+		type = self.type ,
+		parachuteEnabled = self.parachuteEnabled ,
+		grappleEnabled = self.grappleEnabled ,
+		authors = self.authors
+	}
 end
 
 function Course:Save(name)

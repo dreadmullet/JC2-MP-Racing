@@ -18,6 +18,7 @@ function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 	self:EventSubscribe("RaceEnd")
 	self:EventSubscribe("PlayerChat")
 	self:EventSubscribe("PreTick")
+	self:EventSubscribe("ClientModuleLoad")
 	
 	self:NetworkSubscribe("LeaveRace")
 end
@@ -38,6 +39,8 @@ function RaceManagerJoinable:SetupNextRace()
 		"A race is about to start, use "..RaceManagerJoinable.command.." to join! "..
 		"("..self.nextCourse.name..", collisions "..collisionsString..")"
 	)
+	
+	Network:Broadcast("QueuedRaceCreate" , self:MarshalNextRace())
 end
 
 function RaceManagerJoinable:CreateRace()
@@ -66,6 +69,16 @@ function RaceManagerJoinable:CreateRace()
 	self:SetupNextRace()
 end
 
+function RaceManagerJoinable:MarshalNextRace()
+	return {
+		currentPlayers = #self.playerQueue ,
+		maxPlayers = self.nextCourse:GetMaxPlayers() ,
+		course = self.nextCourse:MarshalInfo() ,
+		numCheckpoints = #self.nextCourse.checkpoints ,
+		collisions = self.nextCourseCollisions ,
+	}
+end
+
 -- PlayerManager callbacks
 
 function RaceManagerJoinable:ManagedPlayerJoin(player)
@@ -77,6 +90,9 @@ function RaceManagerJoinable:ManagedPlayerJoin(player)
 		#self.playerQueue == Server:GetPlayerCount()
 	then
 		self:CreateRace()
+	-- Otherwise, update the player count for everyone.
+	else
+		Network:Broadcast("QueuedRacePlayersChange" , #self.playerQueue)
 	end
 end
 
@@ -97,10 +113,12 @@ function RaceManagerJoinable:ManagedPlayerLeave(player)
 	if racerInfo then
 		player:SetPosition(racerInfo.position)
 		player:SetModelId(racerInfo.modelId)
-		for index , weapon in pairs(racerInfo.inventory) do
-			player:GiveWeapon(index , weapon)
+		for slot , weapon in pairs(racerInfo.inventory) do
+			player:GiveWeapon(slot , weapon)
 		end
 	end
+	-- Update the player count for everyone.
+	Network:Broadcast("QueuedRacePlayersChange" , #self.playerQueue)
 end
 
 function RaceManagerJoinable:PlayerManagerTerminate()
@@ -167,6 +185,14 @@ function RaceManagerJoinable:PreTick()
 	else
 		self.startTimer = Timer()
 	end
+end
+
+function RaceManagerJoinable:ClientModuleLoad(args)
+	local constructorArgs = {
+		className = "RaceManagerJoinable" ,
+		raceInfo = self:MarshalNextRace()
+	}
+	Network:Send(args.player , "InitializeClass" , constructorArgs)
 end
 
 -- Network events
