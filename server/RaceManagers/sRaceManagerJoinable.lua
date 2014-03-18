@@ -20,6 +20,7 @@ function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 	self:EventSubscribe("PreTick")
 	self:EventSubscribe("ClientModuleLoad")
 	
+	self:NetworkSubscribe("JoinRace")
 	self:NetworkSubscribe("LeaveRace")
 end
 
@@ -84,6 +85,7 @@ end
 function RaceManagerJoinable:ManagedPlayerJoin(player)
 	-- Add this player to playerQueue.
 	table.insert(self.playerQueue , player)
+	Network:Send(player , "JoinQueue")
 	-- If the queue becomes full or all players have joined, start a race.
 	if
 		#self.playerQueue == #self.nextCourse.spawns or
@@ -98,10 +100,11 @@ end
 
 function RaceManagerJoinable:ManagedPlayerLeave(player)
 	-- Search playerQueue for this player and remove them.
-	for index , player in ipairs(self.playerQueue) do
-		if player == player then
+	for index , playerToRemove in ipairs(self.playerQueue) do
+		if playerToRemove == player then
 			table.remove(self.playerQueue , index)
-			return
+			Network:Send(player , "LeaveQueue")
+			break
 		end
 	end
 	-- Search all Races for this player and remove them.
@@ -196,6 +199,10 @@ function RaceManagerJoinable:ClientModuleLoad(args)
 end
 
 -- Network events
+
+function RaceManagerJoinable:JoinRace(unused , player)
+	self:AddPlayer(player)
+end
 
 function RaceManagerJoinable:LeaveRace(unused , player)
 	self:RemovePlayer(player)
