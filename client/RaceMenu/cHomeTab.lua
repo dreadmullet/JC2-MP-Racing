@@ -13,7 +13,7 @@ function HomeTab:__init() ; TabBase.__init(self , "Home")
 	topAreaBackground:SetColor(HomeTab.topAreaBorderColor)
 	
 	local topArea = ShadedRectangle.Create(topAreaBackground)
-	topArea:SetPadding(Vector2.One * 8 , Vector2.One * 8)
+	topArea:SetPadding(Vector2(6 , 6) , Vector2(6 , 6))
 	topArea:SetDock(GwenPosition.Top)
 	topArea:SetColor(HomeTab.topAreaColor)
 	
@@ -43,7 +43,6 @@ function HomeTab:__init() ; TabBase.__init(self , "Home")
 	
 	local groupBoxBindMenu = RaceMenu.CreateGroupBox(leftSide)
 	groupBoxBindMenu:SetDock(GwenPosition.Fill)
-	
 	groupBoxBindMenu:SetText("Controls")
 	
 	local bindMenu = BindMenu.Create(groupBoxBindMenu)
@@ -63,8 +62,8 @@ function HomeTab:__init() ; TabBase.__init(self , "Home")
 	
 	-- Right side
 	
-	self.addonArea = BaseWindow.Create(self.page)
-	self.addonArea:SetDock(GwenPosition.Fill)
+	RaceMenu.instance.addonArea = BaseWindow.Create(self.page)
+	RaceMenu.instance.addonArea:SetDock(GwenPosition.Fill)
 end
 
 -- RaceMenu callbacks

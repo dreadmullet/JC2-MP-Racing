@@ -59,6 +59,7 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self.requests = {}
 	self.tabs = {}
 	self.currentTab = nil
+	self.addonArea = nil
 	
 	self:CreateWindow()
 	self:AddTab(HomeTab)
