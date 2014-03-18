@@ -37,8 +37,8 @@ function RaceManagerJoinable:SetupNextRace()
 	end
 	
 	self:Message(
-		"A race is about to start, use "..RaceManagerJoinable.command.." to join! "..
-		"("..self.nextCourse.name..", collisions "..collisionsString..")"
+		"A race has started queueing, use /"..settings.command.." to open the race menu! "..
+		"("..self.nextCourse.name..")"
 	)
 	
 	Network:Broadcast("QueuedRaceCreate" , self:MarshalNextRace())

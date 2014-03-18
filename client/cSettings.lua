@@ -68,7 +68,6 @@ A variation of the common lorem ipsum text has been used during typesetting sinc
 -- GUI
 ----------------------------------------------------------------------------------------------------
 
-settings.textColor = Color(228 , 142 , 56 , 255)
 settings.shadowColor = Color(0 , 0 , 0 , 255)
 
 settings.targetArrowFlashNum = 3

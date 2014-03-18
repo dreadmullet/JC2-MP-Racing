@@ -70,6 +70,7 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	self:EventSubscribe("LocalPlayerInput")
 	self:EventSubscribe("LocalPlayerChat")
 	self:EventSubscribe("PostTick")
+	Console:Subscribe(settings.command , self , self.ConsoleActivate)
 end
 
 function RaceMenu:CreateWindow()
@@ -185,7 +186,7 @@ function RaceMenu:LocalPlayerInput(args)
 end
 
 function RaceMenu:LocalPlayerChat(args)
-	if args.text:lower() == RaceMenu.command then
+	if args.text:lower() == "/"..settings.command then
 		self:SetEnabled(not self.isEnabled)
 		return false
 	end
@@ -212,5 +213,11 @@ function RaceMenu:PostTick()
 		Network:Send(request[1] , request[2])
 		
 		table.remove(self.requests , 1)
+	end
+end
+
+function RaceMenu:ConsoleActivate(args)
+	if args.text:len() == 0 then
+		self:SetEnabled(not self.isEnabled)
 	end
 end

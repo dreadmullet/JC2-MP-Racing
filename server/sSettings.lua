@@ -16,8 +16,6 @@ settings.coursesPath = "courses/"
 
 settings.statsCommitInterval = 10 -- Seconds
 
-settings.textColor = Color(250 , 157 , 133 , 255) -- Light red-orange.
-
 settings.startingGridWaitSeconds = 11
 settings.prizeMoneyDefault = 10000
 settings.prizeMoneyMultiplier = 0.75
