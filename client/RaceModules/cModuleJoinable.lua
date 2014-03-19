@@ -1,7 +1,7 @@
 
-class("RaceManagerJoinable" , RaceModules)
+class("Joinable" , RaceModules)
 
-function RaceModules.RaceManagerJoinable:__init()
+function RaceModules.Joinable:__init()
 	-- Add a leave button to the current race tab.
 	local leaveButton = Button.Create(Race.instance.currentRaceTab.page)
 	leaveButton:SetDock(GwenPosition.Top)
@@ -13,6 +13,6 @@ end
 
 -- Gwen events
 
-function RaceModules.RaceManagerJoinable:LeaveButtonPressed()
+function RaceModules.Joinable:LeaveButtonPressed()
 	Network:Send("LeaveRace" , ".")
 end

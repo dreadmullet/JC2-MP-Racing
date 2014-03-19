@@ -63,7 +63,7 @@ function RaceManagerJoinable:CreateRace()
 		players = self.playerQueue ,
 		course = self.nextCourse ,
 		collisions = self.nextCourseCollisions ,
-		modules = {"RaceManagerJoinable"}
+		modules = {"Joinable"}
 	}
 	local race = Race(args)
 	self.raceIdToRace[race.id] = race
