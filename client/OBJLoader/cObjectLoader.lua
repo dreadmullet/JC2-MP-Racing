@@ -2,20 +2,28 @@ OBJLoader.Error = function(text)
 	error("[OBJLoader] "..text)
 end
 
--- param2/param3 are like Events:Subscribe; provide it a function or an instance and function.
-function OBJLoader.Request(modelPath , param2 , param3)
-	if param2 == nil then
+OBJLoader.Request = function(modelPath , extra1 , extra2)
+	return OBJLoader.RequestInternal(modelPath , "3D" , extra1 , extra2)
+end
+
+OBJLoader.Request2D = function(modelPath , extra1 , extra2)
+	return OBJLoader.RequestInternal(modelPath , "2D" , extra1 , extra2)
+end
+
+-- extra1/extra2 are like Events:Subscribe; provide it a function or an instance and function.
+OBJLoader.RequestInternal = function(modelPath , type , extra1 , extra2)
+	if extra1 == nil then
 		OBJLoader.Error("Error: bad parameters")
 	end
 	
 	local onLoadCallback = nil
 	local onLoadCallbackInstance = nil
-	if param3 then
-		onLoadCallback = param3
-		onLoadCallbackInstance = param2
+	if extra2 then
+		onLoadCallback = extra2
+		onLoadCallbackInstance = extra1
 	else
-		onLoadCallback = param2
+		onLoadCallback = extra1
 	end
 	
-	OBJLoader.MeshRequester(modelPath , onLoadCallback , onLoadCallbackInstance)
+	OBJLoader.MeshRequester(modelPath , type , onLoadCallback , onLoadCallbackInstance)
 end
