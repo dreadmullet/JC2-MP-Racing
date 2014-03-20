@@ -130,12 +130,16 @@ end
 -- GWEN events
 
 function PlayersTab:SearchBoxFocused()
+	inputSuspensionValue = inputSuspensionValue + 1
+	
 	if self.searchBox:GetText() == "Search by name" then
 		self.searchBox:SetText("")
 	end
 end
 
 function PlayersTab:SearchBoxUnfocused()
+	inputSuspensionValue = inputSuspensionValue - 1
+	
 	if self.searchBox:GetText() == "" then
 		self.searchBox:SetText("Search by name")
 	end

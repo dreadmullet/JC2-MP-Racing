@@ -84,6 +84,7 @@ function RaceMenu:CreateWindow()
 	self.tabControl = TabControl.Create(self.window)
 	self.tabControl:SetDock(GwenPosition.Fill)
 	self.tabControl:SetTabStripPosition(GwenPosition.Top)
+	self.tabControl:SetBackgroundVisible(false)
 	self.addTabSub = self.tabControl:Subscribe("AddTab" , self , self.OnAddTab)
 end
 
@@ -166,7 +167,7 @@ end
 -- Events
 
 function RaceMenu:ControlDown(control)
-	if control.name == "Toggle this menu" then
+	if control.name == "Toggle this menu" and inputSuspensionValue == 0 then
 		self:SetEnabled(not self.isEnabled)
 	end
 end
@@ -174,6 +175,10 @@ end
 function RaceMenu:LocalPlayerInput(args)
 	if self.isEnabled == false then
 		return true
+	end
+	
+	if inputSuspensionValue > 0 then
+		return false
 	end
 	
 	for index , action in ipairs(RaceMenu.allowedActions) do
