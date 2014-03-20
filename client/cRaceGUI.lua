@@ -1,6 +1,7 @@
 ----------------------------------------------------------------------------------------------------
 -- Functions that race states call to draw the GUI.
 ----------------------------------------------------------------------------------------------------
+RaceGUI = {}
 
 -- Draw version at the top right.
 RaceGUI.DrawVersion = function(version)

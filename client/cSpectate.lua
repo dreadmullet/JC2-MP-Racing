@@ -1,3 +1,4 @@
+class("Spectate")
 
 function Spectate:__init(args) ; RaceBase.__init(self , args)
 	Spectate.instance = self

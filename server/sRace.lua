@@ -1,3 +1,5 @@
+class("Race")
+
 Race.idCounter = 1
 
 function Race:__init(args)

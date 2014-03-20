@@ -1,3 +1,4 @@
+class("CourseManager")
 
 -- Each CourseManager is tied to a course manifest.
 function CourseManager:__init(manifestPath)

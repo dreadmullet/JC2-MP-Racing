@@ -1,3 +1,5 @@
+class("Course")
+
 function Course:__init()
 	-- Course properties which are saved and loaded.
 	

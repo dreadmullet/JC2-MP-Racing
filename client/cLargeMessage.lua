@@ -1,3 +1,4 @@
+class("LargeMessage")
 
 -- This class, on construction, will fancily draw large text near the center of the screen for a
 -- specified duration.

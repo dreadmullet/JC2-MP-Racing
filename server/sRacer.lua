@@ -1,3 +1,4 @@
+class("Racer")
 
 function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	self.Update = Racer.Update

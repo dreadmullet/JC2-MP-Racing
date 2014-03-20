@@ -1,25 +1,17 @@
+ModuleLoad = function()
+	Chat:Broadcast(
+		"JC2-MP-Racing "..settings.version.." loaded." ,
+		settings.textColor
+	)
+	
+	Stats.Init()
+	
+	if settings.raceManager then
+		raceManager = settings.raceManager()
+	end
+end
 
-class("RaceManagerBase")
-	class("RaceManagerMode")
-	class("RaceManagerJoinable")
-
-class("Race")
-
-class("RacerBase")
-	class("Racer")
-	class("Spectator")
-
--- Race states
-class("StateStartingGrid")
-class("StateRacing")
-
-class("CourseManager")
-class("Course")
-class("CourseCheckpoint")
-class("CourseSpawn")
-class("CourseLoader")
-
-Stats = {}
+Events:Subscribe("ModuleLoad" , ModuleLoad)
 
 math.randomseed(os.time())
 math.tau = math.pi * 2

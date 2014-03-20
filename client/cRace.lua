@@ -1,3 +1,4 @@
+class("Race")
 
 function Race:__init(args) ; RaceBase.__init(self , args)
 	Race.instance = self

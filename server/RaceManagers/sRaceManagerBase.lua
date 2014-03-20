@@ -1,3 +1,5 @@
+class("RaceManagerBase")
+
 function RaceManagerBase:__init() ; EGUSM.PlayerManager.__init(self)
 	-- Expose functions.
 	self.Message = RaceManagerBase.Message

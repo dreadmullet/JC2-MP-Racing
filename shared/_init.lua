@@ -1,5 +1,2 @@
 
-VehicleList = {}
-settings = {}
-
 RaceModules = {}

@@ -1,6 +1,7 @@
 ----------------------------------------------------------------------------------------------------
 -- Both Racer and Spectator inherit from this.
 ----------------------------------------------------------------------------------------------------
+class("RacerBase")
 
 function RacerBase:__init(race , player)
 	self.Update = RacerBase.Update

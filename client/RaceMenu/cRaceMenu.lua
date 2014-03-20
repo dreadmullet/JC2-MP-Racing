@@ -1,3 +1,5 @@
+class("RaceMenu")
+
 -- Static constants
 
 RaceMenu.command = "/racemenu"

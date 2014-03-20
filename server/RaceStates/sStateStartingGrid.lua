@@ -1,3 +1,4 @@
+class("StateStartingGrid")
 
 function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	self.race = race

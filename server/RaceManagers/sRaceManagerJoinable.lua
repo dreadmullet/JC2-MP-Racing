@@ -1,3 +1,5 @@
+class("RaceManagerJoinable")
+
 RaceManagerJoinable.command = "/race"
 RaceManagerJoinable.startDelay = 120
 
@@ -112,6 +114,7 @@ function RaceManagerJoinable:ManagedPlayerLeave(player)
 		race:RemovePlayer(player)
 	end
 	-- Give them back their position, model, and inventory, if applicable.
+	-- TODO: I'm not sure if this works perfectly
 	local racerInfo = self.playerIdToRacerInfo[player:GetId()]
 	if racerInfo then
 		player:SetPosition(racerInfo.position)

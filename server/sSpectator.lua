@@ -1,3 +1,4 @@
+class("Spectator")
 
 function Spectator:__init(race , player)
 	RacerBase.__init(self , race , player)

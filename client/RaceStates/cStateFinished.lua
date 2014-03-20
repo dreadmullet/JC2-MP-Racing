@@ -1,3 +1,4 @@
+class("StateFinished")
 
 function StateFinished:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self.race = race

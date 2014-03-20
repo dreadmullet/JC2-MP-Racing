@@ -1,3 +1,5 @@
+class("RaceManagerMode")
+
 RaceManagerMode.initialiseDelay = 1
 
 class("RaceInfo")

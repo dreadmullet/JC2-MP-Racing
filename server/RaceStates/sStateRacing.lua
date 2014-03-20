@@ -1,3 +1,4 @@
+class("StateRacing")
 
 function StateRacing:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	self.race = race

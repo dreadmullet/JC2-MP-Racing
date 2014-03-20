@@ -5,6 +5,7 @@
 -- VehicleList[2].type = "Car"
 -- VehicleList[2].isDLC = false
 ----------------------------------------------------------------------------------------------------
+VehicleList = {}
 
 VehicleList.SelectRandom = function(type , allowDLC)
 	local list = {}

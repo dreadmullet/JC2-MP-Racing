@@ -1,3 +1,4 @@
+class("OrbitCamera")
 
 function OrbitCamera:__init()
 	-- Public properties

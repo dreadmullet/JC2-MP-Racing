@@ -1,3 +1,5 @@
+class("CourseSpawn")
+
 function CourseSpawn:__init(course)
 	self.course = course
 	self.position = nil
