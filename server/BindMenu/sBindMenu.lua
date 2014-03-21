@@ -1,7 +1,7 @@
 
 BindMenu = {}
 -- Minimum interval in seconds that clients are allowed to request, to prevent spam.
-BindMenu.networkLimit = 5
+BindMenu.networkLimit = 2
 -- Map that helps with preventing request spam.
 -- Key: player id
 -- Value: timer
