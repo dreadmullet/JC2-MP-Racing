@@ -18,6 +18,11 @@ function StateVehicleSelection:__init(race) ; EGUSM.SubscribeUtility.__init(self
 		-- Map to help with removing duplicate model ids.
 		local modelIds = {}
 		for index , modelId in ipairs(courseSpawn.modelIds) do
+			-- If there are no templates, make a blank one.
+			if #courseSpawn.templates == 0 then
+				courseSpawn.templates = {"."}
+			end
+			
 			if vehicles[modelId] then
 				vehicles[modelId].templates[courseSpawn.templates[index]] = true
 				if modelIds[modelId] == nil then
