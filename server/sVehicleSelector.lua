@@ -32,8 +32,6 @@ function VehicleSelector:__init(state , racer) ; EGUSM.SubscribeUtility.__init(s
 		vehicles = self.state.vehicles ,
 		vehicleIndex = self.vehicleIndex ,
 		templateIndex = self.templateIndex ,
-		color1 = self.color1 ,
-		color2 = self.color2 ,
 		vehicleId = self.vehicle:GetId() ,
 		garagePosition = StateVehicleSelection.garagePosition ,
 		garageAngle = StateVehicleSelection.garageAngle ,

@@ -5,8 +5,6 @@ function StateVehicleSelection:__init(race , args) ; EGUSM.SubscribeUtility.__in
 	self.vehicles = args.vehicles
 	self.vehicleIndex = args.vehicleIndex
 	self.templateIndex = args.templateIndex
-	self.color1 = args.color1
-	self.color2 = args.color2
 	self.vehicleId = args.vehicleId
 	self.garagePosition = args.garagePosition
 	self.garageAngle = args.garageAngle
@@ -14,6 +12,7 @@ function StateVehicleSelection:__init(race , args) ; EGUSM.SubscribeUtility.__in
 	self.window = nil
 	self.timer = Timer()
 	self.setColorsTimer = Timer()
+	self.colorBuffer = nil
 	-- Create the OrbitCamera.
 	self.camera = OrbitCamera(self.garagePosition , Angle(math.rad(45) , math.rad(-10) , 0))
 	self.camera.minPitch = math.rad(-35)
@@ -140,7 +139,7 @@ function StateVehicleSelection:CreateMenus()
 	self.colorPicker = HSVColorPicker.Create(groupBoxColorPicker)
 	self.colorPicker:SetMargin(Vector2(0 , 6) , Vector2(0 , 0))
 	self.colorPicker:SetDock(GwenPosition.Fill)
-	self.colorPicker:SetColor(self.color2)
+	self.colorPicker:SetColor(LocalPlayer:GetColor())
 	self.colorPicker:Subscribe("ColorChanged" , self , self.ColorChanged)
 end
 
@@ -267,16 +266,7 @@ function StateVehicleSelection:TemplateRadioButtonPressed(button)
 end
 
 function StateVehicleSelection:ColorChanged()
-	if self.setColorsTimer:GetSeconds() < 0.15 then
-		return
-	end
-	
-	self.setColorsTimer:Restart()
-	
-	local color2 = self.colorPicker:GetColor()
-	local color1 = self.colorPicker:GetColor() * 0.85
-	
-	Network:Send("VehicleSetColors" , {color1 , color2})
+	self.colorBuffer = self.colorPicker:GetColor()
 end
 
 -- Events
@@ -307,6 +297,12 @@ function StateVehicleSelection:StateSelection()
 	Mouse:SetVisible(self.camera.isInputEnabled == false or inputSuspensionValue > 0)
 	
 	self:UpdateTimer()
+	
+	if self.colorBuffer and self.setColorsTimer:GetSeconds() > 0.1 then
+		self.setColorsTimer:Restart()
+		Network:Send("VehicleSetColors" , {self.colorBuffer * 0.85 , self.colorBuffer})
+		self.colorBuffer = nil
+	end
 end
 
 function StateVehicleSelection:ControlDown(control)
