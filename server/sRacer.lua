@@ -23,6 +23,8 @@ function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	self.courseSpawn = nil
 	-- Helps with preventing respawning the player every tick.
 	self.respawnTimer = nil
+	-- Table containing modelId, template, color1, color2
+	self.vehicleInfo = nil
 	
 	-- Disable collisions, if applicable.
 	if self.race.vehicleCollisions == false then

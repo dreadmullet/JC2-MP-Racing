@@ -1,8 +1,8 @@
 class("OrbitCamera")
 
-function OrbitCamera:__init()
+function OrbitCamera:__init(position , angle)
 	-- Public properties
-	self.targetPosition = Vector3(0 , 0 , 0)
+	self.targetPosition = position or Vector3(0 , 0 , 0)
 	self.minPitch = math.rad(-89)
 	self.maxPitch = math.rad(89)
 	self.minDistance = 1
@@ -10,13 +10,14 @@ function OrbitCamera:__init()
 	self.collision = false
 	self.sensitivityRot = 0.15
 	self.sensitivityZoom = 0.035
-	
-	self.position = Vector3(0 , 10000 , 0)
-	self.angle = Angle(0 , math.rad(-89) , 0)
+	self.isInputEnabled = true
+	-- Private properties
+	self.position = position or Vector3(0 , 10000 , 0)
+	self.angle = angle or Angle()
 	self.distance = 50
 	self.angleBuffer = self.angle
 	self.distanceDeltaBuffer = 0
-	
+	-- Events
 	self.eventCalcView = Events:Subscribe("CalcView" , self , self.CalcView)
 	self.eventLocalPlayerInput = Events:Subscribe("LocalPlayerInput" , self , self.LocalPlayerInput)
 	self.eventMouseScroll = Events:Subscribe("MouseScroll" , self , self.MouseScroll)
@@ -34,7 +35,6 @@ function OrbitCamera:UpdateDistance()
 	local distanceDelta = self.distanceDeltaBuffer
 	self.distanceDeltaBuffer = 0
 	
-	-- Clamp the distance to sane values
 	self.distance = self.distance *
 		math.pow(10 , 1 + -distanceDelta * self.sensitivityZoom) / 10
 	self.distance = math.clamp(self.distance , self.minDistance , self.maxDistance)
@@ -75,6 +75,10 @@ function OrbitCamera:CalcView()
 end
 
 function OrbitCamera:LocalPlayerInput(args)
+	if self.isInputEnabled == false then
+		return true
+	end
+	
 	local RotateYaw = function(value)
 		self.angleBuffer.yaw = self.angleBuffer.yaw + value * self.sensitivityRot
 	end
@@ -101,9 +105,15 @@ function OrbitCamera:LocalPlayerInput(args)
 			self.distanceDeltaBuffer = -args.state
 		end
 	end
+	
+	return true
 end
 
 function OrbitCamera:MouseScroll(args)
+	if self.isInputEnabled == false then
+		return
+	end
+	
 	self.distanceDeltaBuffer = args.delta
 end
 

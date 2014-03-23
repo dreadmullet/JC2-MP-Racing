@@ -11,9 +11,12 @@ function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	
 	self.startTimer = Timer()
 	
-	-- Loop through all racers and create their raceTimer.
+	-- Loop through all racers
+	-- * Set their world.
+	-- * Create their raceTimer.
 	for playerId , racer in pairs(self.race.playerIdToRacer) do
 		racer.raceTimer = Timer()
+		racer.player:SetWorld(self.race.world)
 	end
 	
 	-- Update database.

@@ -17,16 +17,20 @@ function CourseSpawn:SpawnVehicle()
 		return
 	end
 	
-	local modelIdIndex = math.random(1 , #self.modelIds)
+	local vehicleInfo = self.racer.vehicleInfo
 	
-	local spawnArgs = {}
-	spawnArgs.model_id = self.modelIds[modelIdIndex]
-	spawnArgs.position = self.position
-	spawnArgs.angle = self.angle
-	spawnArgs.world = self.course.race.world
-	spawnArgs.enabled = true
-	spawnArgs.template = self.templates[modelIdIndex] or ""
-	spawnArgs.decal = self.decals[modelIdIndex] or ""
+	local spawnArgs = {
+		model_id = vehicleInfo.modelId ,
+		position = self.position ,
+		angle = self.angle ,
+		world = self.course.race.world ,
+		enabled = true ,
+		template = vehicleInfo.template ,
+		-- Disabled for now.
+		decal = "" ,
+		tone1 = vehicleInfo.color1 ,
+		tone2 = vehicleInfo.color2 ,
+	}
 	
 	self.vehicle = Vehicle.Create(spawnArgs)
 	self.vehicle:SetDeathRemove(true)
@@ -54,7 +58,6 @@ function CourseSpawn:SpawnRacer()
 	self.racer.courseSpawn = self
 	
 	self.racer.player:Teleport(teleportPos , self.angle)
-	self.racer.player:SetWorld(self.course.race.world)
 end
 
 function CourseSpawn:MarshalJSON()

@@ -78,7 +78,7 @@ function Race:__init(args)
 	-- Prevents terminating twice.
 	self.isValid = true
 	
-	self:SetState("StateStartingGrid")
+	self:SetState("StateVehicleSelection")
 	
 	Events:Fire("RaceCreate" , {id = self.id})
 end
