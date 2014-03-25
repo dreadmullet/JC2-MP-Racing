@@ -25,7 +25,6 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self.recordTime = raceInfo.topRecordTime
 	self.recordTimePlayerName = raceInfo.topRecordPlayerName
 	
-	self.lapTimes = {}
 	self.leaderboard = {}
 	
 	-- Request Models from server, if we don't have them already.

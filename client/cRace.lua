@@ -8,6 +8,7 @@ function Race:__init(args) ; RaceBase.__init(self , args)
 	end
 	
 	self.assignedVehicleId = -2
+	self.lapTimes = {}
 	
 	Race.currentRaceTab = RaceMenu.instance:AddTab(CurrentRaceTab)
 	
