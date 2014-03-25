@@ -69,25 +69,26 @@ function Spectate:Render()
 		end
 	end
 	
-	local args
-	-- DrawVersion
-	RaceGUI.DrawVersion(self.scriptVersion)
-	-- DrawCourseName
-	RaceGUI.DrawCourseName(self.course.name)
-	-- DrawTimers
-	args = {}
-	args.recordTime = self.recordTime
-	args.recordTimePlayerName = self.recordTimePlayerName
-	args.courseType = self.course.type
-	-- DrawLeaderboard
-	args = {}
-	args.leaderboard = self.leaderboard
-	args.playerIdToInfo = self.playerIdToInfo
-	RaceGUI.DrawLeaderboard(args)
-	-- DrawPositionTags
-	args = {}
-	args.leaderboard = self.leaderboard
-	RaceGUI.DrawPositionTags(args)
+	if Game:GetState() == GUIState.Game then
+		RaceGUI.DrawVersion(self.scriptVersion)
+		
+		RaceGUI.DrawCourseName(self.course.name)
+		
+		RaceGUI.DrawTimers{
+			recordTime = self.recordTime ,
+			recordTimePlayerName = self.recordTimePlayerName ,
+			courseType = self.course.type ,
+		}
+		
+		RaceGUI.DrawLeaderboard{
+			leaderboard = self.leaderboard ,
+			playerIdToInfo = self.playerIdToInfo ,
+		}
+		
+		RaceGUI.DrawPositionTags{
+			leaderboard = self.leaderboard
+		}
+	end
 end
 
 function Spectate:LocalPlayerInput(args)
