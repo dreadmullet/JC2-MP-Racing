@@ -155,6 +155,6 @@ end
 function StateRacing:RequestRespawn(unused , player)
 	local racer = self.race.playerIdToRacer[player:GetId()]
 	if racer then
-		racer:Respawn()
+		racer:RequestRespawn()
 	end
 end

@@ -9,6 +9,7 @@ function StateRacing:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self.timer = Timer()
 	self.numTicks = 0
 	self.sendCheckpointTimer = Timer()
+	self.isRespawning = false
 	
 	LargeMessage("GO!" , 2)
 	
@@ -24,8 +25,10 @@ function StateRacing:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self:NetworkSubscribe("RaceTimePersonal")
 	self:NetworkSubscribe("NewRecordTime")
 	self:NetworkSubscribe("Respawned")
+	self:NetworkSubscribe("RespawnAcknowledged")
 end
 
+-- TODO: Move this down
 function StateRacing:Render()
 	self.numTicks = self.numTicks + 1
 	
@@ -104,6 +107,16 @@ function StateRacing:Render()
 			currentLap = self.currentLap ,
 			numLaps = self.race.numLaps ,
 		}
+		
+		if self.isRespawning then
+			DrawText(
+				Vector2(Render.Width * 0.5 , Render.Height * 0.25) ,
+				" Respawning..." ,
+				settings.textColor ,
+				24 ,
+				"center"
+			)
+		end
 	end
 end
 
@@ -205,4 +218,10 @@ end
 
 function StateRacing:Respawned(assignedVehicleId)
 	self.race.assignedVehicleId = assignedVehicleId
+	
+	self.isRespawning = false
+end
+
+function StateRacing:RespawnAcknowledged()
+	self.isRespawning = true
 end

@@ -8,7 +8,8 @@ settings.textColor = Color(228 , 142 , 56 , 255) -- Light red-orange.
 
 settings.command = "race"
 
-settings.minRespawnPeriod = 4
+settings.respawnMinPeriod = 5
+settings.respawnDelay = 3
 
 settings.vehicleSelectionSeconds = 22
 settings.startingGridSeconds = 11

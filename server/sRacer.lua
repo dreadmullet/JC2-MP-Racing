@@ -21,8 +21,11 @@ function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	-- Position in leaderboard.
 	self.startPosition = -1
 	self.courseSpawn = nil
-	-- Helps with limiting the rate of respawning. Restarts on respawn.
-	self.respawnTimer = Timer()
+	-- Helps with limiting the rate of respawning.
+	self.respawnLimiterTimer = Timer()
+	-- Works with settings.respawnDelay to delay the respawn when it's requested.
+	self.respawnDelayTimer = Timer()
+	self.isRespawning = false
 	-- Table containing modelId, template, color1, color2
 	self.startingVehicleInfo = nil
 	
@@ -54,6 +57,12 @@ function Racer:Update(racePosInfo)
 	then
 		self:Message("Get off, you freeloader!")
 		self.player:SetPosition(self.player:GetPosition() + Vector3(0 , 0.5 , 0))
+	end
+	
+	-- If we're respawning, and the timer is elapsed, respawn us.
+	if self.isRespawning and self.respawnDelayTimer:GetSeconds() >= settings.respawnDelay then
+		self.isRespawning = false
+		self:Respawn()
 	end
 end
 
@@ -181,12 +190,17 @@ function Racer:Finish()
 	Network:Send(self.player , "RaceSetState" , args)
 end
 
+function Racer:RequestRespawn()
+	if self.isRespawning == false then
+		self.isRespawning = true
+		self.respawnDelayTimer = Timer()
+		Network:Send(self.player , "RespawnAcknowledged")
+	end
+end
+
 function Racer:Respawn()
-	-- Make sure that we're alive and haven't respawned very recently.
-	if
-		self.player:GetHealth() == 0 or
-		self.respawnTimer:GetSeconds() < settings.minRespawnPeriod
-	then
+	-- Make sure that we're alive.
+	if self.player:GetHealth() == 0 then
 		return
 	end
 	
@@ -194,7 +208,7 @@ function Racer:Respawn()
 		print(self.name.." is respawning.")
 	end
 	
-	self.respawnTimer = Timer()
+	self.respawnLimiterTimer = Timer()
 	
 	local IsSpawnPositionClear = function(position)
 		if self.race.vehicleCollisions == false then
@@ -308,7 +322,7 @@ function Racer:Respawn()
 		self.player:Teleport(spawnPosition , spawnAngle)
 	end
 	
-	Network:Send(self.player , "Respawn" , self.assignedVehicleId)
+	Network:Send(self.player , "Respawned" , self.assignedVehicleId)
 end
 
 function Racer:Message(message)
@@ -320,12 +334,7 @@ end
 function Racer:EnterVehicle(args)
 	-- If someone enters the wrong car, boot them out.
 	if self.assignedVehicleId >= 0 and self.assignedVehicleId ~= args.vehicle:GetId() then
-		if not debug.dontRestrictVehicle then
-			args.player:Teleport(
-				args.player:GetPosition() + Vector3(0 , 2 , 0) ,
-				args.player:GetAngle()
-			)
-			self:Message("This is not your car!")
-		end
+		self.player:SetPosition(self.player:GetPosition() + Vector3(0 , 0.5 , 0))
+		self:Message("Get your own car, you thief!")
 	end
 end
