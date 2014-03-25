@@ -8,8 +8,12 @@ settings.textColor = Color(228 , 142 , 56 , 255) -- Light red-orange.
 
 settings.command = "race"
 
+settings.minRespawnPeriod = 4
+
 settings.vehicleSelectionSeconds = 22
 settings.startingGridSeconds = 11
+
+settings.lapsMult = 1
 
 settings.numLapsFunc = function(numPlayers , maxPlayers , courseLaps)
 	local lapsMultPlayers = (numPlayers / maxPlayers)

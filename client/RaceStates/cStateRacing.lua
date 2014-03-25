@@ -17,12 +17,13 @@ function StateRacing:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self:EventSubscribe("Render")
 	self:EventSubscribe("PostTick")
 	self:EventSubscribe("LocalPlayerInput")
+	self:EventSubscribe("ControlDown")
 	
 	self:NetworkSubscribe("SetTargetCheckpoint")
 	self:NetworkSubscribe("UpdateRacePositions")
 	self:NetworkSubscribe("RaceTimePersonal")
 	self:NetworkSubscribe("NewRecordTime")
-	self:NetworkSubscribe("Respawn")
+	self:NetworkSubscribe("Respawned")
 end
 
 function StateRacing:Render()
@@ -166,6 +167,12 @@ function StateRacing:LocalPlayerInput(args)
 	return true
 end
 
+function StateRacing:ControlDown(control)
+	if control.name == "Respawn" then
+		Network:Send("RequestRespawn" , ".")
+	end
+end
+
 ----------------------------------------------------------------------------------------------------
 -- Network events
 ----------------------------------------------------------------------------------------------------
@@ -196,6 +203,6 @@ function StateRacing:NewRecordTime(args)
 	self.race.recordTimePlayerName = args[2]
 end
 
-function StateRacing:Respawn(assignedVehicleId)
+function StateRacing:Respawned(assignedVehicleId)
 	self.race.assignedVehicleId = assignedVehicleId
 end

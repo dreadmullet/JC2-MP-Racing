@@ -35,6 +35,7 @@ function StateRacing:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	self:EventSubscribe("PlayerSpawn")
 	self:NetworkSubscribe("ReceiveCheckpointDistanceSqr")
 	self:NetworkSubscribe("RequestTargetPosition")
+	self:NetworkSubscribe("RequestRespawn")
 end
 
 function StateRacing:End()
@@ -148,5 +149,12 @@ function StateRacing:RequestTargetPosition(playerId , player)
 	local spectator = self.race.playerIdToSpectator[player:GetId()]
 	if spectator then
 		spectator:RequestTargetPosition(playerId)
+	end
+end
+
+function StateRacing:RequestRespawn(unused , player)
+	local racer = self.race.playerIdToRacer[player:GetId()]
+	if racer then
+		racer:Respawn()
 	end
 end

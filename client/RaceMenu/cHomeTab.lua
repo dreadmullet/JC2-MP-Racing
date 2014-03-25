@@ -56,6 +56,7 @@ function HomeTab:__init() ; TabBase.__init(self , "Home")
 	local bindMenu = BindMenu.Create(groupBoxBindMenu)
 	bindMenu:SetDock(GwenPosition.Fill)
 	bindMenu:AddControl("Toggle this menu" , nil)
+	bindMenu:AddControl("Respawn" , "FireGrapple")
 	bindMenu:AddControl("Rotate camera" , "FireLeft")
 	bindMenu:RequestSettings()
 	
