@@ -12,7 +12,7 @@ function CourseSpawn:__init(course)
 end
 
 function CourseSpawn:SpawnVehicle()
-	local vehicleInfo = self.racer.vehicleInfo
+	local vehicleInfo = self.racer.startingVehicleInfo
 	-- If they are on foot, return out of here.
 	if vehicleInfo == nil or vehicleInfo.modelId == -1 then
 		return

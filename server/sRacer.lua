@@ -24,7 +24,7 @@ function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	-- Helps with preventing respawning the player every tick.
 	self.respawnTimer = nil
 	-- Table containing modelId, template, color1, color2
-	self.vehicleInfo = nil
+	self.startingVehicleInfo = nil
 	
 	-- Disable collisions, if applicable.
 	if self.race.vehicleCollisions == false then
@@ -47,27 +47,7 @@ end
 function Racer:Update(racePosInfo)
 	RacerBase.Update(self , racePosInfo)
 	
-	if self.respawnTimer and self.respawnTimer:GetSeconds() < 7 then
-		-- Do nothing, we recently respawned, and we're likely in the enter vehicle animation.
-	else
-		local isVehicleAlive = true
-		if self.assignedVehicleId >= 0 then
-			local vehicle = Vehicle.GetById(self.assignedVehicleId)
-			if IsValid(vehicle) then
-				isVehicleAlive = vehicle:GetHealth() > 0
-			end
-		end
-		-- If they're out of their vehicle, respawn them and create the respawn timer.
-		if
-			isVehicleAlive and
-			self.player:GetHealth() > 0 and
-			self.assignedVehicleId >= 0 and
-			self.player:InVehicle() == false
-		then
-			self:Respawn()
-			self.respawnTimer = Timer()
-		end
-	end
+	self:HandleRespawning()
 end
 
 function Racer:Remove()
@@ -312,6 +292,39 @@ function Racer:Respawn()
 	end
 	
 	Network:Send(self.player , "Respawn" , self.assignedVehicleId)
+end
+
+function Racer:HandleRespawning()
+	-- If we're supposed to be on-foot, return.
+	if self.assignedVehicleId == -1 then
+		return
+	end
+	-- If we've finished, return.
+	if self.hasFinished then
+		return
+	end
+	
+	if self.respawnTimer and self.respawnTimer:GetSeconds() < 7 then
+		-- Do nothing, we recently respawned, and we're likely in the enter vehicle animation.
+	else
+		local isVehicleAlive = true
+		if self.assignedVehicleId >= 0 then
+			local vehicle = Vehicle.GetById(self.assignedVehicleId)
+			if IsValid(vehicle) then
+				isVehicleAlive = vehicle:GetHealth() > 0
+			end
+		end
+		-- If they're out of their vehicle, respawn them and create the respawn timer.
+		if
+			isVehicleAlive and
+			self.player:GetHealth() > 0 and
+			self.assignedVehicleId >= 0 and
+			self.player:InVehicle() == false
+		then
+			self:Respawn()
+			self.respawnTimer = Timer()
+		end
+	end
 end
 
 function Racer:Message(message)

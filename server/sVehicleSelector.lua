@@ -86,7 +86,7 @@ end
 
 function VehicleSelector:ApplyToRacer()
 	local vehicleInfo = self.state.vehicles[self.vehicleIndex]
-	self.racer.vehicleInfo = {
+	self.racer.startingVehicleInfo = {
 		modelId = vehicleInfo.modelId ,
 		template = vehicleInfo.templates[self.templateIndex] ,
 		color1 = self.color1 ,
