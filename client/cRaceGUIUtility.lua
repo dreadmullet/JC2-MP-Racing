@@ -1,12 +1,3 @@
-
-NormX = function(x)
-	return (x * 0.5 + 0.5) * Render.Width
-end
-
-NormY = function(y)
-	return (y * 0.5 + 0.5) * Render.Height
-end
-
 -- Normalized coords to pixels. From -1 to 1.
 NormVector2 = function(x , y)
 	return Vector2(

@@ -288,9 +288,15 @@ end
 
 -- Events
 
+function StateVehicleSelection:RenderAlways()
+	self:UpdateTimer()
+	
+	RaceGUI.DrawVersion()
+end
+
 function StateVehicleSelection:StateLoading()
 	self:DrawLoadingScreen("Loading..")
-	self:UpdateTimer()
+	self:RenderAlways()
 	-- Wait until our vehicle is valid, then initialize after a short delay.
 	self.vehicle = Vehicle.GetById(self.vehicleId)
 	if not IsValid(self.vehicle) then
@@ -305,14 +311,13 @@ end
 
 function StateVehicleSelection:StatePreSelection()
 	self:DrawLoadingScreen("Loading....")
-	
-	self:UpdateTimer()
+	self:RenderAlways()
 end
 
 function StateVehicleSelection:StateSelection()
-	Mouse:SetVisible(self.camera.isInputEnabled == false or inputSuspensionValue > 0)
+	self:RenderAlways()
 	
-	self:UpdateTimer()
+	Mouse:SetVisible(self.camera.isInputEnabled == false or inputSuspensionValue > 0)
 	
 	if self.colorBuffer and self.setColorsTimer:GetSeconds() > 0.1 then
 		self.setColorsTimer:Restart()

@@ -5,10 +5,12 @@ RaceGUI = {}
 
 -- Draw version at the top right.
 RaceGUI.DrawVersion = function()
+	local text = "JC2-MP-Racing "..settings.version
 	local textHeight = Render:GetTextHeight("|" , TextSize.Default)
+	local versionWidth = Render:GetTextWidth("JC2-MP X.X.X (Build XXX)")
 	DrawText(
-		Vector2(0.875 * Render.Width , textHeight * 0.5 + 1) ,
-		"JC2-MP-Racing "..settings.version ,
+		Vector2(Render.Width - versionWidth - 12 , textHeight * 0.5) ,
+		text ,
 		settings.textColor ,
 		TextSize.Default ,
 		"right"
