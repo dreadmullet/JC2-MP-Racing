@@ -17,7 +17,6 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	end
 	
 	local raceInfo = args.raceInfo
-	self.scriptVersion = raceInfo.scriptVersion
 	self.numPlayers = raceInfo.numPlayers
 	self.numLaps = raceInfo.numLaps
 	self.playerIdToInfo = raceInfo.playerIdToInfo

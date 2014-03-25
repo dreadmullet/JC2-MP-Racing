@@ -70,7 +70,7 @@ function Spectate:Render()
 	end
 	
 	if Game:GetState() == GUIState.Game then
-		RaceGUI.DrawVersion(self.scriptVersion)
+		RaceGUI.DrawVersion()
 		
 		RaceGUI.DrawCourseName(self.course.name)
 		

@@ -208,7 +208,6 @@ end
 
 function Race:MarshalForClient()
 	local info = {
-		scriptVersion = settings.version ,
 		numPlayers = self.numPlayers ,
 		numLaps = self.numLaps ,
 		playerIdToInfo = self.playerIdToInfo ,

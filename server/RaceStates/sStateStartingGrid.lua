@@ -33,7 +33,6 @@ function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	
 	local args = {
 		stateName = "StateStartingGrid" ,
-		delay = settings.startingGridWaitSeconds ,
 		startPositions = self.startPositions
 	}
 	for id , racer in pairs(self.race.playerIdToRacer) do
@@ -47,7 +46,7 @@ function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 end
 
 function StateStartingGrid:PostTick()
-	if self.startTimer:GetSeconds() >= settings.startingGridWaitSeconds then
+	if self.startTimer:GetSeconds() >= settings.startingGridSeconds then
 		self.race:SetState("StateRacing")
 	end
 end

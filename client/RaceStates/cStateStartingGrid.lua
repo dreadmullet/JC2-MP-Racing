@@ -3,7 +3,6 @@ class("StateStartingGrid")
 function StateStartingGrid:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self.race = race
 	
-	self.delay = args.delay
 	self.startPositions = args.startPositions
 	self.race.assignedVehicleId = args.assignedVehicleId
 	
@@ -39,7 +38,7 @@ function StateStartingGrid:Render()
 	-- If there is a valid count down time left, and it's ready to be shown, show it.
 	if
 		#self.countDownTimes > 0 and
-		self.timer:GetSeconds() > self.delay - self.countDownTimes[1]
+		self.timer:GetSeconds() > settings.startingGridSeconds - self.countDownTimes[1]
 	then
 		LargeMessage(
 			tostring(settings.countDownNumMessages - self.messageCount) ,
@@ -49,13 +48,13 @@ function StateStartingGrid:Render()
 		table.remove(self.countDownTimes , 1)
 	end
 	-- If the timer is done, change our race's state to StateRacing.
-	if self.timer:GetSeconds() > self.delay then
+	if self.timer:GetSeconds() > settings.startingGridSeconds then
 		self.race:SetState("StateRacing")
 	end
 	
 	-- Draw GUI.
 	if Game:GetState() == GUIState.Game then
-		RaceGUI.DrawVersion(self.race.scriptVersion)
+		RaceGUI.DrawVersion()
 		
 		RaceGUI.DrawCourseName(self.race.course.name)
 		

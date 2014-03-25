@@ -17,7 +17,7 @@ end
 function StateFinished:Render()
 	-- Draw GUI.
 	if Game:GetState() == GUIState.Game then
-		RaceGUI.DrawVersion(self.race.scriptVersion)
+		RaceGUI.DrawVersion()
 		
 		RaceGUI.DrawCourseName(self.race.course.name)
 		
