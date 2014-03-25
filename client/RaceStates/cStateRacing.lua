@@ -28,7 +28,19 @@ function StateRacing:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self:NetworkSubscribe("RespawnAcknowledged")
 end
 
--- TODO: Move this down
+function StateRacing:End()
+	self:Destroy()
+end
+
+function StateRacing:GetTargetCheckpointDistanceSqr()
+	local targetCheckpointPos = self.race.course.checkpoints[self.targetCheckpoint][1]
+	return (targetCheckpointPos - LocalPlayer:GetPosition()):LengthSqr()
+end
+
+----------------------------------------------------------------------------------------------------
+-- Events
+----------------------------------------------------------------------------------------------------
+
 function StateRacing:Render()
 	self.numTicks = self.numTicks + 1
 	
@@ -119,19 +131,6 @@ function StateRacing:Render()
 		end
 	end
 end
-
-function StateRacing:End()
-	self:Destroy()
-end
-
-function StateRacing:GetTargetCheckpointDistanceSqr()
-	local targetCheckpointPos = self.race.course.checkpoints[self.targetCheckpoint][1]
-	return (targetCheckpointPos - LocalPlayer:GetPosition()):LengthSqr()
-end
-
-----------------------------------------------------------------------------------------------------
--- Events
-----------------------------------------------------------------------------------------------------
 
 function StateRacing:PostTick(args)
 	-- Send checkpoint distance every interval.

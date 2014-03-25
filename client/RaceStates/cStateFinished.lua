@@ -14,6 +14,14 @@ function StateFinished:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self:NetworkSubscribe("UpdateRacePositions")
 end
 
+function StateFinished:End()
+	self.largeMessage:Destroy()
+	
+	self:Destroy()
+end
+
+-- Events
+
 function StateFinished:Render()
 	-- Draw GUI.
 	if Game:GetState() == GUIState.Game then
@@ -61,14 +69,6 @@ function StateFinished:Render()
 		}
 	end
 end
-
-function StateFinished:End()
-	self.largeMessage:Destroy()
-	
-	self:Destroy()
-end
-
--- Events
 
 function StateFinished:LocalPlayerInput(args)
 	-- Block actions.

@@ -32,6 +32,12 @@ function StateStartingGrid:__init(race , args) ; EGUSM.SubscribeUtility.__init(s
 	self:EventSubscribe("InputPoll")
 end
 
+function StateStartingGrid:End()
+	self:Destroy()
+end
+
+-- Events
+
 function StateStartingGrid:Render()
 	-- Countdown timer
 	--
@@ -106,12 +112,6 @@ function StateStartingGrid:Render()
 		}
 	end
 end
-
-function StateStartingGrid:End()
-	self:Destroy()
-end
-
--- Events
 
 function StateStartingGrid:LocalPlayerInput(args)
 	if args.state ~= 0 then
