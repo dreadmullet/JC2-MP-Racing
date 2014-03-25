@@ -14,7 +14,7 @@ end
 function CourseSpawn:SpawnVehicle()
 	local vehicleInfo = self.racer.vehicleInfo
 	-- If they are on foot, return out of here.
-	if vehicleInfo.modelId == -1 then
+	if vehicleInfo == nil or vehicleInfo.modelId == -1 then
 		return
 	end
 	-- Create the vehicle.

@@ -28,15 +28,15 @@ function Course:__init()
 	-- Value = CourseCheckpoint
 	-- Checkpoints add themselves to this.
 	self.checkpointMap = {}
+	-- Array of tables; each table has the following:
+	--    modelId = number ,
+	--    templates = array of strings ,
+	--    available = number
+	-- Much better than using self.spawns for some things, such as vehicle selection.
+	self.vehiclesInfo = {}
 	-- Key = modelId
 	-- value = true
 	self.dlcVehicles = {}
-	-- Note: if two races are running at the same time with the same course, lap records could be
-	-- overwritten, because lap records are stored when a course is loaded. Not a huge issue, since
-	-- most servers won't be running more than one race at a time. Could always loop through every
-	-- race currently running when a record is added. Or could cache courses, so two Races use the
-	-- same Course.
-	self.topRecords = {}
 end
 
 function Course:GetMaxPlayers()
@@ -265,6 +265,49 @@ function Course.Load(name)
 	course.fileName = course.fileName:gsub("\\" , "/")
 	-- Strip out everything except the file name.
 	course.fileName = course.fileName:gsub(".*/" , "")
+	
+	-- Populate course.vehiclesInfo.
+	
+	-- Create temporary vehicles map.
+	local vehicles = {}
+	for index , courseSpawn in ipairs(course.spawns) do
+		-- Map to help with removing duplicate model ids.
+		local modelIds = {}
+		for index , modelId in ipairs(courseSpawn.modelIds) do
+			-- If there are no templates, make a blank one.
+			if #courseSpawn.templates == 0 then
+				courseSpawn.templates = {"."}
+			end
+			
+			if vehicles[modelId] then
+				vehicles[modelId].templates[courseSpawn.templates[index]] = true
+				if modelIds[modelId] == nil then
+					vehicles[modelId].available = vehicles[modelId].available + 1
+					modelIds[modelId] = true
+				end
+			else
+				vehicles[modelId] = {
+					templates = {[courseSpawn.templates[index]] = true} ,
+					available = 1 ,
+				}
+				modelIds[modelId] = true
+			end
+		end
+	end
+	-- Translate vehicles (map) into course.vehiclesInfo (array).
+	for modelId , vehicleInfo in pairs(vehicles) do
+		local templates = {}
+		for template , alwaysTrue in pairs(vehicleInfo.templates) do
+			table.insert(templates , template)
+		end
+		
+		local vehicleInfo = {
+			modelId = modelId ,
+			templates = templates ,
+			available = vehicleInfo.available ,
+		}
+		table.insert(course.vehiclesInfo , vehicleInfo)
+	end
 	
 	-- Add to database.
 	Stats.AddCourse(course)

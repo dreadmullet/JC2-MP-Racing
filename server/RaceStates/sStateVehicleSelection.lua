@@ -9,49 +9,15 @@ function StateVehicleSelection:__init(race) ; EGUSM.SubscribeUtility.__init(self
 	self.spawns = self.race.course.spawns
 	self.timer = Timer()
 	self.playerIdToVehicleSelector = {}
-	-- Array of tables: {templates = array of strings , available = number , used = number}
-	self.vehicles = {}
+	-- Array of tables; each table has the following:
+	--    modelId = number ,
+	--    templates = array of strings ,
+	--    available = number ,
+	--    used = number
+	self.vehicles = Copy(self.race.course.vehiclesInfo)
 	
-	-- Populate temporary vehicles map.
-	local vehicles = {}
-	for index , courseSpawn in ipairs(self.spawns) do
-		-- Map to help with removing duplicate model ids.
-		local modelIds = {}
-		for index , modelId in ipairs(courseSpawn.modelIds) do
-			-- If there are no templates, make a blank one.
-			if #courseSpawn.templates == 0 then
-				courseSpawn.templates = {"."}
-			end
-			
-			if vehicles[modelId] then
-				vehicles[modelId].templates[courseSpawn.templates[index]] = true
-				if modelIds[modelId] == nil then
-					vehicles[modelId].available = vehicles[modelId].available + 1
-					modelIds[modelId] = true
-				end
-			else
-				vehicles[modelId] = {
-					templates = {[courseSpawn.templates[index]] = true} ,
-					available = 1 ,
-				}
-				modelIds[modelId] = true
-			end
-		end
-	end
-	-- Translate vehicles (map) into self.vehicles (array).
-	for modelId , vehicleInfo in pairs(vehicles) do
-		local templates = {}
-		for template , alwaysTrue in pairs(vehicleInfo.templates) do
-			table.insert(templates , template)
-		end
-		
-		local vehicleInfo = {
-			modelId = modelId ,
-			templates = templates ,
-			available = vehicleInfo.available ,
-			used = 0 ,
-		}
-		table.insert(self.vehicles , vehicleInfo)
+	for index , vehicleInfo in ipairs(self.vehicles) do
+		vehicleInfo.used = 0
 	end
 	
 	-- Create playerIdToVehicleSelector.
@@ -64,6 +30,7 @@ end
 
 function StateVehicleSelection:End()
 	for playerId , vehicleSelector in pairs(self.playerIdToVehicleSelector) do
+		vehicleSelector:ApplyToRacer()
 		vehicleSelector:Destroy()
 	end
 	
@@ -98,10 +65,6 @@ end
 
 function StateVehicleSelection:PreTick()
 	if self.timer:GetSeconds() >= settings.vehicleSelectionSeconds then
-		for playerId , vehicleSelector in pairs(self.playerIdToVehicleSelector) do
-			vehicleSelector:ApplyToRacer()
-		end
-		
 		self.race:SetState("StateStartingGrid")
 	end
 end

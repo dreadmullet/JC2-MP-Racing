@@ -78,7 +78,12 @@ function Race:__init(args)
 	-- Prevents terminating twice.
 	self.isValid = true
 	
-	self:SetState("StateVehicleSelection")
+	-- Start the vehicle selection state, unless this is a purely on-foot race.
+	if #self.course.vehiclesInfo == 1 and self.course.vehiclesInfo[1].modelId == -1 then
+		self:SetState("StateStartingGrid")
+	else
+		self:SetState("StateVehicleSelection")
+	end
 	
 	Events:Fire("RaceCreate" , {id = self.id})
 end
