@@ -251,6 +251,12 @@ function Course.Load(name)
 			end
 		end
 		
+		-- Fix for old courses: if there are no model ids, it's an on-foot race. But on-foot has a
+		-- pseudo model id of -1, which breaks some things (vehicle selection, at least).
+		if #sp.modelIds == 0 then
+			sp.modelIds = {-1}
+		end
+		
 		table.insert(course.spawns , sp)
 	end
 	

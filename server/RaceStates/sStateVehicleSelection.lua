@@ -53,6 +53,7 @@ function StateVehicleSelection:__init(race) ; EGUSM.SubscribeUtility.__init(self
 		}
 		table.insert(self.vehicles , vehicleInfo)
 	end
+	
 	-- Create playerIdToVehicleSelector.
 	for playerId , racer in pairs(self.race.playerIdToRacer) do
 		self.playerIdToVehicleSelector[playerId] = VehicleSelector(self , racer)

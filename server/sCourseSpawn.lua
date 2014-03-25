@@ -12,13 +12,12 @@ function CourseSpawn:__init(course)
 end
 
 function CourseSpawn:SpawnVehicle()
-	-- If there are no vehicles, it means this is an on-foot race.
-	if #self.modelIds == 0 then
+	local vehicleInfo = self.racer.vehicleInfo
+	-- If they are on foot, return out of here.
+	if vehicleInfo.modelId == -1 then
 		return
 	end
-	
-	local vehicleInfo = self.racer.vehicleInfo
-	
+	-- Create the vehicle.
 	local spawnArgs = {
 		model_id = vehicleInfo.modelId ,
 		position = self.position ,
@@ -31,7 +30,6 @@ function CourseSpawn:SpawnVehicle()
 		tone1 = vehicleInfo.color1 ,
 		tone2 = vehicleInfo.color2 ,
 	}
-	
 	self.vehicle = Vehicle.Create(spawnArgs)
 	self.vehicle:SetDeathRemove(true)
 	self.vehicle:SetUnoccupiedRemove(true)

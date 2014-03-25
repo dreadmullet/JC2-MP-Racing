@@ -39,6 +39,7 @@ function StateVehicleSelection:__init(race , args) ; EGUSM.SubscribeUtility.__in
 	self.countdownBottomText:SizeToContents()
 	
 	self:EventSubscribe("Render" , self.StateLoading)
+	self:NetworkSubscribe("VehicleSelectionInitialize")
 end
 
 function StateVehicleSelection:End()
@@ -103,7 +104,11 @@ function StateVehicleSelection:CreateMenus()
 		label:SetMargin(Vector2(0 , 6) , Vector2(0 , 0))
 		label:SetDock(GwenPosition.Left)
 		label:SetTextSize(16)
-		label:SetText(VehicleList[vehicleInfo.modelId].name)
+		if vehicleInfo.modelId == -1 then
+			label:SetText("On-foot")
+		else
+			label:SetText(VehicleList[vehicleInfo.modelId].name)
+		end
 		label:SizeToContents()
 		
 		local usageLabel = Label.Create(baseButton)
@@ -131,16 +136,18 @@ function StateVehicleSelection:CreateMenus()
 	
 	-- Color picker
 	
-	local groupBoxColorPicker = RaceMenu.CreateGroupBox(self.window)
-	groupBoxColorPicker:SetDock(GwenPosition.Top)
-	groupBoxColorPicker:SetText("Color")
-	groupBoxColorPicker:SetHeight(200)
+	self.groupBoxColorPicker = RaceMenu.CreateGroupBox(self.window)
+	self.groupBoxColorPicker:SetDock(GwenPosition.Top)
+	self.groupBoxColorPicker:SetText("Color")
+	self.groupBoxColorPicker:SetHeight(200)
 	
-	self.colorPicker = HSVColorPicker.Create(groupBoxColorPicker)
+	self.colorPicker = HSVColorPicker.Create(self.groupBoxColorPicker)
 	self.colorPicker:SetMargin(Vector2(0 , 6) , Vector2(0 , 0))
 	self.colorPicker:SetDock(GwenPosition.Fill)
 	self.colorPicker:SetColor(LocalPlayer:GetColor())
 	self.colorPicker:Subscribe("ColorChanged" , self , self.ColorChanged)
+	
+	self:UpdateColorControls()
 end
 
 function StateVehicleSelection:UpdateTimer()
@@ -205,6 +212,16 @@ function StateVehicleSelection:UpdateTemplateControls()
 	
 	self.groupBoxTemplateList:SizeToChildren()
 	self.groupBoxTemplateList:SetHeight(34 + baseButton:GetPosition().y + baseButton:GetHeight())
+end
+
+function StateVehicleSelection:UpdateColorControls()
+	-- Hide the color picker if we're on-foot.
+	if self.vehicles[self.vehicleIndex].modelId == -1 then
+		self.groupBoxColorPicker:SetVisible(false)
+		return
+	else
+		self.groupBoxColorPicker:SetVisible(true)
+	end
 end
 
 -- GWEN events
@@ -282,7 +299,6 @@ function StateVehicleSelection:StateLoading()
 	-- Change the state function to StatePreSelection.
 	self:EventUnsubscribe("Render")
 	self:EventSubscribe("Render" , self.StatePreSelection)
-	self:NetworkSubscribe("VehicleSelectionInitialize")
 	-- Tell the server we're ready.
 	Network:Send("VehicleSelectionLoaded" , ".")
 end
@@ -347,6 +363,7 @@ function StateVehicleSelection:VehicleSelected(vehicleIndex)
 	vehicleInfo.radioButton:SetChecked(true)
 	
 	self:UpdateTemplateControls()
+	self:UpdateColorControls()
 end
 
 function StateVehicleSelection:VehicleTemplateSelected(templateIndex)

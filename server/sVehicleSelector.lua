@@ -27,16 +27,24 @@ function VehicleSelector:__init(state , racer) ; EGUSM.SubscribeUtility.__init(s
 	-- Spawn the vehicle
 	self:SpawnVehicle()
 	-- Send info to client.
+	local vehicleId = -1
+	if self.vehicle then
+		vehicleId = self.vehicle:GetId()
+	end
 	local args = {
 		stateName = "StateVehicleSelection" ,
 		vehicles = self.state.vehicles ,
 		vehicleIndex = self.vehicleIndex ,
 		templateIndex = self.templateIndex ,
-		vehicleId = self.vehicle:GetId() ,
+		vehicleId = vehicleId ,
 		garagePosition = StateVehicleSelection.garagePosition ,
 		garageAngle = StateVehicleSelection.garageAngle ,
 	}
 	Network:Send(self.racer.player , "RaceSetState" , args)
+	-- If they're on foot, initialize them now.
+	if vehicleId == -1 then
+		self:VehicleSelectionLoaded("." , self.racer.player)
+	end
 	
 	self:NetworkSubscribe("VehicleSelectionLoaded")
 	self:NetworkSubscribe("VehicleSelected")
@@ -50,6 +58,12 @@ function VehicleSelector:SpawnVehicle()
 	end
 	
 	local vehicleInfo = self.state.vehicles[self.vehicleIndex]
+	
+	-- Spawn the vehicle, unless they chose on-foot.
+	if vehicleInfo.modelId == -1 then
+		self.vehicle = nil
+		return
+	end
 	self.vehicle = Vehicle.Create({
 		model_id = vehicleInfo.modelId ,
 		position = StateVehicleSelection.garagePosition ,
@@ -95,7 +109,9 @@ function VehicleSelector:VehicleSelectionLoaded(unused , player)
 	end
 	
 	-- Reset the vehicle's position in case it moved (to the client's perspective, anyway).
-	self.vehicle:SetPosition(StateVehicleSelection.garagePosition)
+	if self.vehicle then
+		self.vehicle:SetPosition(StateVehicleSelection.garagePosition)
+	end
 	-- Acknowledge their initialization and give them the initial counts of vehicles.
 	local vehicleUsages = {}
 	for index , vehicleInfo in ipairs(self.state.vehicles) do
@@ -167,13 +183,15 @@ function VehicleSelector:VehicleSetColors(colors , player)
 		return
 	end
 	
+	if self.vehicle == nil then
+		return
+	end
 	-- Check client arguments.
 	if type(colors) ~= "table" then
 		return
 	end
 	
 	local color1 , color2 = colors[1] , colors[2]
-	
 	-- Check client arguments.
 	if
 		type(color1) ~= "userdata" or
@@ -185,6 +203,5 @@ function VehicleSelector:VehicleSetColors(colors , player)
 	end
 	
 	self.color1 , self.color2 = color1 , color2
-	
 	self.vehicle:SetColors(color1 , color2)
 end
