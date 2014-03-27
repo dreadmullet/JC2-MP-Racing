@@ -3,10 +3,6 @@
 ----------------------------------------------------------------------------------------------------
 class("RaceBase")
 
--- Key: model name
--- Value: Model
-RaceBase.modelCache = {}
-
 function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	-- Expose functions
 	self.UpdateLeaderboard = RaceBase.UpdateLeaderboard
@@ -25,15 +21,13 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self.recordTimePlayerName = raceInfo.topRecordPlayerName
 	
 	self.leaderboard = {}
+	self.targetArrowModel = nil
 	
-	-- Request Models from server, if we don't have them already.
-	if RaceBase.modelCache.TargetArrow == nil then
-		local args = {
-			path = "TargetArrow" ,
-			type = OBJLoader.Type.Single ,
-		}
-		OBJLoader.Request(args , self , RaceBase.ModelReceive)
-	end
+	local args = {
+		path = "TargetArrow" ,
+		type = OBJLoader.Type.Single ,
+	}
+	OBJLoader.Request(args , self , RaceBase.ModelReceive)
 	
 	self:NetworkSubscribe("ShowLargeMessage" , RaceBase.ShowLargeMessage)
 end
@@ -95,7 +89,7 @@ function RaceBase:Message(message)
 end
 
 function RaceBase:ModelReceive(model , name)
-	RaceBase.modelCache[name] = model
+	self.targetArrowModel = model
 end
 
 -- Network events

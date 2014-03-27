@@ -70,7 +70,7 @@ function StateRacing:Render()
 			targetArrowValue = self.targetArrowValue ,
 			numTicks = self.numTicks ,
 			checkpointPosition = self.race.course.checkpoints[self.targetCheckpoint][1] ,
-			model = RaceBase.modelCache.TargetArrow ,
+			model = Race.instance.targetArrowModel ,
 		}
 		
 		RaceGUI.DrawLapCounter{

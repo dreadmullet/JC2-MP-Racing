@@ -3,6 +3,8 @@ OBJLoader.Type = {
 	Multiple = 2 ,
 }
 
+OBJLoader.cachedRequests = {}
+
 OBJLoader.Error = function(text)
 	error("[OBJLoader] "..text)
 end
@@ -30,5 +32,14 @@ OBJLoader.Request = function(args , extra1 , extra2)
 		onLoadCallback = extra1
 	end
 	
-	OBJLoader.MeshRequester(args , onLoadCallback , onLoadCallbackInstance)
+	local cachedRequest = OBJLoader.cachedRequests[args.path]
+	if cachedRequest then
+		cachedRequest.callback = onLoadCallback
+		cachedRequest.callbackInstance = onLoadCallbackInstance
+		cachedRequest:CallCallback()
+	else
+		OBJLoader.cachedRequests[args.path] = OBJLoader.MeshRequester(
+			args , onLoadCallback , onLoadCallbackInstance
+		)
+	end
 end
