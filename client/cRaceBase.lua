@@ -28,7 +28,11 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	
 	-- Request Models from server, if we don't have them already.
 	if RaceBase.modelCache.TargetArrow == nil then
-		OBJLoader.Request("TargetArrow" , self , RaceBase.ModelReceive)
+		local args = {
+			path = "TargetArrow" ,
+			type = OBJLoader.Type.Single ,
+		}
+		OBJLoader.Request(args , self , RaceBase.ModelReceive)
 	end
 	
 	self:NetworkSubscribe("ShowLargeMessage" , RaceBase.ShowLargeMessage)

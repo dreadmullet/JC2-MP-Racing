@@ -1,18 +1,23 @@
+OBJLoader.Type = {
+	Single = 1 ,
+	Multiple = 2 ,
+}
+
 OBJLoader.Error = function(text)
 	error("[OBJLoader] "..text)
 end
 
-OBJLoader.Request = function(modelPath , extra1 , extra2)
-	return OBJLoader.RequestInternal(modelPath , "3D" , extra1 , extra2)
-end
-
-OBJLoader.Request2D = function(modelPath , extra1 , extra2)
-	return OBJLoader.RequestInternal(modelPath , "2D" , extra1 , extra2)
-end
-
 -- extra1/extra2 are like Events:Subscribe; provide it a function or an instance and function.
-OBJLoader.RequestInternal = function(modelPath , type , extra1 , extra2)
-	if extra1 == nil then
+-- args is a table which supports the following elements:
+-- * string           path (required)
+-- * OBJLoader.Type   type (default: Single)
+-- * boolean          is2D (default: false)
+OBJLoader.Request = function(args , extra1 , extra2)
+	if
+		extra1 == nil or
+		type(args) ~= "table" or
+		type(args.path) ~= "string"
+	then
 		OBJLoader.Error("Error: bad parameters")
 	end
 	
@@ -25,5 +30,5 @@ OBJLoader.RequestInternal = function(modelPath , type , extra1 , extra2)
 		onLoadCallback = extra1
 	end
 	
-	OBJLoader.MeshRequester(modelPath , type , onLoadCallback , onLoadCallbackInstance)
+	OBJLoader.MeshRequester(args , onLoadCallback , onLoadCallbackInstance)
 end
