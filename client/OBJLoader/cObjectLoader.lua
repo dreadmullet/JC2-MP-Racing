@@ -1,6 +1,7 @@
 OBJLoader.Type = {
 	Single = 1 ,
 	Multiple = 2 ,
+	MultipleDepthSorted = 3 ,
 }
 
 OBJLoader.cachedRequests = {}

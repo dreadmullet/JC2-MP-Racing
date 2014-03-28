@@ -7,7 +7,12 @@ function OBJLoader.MeshRequester:__init(args , callback , callbackInstance)
 	self.callback = callback
 	self.callbackInstance = callbackInstance
 	self.models = {}
+	self.depths = {}
 	self.modelCount = 0
+	
+	if self.is2D == false and self.type == OBJLoader.Type.MultipleDepthSorted then
+		error("[OBJLoader] Cannot be 3D and MultipleDepthSorted!")
+	end
 	
 	Network:Send("OBJLoaderRequest" , self.modelPath)
 	self.sub = Network:Subscribe("OBJLoaderReceive" , self , self.Receive)
@@ -24,8 +29,9 @@ function OBJLoader.MeshRequester:Receive(args)
 	
 	-- Create the Models from the models. The choice of variable names wasn't well thought out...
 	for modelName , mesh in pairs(modelData.meshes) do
-		-- Convert the mesh into a table of vertices, which will be turned into a Model.
 		local vertices = {}
+		local depthsBuffer = 0
+		-- Convert the mesh into a table of vertices, which will be turned into a Model.
 		for index , triangleData in ipairs(mesh.triangleData) do
 			local color = modelData.colors[triangleData[4]]
 			if self.is2D then
@@ -35,6 +41,10 @@ function OBJLoader.MeshRequester:Receive(args)
 				table.insert(vertices , Vertex(Vector2(vert1.x , vert1.z) , color))
 				table.insert(vertices , Vertex(Vector2(vert2.x , vert2.z) , color))
 				table.insert(vertices , Vertex(Vector2(vert3.x , vert3.z) , color))
+				
+				if self.type == OBJLoader.Type.MultipleDepthSorted then
+					depthsBuffer = depthsBuffer + vert1.y + vert2.y + vert3.y
+				end
 			else
 				local vert1 = modelData.vertices[triangleData[1]]
 				local vert2 = modelData.vertices[triangleData[2]]
@@ -46,11 +56,42 @@ function OBJLoader.MeshRequester:Receive(args)
 		end
 		
 		local model = Model.Create(vertices)
-		self.models[modelName] = model
 		model:SetTopology(Topology.TriangleList)
 		model:Set2D(self.is2D)
 		
+		if self.type == OBJLoader.Type.Multiple then
+			self.models[modelName] = model
+		else
+			table.insert(self.models , model)
+		end
+		
+		if self.type == OBJLoader.Type.MultipleDepthSorted then
+			local averageZ = depthsBuffer / #vertices
+			table.insert(self.depths , averageZ)
+		end
+		
 		self.modelCount = self.modelCount + 1
+	end
+	
+	if self.type == OBJLoader.Type.MultipleDepthSorted then
+		local buffer = {}
+		for index , model in ipairs(self.models) do
+			local info = {
+				model = model ,
+				depth = self.depths[index]
+			}
+			table.insert(buffer , info)
+		end
+		
+		local SortByDepth = function(a , b)
+			return a.depth < b.depth
+		end
+		table.sort(buffer , SortByDepth)
+		
+		self.models = {}
+		for index , t in ipairs(buffer) do
+			table.insert(self.models , t.model)
+		end
 	end
 	
 	self:CallCallback()
@@ -68,6 +109,8 @@ function OBJLoader.MeshRequester:CallCallback()
 			break
 		end
 	elseif self.type == OBJLoader.Type.Multiple then
+		arg = self.models
+	elseif self.type == OBJLoader.Type.MultipleDepthSorted then
 		arg = self.models
 	end
 	
