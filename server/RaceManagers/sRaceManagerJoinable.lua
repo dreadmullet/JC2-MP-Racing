@@ -33,11 +33,6 @@ function RaceManagerJoinable:SetupNextRace()
 	self.nextCourse = self.courseManager:LoadCourseRandom()
 	self.nextCourseCollisions = math.random() > 0.55
 	
-	local collisionsString = "off"
-	if self.nextCourseCollisions then
-		collisionsString = "on"
-	end
-	
 	self:Message(
 		"A race has started queueing, use /"..settings.command.." to open the race menu! "..
 		"("..self.nextCourse.name..")"

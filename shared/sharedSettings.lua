@@ -12,7 +12,7 @@ settings.respawnMinPeriod = 5
 settings.respawnDelay = 3
 
 settings.vehicleSelectionSeconds = 22
-settings.startingGridSeconds = 11
+settings.startingGridSeconds = 14
 
 settings.lapsMult = 1
 

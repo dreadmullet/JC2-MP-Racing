@@ -7,6 +7,7 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	-- Expose functions
 	self.UpdateLeaderboard = RaceBase.UpdateLeaderboard
 	self.Message = RaceBase.Message
+	self.Destroy = RaceBase.Destroy
 	
 	if settings.debugLevel >= 2 then
 		print("RaceBase:__init")
@@ -19,9 +20,11 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self.course = raceInfo.course
 	self.recordTime = raceInfo.topRecordTime
 	self.recordTimePlayerName = raceInfo.topRecordPlayerName
+	self.collisions = raceInfo.collisions
 	
 	self.leaderboard = {}
 	self.targetArrowModel = nil
+	self.icons = {}
 	
 	local args = {
 		path = "TargetArrow" ,
@@ -90,6 +93,14 @@ end
 
 function RaceBase:ModelReceive(model , name)
 	self.targetArrowModel = model
+end
+
+function RaceBase:Destroy()
+	EGUSM.StateMachine.Destroy(self)
+	
+	for index , icon in ipairs(self.icons) do
+		icon:Destroy()
+	end
 end
 
 -- Network events

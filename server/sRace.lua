@@ -49,7 +49,10 @@ function Race:__init(args)
 	-- Misc
 	
 	self.prizeMoneyCurrent = settings.prizeMoneyDefault
-	self.vehicleCollisions = args.collisions or true
+	self.vehicleCollisions = args.collisions
+	if self.vehicleCollisions == nil then
+		self.vehicleCollisions = false
+	end
 	self.moduleNames = args.modules or {}
 	
 	self.info = self:MarshalForClient()
@@ -212,6 +215,7 @@ function Race:MarshalForClient()
 		numLaps = self.numLaps ,
 		playerIdToInfo = self.playerIdToInfo ,
 		course = self.course:MarshalForClient() ,
+		collisions = self.vehicleCollisions ,
 		modules = self.moduleNames
 	}
 	

@@ -1,5 +1,14 @@
 -- Normalized coords to pixels. From -1 to 1.
-NormVector2 = function(x , y)
+NormVector2 = function(arg1 , arg2)
+	local x , y
+	if arg2 then
+		x = arg1
+		y = arg2
+	else
+		x = arg1.x
+		y = arg1.y
+	end
+	
 	return Vector2(
 		(x * 0.5 + 0.5) * Render.Width ,
 		(y * 0.5 + 0.5) * Render.Height

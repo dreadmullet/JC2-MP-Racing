@@ -27,6 +27,44 @@ function StateStartingGrid:__init(race , args) ; EGUSM.SubscribeUtility.__init(s
 		end
 	end
 	
+	-- Set up the IconPresenter.
+	
+	local icons = self.race.icons
+	
+	local icon = Icon("Collision")
+	if self.race.collisions then
+		icon:SetText("Collisions on")
+		icon:SetType(Icon.Type.Enabled)
+	else
+		icon:SetText("Collisions off")
+		icon:SetType(Icon.Type.Disabled)
+	end
+	table.insert(icons , icon)
+	
+	if self.race.course.grappleEnabled == false then
+		icon = Icon("GrapplingHook")
+		icon:SetText("Grapple disabled")
+		icon:SetType(Icon.Type.Disabled)
+		table.insert(icons , icon)
+	end
+	
+	if self.race.course.parachuteEnabled == false then
+		icon = Icon("Parachute")
+		icon:SetText("Parachute disabled")
+		icon:SetType(Icon.Type.Disabled)
+		table.insert(icons , icon)
+	end
+	
+	local maxPresentTime = (
+		settings.startingGridSeconds -
+		settings.countDownInterval * settings.countDownNumMessages
+	)
+	local presentTime = math.min(maxPresentTime , 5 * #icons)
+	local initialWaitTime = maxPresentTime - presentTime
+	
+	self.iconPresenter = IconPresenter(icons , presentTime , initialWaitTime)
+	
+	-- Subscribe to events.
 	self:EventSubscribe("Render")
 	self:EventSubscribe("LocalPlayerInput")
 	self:EventSubscribe("InputPoll")
