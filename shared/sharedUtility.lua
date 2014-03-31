@@ -78,15 +78,21 @@ Utility.PrintTable = function(t , depth , tableList)
 end
 
 Utility.NumberToPlaceString = function(number)
-	if number == 1 then
-		return string.format("%i%s" , 1 , "st")
-	elseif number == 2 then
-		return string.format("%i%s" , 2 , "nd")
-	elseif number == 3 then
-		return string.format("%i%s" , 3 , "rd")
-	else
-		return string.format("%i%s" , number , "th")
+	local suffix = "th"
+	local lastChar = string.format("%i" , number)
+	lastChar = lastChar:sub(lastChar:len())
+	
+	if not (number >= 10 and number <= 20) then
+		if lastChar == "1" then
+			suffix = "st"
+		elseif lastChar == "2" then
+			suffix = "nd"
+		elseif lastChar == "3" then
+			suffix = "rd"
+		end
 	end
+	
+	return string.format("%i%s" , number , suffix)
 end
 
 -- Returns hours, minutes, seconds, hundredths
