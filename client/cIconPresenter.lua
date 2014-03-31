@@ -63,6 +63,7 @@ function IconPresenter:PresentIcon(index , time)
 	-- End position and size.
 	icon:SetPosition(endPosition)
 	icon:SetSize(endSize)
+	icon:SetText(nil)
 end
 
 -- Events
