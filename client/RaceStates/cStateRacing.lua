@@ -26,6 +26,7 @@ function StateRacing:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self:NetworkSubscribe("NewRecordTime")
 	self:NetworkSubscribe("Respawned")
 	self:NetworkSubscribe("RespawnAcknowledged")
+	self:NetworkSubscribe("RacerFinish")
 end
 
 function StateRacing:End()
@@ -223,4 +224,17 @@ end
 
 function StateRacing:RespawnAcknowledged()
 	self.isRespawning = true
+end
+
+function StateRacing:RacerFinish(args)
+	local playerId = args[1]
+	local place = args[2]
+	
+	local player = Player.GetById(playerId)
+	if player then
+		Game:ShowPopup(
+			player:GetName().." finishes "..Utility.NumberToPlaceString(place) ,
+			place == 1
+		)
+	end
 end

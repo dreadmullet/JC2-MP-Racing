@@ -12,6 +12,7 @@ function StateFinished:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self:EventSubscribe("Render")
 	self:EventSubscribe("LocalPlayerInput")
 	self:NetworkSubscribe("UpdateRacePositions")
+	self:NetworkSubscribe("RacerFinish")
 end
 
 function StateFinished:End()
@@ -110,4 +111,17 @@ end
 
 function StateFinished:UpdateRacePositions(racePosInfo)
 	self.race:UpdateLeaderboard(racePosInfo)
+end
+
+function StateFinished:RacerFinish(args)
+	local playerId = args[1]
+	local place = args[2]
+	
+	local player = Player.GetById(playerId)
+	if player then
+		Game:ShowPopup(
+			player:GetName().." finishes "..Utility.NumberToPlaceString(place) ,
+			place == 1
+		)
+	end
 end

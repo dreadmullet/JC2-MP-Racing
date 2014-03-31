@@ -247,15 +247,8 @@ function Race:RacerFinish(racer)
 	-- Add race result to database.
 	Stats.AddRaceResult(racer , #self.finishedRacers , self.course)
 	
-	-- Messages to immediately print for all finishers.
-	if #self.finishedRacers == 1 then
-		self:NetworkSendRace(
-			"ShowLargeMessage" ,
-			{racer.name.." wins the race!" , 4}
-		)
-	else
-		self:Message(racer.name.." finishes "..Utility.NumberToPlaceString(#self.finishedRacers))
-	end
+	-- Tell every client they finished.
+	self:NetworkSendRace("RacerFinish" , {racer.player:GetId() , #self.finishedRacers})
 	
 	-- Fire the RacerFinish event.
 	local args = {
