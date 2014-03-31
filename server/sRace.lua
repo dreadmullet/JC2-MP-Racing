@@ -17,7 +17,7 @@ function Race:__init(args)
 	-- Players
 	
 	-- Contains both Racers and Spectators in an array.
-	self.participants = args.players
+	self.participants = {}
 	self.playerIdToRacer = {}
 	self.numPlayers = #args.players
 	self.playerIdToSpectator = {}
@@ -64,10 +64,14 @@ function Race:__init(args)
 		}
 	end
 	
-	-- Initialize Racers.
+	-- Initialize Racers. If there aren't enough spawns, start adding them as Spectators.
+	local maxPlayers = self.course:GetMaxPlayers()
 	for index , player in ipairs(args.players) do
-		local newRacer = Racer(self , player)
-		self.playerIdToRacer[player:GetId()] = newRacer
+		if index <= maxPlayers then
+			self:AddPlayer(player)
+		else
+			self:AddSpectator(player)
+		end
 	end
 	
 	-- Initialize RaceModules.
@@ -89,6 +93,12 @@ function Race:__init(args)
 	end
 	
 	Events:Fire("RaceCreate" , {id = self.id})
+end
+
+function Race:AddPlayer(player)
+	local racer = Racer(self , player)
+	self.playerIdToRacer[player:GetId()] = racer
+	table.insert(self.participants , racer)
 end
 
 function Race:AddSpectator(player)
@@ -262,9 +272,6 @@ end
 
 Race.CreateRaceFromEvent = function(args)
 	local course = Course.Load(args.courseName)
-	if #args.players > course:GetMaxPlayers() then
-		error("Cannot create race: too many players for course")
-	end
 	
 	local raceArgs = {
 		players = args.players ,
