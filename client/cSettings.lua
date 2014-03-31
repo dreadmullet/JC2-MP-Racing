@@ -3,7 +3,7 @@
 math.randomseed(os.time())
 math.random()
 
-settings.debugLevel = 2
+settings.debugLevel = 1
 
 settings.countDownNumMessages = 3
 settings.countDownInterval = 2
