@@ -76,3 +76,16 @@ function CourseSpawn:MarshalJSON()
 	
 	return spawn
 end
+
+-- Could probably replace this with marshal/unmarshal functions in the future.
+function CourseSpawn:Copy()
+	local spawn = CourseSpawn(self.course)
+	
+	spawn.position = self.position
+	spawn.angle = self.angle
+	spawn.modelIds = self.modelIds
+	spawn.templates = self.templates
+	spawn.decals = self.decals
+	
+	return spawn
+end

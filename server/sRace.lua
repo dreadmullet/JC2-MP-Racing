@@ -1,5 +1,10 @@
 class("Race")
 
+Race.OverflowHandling = {
+	ForceSpectate = 1 ,
+	StackSpawns = 2 , -- Forces collision off and spawns more than one player at spawns.
+}
+
 Race.idCounter = 1
 
 function Race:__init(args)
@@ -19,6 +24,8 @@ function Race:__init(args)
 	-- Contains both Racers and Spectators in an array.
 	self.participants = {}
 	self.playerIdToRacer = {}
+	-- TODO: Is this the count of Racers, and not spectators? This needs to be clarified and be
+	-- consistent.
 	self.numPlayers = #args.players
 	self.playerIdToSpectator = {}
 	self.finishedRacers = {}
@@ -49,10 +56,20 @@ function Race:__init(args)
 	-- Misc
 	
 	self.prizeMoneyCurrent = settings.prizeMoneyDefault
+	
+	self.overflowHandling = args.overflowHandling or Race.OverflowHandling.StackSpawns
+	
 	self.vehicleCollisions = args.collisions
 	if self.vehicleCollisions == nil then
 		self.vehicleCollisions = false
 	end
+	if
+		self.overflowHandling == Race.OverflowHandling.StackSpawns and
+		self.numPlayers > self.course:GetMaxPlayers()
+	then
+		self.vehicleCollisions = false
+	end
+	
 	self.moduleNames = args.modules or {}
 	
 	self.info = self:MarshalForClient()
@@ -64,10 +81,11 @@ function Race:__init(args)
 		}
 	end
 	
-	-- Initialize Racers. If there aren't enough spawns, start adding them as Spectators.
+	-- Initialize Racers.
 	local maxPlayers = self.course:GetMaxPlayers()
+	local forceSpectators = self.overflowHandling == Race.OverflowHandling.ForceSpectate
 	for index , player in ipairs(args.players) do
-		if index <= maxPlayers then
+		if index <= maxPlayers or forceSpectators == false then
 			self:AddPlayer(player)
 		else
 			self:AddSpectator(player)

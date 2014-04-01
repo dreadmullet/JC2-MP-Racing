@@ -1,5 +1,8 @@
 class("Course")
 
+-- TODO: Perhaps Course should only contain info, it should not do anything; that is up to other
+-- classes.
+
 function Course:__init()
 	-- Course properties which are saved and loaded.
 	
@@ -45,7 +48,10 @@ end
 
 function Course:AssignRacers(playerIdToRacer)
 	local numRacers = table.count(playerIdToRacer)
-	if numRacers > #self.spawns then
+	if
+		numRacers > #self.spawns and
+		self.race.overflowHandling ~= Race.OverflowHandling.StackSpawns
+	then
 		error(
 			"Too many racers for course! "..self.name..", "..numRacers.."/"..#self.spawns.." racers"
 		)
@@ -56,15 +62,22 @@ function Course:AssignRacers(playerIdToRacer)
 		table.insert(racers , racer)
 	end
 	
-	-- Randomly sort the racers table. Otherwise, the starting grid is (consistently) random; we
-	-- want it to always be random.
+	-- Randomly sort the racers table. Otherwise, the starting grid is consistent; we want it to
+	-- always be completely random.
 	for n = #racers , 2 , -1 do
 		local r = math.random(n)
 		racers[n] , racers[r] = racers[r] , racers[n]
 	end
 	
 	local spawnIndex = 1
+	local spawnCount = #self.spawns
 	for index , racer in ipairs(racers) do
+		-- If the players overflow, copy a random spawn.
+		if spawnIndex > spawnCount then
+			local copiedSpawn = self.spawns[math.random(1 , spawnCount)]:Copy()
+			table.insert(self.spawns , copiedSpawn)
+		end
+		
 		racer.startPosition = index
 		self.spawns[spawnIndex].racer = racer
 		spawnIndex = spawnIndex + 1
@@ -78,7 +91,7 @@ function Course:SpawnVehicles()
 	end
 	
 	for n , spawn in ipairs(self.spawns) do
-		if n <= self.race.numPlayers then
+		if spawn.racer then
 			spawn:SpawnVehicle()
 		end
 	end
