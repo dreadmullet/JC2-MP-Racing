@@ -115,7 +115,9 @@ function StateRacing:PostTick()
 	local index = (self.numTicks % math.max(10 , #self.updateList)) + 1
 	if index <= #self.updateList then
 		local racerBase = self.updateList[index]
-		racerBase:Update(self:GetRacePosInfo())
+		if IsValid(racerBase.player) then
+			racerBase:Update(self:GetRacePosInfo())
+		end
 	end
 	
 	self.numTicks = self.numTicks + 1
