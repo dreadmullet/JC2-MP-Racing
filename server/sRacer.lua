@@ -10,6 +10,8 @@ function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	self.numCheckpointsHit = 0
 	self.hasFinished = false
 	self.assignedVehicleId = -1
+	-- Table containing modelId, template, color1, color2
+	self.assignedVehicleInfo = nil
 	-- Used with racePosTracker and helps with NetworkSend parameters.
 	self.targetCheckpointDistanceSqr = {[1] = 0}
 	-- Begins at starting grid, used to update playTime.
@@ -26,8 +28,6 @@ function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	-- Works with settings.respawnDelay to delay the respawn when it's requested.
 	self.respawnDelayTimer = Timer()
 	self.isRespawning = false
-	-- Table containing modelId, template, color1, color2
-	self.startingVehicleInfo = nil
 	
 	-- Disable collisions, if applicable.
 	if self.race.vehicleCollisions == false then
@@ -288,35 +288,33 @@ function Racer:Respawn()
 	end
 	
 	if self.assignedVehicleId >= 0 then
-		-- Respawn with vehicle.
+		-- Remove last vehicle.
 		local oldVehicle = Vehicle.GetById(self.assignedVehicleId)
-		if IsValid(oldVehicle) then
-			local color1 , color2 = oldVehicle:GetColors()
-			
-			local spawnArgs = {}
-			spawnArgs.model_id = oldVehicle:GetModelId()
-			spawnArgs.position = spawnPosition
-			spawnArgs.angle = spawnAngle
-			spawnArgs.world = oldVehicle:GetWorld()
-			spawnArgs.enabled = true
-			spawnArgs.tone1 = color1
-			spawnArgs.tone2 = color2
-			spawnArgs.template = oldVehicle:GetTemplate()
-			spawnArgs.decal = oldVehicle:GetDecal()
-			
+		if oldVehicle then
 			oldVehicle:Remove()
-			
-			local newVehicle = Vehicle.Create(spawnArgs)
-			newVehicle:SetDeathRemove(true)
-			newVehicle:SetUnoccupiedRemove(true)
-			
-			local dirToPlayerSpawn = spawnAngle * Vector3(-1 , 0 , 0)
-			local playerSpawnPosition = spawnPosition + dirToPlayerSpawn * 2
-			self.player:Teleport(playerSpawnPosition , spawnAngle)
-			self.player:EnterVehicle(newVehicle , VehicleSeat.Driver)
-			
-			self.assignedVehicleId = newVehicle:GetId()
 		end
+		-- Respawn with vehicle.
+		local spawnArgs = {}
+		spawnArgs.model_id = self.assignedVehicleInfo.modelId
+		spawnArgs.position = spawnPosition
+		spawnArgs.angle = spawnAngle
+		spawnArgs.world = self.race.world
+		spawnArgs.enabled = true
+		spawnArgs.tone1 = self.assignedVehicleInfo.color1
+		spawnArgs.tone2 = self.assignedVehicleInfo.color2
+		spawnArgs.template = self.assignedVehicleInfo.template
+		spawnArgs.decal = "."
+		
+		local newVehicle = Vehicle.Create(spawnArgs)
+		newVehicle:SetDeathRemove(true)
+		newVehicle:SetUnoccupiedRemove(true)
+		
+		local dirToPlayerSpawn = spawnAngle * Vector3(-1 , 0 , 0)
+		local playerSpawnPosition = spawnPosition + dirToPlayerSpawn * 2
+		self.player:Teleport(playerSpawnPosition , spawnAngle)
+		self.player:EnterVehicle(newVehicle , VehicleSeat.Driver)
+		
+		self.assignedVehicleId = newVehicle:GetId()
 	else
 		-- On-foot, just teleport.
 		self.player:Teleport(spawnPosition , spawnAngle)
