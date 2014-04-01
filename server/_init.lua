@@ -1,6 +1,6 @@
 ModuleLoad = function()
 	Chat:Broadcast(
-		"JC2-MP-Racing "..settings.version.." loaded." ,
+		"JC2-MP-Racing "..statics.version.." loaded." ,
 		settings.textColor
 	)
 	

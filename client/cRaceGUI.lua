@@ -5,7 +5,7 @@ RaceGUI = {}
 
 -- Draw version at the top right.
 RaceGUI.DrawVersion = function()
-	local text = "JC2-MP-Racing "..settings.version
+	local text = "JC2-MP-Racing "..statics.version
 	local textHeight = Render:GetTextHeight("|" , TextSize.Default)
 	local versionWidth = Render:GetTextWidth("JC2-MP X.X.X (Build XXX)")
 	DrawText(
