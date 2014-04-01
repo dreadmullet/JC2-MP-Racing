@@ -6,7 +6,7 @@ function Spectator:__init(race , player)
 	
 	player:SetStreamDistance(0)
 	player:SetWorld(self.race.world)
-	player:SetPosition(Vector3(0 , 10000 , 0))
+	player:SetPosition(self.race.course.averageSpawnPosition + Vector3(0 , 2 , 0))
 	
 	self.requestTimer = nil
 	
@@ -15,9 +15,11 @@ function Spectator:__init(race , player)
 		raceInfo = self.race.info ,
 		stateName = self.race.stateName
 	}
-	if args.stateName == "StateStartingGrid" then
+	if args.stateName == "StateVehicleSelection" then
+		args.position = self.race.course.averageSpawnPosition + Vector3(0 , 4 , 0)
+	elseif args.stateName == "StateStartingGrid" then
 		args.startPositions = self.race.state.startPositions
-		args.position = self.race.course.spawns[1].position
+		args.position = self.race.course.averageSpawnPosition + Vector3(0 , 4 , 0)
 	elseif args.stateName == "StateRacing" then
 		args.racePosInfo = self.race.state:GetRacePosInfo()
 		local checkpointIndex = self.race.state.currentCheckpoint

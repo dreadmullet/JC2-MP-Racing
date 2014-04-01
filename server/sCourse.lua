@@ -40,6 +40,7 @@ function Course:__init()
 	-- Key = modelId
 	-- value = true
 	self.dlcVehicles = {}
+	self.averageSpawnPosition = Vector3()
 end
 
 function Course:GetMaxPlayers()
@@ -321,6 +322,12 @@ function Course.Load(name)
 		}
 		table.insert(course.vehiclesInfo , vehicleInfo)
 	end
+	
+	-- Calculate course.averageSpawnPosition.
+	for index , courseSpawn in ipairs(course.spawns) do
+		course.averageSpawnPosition = course.averageSpawnPosition + courseSpawn.position
+	end
+	course.averageSpawnPosition = course.averageSpawnPosition / #course.spawns
 	
 	-- Add to database.
 	Stats.AddCourse(course)

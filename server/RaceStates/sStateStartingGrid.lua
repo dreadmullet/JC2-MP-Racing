@@ -39,6 +39,10 @@ function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 		args.assignedVehicleId = racer.assignedVehicleId
 		Network:Send(racer.player , "RaceSetState" , args)
 	end
+	args.assignedVehicleId = nil
+	for id , spectator in pairs(self.race.playerIdToSpectator) do
+		Network:Send(spectator.player , "RaceSetState" , args)
+	end
 	
 	self:EventSubscribe("PostTick")
 	self:EventSubscribe("PlayerEnterVehicle")

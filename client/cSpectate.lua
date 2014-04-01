@@ -8,13 +8,21 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 		print("args.position = "..tostring(args.position))
 	end
 	
-	if args.stateName == "StateStartingGrid" then
+	self.stateName = args.stateName
+	
+	if self.stateName == "StateVehicleSelection" then
+		self:EventSubscribe("Render" , self.RenderVehicleSelection)
+	elseif self.stateName == "StateStartingGrid" then
 		-- TODO: wat
 		for playerId , startPosition in pairs(args.startPositions) do
 			table.insert(self.leaderboard , playerId)
 		end
-	elseif args.stateName == "StateRacing" then
+		
+		self:EventSubscribe("Render" , self.RenderRacing)
+	elseif self.stateName == "StateRacing" then
 		self:UpdateLeaderboard(args.racePosInfo)
+		
+		self:EventSubscribe("Render" , self.RenderRacing)
 	end
 	
 	self.targetPlayerId = self.leaderboard[1] or -1
@@ -27,15 +35,23 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	self.requestTimer = nil
 	self.changeTargetInputPressed = false
 	
-	self:EventSubscribe("Render")
 	self:EventSubscribe("LocalPlayerInput")
+	self:NetworkSubscribe("RaceSetState")
 	self:NetworkSubscribe("ReceiveTargetPosition")
 	self:NetworkSubscribe("Terminate")
 end
 
 -- Events
 
-function Spectate:Render()
+function Spectate:RenderVehicleSelection()
+	local text = "Players are selecting vehicles. Please wait..."
+	Render:FillArea(Vector2() , Render.Size , Color(12 , 12 , 12))
+	local fontSize = TextSize.Large
+	local textSize = Render:GetTextSize(text , fontSize)
+	Render:DrawText(Render.Size/2 - textSize/2 , text , settings.textColor , fontSize)
+end
+
+function Spectate:RenderRacing()
 	if Input:GetValue(Action.FireRight) == 0 and Input:GetValue(Action.FireLeft) == 0 then
 		self.changeTargetInputPressed = false
 	end
@@ -119,6 +135,26 @@ function Spectate:ChangeTarget(delta)
 end
 
 -- Network events
+
+function Spectate:RaceSetState(args)
+	if settings.debugLevel >= 2 then
+		print("Spectate:RaceSetState: " , self.stateName , args.stateName)
+	end
+	
+	if args.stateName == "StateStartingGrid" then
+		self:EventUnsubscribe("Render")
+		self:EventSubscribe("Render" , self.RenderRacing)
+		
+		-- TODO: Same wat as above
+		for playerId , startPosition in pairs(args.startPositions) do
+			table.insert(self.leaderboard , playerId)
+		end
+		
+		self.targetPlayerId = self.leaderboard[1] or -1
+	end
+	
+	self.stateName = args.stateName
+end
 
 function Spectate:ReceiveTargetPosition(position)
 	self:Message("Received target: "..tostring(position))
