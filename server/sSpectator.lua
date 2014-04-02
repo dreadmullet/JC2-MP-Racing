@@ -41,8 +41,6 @@ function Spectator:Remove()
 	self:Destroy()
 end
 
--- Network events
-
 function Spectator:RequestTargetPosition(playerId)
 	if
 		self.requestTimer == nil or
@@ -55,6 +53,8 @@ function Spectator:RequestTargetPosition(playerId)
 		if IsValid(targetPlayer) then
 			Network:Send(self.player , "ReceiveTargetPosition" , targetPlayer:GetPosition())
 		else
+			warn(tostring(self.player).." is requesting an invalid player id: "..playerId)
+			
 			Network:Send(self.player , "ReceiveTargetPosition" , nil)
 		end
 	end

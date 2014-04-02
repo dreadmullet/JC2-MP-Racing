@@ -56,10 +56,6 @@ function Spectate:RenderRacing()
 		self.changeTargetInputPressed = false
 	end
 	
-	if self.targetPlayerId == -1 then
-		return
-	end
-	
 	local targetPlayer = Player.GetById(self.targetPlayerId)
 	if IsValid(targetPlayer) then
 		self.requestTimer = nil
