@@ -35,21 +35,21 @@ function EGUSM.SubscribeUtility:NetworkSubscribe(netName , optionalFunction)
 end
 
 function EGUSM.SubscribeUtility:EventUnsubscribe(eventName)
-	for index , pair in ipairs(self.subscribeUtilityEventSubs) do
+	for n = #self.subscribeUtilityEventSubs , 1 , -1 do
+		local pair = self.subscribeUtilityEventSubs[n]
 		if pair[1] == eventName then
 			Events:Unsubscribe(pair[2])
-            self.subscribeUtilityEventSubs[index] = nil
-			break
+			table.remove(self.subscribeUtilityEventSubs , n)
 		end
 	end
 end
 
 function EGUSM.SubscribeUtility:NetworkUnsubscribe(netName)
-	for index , pair in ipairs(self.subscribeUtilityNetSubs) do
+	for n = #self.subscribeUtilityNetSubs , 1 , -1 do
+		local pair = self.subscribeUtilityNetSubs[n]
 		if pair[1] == netName then
 			Network:Unsubscribe(pair[2])
-            self.subscribeUtilityNetSubs[index] = nil
-			break
+			table.remove(self.subscribeUtilityNetSubs , n)
 		end
 	end
 end
