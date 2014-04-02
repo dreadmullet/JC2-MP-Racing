@@ -288,7 +288,7 @@ RaceMenuUtility.CreatePlayerStatsControl = function(parent)
 	return self
 end
 
-Utility.CreateTitledLabel = function(titleText)
+RaceMenuUtility.CreateTitledLabel = function(titleText)
 	local base = BaseWindow.Create()
 	base:SetMargin(Vector2(2 , 4) , Vector2(8 , 0))
 	
@@ -308,4 +308,48 @@ Utility.CreateTitledLabel = function(titleText)
 	base:SetHeight(title:GetTextHeight())
 	
 	return base , title , label
+end
+
+RaceMenuUtility.CreateTimer = function(text , seconds)
+	local base = BaseWindow.Create("Timer")
+	base:SetSize(Render.Size)
+	
+	local timerLabel = Label.Create(base)
+	timerLabel:SetAlignment(GwenPosition.Center)
+	timerLabel:SetTextSize(TextSize.Large)
+	timerLabel:SetText("...")
+	timerLabel:SizeToContents()
+	timerLabel:SetWidth(Render.Width)
+	
+	local bottomLabel = Label.Create(base)
+	bottomLabel:SetPosition(Vector2(0 , TextSize.Large - 2))
+	bottomLabel:SetAlignment(GwenPosition.Center)
+	bottomLabel:SetText(text)
+	bottomLabel:SizeToContents()
+	bottomLabel:SetWidth(Render.Width)
+	
+	local UpdateTimer = function(self)
+		local secondsLeft = math.max(0 , seconds - self.timer:GetSeconds())
+		self.timerLabel:SetText(string.format("%.0f" , secondsLeft))
+		local hue = math.lerp(140 , 0 , self.timer:GetSeconds() / seconds)
+		local sat = math.lerp(0 , 1 , self.timer:GetSeconds() / seconds)
+		self.timerLabel:SetTextColor(Color.FromHSV(hue , sat , 0.95))
+	end
+	
+	local Remove = function(self)
+		self.base:Remove()
+		Events:Unsubscribe(self.sub)
+	end
+	
+	-- Luabuse
+	local t = {
+		base = base ,
+		timerLabel = timerLabel ,
+		bottomLabel = bottomLabel ,
+		timer = Timer() ,
+		seconds = seconds ,
+		Remove = Remove ,
+	}
+	t.sub = Events:Subscribe("Render" , t , UpdateTimer)
+	return t
 end

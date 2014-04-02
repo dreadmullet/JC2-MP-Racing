@@ -58,7 +58,7 @@ function CoursesTab:__init() ; TabBase.__init(self , "Courses")
 	CreateCell()
 	
 	local timesPlayed , title
-	timesPlayed , title , self.timesPlayedLabel = Utility.CreateTitledLabel("Times played")
+	timesPlayed , title , self.timesPlayedLabel = RaceMenuUtility.CreateTitledLabel("Times played")
 	timesPlayed:SetParent(cells[1])
 	timesPlayed:SetDock(GwenPosition.Left)
 	timesPlayed:SetToolTip("Server-wide number of races ran on this course")

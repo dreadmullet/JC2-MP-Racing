@@ -24,19 +24,10 @@ function StateVehicleSelection:__init(race , args) ; EGUSM.SubscribeUtility.__in
 	-- Contains arrays of {button , radioButton}.
 	self.templateControls = {}
 	
-	self.countdownLabel = Label.Create()
-	self.countdownLabel:SetMargin(Vector2(0 , 2) , Vector2(0 , -2))
-	self.countdownLabel:SetDock(GwenPosition.Top)
-	self.countdownLabel:SetAlignment(GwenPosition.Center)
-	self.countdownLabel:SetTextSize(TextSize.Large)
-	self.countdownLabel:SetText("...")
-	self.countdownLabel:SizeToContents()
-	
-	self.countdownBottomText = Label.Create()
-	self.countdownBottomText:SetDock(GwenPosition.Top)
-	self.countdownBottomText:SetAlignment(GwenPosition.Center)
-	self.countdownBottomText:SetText("seconds until race")
-	self.countdownBottomText:SizeToContents()
+	self.timerControl = RaceMenuUtility.CreateTimer(
+		"seconds until race" ,
+		settings.vehicleSelectionSeconds
+	)
 	
 	self:EventSubscribe("Render" , self.StateLoading)
 	self:NetworkSubscribe("VehicleSelectionInitialize")
@@ -45,8 +36,7 @@ end
 function StateVehicleSelection:End()
 	self.camera:Destroy()
 	self:Destroy()
-	self.countdownLabel:Remove()
-	self.countdownBottomText:Remove()
+	self.timerControl:Remove()
 	if self.window then
 		self.window:Remove()
 	end
@@ -148,14 +138,6 @@ function StateVehicleSelection:CreateMenus()
 	self.colorPicker:Subscribe("ColorChanged" , self , self.ColorChanged)
 	
 	self:UpdateColorControls()
-end
-
-function StateVehicleSelection:UpdateTimer()
-	local secondsLeft = math.max(0 , settings.vehicleSelectionSeconds - self.timer:GetSeconds())
-	self.countdownLabel:SetText(string.format("%.0f" , secondsLeft))
-	local hue = math.lerp(140 , 0 , self.timer:GetSeconds() / settings.vehicleSelectionSeconds)
-	local sat = math.lerp(0 , 1 , self.timer:GetSeconds() / settings.vehicleSelectionSeconds)
-	self.countdownLabel:SetTextColor(Color.FromHSV(hue , sat , 0.95))
 end
 
 function StateVehicleSelection:UpdateTemplateControls()
@@ -289,8 +271,6 @@ end
 -- Events
 
 function StateVehicleSelection:RenderAlways()
-	self:UpdateTimer()
-	
 	RaceGUI.DrawVersion()
 end
 
