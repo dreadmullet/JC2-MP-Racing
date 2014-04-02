@@ -329,11 +329,17 @@ RaceMenuUtility.CreateTimer = function(text , seconds)
 	bottomLabel:SetWidth(Render.Width)
 	
 	local UpdateTimer = function(self)
-		local secondsLeft = math.max(0 , seconds - self.timer:GetSeconds())
-		self.timerLabel:SetText(string.format("%.0f" , secondsLeft))
-		local hue = math.lerp(140 , 0 , self.timer:GetSeconds() / seconds)
-		local sat = math.lerp(0 , 1 , self.timer:GetSeconds() / seconds)
-		self.timerLabel:SetTextColor(Color.FromHSV(hue , sat , 0.95))
+		if Game:GetState() == GUIState.Game then
+			local secondsLeft = math.max(0 , seconds - self.timer:GetSeconds())
+			self.timerLabel:SetText(string.format("%.0f" , secondsLeft))
+			local hue = math.lerp(140 , 0 , self.timer:GetSeconds() / seconds)
+			local sat = math.lerp(0 , 1 , self.timer:GetSeconds() / seconds)
+			self.timerLabel:SetTextColor(Color.FromHSV(hue , sat , 0.95))
+			
+			self.base:SetVisible(true)
+		else
+			self.base:SetVisible(false)
+		end
 	end
 	
 	local Remove = function(self)

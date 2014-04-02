@@ -206,6 +206,16 @@ function StateVehicleSelection:UpdateColorControls()
 	end
 end
 
+function StateVehicleSelection:RenderAlways()
+	if Game:GetState() == GUIState.Game then
+		RaceGUI.DrawVersion()
+	end
+	
+	if self.window then
+		self.window:SetVisible(Game:GetState() == GUIState.Game)
+	end
+end
+
 -- GWEN events
 
 function StateVehicleSelection:ButtonPressed(button)
@@ -269,10 +279,6 @@ function StateVehicleSelection:ColorChanged()
 end
 
 -- Events
-
-function StateVehicleSelection:RenderAlways()
-	RaceGUI.DrawVersion()
-end
 
 function StateVehicleSelection:StateLoading()
 	self:DrawLoadingScreen("Loading..")
