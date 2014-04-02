@@ -28,6 +28,10 @@ end
 function RaceManagerMode:CreateRace()
 	self:Message("Starting race with "..Server:GetPlayerCount().." players")
 	
+	if self.race and self.race.isValid then
+		error("RaceManagerMode is trying to create a race, but a race is still running!")
+	end
+	
 	local playerArray = {}
 	for player in Server:GetPlayers() do
 		table.insert(playerArray , player)
