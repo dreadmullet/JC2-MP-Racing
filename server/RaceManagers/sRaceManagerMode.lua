@@ -46,7 +46,8 @@ function RaceManagerMode:CreateRace()
 	local args = {
 		players = playerArray ,
 		course = course ,
-		collisions = true -- temporary
+		collisions = true , -- temporary
+		modules = {"Mode"}
 	}
 	self.race = Race(args)
 	
@@ -60,7 +61,7 @@ function RaceManagerMode:ManagedPlayerJoin(player)
 	
 	if self.isInitialised then
 		-- If this is the first person to join the server, create the race.
-		if self:GetPlayerCount() == 1 then
+		if self:GetPlayerCount() == 1 and self.raceInfo == nil then
 			self:CreateRace()
 		-- Otherwise, add them to the current race.
 		else
@@ -84,7 +85,10 @@ function RaceManagerMode:RacerFinish(args)
 	-- If this is the first finisher, set the race end time.
 	if self.raceInfo.hasWinner == false then
 		self.raceInfo.hasWinner = true
-		self.raceInfo.raceEndTime = self.raceInfo.timer:GetSeconds() * 1.06 + 12
+		local elapsedSeconds = self.raceInfo.timer:GetSeconds()
+		self.raceInfo.raceEndTime = 12 + elapsedSeconds * 1.06
+		local endDelta = self.raceInfo.raceEndTime - elapsedSeconds
+		self.race:NetworkSendRace("RaceWillEndIn" , endDelta)
 	end
 end
 

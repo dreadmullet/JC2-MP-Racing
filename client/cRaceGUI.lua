@@ -17,15 +17,15 @@ RaceGUI.DrawVersion = function()
 	)
 end
 
--- Draw small course name at the top.
+-- Draw small course name at the top-left.
 function RaceGUI.DrawCourseName(courseName)
 	local textHeight = Render:GetTextHeight("|" , TextSize.Default)
 	DrawText(
-		Vector2(0.5 * Render.Width , textHeight * 0.5 + 1) ,
+		Vector2(0.215 * Render.Height , textHeight * 0.5 + 1) ,
 		courseName ,
 		settings.textColor ,
 		TextSize.Default ,
-		"center"
+		"left"
 	)
 end
 

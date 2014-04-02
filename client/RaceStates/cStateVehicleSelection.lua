@@ -25,7 +25,7 @@ function StateVehicleSelection:__init(race , args) ; EGUSM.SubscribeUtility.__in
 	self.templateControls = {}
 	
 	self.timerControl = RaceMenuUtility.CreateTimer(
-		"seconds until race" ,
+		"race start" ,
 		settings.vehicleSelectionSeconds
 	)
 	
