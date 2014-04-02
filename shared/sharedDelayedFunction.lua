@@ -1,22 +1,17 @@
 
 class("DelayedFunction")
-function DelayedFunction:__init(delay , func , firstArg)
-	self.delay = delay
+function DelayedFunction:__init(func , delay , ...)
 	self.func = func
-	self.firstArg = firstArg
-	self.timer = Timer()
+	self.delay = delay
+	self.args = table.pack(...)
 	
-	-- blargh
-	if Server then
-		self.event = Events:Subscribe("PreTick" , self , self.Update)
-	else
-		self.event = Events:Subscribe("PreTick" , self , self.Update)
-	end
+	self.timer = Timer()
+	self.event = Events:Subscribe("PreTick" , self , self.Update)
 end
 
 function DelayedFunction:Update()
 	if self.timer:GetSeconds() >= self.delay then
-		self.func(self.firstArg)
+		self.func(table.unpack(self.args))
 		self:Destroy()
 	end
 end

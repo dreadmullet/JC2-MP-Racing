@@ -7,7 +7,12 @@ ModuleLoad = function()
 	Stats.Init()
 	
 	if settings.raceManager then
-		raceManager = settings.raceManager()
+		DelayedFunction(
+			function()
+				raceManager = settings.raceManager()
+			end ,
+			1.5
+		)
 	end
 end
 
