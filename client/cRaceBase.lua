@@ -27,7 +27,7 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self.icons = {}
 	
 	local args = {
-		path = "TargetArrow" ,
+		path = "Models/TargetArrow" ,
 		type = OBJLoader.Type.Single ,
 	}
 	OBJLoader.Request(args , self , RaceBase.ModelReceive)

@@ -31,7 +31,7 @@ function StateStartingGrid:__init(race , args) ; EGUSM.SubscribeUtility.__init(s
 	
 	local icons = self.race.icons
 	
-	local icon = Icon("Collision")
+	local icon = Icon("Models/Collision")
 	if self.race.collisions then
 		icon:SetText("Collisions on")
 		icon:SetType(Icon.Type.Enabled)
@@ -42,14 +42,14 @@ function StateStartingGrid:__init(race , args) ; EGUSM.SubscribeUtility.__init(s
 	table.insert(icons , icon)
 	
 	if self.race.course.grappleEnabled == false then
-		icon = Icon("GrapplingHook")
+		icon = Icon("Models/GrapplingHook")
 		icon:SetText("Grapple disabled")
 		icon:SetType(Icon.Type.Disabled)
 		table.insert(icons , icon)
 	end
 	
 	if self.race.course.parachuteEnabled == false then
-		icon = Icon("Parachute")
+		icon = Icon("Models/Parachute")
 		icon:SetText("Parachute disabled")
 		icon:SetType(Icon.Type.Disabled)
 		table.insert(icons , icon)

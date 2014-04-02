@@ -32,10 +32,10 @@ function Icon:__init(objName) ; EGUSM.SubscribeUtility.__init(self)
 	
 	-- Get the enabled and disabled frame models. They're static, but it's convenient to get them
 	-- here.
-	args.path = "IconFrameEnabled"
+	args.path = "Models/IconFrameEnabled"
 	args.type = OBJLoader.Type.Single
 	OBJLoader.Request(args , function(model) Icon.frameEnabledModel = model end)
-	args.path = "IconFrameDisabled"
+	args.path = "Models/IconFrameDisabled"
 	OBJLoader.Request(args , function(model) Icon.frameDisabledModel = model end)
 	
 	self:EventSubscribe("Render")
