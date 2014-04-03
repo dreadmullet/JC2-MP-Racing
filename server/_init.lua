@@ -14,7 +14,7 @@ ModuleLoad = function()
 				function()
 					raceManager = settings.raceManager()
 				end ,
-				initializeDelay
+				settings.raceManager.initializeDelay
 			)
 		else
 			raceManager = settings.raceManager()
