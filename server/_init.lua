@@ -6,13 +6,19 @@ ModuleLoad = function()
 	
 	Stats.Init()
 	
+	-- Initialize the race manager. If the race manager class has a static initializeDelay variable,
+	-- wait for that many seconds.
 	if settings.raceManager then
-		DelayedFunction(
-			function()
-				raceManager = settings.raceManager()
-			end ,
-			1.5
-		)
+		if settings.raceManager.initializeDelay then
+			DelayedFunction(
+				function()
+					raceManager = settings.raceManager()
+				end ,
+				initializeDelay
+			)
+		else
+			raceManager = settings.raceManager()
+		end
 	end
 end
 

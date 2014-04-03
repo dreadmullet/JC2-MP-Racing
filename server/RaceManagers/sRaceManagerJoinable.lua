@@ -1,7 +1,6 @@
 class("RaceManagerJoinable")
 
-RaceManagerJoinable.command = "/race"
-RaceManagerJoinable.startDelay = 120
+RaceManagerJoinable.maxQueueSeconds = 120
 
 function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 	self.courseManager = CourseManager("CourseManifest.txt")
@@ -18,7 +17,6 @@ function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)
 	
 	self:EventSubscribe("RacerFinish")
 	self:EventSubscribe("RaceEnd")
-	self:EventSubscribe("PlayerChat")
 	self:EventSubscribe("PreTick")
 	self:EventSubscribe("ClientModuleLoad")
 	
@@ -143,7 +141,7 @@ function RaceManagerJoinable:RacerFinish(args)
 	end
 	
 	local racer = race:GetRacerFromPlayerId(args.playerId)
-	racer:Message("Use "..RaceManagerJoinable.command.." to leave the race")
+	racer:Message("Use "..settings.command.." to leave the race")
 end
 
 function RaceManagerJoinable:RaceEnd(args)
@@ -165,22 +163,9 @@ end
 
 -- Events
 
-function RaceManagerJoinable:PlayerChat(args)
-	if args.text == RaceManagerJoinable.command then
-		if self:HasPlayer(args.player) then
-			self:RemovePlayer(args.player)
-		else
-			self:AddPlayer(args.player)
-		end
-		return false
-	end
-	
-	return true
-end
-
 function RaceManagerJoinable:PreTick()
 	if #self.playerQueue > 0 then
-		if self.startTimer:GetSeconds() > RaceManagerJoinable.startDelay then
+		if self.startTimer:GetSeconds() > RaceManagerJoinable.maxQueueSeconds then
 			self:CreateRace()
 		end
 	else

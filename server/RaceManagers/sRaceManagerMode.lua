@@ -1,5 +1,7 @@
 class("RaceManagerMode")
 
+RaceManagerMode.initializeDelay = 1.5
+
 class("RaceInfo")
 function RaceInfo:__init(race)
 	self.id = race.id
