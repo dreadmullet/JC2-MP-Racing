@@ -29,3 +29,11 @@ table.erase = function(t , valueToRemove)
 	
 	return false
 end
+
+table.sortrandom = function(t)
+	local randomIndex
+	for index = #t , 2 , -1 do
+		randomIndex = math.random(index)
+		t[index] , t[randomIndex] = t[randomIndex] , t[index]
+	end
+end
