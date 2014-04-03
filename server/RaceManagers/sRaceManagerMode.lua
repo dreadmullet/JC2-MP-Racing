@@ -143,8 +143,19 @@ function RaceManagerMode:RacerFinish(args)
 	end
 	
 	-- If this is the first finisher, set the race end time.
+	-- The end time starts at 12 seconds and is proportional to:
+	-- * the race time of the finisher
+	-- ** If their time is 60 seconds, 7 seconds is added.
+	-- ** If their time is 15 minutes, 1:48 is added.
+	-- * the player count
+	-- ** If there are 10 players, it is multiplied by 1.1
+	-- ** If there are 100 players, it is multiplied by 2
+	-- So, Endless Coast with 100 players may take 4:15 to end.
 	if self.raceInfo.raceEndTime == nil then
-		self:EndRaceIn(12 + self.raceInfo.timer:GetSeconds() * 0.16)
+		local seconds = 12
+		seconds = seconds + self.raceInfo.timer:GetSeconds() * 0.12
+		seconds = seconds * 1 + (self:GetPlayerCount() * 0.01)
+		self:EndRaceIn(seconds)
 	end
 end
 
