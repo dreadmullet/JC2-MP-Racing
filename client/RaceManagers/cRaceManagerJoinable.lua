@@ -1,6 +1,7 @@
 class("RaceManagerJoinable")
 
 function RaceManagerJoinable:__init(args) ; EGUSM.SubscribeUtility.__init(self)
+	self.courseInfoControl = nil
 	self.labels = nil
 	self.rows = nil
 	
@@ -21,51 +22,22 @@ function RaceManagerJoinable:AddToRaceMenu()
 	groupBox:SetDock(GwenPosition.Fill)
 	groupBox:SetText("Next race")
 	
-	self.labels = {}
-	self.rows = {}
-	
 	local fontSize = 16
 	
-	local nextRaceTable = Table.Create(groupBox)
-	-- Not sure why this needs negative margin to look good, but it works.
-	nextRaceTable:SetMargin(Vector2(0 , 0) , Vector2(0 , -fontSize))
-	nextRaceTable:SetDock(GwenPosition.Top)
-	nextRaceTable:SetColumnCount(2)
-	nextRaceTable:SetColumnWidth(0 , 112)
-	
-	local CreateLabel = function(text)
-		local label = Label.Create()
-		label:SetTextSize(fontSize)
-		label:SetText(text)
-		label:SizeToContents()
-		
-		return label
-	end
-	
-	local AddRow = function(title)
-		local row = nextRaceTable:AddRow()
-		
-		row:SetCellContents(0 , CreateLabel(title..":"))
-		
-		local label = CreateLabel("??")
-		row:SetCellContents(1 , label)
-		
-		self.labels[title] = label
-		self.rows[title] = row
-	end
-	
-	AddRow("Players")
-	AddRow("Course")
-	AddRow("Type")
-	AddRow("Authors")
-	AddRow("Checkpoints")
-	AddRow("Collisions")
-	-- Distance?
-	
-	nextRaceTable:SizeToChildren()
-	
+	self.courseInfoControl , self.labels , self.rows = RaceMenuUtility.CreateTable(
+		fontSize ,
+		{
+			"Players" ,
+			"Course" ,
+			"Type" ,
+			"Authors" ,
+			"Checkpoints" ,
+			"Collisions" ,
+			-- Distance?
+		}
+	)
+	self.courseInfoControl:SetParent(groupBox)
 	self.labels.Course:SetTextColor(settings.textColor)
-	
 	self.rows.Checkpoints:SetToolTip("Checkpoints per lap")
 	
 	local buttonsBase = BaseWindow.Create(groupBox)
