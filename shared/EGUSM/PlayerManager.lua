@@ -6,11 +6,13 @@ function EGUSM.PlayerManager:__init() ; EGUSM.StateMachine.__init(self)
 	self.HasPlayer = EGUSM.PlayerManager.HasPlayer
 	self.GetPlayerCount = EGUSM.PlayerManager.GetPlayerCount
 	self.IteratePlayers = EGUSM.PlayerManager.IteratePlayers
+	self.NetworkSend = EGUSM.PlayerManager.NetworkSend
 	self.Destroy = EGUSM.PlayerManager.Destroy
 	
 	-- Key: Player id
 	-- Value: true
 	self.playerManagerPlayers = {}
+	self.playerManagerPlayersArray = {}
 	self.playerManagerPlayerCount = 0
 	self.playerManagerIsRunning = true
 	
@@ -25,6 +27,7 @@ function EGUSM.PlayerManager:AddPlayer(player)
 	end
 	
 	self.playerManagerPlayers[player:GetId()] = true
+	table.insert(self.playerManagerPlayersArray , player)
 	self.playerManagerPlayerCount = self.playerManagerPlayerCount + 1
 	
 	if self.ManagedPlayerJoin then
@@ -39,6 +42,7 @@ function EGUSM.PlayerManager:RemovePlayer(player)
 	end
 	
 	self.playerManagerPlayers[player:GetId()] = nil
+	table.erase(self.playerManagerPlayersArray , player)
 	self.playerManagerPlayerCount = self.playerManagerPlayerCount - 1
 	
 	if self.ManagedPlayerLeave then
@@ -55,9 +59,13 @@ function EGUSM.PlayerManager:GetPlayerCount()
 end
 
 function EGUSM.PlayerManager:IteratePlayers(func)
-	for playerId , alwaysTrue in pairs(self.playerManagerPlayers) do
-		func(Player.GetById(playerId))
+	for index , player in ipairs(self.playerManagerPlayersArray) do
+		func(player)
 	end
+end
+
+function EGUSM.PlayerManager:NetworkSend(name , args)
+	Network:SendToPlayers(self.playerManagerPlayersArray , name , args)
 end
 
 function EGUSM.PlayerManager:Destroy()
@@ -71,9 +79,9 @@ function EGUSM.PlayerManager:Destroy()
 		self:PlayerManagerTerminate()
 	end
 	
-	for playerId , alwaysTrue in pairs(self.playerManagerPlayers) do
-		self:RemovePlayer(Player.GetById(playerId))
-	end
+	self:IteratePlayers(function(player)
+		self:RemovePlayer(player)
+	end)
 	
 	EGUSM.StateMachine.Destroy(self)
 end

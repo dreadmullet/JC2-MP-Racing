@@ -106,7 +106,11 @@ function RaceMenu:SetEnabled(enabled)
 end
 
 function RaceMenu:AddRequest(networkName , arg)
-	table.insert(self.requests , {networkName , arg or "."})
+	if arg == nil then
+		arg = "."
+	end
+	
+	table.insert(self.requests , {networkName , arg})
 end
 
 function RaceMenu:AddTab(tabClass)

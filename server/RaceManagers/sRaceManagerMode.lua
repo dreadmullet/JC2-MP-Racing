@@ -5,7 +5,9 @@ function RaceInfo:__init(race)
 	self.id = race.id
 	self.hasWinner = false
 	self.timer = Timer()
-	self.raceEndTime = -1
+	self.raceEndTime = nil
+	-- Array of Players.
+	self.skipVotes = {}
 end
 
 function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
@@ -29,6 +31,7 @@ function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
 	self:EventSubscribe("RaceEnd")
 	self:EventSubscribe("ClientModuleLoad")
 	self:EventSubscribe("PreTick")
+	self:NetworkSubscribe("VoteSkip")
 end
 
 -- Adds all players in the server to a new Race.
@@ -59,11 +62,57 @@ function RaceManagerMode:CreateRace()
 	self.race = Race(args)
 	
 	self.raceInfo = RaceInfo(self.race)
+	
+	self:UpdateVoteSkipInfo()
+end
+
+function RaceManagerMode:UpdateVoteSkipInfo()
+	local skipVotes = 0
+	if self.raceInfo ~= nil then
+		skipVotes = #self.raceInfo.skipVotes
+	end
+	
+	local args = {
+		skipVotes = skipVotes ,
+		skipVotesRequired = self:GetRequiredSkipVotes() ,
+	}
+	self:NetworkSend("UpdateVoteSkipInfo" , args)
+end
+
+function RaceManagerMode:GetRequiredSkipVotes()
+	return math.ceil(self:GetPlayerCount() * 0.475)
+end
+
+function RaceManagerMode:EndRaceIn(seconds)
+	self.raceInfo.raceEndTime = self.raceInfo.timer:GetSeconds() + seconds
+	
+	if seconds ~= 0 then
+		self:NetworkSend("RaceWillEndIn" , seconds)
+	end
+end
+
+function RaceManagerMode:SkipRace()
+	if self.race.stateName == "StateRacing" then
+		self:EndRaceIn(8)
+	else
+		self:EndRaceIn(0)
+	end
+	
+	self:NetworkSend("RaceSkipped")
 end
 
 -- PlayerManager callbacks
 
 function RaceManagerMode:ManagedPlayerJoin(player)
+	-- Initialize the RaceManagerMode class on the client.
+	local constructorArgs = {
+		className = "RaceManagerMode"
+	}
+	if self.raceInfo then
+		-- constructorArgs.raceInfo = somethinghere
+	end
+	Network:Send(player , "InitializeClass" , constructorArgs)
+	
 	if self.isInitialized then
 		-- If this is the first person to join the server, create the race.
 		if self:GetPlayerCount() == 1 and self.raceInfo == nil then
@@ -73,10 +122,16 @@ function RaceManagerMode:ManagedPlayerJoin(player)
 			self.race:AddSpectator(player)
 		end
 	end
+	
+	self:UpdateVoteSkipInfo()
 end
 
 function RaceManagerMode:ManagedPlayerLeave(player)
 	self.race:RemovePlayer(player)
+	
+	if self.raceInfo then
+		table.erase(self.raceInfo.skipVotes , player)
+	end
 end
 
 -- Race events
@@ -88,12 +143,8 @@ function RaceManagerMode:RacerFinish(args)
 	end
 	
 	-- If this is the first finisher, set the race end time.
-	if self.raceInfo.hasWinner == false then
-		self.raceInfo.hasWinner = true
-		local elapsedSeconds = self.raceInfo.timer:GetSeconds()
-		self.raceInfo.raceEndTime = 12 + elapsedSeconds * 1.06
-		local endDelta = self.raceInfo.raceEndTime - elapsedSeconds
-		self.race:NetworkSendRace("RaceWillEndIn" , endDelta)
+	if self.raceInfo.raceEndTime == nil then
+		self:EndRaceIn(12 + self.raceInfo.timer:GetSeconds() * 0.16)
 	end
 end
 
@@ -116,7 +167,7 @@ function RaceManagerMode:PreTick(args)
 	-- If someone has finished and it's time to end the race, end it.
 	if
 		self.raceInfo and
-		self.raceInfo.hasWinner and
+		self.raceInfo.raceEndTime and
 		self.raceInfo.timer:GetSeconds() > self.raceInfo.raceEndTime
 	then
 		self.raceInfo = nil
@@ -129,5 +180,33 @@ function RaceManagerMode:PreTick(args)
 		if playerCount ~= 0 then
 			self:CreateRace()
 		end
+	end
+end
+
+-- Network events
+
+function RaceManagerMode:VoteSkip(vote , player)
+	if
+		type(vote) ~= "boolean" or
+		self:HasPlayer(player) == false or
+		self.raceInfo == nil or
+		self.raceInfo.raceEndTime ~= nil
+	then
+		return
+	end
+	
+	if vote == true then
+		if table.find(self.raceInfo.skipVotes , player) == nil then
+			table.insert(self.raceInfo.skipVotes , player)
+		end
+	else
+		table.erase(self.raceInfo.skipVotes , player)
+	end
+	
+	if #self.raceInfo.skipVotes >= self:GetRequiredSkipVotes() then
+		self:SkipRace()
+	else
+		Network:Send(player , "AcknowledgeVoteSkip" , vote)
+		self:UpdateVoteSkipInfo()
 	end
 end
