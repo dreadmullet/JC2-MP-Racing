@@ -1,7 +1,6 @@
 class("RaceManagerJoinable")
 
 function RaceManagerJoinable:__init(args) ; EGUSM.SubscribeUtility.__init(self)
-	self.courseInfoControl = nil
 	self.labels = nil
 	self.rows = nil
 	
@@ -24,7 +23,8 @@ function RaceManagerJoinable:AddToRaceMenu()
 	
 	local fontSize = 16
 	
-	self.courseInfoControl , self.labels , self.rows = RaceMenuUtility.CreateTable(
+	local tableControl
+	tableControl , self.labels , self.rows = RaceMenuUtility.CreateTable(
 		fontSize ,
 		{
 			"Players" ,
@@ -36,7 +36,7 @@ function RaceManagerJoinable:AddToRaceMenu()
 			-- Distance?
 		}
 	)
-	self.courseInfoControl:SetParent(groupBox)
+	tableControl:SetParent(groupBox)
 	self.labels.Course:SetTextColor(settings.textColor)
 	self.rows.Checkpoints:SetToolTip("Checkpoints per lap")
 	
