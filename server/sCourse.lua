@@ -65,10 +65,7 @@ function Course:AssignRacers(playerIdToRacer)
 	
 	-- Randomly sort the racers table. Otherwise, the starting grid is consistent; we want it to
 	-- always be completely random.
-	for n = #racers , 2 , -1 do
-		local r = math.random(n)
-		racers[n] , racers[r] = racers[r] , racers[n]
-	end
+	table.sortrandom(racers)
 	
 	local spawnIndex = 1
 	local spawnCount = #self.spawns
