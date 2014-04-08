@@ -4,7 +4,6 @@ RaceMenuUtility.CreateTable = function(fontSize , rowNames)
 	local returnTable = Table.Create()
 	-- Not sure why this needs negative margin to look good, but it works.
 	returnTable:SetMargin(Vector2(0 , 0) , Vector2(0 , -fontSize))
-	returnTable:SetDock(GwenPosition.Top)
 	returnTable:SetColumnCount(2)
 	returnTable:SetColumnWidth(0 , 112)
 	

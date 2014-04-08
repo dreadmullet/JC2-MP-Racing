@@ -1,10 +1,17 @@
 class("RaceManagerMode")
 
 function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
+	self.currentRaceLabels = nil
+	self.currentRaceRows = nil
 	self.voteSkipButton = nil
 	self.voteSkipLabel = nil
 	
 	self:AddToRaceMenu()
+	
+	self:ApplyNextRaceInfo(args.nextRaceInfo)
+	if args.currentRaceInfo then
+		self:ApplyCurrentRaceInfo(args.raceInfo)
+	end
 	
 	self:EventSubscribe("RaceCreate")
 	self:EventSubscribe("RaceEnd")
@@ -12,15 +19,43 @@ function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
 	self:NetworkSubscribe("AcknowledgeVoteSkip")
 	self:NetworkSubscribe("RaceSkipped")
 	self:NetworkSubscribe("RaceWillEndIn")
+	self:NetworkSubscribe("RaceInfoChanged")
 end
 
 function RaceManagerMode:AddToRaceMenu()
+	local fontSize = 16
+	
+	-- Current race info
+	
 	local groupBox = RaceMenu.CreateGroupBox(RaceMenu.instance.addonArea)
 	groupBox:SetDock(GwenPosition.Top)
-	groupBox:SetHeight(140)
+	groupBox:SetHeight(196)
 	groupBox:SetText("Current race")
 	
+	local tableControl
+	local tableArgs = {
+		"Players" ,
+		"Course" ,
+		"Type" ,
+		"Authors" ,
+		"Checkpoints" ,
+		"Collisions" ,
+		-- Distance?
+	}
+	tableControl , self.currentRaceLabels , self.currentRaceRows = RaceMenuUtility.CreateTable(
+		fontSize ,
+		tableArgs
+	)
+	tableControl:SetParent(groupBox)
+	tableControl:SetDock(GwenPosition.Top)
+	self.currentRaceLabels.Course:SetTextColor(settings.textColor)
+	self.currentRaceRows.Players:SetToolTip("This is probably broken")
+	self.currentRaceRows.Checkpoints:SetToolTip("Checkpoints per lap")
+	
+	-- Voteskip control
+	
 	self.voteSkipBase = BaseWindow.Create(groupBox)
+	self.voteSkipBase:SetMargin(Vector2(0 , 6) , Vector2(0 , 0))
 	self.voteSkipBase:SetDock(GwenPosition.Top)
 	self.voteSkipBase:SetHeight(32)
 	
@@ -41,6 +76,56 @@ function RaceManagerMode:AddToRaceMenu()
 	self.voteSkipLabel:SetText("...")
 	
 	self.voteSkipBase:SetVisible(false)
+	
+	-- Next race info
+	
+	groupBox = RaceMenu.CreateGroupBox(RaceMenu.instance.addonArea)
+	groupBox:SetDock(GwenPosition.Fill)
+	groupBox:SetText("Next race")
+	
+	tableArgs = {
+		"Course" ,
+		"Collisions" ,
+	}
+	tableControl , self.nextRaceLabels , self.nextRaceRows = RaceMenuUtility.CreateTable(
+		fontSize ,
+		tableArgs
+	)
+	tableControl:SetParent(groupBox)
+	tableControl:SetDock(GwenPosition.Fill)
+	self.nextRaceLabels.Course:SetTextColor(settings.textColor)
+end
+
+function RaceManagerMode:ApplyCurrentRaceInfo(args)
+	local labels = self.currentRaceLabels
+	labels.Players:SetText(string.format("%i" , args.currentPlayers))
+	labels.Course:SetText(args.course.name)
+	labels.Authors:SetText(table.concat(args.course.authors , ", "))
+	labels.Type:SetText(args.course.type)
+	labels.Checkpoints:SetText(string.format("%i" , args.numCheckpoints))
+	if args.collisions then
+		labels.Collisions:SetText("On")
+	else
+		labels.Collisions:SetText("Off")
+	end
+	
+	for title , label in pairs(labels) do
+		label:SizeToContents()
+	end
+end
+
+function RaceManagerMode:ApplyNextRaceInfo(args)
+	local labels = self.nextRaceLabels
+	labels.Course:SetText(args.courseName)
+	if args.collisions then
+		labels.Collisions:SetText("On")
+	else
+		labels.Collisions:SetText("Off")
+	end
+	
+	for title , label in pairs(labels) do
+		label:SizeToContents()
+	end
 end
 
 -- GWEN events
@@ -98,4 +183,9 @@ end
 
 function RaceManagerMode:RaceWillEndIn()
 	self.voteSkipButton:SetEnabled(false)
+end
+
+function RaceManagerMode:RaceInfoChanged(args)
+	self:ApplyNextRaceInfo(args.nextRaceInfo)
+	self:ApplyCurrentRaceInfo(args.raceInfo)
 end

@@ -2,21 +2,14 @@ class("RaceManagerMode")
 
 RaceManagerMode.initializeDelay = 1.5
 
-class("RaceInfo")
-function RaceInfo:__init(race)
-	self.id = race.id
-	self.hasWinner = false
-	self.timer = Timer()
-	self.raceEndTime = nil
-	-- Array of Players.
-	self.skipVotes = {}
-end
-
 function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
 	self.courseManager = CourseManager("CourseManifest.txt")
 	self.race = nil
 	self.raceInfo = nil
+	self.nextRaceInfo = nil
 	self.isInitialized = false
+	
+	self:UpdateNextRaceInfo()
 	
 	-- Add all players in the server to us.
 	for player in Server:GetPlayers() do
@@ -49,23 +42,53 @@ function RaceManagerMode:CreateRace()
 		table.insert(playerArray , player)
 	end
 	
-	local course = self.courseManager:LoadCourseRandom()
-	if #playerArray > course:GetMaxPlayers() then
-		self.courseManager:RemoveCourse(course.name)
-		error("Too many players for course, "..course.name.." can only fit "..course:GetMaxPlayers())
-	end
+	local course = self.courseManager:LoadCourseSequential()
 	
 	local args = {
 		players = playerArray ,
 		course = course ,
-		collisions = true , -- temporary
+		collisions = self.nextRaceInfo.collisions ,
 		modules = {"Mode"}
 	}
 	self.race = Race(args)
 	
-	self.raceInfo = RaceInfo(self.race)
-	
+	self:UpdateRaceInfo()
+	self:UpdateNextRaceInfo()
 	self:UpdateVoteSkipInfo()
+	
+	local args = {
+		raceInfo = self:MarshalCurrentRace() ,
+		nextRaceInfo = self.nextRaceInfo ,
+	}
+	Network:Broadcast("RaceInfoChanged" , args)
+end
+
+function RaceManagerMode:UpdateRaceInfo()
+	self.raceInfo = {
+		id = self.race.id ,
+		hasWinner = false ,
+		timer = Timer() ,
+		raceEndTime = nil ,
+		-- Array of Players.
+		skipVotes = {} ,
+	}
+end
+
+function RaceManagerMode:MarshalCurrentRace()
+	return {
+		currentPlayers = self.race.numPlayers ,
+		course = self.race.course:MarshalInfo() ,
+		-- TODO: Shouldn't this be part of course?
+		numCheckpoints = #self.race.course.checkpoints ,
+		collisions = self.race.vehicleCollisions ,
+	}
+end
+
+function RaceManagerMode:UpdateNextRaceInfo()
+	self.nextRaceInfo = {
+		courseName = self.courseManager:GetNextCourseName() ,
+		collisions = math.random() >= 0.5 ,
+	}
 end
 
 function RaceManagerMode:UpdateVoteSkipInfo()
@@ -107,13 +130,14 @@ end
 
 function RaceManagerMode:ManagedPlayerJoin(player)
 	-- Initialize the RaceManagerMode class on the client.
-	local constructorArgs = {
-		className = "RaceManagerMode"
+	local args = {
+		className = "RaceManagerMode" ,
+		nextRaceInfo = self.nextRaceInfo ,
 	}
 	if self.raceInfo then
-		-- constructorArgs.raceInfo = somethinghere
+		args.raceInfo = self:MarshalCurrentRace()
 	end
-	Network:Send(player , "InitializeClass" , constructorArgs)
+	Network:Send(player , "InitializeClass" , args)
 	
 	if self.isInitialized then
 		-- If this is the first person to join the server, create the race.

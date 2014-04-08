@@ -37,6 +37,7 @@ function RaceManagerJoinable:AddToRaceMenu()
 		}
 	)
 	tableControl:SetParent(groupBox)
+	tableControl:SetDock(GwenPosition.Top)
 	self.labels.Course:SetTextColor(settings.textColor)
 	self.rows.Checkpoints:SetToolTip("Checkpoints per lap")
 	
