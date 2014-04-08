@@ -11,21 +11,27 @@ function CourseManager:__init(manifestPath)
 	self.currentIndex = 1
 end
 
+function CourseManager:GetNextCourseName()
+	return self.courseNames[self.currentIndex]
+end
+
 function CourseManager:GetRandomCourseName()
 	return table.randomvalue(self.courseNames)
 end
 
 function CourseManager:LoadCourseSequential()
-	if #self.courseNames > 0 then
-		return Course.Load(self.courseNames[self.currentIndex])
-	else
-		return error("No available courses!")
-	end
+	local courseName = self.courseNames[self.currentIndex]
 	
 	self.currentIndex = self.currentIndex + 1
 	if self.currentIndex > #self.courseNames then
 		self.currentIndex = 1
 		self:Randomize()
+	end
+	
+	if #self.courseNames > 0 then
+		return Course.Load(courseName)
+	else
+		return error("No available courses!")
 	end
 end
 
