@@ -67,6 +67,13 @@ function Race:__init(args)
 		self.overflowHandling == Race.OverflowHandling.StackSpawns and
 		self.numPlayers > self.course:GetMaxPlayers()
 	then
+		if settings.debugLevel >= 2 then
+			print(
+				string.format("%i/%i" , self.numPlayers , self.course:GetMaxPlayers())..
+				" players, turning collisions off"
+			)
+		end
+		
 		self.vehicleCollisions = false
 	end
 	
@@ -111,6 +118,8 @@ function Race:__init(args)
 	end
 	
 	Events:Fire("RaceCreate" , {id = self.id})
+	
+	self:ConsoleSubscribe("raceinfo")
 end
 
 function Race:AddPlayer(player)
@@ -286,7 +295,20 @@ function Race:RacerFinish(racer)
 	Events:Fire("RacerFinish" , args)
 end
 
--- CreateRace event.
+function Race:raceinfo()
+	print()
+	print("Race info:")
+	print("id                " , self.id)
+	print("numPlayers        " , self.numPlayers)
+	print("Participants count" , #self.participants)
+	print("Racer count       " , table.count(self.playerIdToRacer))
+	print("Spectator count   " , table.count(self.playerIdToSpectator))
+	print("Max players       " , self.course:GetMaxPlayers())
+	print("World id          " , self.world:GetId())
+	print()
+end
+
+-- Static CreateRace event function.
 
 Race.CreateRaceFromEvent = function(args)
 	local course = Course.Load(args.courseName)
