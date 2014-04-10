@@ -28,5 +28,9 @@ end
 function RaceModules.Mode:RaceWillEndIn(endTime)
 	self:EventSubscribe("Render")
 	
-	self.timerControl = RaceMenuUtility.CreateTimer("next race" , endTime)
+	if self.timerControl then
+		self.timerControl:Restart()
+	else
+		self.timerControl = RaceMenuUtility.CreateTimer("next race" , endTime)
+	end
 end

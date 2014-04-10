@@ -27,6 +27,7 @@ function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
 	self:EventSubscribe("ClientModuleLoad")
 	self:EventSubscribe("PreTick")
 	self:NetworkSubscribe("VoteSkip")
+	self:NetworkSubscribe("AdminSkip")
 end
 
 -- Adds all players in the server to a new Race.
@@ -245,5 +246,12 @@ function RaceManagerMode:VoteSkip(vote , player)
 	else
 		Network:Send(player , "AcknowledgeVoteSkip" , vote)
 		self:UpdateVoteSkipInfo()
+	end
+end
+
+function RaceManagerMode:AdminSkip(unused , player)
+	if player:GetValue("isRaceAdmin") == true then
+		self:SkipRace()
+		Network:Send(player , "AcknowledgeAdminSkip")
 	end
 end

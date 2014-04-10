@@ -5,6 +5,7 @@ function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
 	self.currentRaceRows = nil
 	self.voteSkipButton = nil
 	self.voteSkipLabel = nil
+	self.adminSkipButton = nil
 	
 	self:AddToRaceMenu()
 	
@@ -13,10 +14,17 @@ function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
 		self:ApplyCurrentRaceInfo(args.raceInfo)
 	end
 	
+	if AdminTab.instance then
+		self:RaceAdminInitialize()
+	else
+		self:EventSubscribe("RaceAdminInitialize")
+	end
+	
 	self:EventSubscribe("RaceCreate")
 	self:EventSubscribe("RaceEnd")
 	self:NetworkSubscribe("UpdateVoteSkipInfo")
 	self:NetworkSubscribe("AcknowledgeVoteSkip")
+	self:NetworkSubscribe("AcknowledgeAdminSkip")
 	self:NetworkSubscribe("RaceSkipped")
 	self:NetworkSubscribe("RaceWillEndIn")
 	self:NetworkSubscribe("RaceInfoChanged")
@@ -140,6 +148,11 @@ function RaceManagerMode:VoteSkipButtonUnpressed()
 	self.voteSkipButton:SetEnabled(false)
 end
 
+function RaceManagerMode:AdminSkipButtonPressed()
+	RaceMenu.instance:AddRequest("AdminSkip")
+	self.adminSkipButton:SetEnabled(false)
+end
+
 -- Events
 
 function RaceManagerMode:RaceCreate()
@@ -153,6 +166,16 @@ function RaceManagerMode:RaceEnd()
 	self.voteSkipLabel:SetText("...")
 	self.voteSkipLabel:SetColorNormal()
 	self.voteSkipBase:SetVisible(false)
+end
+
+function RaceManagerMode:RaceAdminInitialize()
+	self.adminSkipButton = Button.Create(AdminTab.instance.page)
+	self.adminSkipButton:SetPadding(Vector2(24 , 0) , Vector2(24 , 0))
+	self.adminSkipButton:SetDock(GwenPosition.Top)
+	self.adminSkipButton:SetTextSize(16)
+	self.adminSkipButton:SetText("Force skip current race")
+	self.adminSkipButton:SetHeight(32)
+	self.adminSkipButton:Subscribe("Press" , self , self.AdminSkipButtonPressed)
 end
 
 -- Network events
@@ -173,6 +196,10 @@ end
 function RaceManagerMode:AcknowledgeVoteSkip(vote)
 	self.voteSkipButton:SetEnabled(true)
 	self.voteSkipButton:SetToggleState(vote)
+end
+
+function RaceManagerMode:AcknowledgeAdminSkip()
+	self.adminSkipButton:SetEnabled(true)
 end
 
 function RaceManagerMode:RaceSkipped()

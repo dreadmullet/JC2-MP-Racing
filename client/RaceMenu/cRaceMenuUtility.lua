@@ -383,6 +383,10 @@ RaceMenuUtility.CreateTimer = function(text , seconds)
 		Events:Unsubscribe(self.sub)
 	end
 	
+	local Restart = function(self)
+		self.timer:Restart()
+	end
+	
 	-- Luabuse
 	local t = {
 		base = base ,
@@ -391,6 +395,7 @@ RaceMenuUtility.CreateTimer = function(text , seconds)
 		timer = Timer() ,
 		seconds = seconds ,
 		Remove = Remove ,
+		Restart = Restart ,
 	}
 	t.sub = Events:Subscribe("Render" , t , UpdateTimer)
 	return t
