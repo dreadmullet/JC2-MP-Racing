@@ -11,10 +11,6 @@ end
 
 -- Events
 
-function RaceModules.Mode:Render()
-	
-end
-
 function RaceModules.Mode:RaceEnd()
 	if self.timerControl then
 		self.timerControl:Remove()
@@ -26,8 +22,6 @@ end
 -- Network events
 
 function RaceModules.Mode:RaceWillEndIn(endTime)
-	self:EventSubscribe("Render")
-	
 	if self.timerControl then
 		self.timerControl:Restart()
 	else
