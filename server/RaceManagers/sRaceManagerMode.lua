@@ -28,6 +28,7 @@ function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
 	self:EventSubscribe("PreTick")
 	self:NetworkSubscribe("VoteSkip")
 	self:NetworkSubscribe("AdminSkip")
+	self:NetworkSubscribe("AdminSetNextCourse")
 end
 
 -- Adds all players in the server to a new Race.
@@ -43,7 +44,12 @@ function RaceManagerMode:CreateRace()
 		table.insert(playerArray , player)
 	end
 	
-	local course = self.courseManager:LoadCourseSequential()
+	local course
+	if self.nextRaceInfo.force then
+		course = self.nextRaceInfo.course
+	else
+		course = self.courseManager:LoadCourseSequential()
+	end
 	
 	local args = {
 		players = playerArray ,
@@ -59,7 +65,7 @@ function RaceManagerMode:CreateRace()
 	
 	local args = {
 		raceInfo = self:MarshalCurrentRace() ,
-		nextRaceInfo = self.nextRaceInfo ,
+		nextRaceInfo = self:MarshalNextRace() ,
 	}
 	Network:Broadcast("RaceInfoChanged" , args)
 end
@@ -87,8 +93,16 @@ end
 
 function RaceManagerMode:UpdateNextRaceInfo()
 	self.nextRaceInfo = {
-		courseName = self.courseManager:GetNextCourseName() ,
+		course = Course.Load(self.courseManager:GetNextCourseName()) ,
 		collisions = math.random() >= 0.5 ,
+		force = false ,
+	}
+end
+
+function RaceManagerMode:MarshalNextRace()
+	return {
+		courseName = self.nextRaceInfo.course.name ,
+		collisions = self.nextRaceInfo.collisions ,
 	}
 end
 
@@ -135,7 +149,7 @@ function RaceManagerMode:ManagedPlayerJoin(player)
 	-- Initialize the RaceManagerMode class on the client.
 	local args = {
 		className = "RaceManagerMode" ,
-		nextRaceInfo = self.nextRaceInfo ,
+		nextRaceInfo = self:MarshalNextRace() ,
 	}
 	if self.raceInfo then
 		args.raceInfo = self:MarshalCurrentRace()
@@ -252,8 +266,34 @@ function RaceManagerMode:VoteSkip(vote , player)
 end
 
 function RaceManagerMode:AdminSkip(unused , player)
-	if player:GetValue("isRaceAdmin") == true then
-		self:SkipRace()
-		Network:Send(player , "AcknowledgeAdminSkip")
+	if player:GetValue("isRaceAdmin") ~= true then
+		return
 	end
+	
+	self:Message(player:GetName().." force skipped the current race")
+	
+	self:SkipRace()
+	Network:Send(player , "AcknowledgeAdminSkip")
+end
+
+function RaceManagerMode:AdminSetNextCourse(courseName , player)
+	if player:GetValue("isRaceAdmin") ~= true then
+		return
+	end
+	
+	local course = Course.Load(courseName)
+	if course == nil then
+		return
+	end
+	
+	self.nextRaceInfo.course = course
+	self.nextRaceInfo.force = true
+	
+	self:Message(player:GetName().." changed the next course to "..course.name)
+	
+	local args = {
+		raceInfo = self:MarshalCurrentRace() ,
+		nextRaceInfo = self:MarshalNextRace() ,
+	}
+	Network:Broadcast("RaceInfoChanged" , args)
 end

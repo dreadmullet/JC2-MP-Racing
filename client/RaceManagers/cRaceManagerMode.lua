@@ -6,6 +6,7 @@ function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
 	self.voteSkipButton = nil
 	self.voteSkipLabel = nil
 	self.adminSkipButton = nil
+	self.adminNextCourseTextBox = nil
 	
 	self:AddToRaceMenu()
 	
@@ -153,6 +154,11 @@ function RaceManagerMode:AdminSkipButtonPressed()
 	self.adminSkipButton:SetEnabled(false)
 end
 
+function RaceManagerMode:NextCourseTextBoxAccepted()
+	RaceMenu.instance:AddRequest("AdminSetNextCourse" , self.adminNextCourseTextBox:GetText())
+	self.adminNextCourseTextBox:SetText("")
+end
+
 -- Events
 
 function RaceManagerMode:RaceCreate()
@@ -169,13 +175,35 @@ function RaceManagerMode:RaceEnd()
 end
 
 function RaceManagerMode:RaceAdminInitialize()
-	self.adminSkipButton = Button.Create(AdminTab.instance.page)
-	self.adminSkipButton:SetPadding(Vector2(24 , 0) , Vector2(24 , 0))
-	self.adminSkipButton:SetDock(GwenPosition.Top)
-	self.adminSkipButton:SetTextSize(16)
-	self.adminSkipButton:SetText("Force skip current race")
-	self.adminSkipButton:SetHeight(32)
-	self.adminSkipButton:Subscribe("Press" , self , self.AdminSkipButtonPressed)
+	local button = Button.Create(AdminTab.instance.page)
+	button:SetPadding(Vector2(24 , 0) , Vector2(24 , 0))
+	button:SetDock(GwenPosition.Top)
+	button:SetTextSize(16)
+	button:SetText("Force skip current race")
+	button:SetHeight(32)
+	button:Subscribe("Press" , self , self.AdminSkipButtonPressed)
+	self.adminSkipButton = button
+	
+	local base = BaseWindow.Create(AdminTab.instance.page)
+	base:SetMargin(Vector2(0 , 4) , Vector2(0 , 4))
+	base:SetDock(GwenPosition.Top)
+	base:SetHeight(18)
+	
+	local textBox = TextBox.Create(base)
+	textBox:SetDock(GwenPosition.Left)
+	textBox:SetWidth(180)
+	textBox:Subscribe("ReturnPressed" , self , self.NextCourseTextBoxAccepted)
+	textBox:SetToolTip(
+		[[Example: "BandarSelekeh". Make sure the name is correct, or else it will error.]]
+	)
+	self.adminNextCourseTextBox = textBox
+	
+	local label = Label.Create(base)
+	label:SetMargin(Vector2(0 , 2) , Vector2(0 , 0))
+	label:SetDock(GwenPosition.Left)
+	label:SetTextSize(16)
+	label:SetText(" Set next course")
+	label:SizeToContents()
 end
 
 -- Network events
