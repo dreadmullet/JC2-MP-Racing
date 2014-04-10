@@ -9,7 +9,8 @@ function StateRacing:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self.timer = Timer()
 	self.numTicks = 0
 	self.sendCheckpointTimer = Timer()
-	self.isRespawning = false
+	self.respawnState = "None"
+	self.exitVehicleCoroutine = nil
 	
 	LargeMessage("GO!" , 2)
 	
@@ -17,6 +18,7 @@ function StateRacing:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	
 	self:EventSubscribe("Render")
 	self:EventSubscribe("PostTick")
+	self:EventSubscribe("LocalPlayerEnterVehicle")
 	self:EventSubscribe("LocalPlayerInput")
 	self:EventSubscribe("ControlDown")
 	
@@ -36,6 +38,30 @@ end
 function StateRacing:GetTargetCheckpointDistanceSqr()
 	local targetCheckpointPos = self.race.course.checkpoints[self.targetCheckpoint][1]
 	return (targetCheckpointPos - LocalPlayer:GetPosition()):LengthSqr()
+end
+
+function StateRacing:ExitVehicleCoroutineFunction()
+	local timer = Timer()
+	
+	while timer:GetSeconds() <= 1.25 do
+		coroutine.yield()
+	end
+	
+	while timer:GetSeconds() <= 7 do
+		DrawText(
+			Vector2(Render.Width * 0.5 , Render.Height * 0.29) ,
+			"Press "..Controls.GetInputNameByControl("Respawn").." to respawn" ,
+			settings.textColor ,
+			24 ,
+			"center"
+		)
+		
+		coroutine.yield()
+	end
+	
+	while(true) do
+		coroutine.yield()
+	end
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -121,14 +147,21 @@ function StateRacing:Render()
 			numLaps = self.race.numLaps ,
 		}
 		
-		if self.isRespawning then
+		if self.respawnState == "Waiting" then
+			self.exitVehicleCoroutine = nil
+			
 			DrawText(
-				Vector2(Render.Width * 0.5 , Render.Height * 0.25) ,
+				Vector2(Render.Width * 0.5 , Render.Height * 0.29) ,
 				" Respawning..." ,
 				settings.textColor ,
 				24 ,
 				"center"
 			)
+		elseif self.respawnState == "None" and self.exitVehicleCoroutine then
+			local success , returnValue = coroutine.resume(self.exitVehicleCoroutine , self)
+			if success == false then
+				error(returnValue)
+			end
 		end
 	end
 end
@@ -141,6 +174,22 @@ function StateRacing:PostTick(args)
 			"ReceiveCheckpointDistanceSqr" ,
 			{LocalPlayer:GetId() , self:GetTargetCheckpointDistanceSqr() , self.targetCheckpoint}
 		)
+	end
+	-- Manage the exit vehicle coroutine.
+	if
+		self.race.assignedVehicleId == -1 or
+		LocalPlayer:InVehicle() or
+		LocalPlayer:GetHealth() == 0
+	then
+		self.exitVehicleCoroutine = nil
+	elseif self.exitVehicleCoroutine == nil then
+		self.exitVehicleCoroutine = coroutine.create(self.ExitVehicleCoroutineFunction)
+	end
+end
+
+function StateRacing:LocalPlayerEnterVehicle(args)
+	if self.respawnState == "Spawned" and args.vehicle:GetId() == self.race.assignedVehicleId then
+		self.respawnState = "None"
 	end
 end
 
@@ -219,11 +268,11 @@ end
 function StateRacing:Respawned(assignedVehicleId)
 	self.race.assignedVehicleId = assignedVehicleId
 	
-	self.isRespawning = false
+	self.respawnState = "Spawned"
 end
 
 function StateRacing:RespawnAcknowledged()
-	self.isRespawning = true
+	self.respawnState = "Waiting"
 end
 
 function StateRacing:RacerFinish(args)

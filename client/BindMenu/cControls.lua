@@ -10,6 +10,16 @@ Controls.held = {}
 -- Like above, but for all Actions.
 Controls.actionsBuffer = {}
 
+Controls.GetInputNameByControl = function(controlName)
+	for index , control in ipairs(Controls.controls) do
+		if control.name == controlName then
+			return control.valueString
+		end
+	end
+	
+	return "UNASSIGNED"
+end
+
 -- This should be called to add or change controls. Used by BindMenu.
 Controls.Set = function(controlToSet)
 	-- If a control with this name already exists, modify it.
