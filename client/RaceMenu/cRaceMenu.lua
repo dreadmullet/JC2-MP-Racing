@@ -88,6 +88,7 @@ function RaceMenu:CreateWindow()
 	self.tabControl:SetTabStripPosition(GwenPosition.Top)
 	self.tabControl:SetBackgroundVisible(false)
 	self.addTabSub = self.tabControl:Subscribe("AddTab" , self , self.OnAddTab)
+	self.tempFix = true
 end
 
 function RaceMenu:SetEnabled(enabled)
@@ -125,6 +126,7 @@ end
 function RaceMenu:RemoveTab(tabToRemove)
 	for index , tab in ipairs(self.tabs) do
 		if tab.__id == tabToRemove.__id then
+			self.tabControl:SetCurrentTab(self.tabs[1].tabButton)
 			self.tabControl:RemovePage(tab.tabButton)
 			if tab.OnRemove then
 				tab:OnRemove()
@@ -158,8 +160,11 @@ function RaceMenu:WindowClosed()
 end
 
 function RaceMenu:OnAddTab()
-	self.tabControl:Unsubscribe(self.addTabSub)
-	self.tabControl:Subscribe("TabSwitch" , self , self.TabSwitch)
+	-- self.tabControl:Unsubscribe(self.addTabSub)
+	if self.tempFix then
+		self.tabControl:Subscribe("TabSwitch" , self , self.TabSwitch)
+		self.tempFix = false
+	end
 end
 
 function RaceMenu:TabSwitch()

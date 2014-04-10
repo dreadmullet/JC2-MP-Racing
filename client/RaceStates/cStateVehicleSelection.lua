@@ -141,7 +141,12 @@ function StateVehicleSelection:CreateMenus()
 end
 
 function StateVehicleSelection:UpdateTemplateControls()
-	self.groupBoxTemplateList:RemoveAllChildren()
+	-- self.groupBoxTemplateList:RemoveAllChildren()
+	self.tempChildren = self.tempChildren or {}
+	for index , child in ipairs(self.tempChildren) do
+		child:Remove()
+	end
+	self.tempChildren = {}
 	
 	local templates = self.vehicles[self.vehicleIndex].templates
 	
@@ -160,6 +165,7 @@ function StateVehicleSelection:UpdateTemplateControls()
 	-- TODO: Have both model and template use a generic function.
 	for index , template in ipairs(templates) do
 		baseButton = Button.Create(self.groupBoxTemplateList)
+		table.insert(self.tempChildren , baseButton)
 		baseButton:SetMargin(Vector2(0 , 3) , Vector2(0 , 3))
 		baseButton:SetDock(GwenPosition.Top)
 		baseButton:SetHeight(24)
