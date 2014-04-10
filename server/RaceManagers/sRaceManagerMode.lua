@@ -124,6 +124,8 @@ function RaceManagerMode:SkipRace()
 		self:EndRaceIn(0)
 	end
 	
+	self:Message("Race skipped")
+	
 	self:NetworkSend("RaceSkipped")
 end
 
