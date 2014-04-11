@@ -309,6 +309,8 @@ end
 function StateVehicleSelection:StateSelection()
 	self:RenderAlways()
 	
+	RaceGUI.DrawCourseName(self.race.course.name)
+	
 	Mouse:SetVisible(self.camera.isInputEnabled == false or inputSuspensionValue > 0)
 	
 	if self.colorBuffer and self.setColorsTimer:GetSeconds() > 0.1 then
