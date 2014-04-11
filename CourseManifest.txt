@@ -15,7 +15,7 @@ HillclimbDesertHighlands
 Icewheels
 INeverAskedForThis
 # LostIslandRally -- Cars start on fire because the EMP tower activates.
-# MileHighClubMadness -- Spawns are broken.
+MileHighClubMadness
 MileHighClubDive1
 PanauCanals
 ReapersRun
