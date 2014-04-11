@@ -16,8 +16,16 @@ function StateVehicleSelection:__init(race) ; EGUSM.SubscribeUtility.__init(self
 	--    used = number
 	self.vehicles = Copy(self.race.course.vehiclesInfo)
 	
+	-- If this race has more players than spawns, add that many extra to each vehicle.
+	local extraVehicles = 0
+	if self.race.numPlayers > #self.spawns then
+		extraVehicles = self.race.numPlayers - #self.spawns
+	end
+	
+	-- Add the 'used' variable to each vehicle info and change the available counts, if necessary.
 	for index , vehicleInfo in ipairs(self.vehicles) do
 		vehicleInfo.used = 0
+		vehicleInfo.available = vehicleInfo.available + extraVehicles
 	end
 	
 	-- Create playerIdToVehicleSelector.
