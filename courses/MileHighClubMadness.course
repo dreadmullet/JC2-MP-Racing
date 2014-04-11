@@ -6,6 +6,7 @@
 
          ],
          "useIcon":false,
+			"isRespawnable":false,
          "position":{
             "z":-4965.9150390625,
             "x":13200,
@@ -22,6 +23,7 @@
 
          ],
          "useIcon":false,
+			"isRespawnable":true,
          "position":{
             "z":-4948.884765625,
             "x":13200,
@@ -38,6 +40,7 @@
 
          ],
          "useIcon":false,
+			"isRespawnable":false,
          "position":{
             "z":-4924.28515625,
             "x":13200,
@@ -54,6 +57,7 @@
 
          ],
          "useIcon":false,
+			"isRespawnable":false,
          "position":{
             "z":-4965.9150390625,
             "x":13200,
