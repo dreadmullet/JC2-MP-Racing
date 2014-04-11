@@ -38,7 +38,7 @@ function RaceManagerMode:AddToRaceMenu()
 	
 	local groupBox = RaceMenu.CreateGroupBox(RaceMenu.instance.addonArea)
 	groupBox:SetDock(GwenPosition.Top)
-	groupBox:SetHeight(196)
+	groupBox:SetHeight(180)
 	groupBox:SetText("Current race")
 	
 	local tableControl
@@ -64,7 +64,7 @@ function RaceManagerMode:AddToRaceMenu()
 	-- Voteskip control
 	
 	self.voteSkipBase = BaseWindow.Create(groupBox)
-	self.voteSkipBase:SetMargin(Vector2(0 , 6) , Vector2(0 , 0))
+	self.voteSkipBase:SetMargin(Vector2(0 , 0) , Vector2(0 , 0))
 	self.voteSkipBase:SetDock(GwenPosition.Top)
 	self.voteSkipBase:SetHeight(32)
 	

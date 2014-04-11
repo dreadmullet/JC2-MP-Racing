@@ -54,7 +54,7 @@ end
 function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	RaceMenu.instance = self
 	
-	self.size = Vector2(736 , 430)
+	self.size = Vector2(736 , 472)
 	self.isEnabled = false
 	-- These two help with limiting network requests. Used in PostTick.
 	self.requestTimers = {}

@@ -1,5 +1,3 @@
-
--- Seed random generator.
 math.randomseed(os.time())
 math.random()
 
@@ -25,14 +23,11 @@ settings.blockedInputsStartingGrid = {
 	Action.VehicleFireRight ,
 	Action.NextWeapon ,
 	Action.PrevWeapon ,
-	-- Action.Accelerate , -- Selectively disabled in StateStartingGrid depending on vehicle type.
 	Action.Reverse ,
 	Action.HeliIncAltitude ,
 	Action.HeliDecAltitude ,
 	Action.PlaneIncTrust ,
 	Action.PlaneDecTrust ,
-	-- Action.BoatForward , -- These two don't even do anything.
-	-- Action.BoatBackward ,
 }
 settings.blockedInputsStartingGridOnFoot = {
 	Action.FireLeft ,
@@ -49,13 +44,16 @@ settings.blockedInputsStartingGridOnFoot = {
 	Action.Kick ,
 }
 settings.blockedInputsInVehicle = {
-	-- Action.UseItem ,
 	Action.StuntJump ,
 	Action.ParachuteOpenClose ,
 }
 
 -- Make sure everyone doesn't send their distance at the same time.
 settings.sendCheckpointDistanceInterval = 0.4 + math.random() * 0.027
+
+settings.motdText =
+	"Hello, and welcome to the server!\n"..
+	"You can type /"..tostring(settings.command).." in chat to open this menu."
 
 settings.gamemodeName = "JC2-MP-Racing"
 settings.gamemodeDescription = [====[In publishing and graphic design, lorem ipsum[1] is a placeholder text commonly used to demonstrate the graphic elements of a document or visual presentation. By replacing the distraction of meaningful content with filler text of scrambled Latin it allows viewers to focus on graphical elements such as font, typography, and layout.
