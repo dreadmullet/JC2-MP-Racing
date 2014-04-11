@@ -28,7 +28,7 @@ function RaceManagerJoinable:SetupNextRace()
 	Stats.UpdateCache()
 	
 	self.playerQueue = {}
-	self.nextCourse = self.courseManager:LoadCourseRandom()
+	self.nextCourse = self.courseManager:LoadRandom()
 	self.nextCourseCollisions = math.random() > 0.55
 	
 	self:Message(

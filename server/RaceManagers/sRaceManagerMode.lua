@@ -48,7 +48,8 @@ function RaceManagerMode:CreateRace()
 	if self.nextRaceInfo.force then
 		course = self.nextRaceInfo.course
 	else
-		course = self.courseManager:LoadCourseSequential()
+		course = self.courseManager:LoadNext()
+		self.courseManager:Advance()
 	end
 	
 	local args = {
@@ -92,9 +93,12 @@ function RaceManagerMode:MarshalCurrentRace()
 end
 
 function RaceManagerMode:UpdateNextRaceInfo()
+	local course = self.courseManager:LoadNext()
+	local collisions = course:ProcessCollisions(math.random() >= 0.5)
+	
 	self.nextRaceInfo = {
-		course = Course.Load(self.courseManager:GetNextCourseName()) ,
-		collisions = math.random() >= 0.5 ,
+		course = course ,
+		collisions = collisions ,
 		force = false ,
 	}
 end

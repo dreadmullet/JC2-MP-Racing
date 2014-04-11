@@ -1,3 +1,9 @@
+ForceCollision = {
+	None = 0 ,
+	On = 1 ,
+	Off = 2 ,
+}
+
 class("Course")
 
 -- TODO: Perhaps Course should only contain info, it should not do anything; that is up to other
@@ -14,6 +20,7 @@ function Course:__init()
 	self.weatherSeverity = -1
 	self.parachuteEnabled = true
 	self.grappleEnabled = true
+	self.forceCollision = ForceCollision.None
 	self.authors = {}
 	-- Array of CourseCheckpoints.
 	self.checkpoints = {}
@@ -129,6 +136,17 @@ function Course:MarshalInfo()
 	}
 end
 
+-- Returns collisions, but modifies it if our forceCollision is not None.
+function Course:ProcessCollisions(collisions)
+	if self.forceCollision == ForceCollision.On then
+		return true
+	elseif self.forceCollision == ForceCollision.Off then
+		return false
+	else
+		return collisions
+	end
+end
+
 function Course:Save(name)
 	local ctable = {}
 	
@@ -138,6 +156,7 @@ function Course:Save(name)
 	ctable.weatherSeverity = self.weatherSeverity
 	ctable.parachuteEnabled = self.parachuteEnabled
 	ctable.grappleEnabled = self.grappleEnabled
+	ctable.forceCollision = self.forceCollision
 	ctable.authors = self.authors
 	
 	ctable.checkpoints = {}
@@ -208,6 +227,7 @@ function Course.Load(name)
 	course.weatherSeverity = ctable.weatherSeverity
 	course.parachuteEnabled = ctable.parachuteEnabled
 	course.grappleEnabled = ctable.grappleEnabled
+	course.forceCollision = ctable.forceCollision or ForceCollision.None
 	course.authors = ctable.authors
 	-- Temporary because I'm not going to change every course just for this.
 	if course.parachuteEnabled == nil then course.parachuteEnabled = true end

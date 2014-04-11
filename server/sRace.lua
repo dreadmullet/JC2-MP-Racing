@@ -59,10 +59,15 @@ function Race:__init(args)
 	
 	self.overflowHandling = args.overflowHandling or Race.OverflowHandling.StackSpawns
 	
+	-- Collisions
+	
 	self.vehicleCollisions = args.collisions
 	if self.vehicleCollisions == nil then
 		self.vehicleCollisions = false
 	end
+	
+	self.vehicleCollisions = self.course:ProcessCollisions(self.vehicleCollisions)
+	
 	if
 		self.overflowHandling == Race.OverflowHandling.StackSpawns and
 		self.numPlayers > self.course:GetMaxPlayers()

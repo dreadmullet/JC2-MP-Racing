@@ -19,27 +19,33 @@ function CourseManager:GetRandomCourseName()
 	return table.randomvalue(self.courseNames)
 end
 
-function CourseManager:LoadCourseSequential()
+function CourseManager:LoadNext()
+	if #self.courseNames == 0 then
+		error("No available courses!")
+		return nil
+	end
+	
 	local courseName = self.courseNames[self.currentIndex]
 	
+	self:Advance()
+	
+	return Course.Load(courseName)
+end
+
+function CourseManager:LoadRandom()
+	if #self.courseNames == 0 then
+		error("No available courses!")
+		return nil
+	end
+	
+	return Course.Load(self:GetRandomCourseName())
+end
+
+function CourseManager:Advance()
 	self.currentIndex = self.currentIndex + 1
 	if self.currentIndex > #self.courseNames then
 		self.currentIndex = 1
 		self:Randomize()
-	end
-	
-	if #self.courseNames > 0 then
-		return Course.Load(courseName)
-	else
-		return error("No available courses!")
-	end
-end
-
-function CourseManager:LoadCourseRandom()
-	if #self.courseNames > 0 then
-		return Course.Load(self:GetRandomCourseName())
-	else
-		return error("No available courses!")
 	end
 end
 
