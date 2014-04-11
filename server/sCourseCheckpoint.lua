@@ -8,9 +8,10 @@ function CourseCheckpoint:__init(course)
 	self.type = 7
 	-- nil = Allow all vehicles and on-foot.
 	-- {} -- Allow all vehicles but not on-foot.
-	-- {0} = Only allow on-foot.
+	-- {0} = Only allow on-foot. TODO: Wait, shouldn't it be -1?
 	self.validVehicles = nil
 	self.useIcon = false
+	self.isRespawnable = true
 	self.checkpoint = nil
 	-- When racer enters checkpoint, these functions of ours are called. One argument: racer.
 	-- Array of function names.
@@ -98,7 +99,8 @@ function CourseCheckpoint:MarshalJSON()
 	checkpoint.type = self.type
 	checkpoint.validVehicles = self.validVehicles
 	checkpoint.useIcon = self.useIcon
+	checkpoint.isRespawnable = self.isRespawnable
 	checkpoint.actions = self.actions
-
+	
 	return checkpoint
 end

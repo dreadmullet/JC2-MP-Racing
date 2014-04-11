@@ -231,6 +231,7 @@ function Racer:Respawn()
 	end
 	
 	-- Get 2 extra indices of checkpoints around our current one.
+	-- TODO: Some logic should probably be in Course/CourseCheckpoint.
 	local previousCheckpointIndex = self.targetCheckpoint - 2
 	local checkpointIndex = self.targetCheckpoint - 1
 	local nextCheckpointIndex = self.targetCheckpoint
@@ -241,6 +242,17 @@ function Racer:Respawn()
 	end
 	if previousCheckpointIndex <= 0 and self.race.course.type == "Circuit" then
 		previousCheckpointIndex = #self.race.course.checkpoints
+	end
+	
+	-- Handle checkpoints that are not respawnable.
+	while checkpointIndex > 0 do
+		if self.race.course.checkpoints[checkpointIndex].isRespawnable then
+			break
+		end
+		
+		previousCheckpointIndex = previousCheckpointIndex - 1
+		checkpointIndex = checkpointIndex - 1
+		nextCheckpointIndex = nextCheckpointIndex - 1
 	end
 	
 	-- Fix for courses with two checkpoints.

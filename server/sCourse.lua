@@ -249,6 +249,10 @@ function Course.Load(name)
 		
 		cp.validVehicles = checkpoint.validVehicles
 		cp.actions = checkpoint.actions or {}
+		cp.isRespawnable = checkpoint.isRespawnable
+		if cp.isRespawnable == nil then
+			cp.isRespawnable = true
+		end
 	end
 	
 	course.spawns = {}
