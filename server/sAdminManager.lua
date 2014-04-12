@@ -32,7 +32,35 @@ AdminManager.SetMOTD = function(text , player)
 	Network:Broadcast("SetMOTD" , text)
 end
 
+AdminManager.Kick = function(playerName , player)
+	if not player:GetValue("isRaceAdmin") then
+		return
+	end
+	
+	local player = Player.Match(playerName)[1]
+	if player then
+		player:Kick()
+	else
+		player:SendChatMessage(playerName.." not found!" , Color.Red)
+	end
+end
+
+AdminManager.Ban = function(playerName , player)
+	if not player:GetValue("isRaceAdmin") then
+		return
+	end
+	
+	local player = Player.Match(playerName)[1]
+	if player then
+		player:Ban()
+	else
+		player:SendChatMessage(playerName.." not found!" , Color.Red)
+	end
+end
+
 Network:Subscribe("AdminSetMOTD" , AdminManager.SetMOTD)
+Network:Subscribe("AdminKick" , AdminManager.Kick)
+Network:Subscribe("AdminBan" , AdminManager.Ban)
 
 -- Console events
 
