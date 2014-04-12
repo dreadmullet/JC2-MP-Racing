@@ -1,3 +1,8 @@
+math.randomseed(os.time())
+math.tau = math.pi * 2
+
+Stats = {}
+
 ModuleLoad = function()
 	Chat:Broadcast(
 		"JC2-MP-Racing "..statics.version.." loaded." ,
@@ -23,6 +28,3 @@ ModuleLoad = function()
 end
 
 Events:Subscribe("ModuleLoad" , ModuleLoad)
-
-math.randomseed(os.time())
-math.tau = math.pi * 2
