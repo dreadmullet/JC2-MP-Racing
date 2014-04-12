@@ -29,6 +29,8 @@ function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
 	self:NetworkSubscribe("VoteSkip")
 	self:NetworkSubscribe("AdminSkip")
 	self:NetworkSubscribe("AdminSetNextCourse")
+	self:ConsoleSubscribe("skiprace" , self.ConsoleSkip)
+	self:ConsoleSubscribe("setnextcourse" , self.ConsoleSetNextCourse)
 end
 
 -- Adds all players in the server to a new Race.
@@ -145,6 +147,24 @@ function RaceManagerMode:SkipRace()
 	self:Message("Race skipped")
 	
 	self:NetworkSend("RaceSkipped")
+end
+
+function RaceManagerMode:ForceNextCourse(courseName)
+	local course = Course.Load(courseName)
+	if course == nil then
+		return nil
+	end
+	
+	self.nextRaceInfo.course = course
+	self.nextRaceInfo.force = true
+	
+	local args = {
+		raceInfo = self:MarshalCurrentRace() ,
+		nextRaceInfo = self:MarshalNextRace() ,
+	}
+	Network:Broadcast("RaceInfoChanged" , args)
+	
+	return course
 end
 
 -- PlayerManager callbacks
@@ -285,19 +305,29 @@ function RaceManagerMode:AdminSetNextCourse(courseName , player)
 		return
 	end
 	
-	local course = Course.Load(courseName)
-	if course == nil then
-		return
+	local course = self:ForceNextCourse(courseName)
+	if course then
+		self:Message(player:GetName().." changed the next course to "..course.name)
+	else
+		player:SendChatMessage(courseName.." not found!" , Color.Red)
 	end
+end
+
+-- Console events
+
+function RaceManagerMode:ConsoleSkip()
+	self:Message("[Console] force skipped the current race")
 	
-	self.nextRaceInfo.course = course
-	self.nextRaceInfo.force = true
+	self:SkipRace()
+end
+
+function RaceManagerMode:ConsoleSetNextCourse(args)
+	local courseName = args.text
 	
-	self:Message(player:GetName().." changed the next course to "..course.name)
-	
-	local args = {
-		raceInfo = self:MarshalCurrentRace() ,
-		nextRaceInfo = self:MarshalNextRace() ,
-	}
-	Network:Broadcast("RaceInfoChanged" , args)
+	local course = self:ForceNextCourse(courseName)
+	if course then
+		self:Message("[Console] changed the next course to "..course.name)
+	else
+		warn(courseName.." not found!")
+	end
 end
