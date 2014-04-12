@@ -400,3 +400,20 @@ RaceMenuUtility.CreateTimer = function(text , seconds)
 	t.sub = Events:Subscribe("Render" , t , UpdateTimer)
 	return t
 end
+
+RaceMenuUtility.CreateLabeledTextBox = function(parent)
+	local base = BaseWindow.Create(parent)
+	base:SetMargin(Vector2(0 , 4) , Vector2(0 , 4))
+	base:SetHeight(18)
+	
+	local textBox = TextBox.Create(base)
+	textBox:SetDock(GwenPosition.Left)
+	textBox:SetWidth(180)
+	
+	local label = Label.Create(base)
+	label:SetMargin(Vector2(4 , 3) , Vector2(0 , 0))
+	label:SetDock(GwenPosition.Fill)
+	label:SetTextSize(16)
+	
+	return base , textBox , label
+end

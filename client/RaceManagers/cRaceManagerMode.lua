@@ -184,26 +184,14 @@ function RaceManagerMode:RaceAdminInitialize()
 	button:Subscribe("Press" , self , self.AdminSkipButtonPressed)
 	self.adminSkipButton = button
 	
-	local base = BaseWindow.Create(AdminTab.instance.page)
-	base:SetMargin(Vector2(0 , 4) , Vector2(0 , 4))
+	local base , textBox , label = RaceMenuUtility.CreateLabeledTextBox(AdminTab.instance.page)
 	base:SetDock(GwenPosition.Top)
-	base:SetHeight(18)
-	
-	local textBox = TextBox.Create(base)
-	textBox:SetDock(GwenPosition.Left)
-	textBox:SetWidth(180)
 	textBox:Subscribe("ReturnPressed" , self , self.NextCourseTextBoxAccepted)
 	textBox:SetToolTip(
 		[[Example: "BandarSelekeh". Make sure the name is correct, or else it will error.]]
 	)
 	self.adminNextCourseTextBox = textBox
-	
-	local label = Label.Create(base)
-	label:SetMargin(Vector2(0 , 2) , Vector2(0 , 0))
-	label:SetDock(GwenPosition.Left)
-	label:SetTextSize(16)
-	label:SetText(" Set next course")
-	label:SizeToContents()
+	label:SetText("Set next course")
 end
 
 -- Network events
