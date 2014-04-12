@@ -21,3 +21,26 @@ end
 
 Events:Subscribe("PlayerAuthenticate" , AdminManager.PlayerAuthenticate)
 Events:Subscribe("ClientModuleLoad" , AdminManager.ClientModuleLoad)
+
+-- Network events
+
+AdminManager.SetMOTD = function(text , player)
+	if not player:GetValue("isRaceAdmin") then
+		return
+	end
+	
+	Network:Broadcast("SetMOTD" , text)
+end
+
+Network:Subscribe("AdminSetMOTD" , AdminManager.SetMOTD)
+
+-- Console events
+
+AdminManager.ConsoleSetMOTD = function(args)
+	-- Replace "\n" with actual newlines.
+	local text = args.text:gsub("\\n" , "\n")
+	
+	Network:Broadcast("SetMOTD" , text)
+end
+
+Console:Subscribe("setmotd" , AdminManager.ConsoleSetMOTD)

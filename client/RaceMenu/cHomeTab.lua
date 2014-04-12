@@ -78,6 +78,8 @@ function HomeTab:__init() ; TabBase.__init(self , "Home")
 	
 	RaceMenu.instance.addonArea = BaseWindow.Create(self.page)
 	RaceMenu.instance.addonArea:SetDock(GwenPosition.Fill)
+	
+	self:NetworkSubscribe("SetMOTD")
 end
 
 -- RaceMenu callbacks
@@ -89,7 +91,7 @@ function HomeTab:OnActivate()
 end
 
 function HomeTab:OnDeactivate()
-	self:NetworkUnsubscribeAll()
+	self:NetworkUnsubscribe("ReceivePlayerStats")
 end
 
 -- Network events
@@ -100,4 +102,8 @@ function HomeTab:ReceivePlayerStats(playerStats)
 	end
 	
 	self.playerStatsControl:Update(playerStats)
+end
+
+function HomeTab:SetMOTD(text)
+	self.motdLabel:SetText(text)
 end
