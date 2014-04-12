@@ -27,8 +27,6 @@ function CourseManager:LoadNext()
 	
 	local courseName = self.courseNames[self.currentIndex]
 	
-	self:Advance()
-	
 	return Course.Load(courseName)
 end
 
