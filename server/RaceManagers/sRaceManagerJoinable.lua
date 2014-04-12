@@ -141,7 +141,7 @@ function RaceManagerJoinable:RacerFinish(args)
 	end
 	
 	local racer = race:GetRacerFromPlayerId(args.playerId)
-	racer:Message("Use "..settings.command.." to leave the race")
+	racer:Message("Use /"..settings.command.." to leave.")
 end
 
 function RaceManagerJoinable:RaceEnd(args)
