@@ -52,6 +52,8 @@ function Spectate:RenderVehicleSelection()
 end
 
 function Spectate:RenderRacing()
+	self.orbitCamera.isInputEnabled = inputSuspensionValue == 0
+	
 	if Input:GetValue(Action.FireRight) == 0 and Input:GetValue(Action.FireLeft) == 0 then
 		self.changeTargetInputPressed = false
 	end
@@ -62,7 +64,7 @@ function Spectate:RenderRacing()
 		
 		local vehicle = targetPlayer:GetVehicle()
 		if vehicle then
-			self.orbitCamera.targetPosition = vehicle:GetPosition() + Vector3(0 , 1 , 0)
+			self.orbitCamera.targetPosition = vehicle:GetCenterOfMass() + Vector3(0 , 0.5 , 0)
 		else
 			self.orbitCamera.targetPosition = targetPlayer:GetPosition() + Vector3(0 , 1 , 0)
 		end
