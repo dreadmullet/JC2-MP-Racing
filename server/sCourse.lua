@@ -47,7 +47,7 @@ function Course:__init()
 	-- Key = modelId
 	-- value = true
 	self.dlcVehicles = {}
-	self.averageSpawnPosition = Vector3()
+	self.averageSpawnPosition = Vector3(0 , 0 , 0)
 end
 
 function Course:GetMaxPlayers()
