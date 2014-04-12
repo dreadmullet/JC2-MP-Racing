@@ -126,7 +126,7 @@ function RaceManagerMode:UpdateVoteSkipInfo()
 end
 
 function RaceManagerMode:GetRequiredSkipVotes()
-	return math.ceil(self:GetPlayerCount() * 0.475)
+	return math.ceil(self:GetPlayerCount() * 0.525)
 end
 
 function RaceManagerMode:EndRaceIn(seconds)
