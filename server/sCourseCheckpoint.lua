@@ -1,5 +1,3 @@
-class("CourseCheckpoint")
-
 function CourseCheckpoint:__init(course)
 	self.course = course
 	self.index = -1

@@ -2,6 +2,7 @@ math.randomseed(os.time())
 math.tau = math.pi * 2
 
 Stats = {}
+class("CourseCheckpoint")
 
 ModuleLoad = function()
 	Chat:Broadcast(
