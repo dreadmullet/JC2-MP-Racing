@@ -30,7 +30,9 @@ function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	self.isRespawning = false
 	
 	-- Disable collisions, if applicable.
-	if self.race.vehicleCollisions == false then
+	if self.race.vehicleCollisions then
+		self.player:EnableCollision(CollisionGroup.Vehicle)
+	else
 		self.player:DisableCollision(CollisionGroup.Vehicle)
 	end
 	-- Always disable player collisions.
@@ -79,8 +81,10 @@ function Racer:Remove()
 		vehicle:Remove()
 	end
 	
-	-- Reenable collisions.
-	if self.vehicleCollisions == false then
+	-- Reenable collisions, if applicable.
+	if self.race.vehicleCollisions then
+		self.player:DisableCollision(CollisionGroup.Vehicle)
+	else
 		self.player:EnableCollision(CollisionGroup.Vehicle)
 	end
 	self.player:EnableCollision(CollisionGroup.Player)
