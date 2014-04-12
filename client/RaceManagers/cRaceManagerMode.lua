@@ -11,7 +11,7 @@ function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
 	self:AddToRaceMenu()
 	
 	self:ApplyNextRaceInfo(args.nextRaceInfo)
-	if args.currentRaceInfo then
+	if args.raceInfo then
 		self:ApplyCurrentRaceInfo(args.raceInfo)
 	end
 	
@@ -22,7 +22,9 @@ function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
 	end
 	
 	self:EventSubscribe("RaceCreate")
+	self:EventSubscribe("SpectateCreate" , self.RaceCreate)
 	self:EventSubscribe("RaceEnd")
+	self:EventSubscribe("SpectateEnd" , self.RaceEnd)
 	self:NetworkSubscribe("UpdateVoteSkipInfo")
 	self:NetworkSubscribe("AcknowledgeVoteSkip")
 	self:NetworkSubscribe("AcknowledgeAdminSkip")

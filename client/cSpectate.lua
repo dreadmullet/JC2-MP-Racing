@@ -39,6 +39,8 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	self:NetworkSubscribe("RaceSetState")
 	self:NetworkSubscribe("ReceiveTargetPosition")
 	self:NetworkSubscribe("Terminate")
+	
+	Events:Fire("SpectateCreate")
 end
 
 -- Events
@@ -169,4 +171,6 @@ function Spectate:Terminate()
 	end
 	self:Destroy()
 	self.orbitCamera:Destroy()
+	
+	Events:Fire("SpectateEnd")
 end
