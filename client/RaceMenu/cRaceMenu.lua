@@ -65,6 +65,7 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	self:CreateWindow()
 	self:AddTab(HomeTab)
+	self:AddTab(SettingsTab)
 	self:AddTab(PlayersTab)
 	self:AddTab(CoursesTab)
 	

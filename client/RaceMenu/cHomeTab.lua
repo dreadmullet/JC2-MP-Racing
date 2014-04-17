@@ -61,19 +61,6 @@ function HomeTab:__init() ; TabBase.__init(self , "Home")
 	self.playerStatsControl = RaceMenuUtility.CreatePlayerStatsControl(groupBoxStats)
 	self.playerStatsControl.base:SetDock(GwenPosition.Fill)
 	
-	local groupBoxBindMenu = RaceMenu.CreateGroupBox(leftSide)
-	groupBoxBindMenu:SetDock(GwenPosition.Fill)
-	groupBoxBindMenu:SetText("Controls")
-	
-	local bindMenu = BindMenu.Create(groupBoxBindMenu)
-	bindMenu:SetDock(GwenPosition.Fill)
-	bindMenu:AddControl("Toggle this menu" , nil)
-	bindMenu:AddControl("Respawn" , "R")
-	bindMenu:AddControl("Rotate camera" , "FireLeft")
-	bindMenu:RequestSettings()
-	
-	groupBoxBindMenu:SetWidth(bindMenu:GetWidth())
-	
 	-- Right side
 	
 	RaceMenu.instance.addonArea = BaseWindow.Create(self.page)
