@@ -51,7 +51,10 @@ end
 
 -- Instance functions
 
-function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
+function RaceMenu:__init()
+	EGUSM.SubscribeUtility.__init(self)
+	TabManager.__init(self)
+	
 	RaceMenu.instance = self
 	
 	self.size = Vector2(736 , 472)
@@ -59,8 +62,6 @@ function RaceMenu:__init() ; EGUSM.SubscribeUtility.__init(self)
 	-- These two help with limiting network requests. Used in PostTick.
 	self.requestTimers = {}
 	self.requests = {}
-	self.tabs = {}
-	self.currentTab = nil
 	self.addonArea = nil
 	
 	self:CreateWindow()
@@ -84,12 +85,8 @@ function RaceMenu:CreateWindow()
 	self.window:SetVisible(self.isEnabled)
 	self.window:Subscribe("WindowClosed" , self , self.WindowClosed)
 	
-	self.tabControl = TabControl.Create(self.window)
+	self:CreateTabControl(self.window)
 	self.tabControl:SetDock(GwenPosition.Fill)
-	self.tabControl:SetTabStripPosition(GwenPosition.Top)
-	self.tabControl:SetBackgroundVisible(false)
-	self.addTabSub = self.tabControl:Subscribe("AddTab" , self , self.OnAddTab)
-	self.tempFix = true
 end
 
 function RaceMenu:SetEnabled(enabled)
@@ -115,65 +112,10 @@ function RaceMenu:AddRequest(networkName , arg)
 	table.insert(self.requests , {networkName , arg})
 end
 
-function RaceMenu:AddTab(tabClass)
-	local instance = tabClass(self)
-	table.insert(self.tabs , instance)
-	
-	instance.__id = {}
-	
-	return instance
-end
-
-function RaceMenu:RemoveTab(tabToRemove)
-	for index , tab in ipairs(self.tabs) do
-		if tab.__id == tabToRemove.__id then
-			self.tabControl:SetCurrentTab(self.tabs[1].tabButton)
-			self.tabControl:RemovePage(tab.tabButton)
-			if tab.OnRemove then
-				tab:OnRemove()
-			end
-			
-			table.remove(self.tabs , index)
-			
-			break
-		end
-	end
-end
-
-function RaceMenu:ActivateCurrentTab()
-	self.currentTab = self.tabControl:GetCurrentTab():GetDataObject("tab")
-	
-	if self.currentTab.OnActivate then
-		self.currentTab:OnActivate()
-	end
-end
-
-function RaceMenu:DeactivateCurrentTab()
-	if self.currentTab.OnDeactivate then
-		self.currentTab:OnDeactivate()
-	end
-end
-
 -- Gwen events
 
 function RaceMenu:WindowClosed()
 	self:SetEnabled(false)
-end
-
-function RaceMenu:OnAddTab()
-	-- self.tabControl:Unsubscribe(self.addTabSub)
-	if self.tempFix then
-		self.tabControl:Subscribe("TabSwitch" , self , self.TabSwitch)
-		self.tempFix = false
-	end
-end
-
-function RaceMenu:TabSwitch()
-	if self.currentTab then
-		self:DeactivateCurrentTab()
-	end
-	
-	self:ActivateCurrentTab()
 end
 
 -- Events
