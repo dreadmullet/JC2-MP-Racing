@@ -373,6 +373,7 @@ RaceMenuUtility.CreateTimer = function(text , seconds)
 			self.timerLabel:SetTextColor(Color.FromHSV(hue , sat , 0.95))
 			
 			self.base:SetVisible(true)
+			self.base:SendToBack()
 		else
 			self.base:SetVisible(false)
 		end
