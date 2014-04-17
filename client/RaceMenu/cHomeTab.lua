@@ -37,23 +37,21 @@ function HomeTab:__init(...) ; TabBase.__init(self , "Home" , ...)
 	
 	-- MOTD area
 	
-	self.motdLabel = Label.Create(self.page)
-	self.motdLabel:SetMargin(Vector2(8 , 10) , Vector2(8 , 10))
-	self.motdLabel:SetDock(GwenPosition.Top)
+	local groupBoxMOTD = RaceMenu.CreateGroupBox(self.page)
+	groupBoxMOTD:SetDock(GwenPosition.Top)
+	groupBoxMOTD:SetHeight(104)
+	groupBoxMOTD:SetText("Message of the day")
+	
+	self.motdLabel = Label.Create(groupBoxMOTD)
+	self.motdLabel:SetMargin(Vector2(12 , 2) , Vector2(12 , 2))
+	self.motdLabel:SetDock(GwenPosition.Fill)
 	self.motdLabel:SetAlignment(GwenPosition.CenterH)
-	self.motdLabel:SetHeight(48)
 	-- self.motdLabel:SetWrap(true)
 	self.motdLabel:SetTextSize(16)
 	self.motdLabel:SetTextColor(Color.FromHSV(215 , 0.25 , 0.95))
 	self.motdLabel:SetText(settings.motdText)
 	
-	-- Left side
-	
-	local leftSide = BaseWindow.Create(self.page)
-	leftSide:SetDock(GwenPosition.Left)
-	leftSide:SetWidth(350)
-	
-	-- Right side
+	-- Addon area
 	
 	RaceMenu.instance.addonArea = BaseWindow.Create(self.page)
 	RaceMenu.instance.addonArea:SetDock(GwenPosition.Fill)

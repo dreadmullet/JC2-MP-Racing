@@ -39,8 +39,8 @@ function RaceManagerMode:AddToRaceMenu()
 	-- Current race info
 	
 	local groupBox = RaceMenu.CreateGroupBox(RaceMenu.instance.addonArea)
-	groupBox:SetDock(GwenPosition.Top)
-	groupBox:SetHeight(180)
+	groupBox:SetDock(GwenPosition.Left)
+	groupBox:SetWidthAutoRel(0.5)
 	groupBox:SetText("Current race")
 	
 	local tableControl
