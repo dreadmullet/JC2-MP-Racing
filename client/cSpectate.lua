@@ -33,9 +33,8 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	self.orbitCamera.targetPosition = args.position or Vector3(0 , 10000 , 0)
 	
 	self.requestTimer = nil
-	self.changeTargetInputPressed = false
 	
-	self:EventSubscribe("LocalPlayerInput")
+	self:EventSubscribe("ControlDown")
 	self:NetworkSubscribe("RaceSetState")
 	self:NetworkSubscribe("ReceiveTargetPosition")
 	self:NetworkSubscribe("Terminate")
@@ -55,10 +54,6 @@ end
 
 function Spectate:RenderRacing()
 	self.orbitCamera.isInputEnabled = inputSuspensionValue == 0
-	
-	if Input:GetValue(Action.FireRight) == 0 and Input:GetValue(Action.FireLeft) == 0 then
-		self.changeTargetInputPressed = false
-	end
 	
 	local targetPlayer = Player.GetById(self.targetPlayerId)
 	if IsValid(targetPlayer) then
@@ -107,15 +102,11 @@ function Spectate:RenderRacing()
 	end
 end
 
-function Spectate:LocalPlayerInput(args)
-	if self.changeTargetInputPressed == false then
-		if args.input == Action.VehicleFireRight then
-			self:ChangeTarget(1)
-			self.changeTargetInputPressed = true
-		elseif args.input == Action.VehicleFireLeft then
-			self:ChangeTarget(-1)
-			self.changeTargetInputPressed = true
-		end
+function Spectate:ControlDown(args)
+	if args.name == "Next spectate target" then
+		self:ChangeTarget(1)
+	elseif args.name == "Previous spectate target" then
+		self:ChangeTarget(-1)
 	end
 end
 

@@ -14,6 +14,8 @@ function SettingsTab:__init(...) ; TabBase.__init(self , "Settings" , ...)
 	bindMenu:AddControl("Toggle this menu" , nil)
 	bindMenu:AddControl("Respawn" , "R")
 	bindMenu:AddControl("Rotate camera" , "FireLeft")
+	bindMenu:AddControl("Next spectate target" , "MoveRight")
+	bindMenu:AddControl("Previous spectate target" , "MoveLeft")
 	bindMenu:RequestSettings()
 	
 	local rightSide = BaseWindow.Create(self.page)
