@@ -81,7 +81,7 @@ function Spectate:RenderRacing()
 			self.requestTimer = Timer()
 			
 			Network:Send("RequestTargetPosition" , self.targetPlayerId)
-			self:Message("Requesting target: "..self.targetPlayerId)
+			print("Requesting target: "..self.targetPlayerId)
 		end
 	end
 	
@@ -131,7 +131,7 @@ function Spectate:ChangeTarget(delta)
 	position = math.clamp(position , 1 , #self.leaderboard)
 	
 	self.targetPlayerId = self.leaderboard[position] or -1
-	self:Message("Target changed to "..self.targetPlayerId)
+	print("Target changed to "..self.targetPlayerId)
 end
 
 -- Network events
@@ -157,7 +157,7 @@ function Spectate:RaceSetState(args)
 end
 
 function Spectate:ReceiveTargetPosition(position)
-	self:Message("Received target: "..tostring(position))
+	print("Received target: "..tostring(position))
 	if position then
 		self.orbitCamera.targetPosition = position
 	else
