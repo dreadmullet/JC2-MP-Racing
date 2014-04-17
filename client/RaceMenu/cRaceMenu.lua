@@ -153,6 +153,12 @@ function RaceMenu:LocalPlayerChat(args)
 end
 
 function RaceMenu:PostTick()
+	-- Force the mouse to be visible if we're visible.
+	if self.isEnabled then
+		Mouse:SetVisible(true)
+	end
+	
+	-- Process network requests.
 	if #self.requests > 0 then
 		-- Expire any old timers.
 		for n = #self.requestTimers , 1 , -1 do
