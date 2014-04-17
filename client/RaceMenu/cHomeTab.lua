@@ -4,7 +4,7 @@ HomeTab.topAreaColor = Color.FromHSV(25 , 0.95 , 0.85)
 HomeTab.topAreaBorderColor = Color(160 , 160 , 160)
 HomeTab.githubLabelColor = Color(255 , 255 , 255 , 228)
 
-function HomeTab:__init() ; TabBase.__init(self , "Home")
+function HomeTab:__init(...) ; TabBase.__init(self , "Home" , ...)
 	-- Top area
 	
 	local topAreaBackground = Rectangle.Create(self.page)

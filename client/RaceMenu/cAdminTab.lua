@@ -1,6 +1,6 @@
 class("AdminTab")
 
-function AdminTab:__init() ; TabBase.__init(self , "Admin")
+function AdminTab:__init(...) ; TabBase.__init(self , "Admin" , ...)
 	AdminTab.instance = self
 	
 	-- MOTD text box

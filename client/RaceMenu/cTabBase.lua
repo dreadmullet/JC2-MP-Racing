@@ -1,7 +1,7 @@
 class("TabBase")
 
-function TabBase:__init(name) ; EGUSM.SubscribeUtility.__init(self)
-	self.tabButton = RaceMenu.instance.tabControl:AddPage(name)
+function TabBase:__init(name , tabControl) ; EGUSM.SubscribeUtility.__init(self)
+	self.tabButton = tabControl:AddPage(name)
 	self.tabButton:SetDataObject("tab" , self)
 	
 	self.page = self.tabButton:GetPage()

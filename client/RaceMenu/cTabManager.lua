@@ -22,7 +22,7 @@ function TabManager:CreateTabControl(parent)
 end
 
 function TabManager:AddTab(tabClass)
-	local instance = tabClass(self)
+	local instance = tabClass(self.tabControl)
 	table.insert(self.tabs , instance)
 	
 	instance.__id = {}

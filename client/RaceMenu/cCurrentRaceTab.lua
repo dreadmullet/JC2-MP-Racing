@@ -1,6 +1,6 @@
 class("CurrentRaceTab")
 
-function CurrentRaceTab:__init() ; TabBase.__init(self , "Current race")
+function CurrentRaceTab:__init(...) ; TabBase.__init(self , "Current race" , ...)
 	self.course = Race.instance.course
 	
 	local groupBoxCourse = RaceMenu.CreateGroupBox(self.page)

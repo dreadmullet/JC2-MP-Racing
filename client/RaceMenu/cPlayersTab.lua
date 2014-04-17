@@ -1,6 +1,6 @@
 class("PlayersTab")
 
-function PlayersTab:__init() ; TabBase.__init(self , "Players")
+function PlayersTab:__init(...) ; TabBase.__init(self , "Players" , ...)
 	self.sortType = PlayerSortType.None
 	self.searchBox = nil
 	self.sortByComboBox = nil

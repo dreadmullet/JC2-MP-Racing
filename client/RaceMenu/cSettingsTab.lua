@@ -1,6 +1,6 @@
 class("SettingsTab")
 
-function SettingsTab:__init() ; TabBase.__init(self , "Settings")
+function SettingsTab:__init(...) ; TabBase.__init(self , "Settings" , ...)
 	local leftSide = BaseWindow.Create(self.page)
 	leftSide:SetDock(GwenPosition.Left)
 	leftSide:SetWidth(360)

@@ -1,6 +1,6 @@
 class("CoursesTab")
 
-function CoursesTab:__init() ; TabBase.__init(self , "Courses")
+function CoursesTab:__init(...) ; TabBase.__init(self , "Courses" , ...)
 	self.recordsList = nil
 	self.recordsIndex = nil
 	self.selectedCourseInfo = nil
