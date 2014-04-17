@@ -53,14 +53,6 @@ function HomeTab:__init() ; TabBase.__init(self , "Home")
 	leftSide:SetDock(GwenPosition.Left)
 	leftSide:SetWidth(350)
 	
-	local groupBoxStats = RaceMenu.CreateGroupBox(leftSide)
-	groupBoxStats:SetHeight(136)
-	groupBoxStats:SetDock(GwenPosition.Top)
-	groupBoxStats:SetText("Personal stats")
-	
-	self.playerStatsControl = RaceMenuUtility.CreatePlayerStatsControl(groupBoxStats)
-	self.playerStatsControl.base:SetDock(GwenPosition.Fill)
-	
 	-- Right side
 	
 	RaceMenu.instance.addonArea = BaseWindow.Create(self.page)
@@ -72,24 +64,14 @@ end
 -- RaceMenu callbacks
 
 function HomeTab:OnActivate()
-	self:NetworkSubscribe("ReceivePlayerStats")
 	
-	RaceMenu.instance:AddRequest("RequestPlayerStats" , LocalPlayer:GetSteamId().id)
 end
 
 function HomeTab:OnDeactivate()
-	self:NetworkUnsubscribe("ReceivePlayerStats")
+	
 end
 
 -- Network events
-
-function HomeTab:ReceivePlayerStats(playerStats)
-	if playerStats.steamId ~= LocalPlayer:GetSteamId().id then
-		return
-	end
-	
-	self.playerStatsControl:Update(playerStats)
-end
 
 function HomeTab:SetMOTD(text)
 	self.motdLabel:SetText(text)

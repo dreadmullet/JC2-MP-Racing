@@ -22,30 +22,47 @@ function PlayersTab:CreateSearchArea()
 	groupBoxSearch:SetHeight(56)
 	groupBoxSearch:SetText("Search")
 	
-	self.searchBox = TextBox.Create(groupBoxSearch)
-	self.searchBox:SetDock(GwenPosition.Left)
-	self.searchBox:SetWidth(360)
-	self.searchBox:SetText("Search by name")
-	self.searchBox:SetDataBool("isValid" , false)
-	self.searchBox:Subscribe("Focus" , self , self.SearchBoxFocused)
-	self.searchBox:Subscribe("Blur" , self , self.SearchBoxUnfocused)
-	self.searchBox:Subscribe("ReturnPressed" , self , self.SearchBoxAccepted)
+	local textBox = TextBox.Create(groupBoxSearch)
+	textBox:SetDock(GwenPosition.Left)
+	textBox:SetWidth(280)
+	textBox:SetText("Search by name")
+	textBox:SetDataBool("isValid" , false)
+	textBox:Subscribe("Focus" , self , self.SearchBoxFocused)
+	textBox:Subscribe("Blur" , self , self.SearchBoxUnfocused)
+	textBox:Subscribe("ReturnPressed" , self , self.SearchBoxAccepted)
+	self.searchBox = textBox
 	
-	local orLabel = Label.Create(groupBoxSearch)
-	orLabel:SetDock(GwenPosition.Left)
-	orLabel:SetMargin(Vector2(6 , 5) , Vector2(6 , 0))
-	orLabel:SetText("or")
-	orLabel:SizeToContents()
+	local CreateOrLabel = function()
+		local label = Label.Create(groupBoxSearch)
+		label:SetDock(GwenPosition.Left)
+		label:SetMargin(Vector2(6 , 5) , Vector2(6 , 0))
+		label:SetText("or")
+		label:SizeToContents()
+		
+		return label
+	end
 	
-	self.sortByComboBox = ComboBox.Create(groupBoxSearch)
-	self.sortByComboBox:SetDock(GwenPosition.Left)
-	self.sortByComboBox:SetWidth(180)
-	self.sortByComboBox:AddItem("Search by stat rankings")
-	self.sortByComboBox:AddItem("Starts")
-	self.sortByComboBox:AddItem("Finishes")
-	self.sortByComboBox:AddItem("Wins")
-	self.sortByComboBox:AddItem("Play time")
-	self.sortByComboBox:Subscribe("Selection" , self , self.SortTypeSelected)
+	CreateOrLabel()
+	
+	local comboBox = ComboBox.Create(groupBoxSearch)
+	comboBox:SetDock(GwenPosition.Left)
+	comboBox:SetWidth(180)
+	comboBox:AddItem("Search by stat rankings")
+	comboBox:AddItem("Starts")
+	comboBox:AddItem("Finishes")
+	comboBox:AddItem("Wins")
+	comboBox:AddItem("Play time")
+	comboBox:Subscribe("Selection" , self , self.SortTypeSelected)
+	self.sortByComboBox = comboBox
+	
+	CreateOrLabel()
+	
+	local button = Button.Create(groupBoxSearch)
+	button:SetPadding(Vector2(8 , 0) , Vector2(8 , 0))
+	button:SetDock(GwenPosition.Left)
+	button:SetText("My stats")
+	button:Subscribe("Press" , self , self.MyStatsButtonPressed)
+	self.myStatsButton = button
 end
 
 function PlayersTab:CreateResultsArea()
@@ -172,6 +189,12 @@ function PlayersTab:SortTypeSelected()
 	
 	self.recordsIndex = 1
 	self:Search()
+end
+
+function PlayersTab:MyStatsButtonPressed()
+	self.playerList:Clear()
+	
+	RaceMenu.instance:AddRequest("RequestPlayerStats" , LocalPlayer:GetSteamId().id)
 end
 
 function PlayersTab:RecordSelected()
