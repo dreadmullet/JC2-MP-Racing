@@ -147,6 +147,16 @@ function Course:ProcessCollisions(collisions)
 	end
 end
 
+function Course:HasDLCConflict(player)
+	for modelId , alwaysTrue in pairs(self.dlcVehicles) do
+		if player:HasVehicleDLC(modelId) == false then
+			return true
+		end
+	end
+	
+	return false
+end
+
 function Course:Save(name)
 	local ctable = {}
 	

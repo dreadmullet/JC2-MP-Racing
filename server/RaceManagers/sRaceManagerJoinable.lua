@@ -184,7 +184,14 @@ end
 -- Network events
 
 function RaceManagerJoinable:JoinRace(unused , player)
-	self:AddPlayer(player)
+	if self.nextCourse:HasDLCConflict(player) then
+		player:SendChatMessage(
+			"[Racing] You cannot join because you don't own the required DLC for this course" ,
+			Color(220 , 50 , 50)
+		)
+	else
+		self:AddPlayer(player)
+	end
 end
 
 function RaceManagerJoinable:LeaveRace(unused , player)

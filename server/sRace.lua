@@ -25,7 +25,7 @@ function Race:__init(args)
 	self.participants = {}
 	self.playerIdToRacer = {}
 	-- TODO: Is this the count of Racers, and not spectators? This needs to be clarified and be
-	-- consistent.
+	-- consistent. Use #self.participants instead?
 	self.numPlayers = #args.players
 	self.playerIdToSpectator = {}
 	self.finishedRacers = {}
@@ -93,7 +93,7 @@ function Race:__init(args)
 		}
 	end
 	
-	-- Initialize Racers.
+	-- Initialize Racers and Spectators.
 	local maxPlayers = self.course:GetMaxPlayers()
 	local forceSpectators = self.overflowHandling == Race.OverflowHandling.ForceSpectate
 	for index , player in ipairs(args.players) do
@@ -102,6 +102,9 @@ function Race:__init(args)
 		else
 			self:AddSpectator(player)
 		end
+	end
+	for index , player in ipairs(args.spectators or {}) do
+		self:AddSpectator(player)
 	end
 	
 	-- Initialize RaceModules.
@@ -299,6 +302,8 @@ function Race:RacerFinish(racer)
 	}
 	Events:Fire("RacerFinish" , args)
 end
+
+-- Console events
 
 function Race:raceinfo()
 	print()

@@ -15,6 +15,9 @@ function Spectator:__init(race , player)
 		raceInfo = self.race.info ,
 		stateName = self.race.stateName
 	}
+	if args.stateName == nil or args.stateName == "" then
+		args.stateName = "StateVehicleSelection"
+	end
 	if args.stateName == "StateVehicleSelection" then
 		args.position = self.race.course.averageSpawnPosition + Vector3(0 , 4 , 0)
 	elseif args.stateName == "StateStartingGrid" then

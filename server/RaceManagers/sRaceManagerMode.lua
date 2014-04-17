@@ -41,11 +41,6 @@ function RaceManagerMode:CreateRace()
 		error("RaceManagerMode is trying to create a race, but a race is still running!")
 	end
 	
-	local playerArray = {}
-	for player in Server:GetPlayers() do
-		table.insert(playerArray , player)
-	end
-	
 	local course
 	if self.nextRaceInfo.force then
 		course = self.nextRaceInfo.course
@@ -54,8 +49,20 @@ function RaceManagerMode:CreateRace()
 		self.courseManager:Advance()
 	end
 	
+	local players = {}
+	local spectators = {}
+	self:IteratePlayers(function(player)
+		if course:HasDLCConflict(player) then
+			self:Message("Putting "..tostring(player).." into spectator because they don't own DLC")
+			table.insert(spectators , player)
+		else
+			table.insert(players , player)
+		end
+	end)
+	
 	local args = {
-		players = playerArray ,
+		players = players ,
+		spectators = spectators ,
 		course = course ,
 		collisions = self.nextRaceInfo.collisions ,
 		modules = {"Mode"}
