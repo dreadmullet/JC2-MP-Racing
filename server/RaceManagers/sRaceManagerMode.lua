@@ -276,6 +276,7 @@ function RaceManagerMode:VoteSkip(vote , player)
 	if vote == true then
 		if table.find(self.raceInfo.skipVotes , player) == nil then
 			table.insert(self.raceInfo.skipVotes , player)
+			self:Message(player:GetName().." has voted to skip the race")
 		end
 	else
 		table.erase(self.raceInfo.skipVotes , player)
