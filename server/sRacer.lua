@@ -346,9 +346,13 @@ end
 -- Event callbacks
 
 function Racer:EnterVehicle(args)
-	-- If someone enters the wrong car, boot them out.
+	-- If someone enters the wrong car, boot them out and replace the original driver.
 	if self.assignedVehicleId >= 0 and self.assignedVehicleId ~= args.vehicle:GetId() then
 		self.player:SetPosition(self.player:GetPosition() + Vector3(0 , 0.5 , 0))
 		self:Message("Get your own car, you thief!")
+		
+		if args.old_driver then
+			args.old_driver:EnterVehicle(args.vehicle , VehicleSeat.Driver)
+		end
 	end
 end
