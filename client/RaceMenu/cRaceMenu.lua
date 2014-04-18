@@ -89,6 +89,10 @@ function RaceMenu:CreateWindow()
 end
 
 function RaceMenu:SetEnabled(enabled)
+	if self.isEnabled == enabled then
+		return
+	end
+	
 	self.isEnabled = enabled
 	
 	self.window:SetVisible(self.isEnabled)
@@ -96,8 +100,12 @@ function RaceMenu:SetEnabled(enabled)
 	if self.isEnabled then
 		self:ActivateCurrentTab()
 		self.window:BringToFront()
+		
+		Events:Fire("RaceMenuOpened")
 	else
 		self:DeactivateCurrentTab()
+		
+		Events:Fire("RaceMenuClosed")
 	end
 	
 	Mouse:SetVisible(self.isEnabled)

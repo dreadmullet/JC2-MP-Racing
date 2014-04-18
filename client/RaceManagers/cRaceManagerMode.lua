@@ -7,6 +7,7 @@ function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
 	self.voteSkipLabel = nil
 	self.adminSkipButton = nil
 	self.adminNextCourseTextBox = nil
+	self.raceMenuHelpText = "Use '/"..settings.command.."' to open the race menu"
 	
 	self:AddToRaceMenu()
 	
@@ -21,9 +22,11 @@ function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
 		self:EventSubscribe("RaceAdminInitialize")
 	end
 	
+	self:EventSubscribe("PostRender")
 	self:EventSubscribe("RaceCreate")
 	self:EventSubscribe("SpectateCreate")
 	self:EventSubscribe("RaceOrSpectateEnd")
+	self:EventSubscribe("RaceMenuOpened")
 	self:NetworkSubscribe("UpdateVoteSkipInfo")
 	self:NetworkSubscribe("AcknowledgeVoteSkip")
 	self:NetworkSubscribe("AcknowledgeSpectate")
@@ -187,6 +190,23 @@ end
 
 -- Events
 
+function RaceManagerMode:PostRender()
+	if Game:GetState() ~= GUIState.Game then
+		return
+	end
+	
+	-- If we haven't opened the race menu yet, draw help text under the chat box.
+	if self.raceMenuHelpText then
+		DrawText(
+			Vector2(30 , Render.Height * 0.875) ,
+			self.raceMenuHelpText ,
+			Color(255 , 232 , 60) ,
+			TextSize.Default ,
+			"left"
+		)
+	end
+end
+
 function RaceManagerMode:RaceCreate()
 	self.voteSkipButton:SetEnabled(true)
 	self.spectateButton:SetEnabled(true)
@@ -203,6 +223,10 @@ function RaceManagerMode:RaceOrSpectateEnd()
 	self.voteSkipLabel:SetText("...")
 	self.voteSkipLabel:SetColorNormal()
 	self.voteSkipBase:SetEnabled(false)
+end
+
+function RaceManagerMode:RaceMenuOpened()
+	self.raceMenuHelpText = nil
 end
 
 function RaceManagerMode:RaceAdminInitialize()
