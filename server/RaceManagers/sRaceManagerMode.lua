@@ -306,6 +306,9 @@ function RaceManagerMode:RequestSpectate(unused , player)
 	if self.race.playerIdToRacer[player:GetId()] then
 		if self.race.numPlayers > 1 then
 			Network:Send(player , "AcknowledgeSpectate" , true)
+			
+			self:Message(tostring(player).." has switched to spectating")
+			
 			self.race:RemovePlayer(player)
 			self.race:AddSpectator(player)
 		else
