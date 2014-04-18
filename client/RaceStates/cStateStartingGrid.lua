@@ -153,12 +153,13 @@ end
 
 function StateStartingGrid:LocalPlayerInput(args)
 	if args.state ~= 0 then
+		-- Block starting grid actions.
 		for index , input in ipairs(settings.blockedInputsStartingGrid) do
 			if args.input == input then
 				return false
 			end
 		end
-		-- If we're on foot, block our movement.
+		-- If we're on foot, block on-foot actions.
 		if self.race.assignedVehicleId == -1 then
 			for index , input in ipairs(settings.blockedInputsStartingGridOnFoot) do
 				if args.input == input then
@@ -166,7 +167,7 @@ function StateStartingGrid:LocalPlayerInput(args)
 				end
 			end
 		end
-		-- If we're in a vehicle, prevent us from getting out.
+		-- If we're in a vehicle, block some vehicle actions.
 		if LocalPlayer:InVehicle() then
 			for index , input in ipairs(settings.blockedInputsInVehicle) do
 				if args.input == input then
@@ -174,17 +175,19 @@ function StateStartingGrid:LocalPlayerInput(args)
 				end
 			end
 		end
-		-- Block Action.Accelerate, but only if we don't have a car.
+		-- Block Action.Accelerate, but only if we don't have a car. (It's for boats.)
 		if args.input == Action.Accelerate then
 			local vehicle = Vehicle.GetById(self.race.assignedVehicleId)
 			if IsValid(vehicle) then
 				local vehicleInfo = VehicleList[vehicle:GetModelId()]
-				if vehicleInfo then
-					if vehicleInfo.type ~= "Car" then
-						return false
-					end
+				if vehicleInfo and vehicleInfo.type ~= "Car" then
+					return false
 				end
 			end
+		end
+		-- Always block grappling.
+		if args.input == Action.FireGrapple then
+			return false
 		end
 	end
 	

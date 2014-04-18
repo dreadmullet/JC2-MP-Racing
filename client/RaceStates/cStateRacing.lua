@@ -64,9 +64,7 @@ function StateRacing:ExitVehicleCoroutineFunction()
 	end
 end
 
-----------------------------------------------------------------------------------------------------
 -- Events
-----------------------------------------------------------------------------------------------------
 
 function StateRacing:Render()
 	self.numTicks = self.numTicks + 1
@@ -209,14 +207,22 @@ function StateRacing:LocalPlayerInput(args)
 		then
 			return false
 		end
-		-- Block grappling if the course disabled it.
-		if
-			self.race.course.grappleEnabled == false and
-			args.input == Action.FireGrapple
-		then
-			return false
+		-- Block grappling if the course disabled it or if we're aiming at someone else's vehicle.
+		if args.input == Action.FireGrapple then
+			local targetEntity = LocalPlayer:GetAimTarget().entity
+			local targetEntityType
+			if targetEntity then
+				targetEntityType = targetEntity.__type
+			end
+			if
+				self.race.course.grappleEnabled == false or
+				targetEntityType == "Player" or
+				(targetEntityType == "Vehicle" and targetEntity:GetId() == self.race.assignedVehicleId)
+			then
+				return false
+			end
 		end
-		-- If we're in a vehicle, prevent us from getting out.
+		-- If we're in a vehicle, block some vehicle actions.
 		if LocalPlayer:InVehicle() then
 			for index , input in ipairs(settings.blockedInputsInVehicle) do
 				if args.input == input then
@@ -235,9 +241,7 @@ function StateRacing:ControlDown(control)
 	end
 end
 
-----------------------------------------------------------------------------------------------------
 -- Network events
-----------------------------------------------------------------------------------------------------
 
 function StateRacing:SetTargetCheckpoint(targetCheckpoint)
 	self.targetCheckpoint = targetCheckpoint
