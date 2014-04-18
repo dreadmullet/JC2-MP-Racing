@@ -25,7 +25,8 @@ function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
 	self:EventSubscribe("PostRender")
 	self:EventSubscribe("RaceCreate")
 	self:EventSubscribe("SpectateCreate")
-	self:EventSubscribe("RaceOrSpectateEnd")
+	self:EventSubscribe("RaceEnd" , self.RaceOrSpectateEnd)
+	self:EventSubscribe("SpectateEnd" , self.RaceOrSpectateEnd)
 	self:EventSubscribe("RaceMenuOpened")
 	self:NetworkSubscribe("UpdateVoteSkipInfo")
 	self:NetworkSubscribe("AcknowledgeVoteSkip")
@@ -91,7 +92,7 @@ function RaceManagerMode:AddToRaceMenu()
 	self.voteSkipLabel:SetTextSize(16)
 	self.voteSkipLabel:SetText("...")
 	
-	self.voteSkipBase:SetEnabled(false)
+	self.voteSkipButton:SetEnabled(false)
 	
 	-- Other buttons
 	
@@ -220,9 +221,9 @@ end
 function RaceManagerMode:RaceOrSpectateEnd()
 	-- Reset our vote skip controls.
 	self.voteSkipButton:SetToggleState(false)
+	self.voteSkipButton:SetEnabled(false)
 	self.voteSkipLabel:SetText("...")
 	self.voteSkipLabel:SetColorNormal()
-	self.voteSkipBase:SetEnabled(false)
 end
 
 function RaceManagerMode:RaceMenuOpened()
