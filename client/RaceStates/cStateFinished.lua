@@ -97,7 +97,7 @@ function StateFinished:LocalPlayerInput(args)
 			if
 				self.race.course.grappleEnabled == false or
 				targetEntityType == "Player" or
-				(targetEntityType == "Vehicle" and targetEntity:GetId() == self.race.assignedVehicleId)
+				(targetEntityType == "Vehicle" and targetEntity:GetId() ~= self.race.assignedVehicleId)
 			then
 				return false
 			end
