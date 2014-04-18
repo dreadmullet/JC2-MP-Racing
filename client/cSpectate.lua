@@ -164,4 +164,6 @@ function Spectate:Terminate()
 	self.orbitCamera:Destroy()
 	
 	Events:Fire("SpectateEnd")
+	
+	Spectate.instance = nil
 end

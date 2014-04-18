@@ -27,6 +27,7 @@ function RaceManagerMode:__init() ; RaceManagerBase.__init(self)
 	self:EventSubscribe("ClientModuleLoad")
 	self:EventSubscribe("PreTick")
 	self:NetworkSubscribe("VoteSkip")
+	self:NetworkSubscribe("RequestSpectate")
 	self:NetworkSubscribe("AdminSkip")
 	self:NetworkSubscribe("AdminSetNextCourse")
 	self:ConsoleSubscribe("skiprace" , self.ConsoleSkip)
@@ -294,6 +295,23 @@ function RaceManagerMode:VoteSkip(vote , player)
 	else
 		Network:Send(player , "AcknowledgeVoteSkip" , vote)
 		self:UpdateVoteSkipInfo()
+	end
+end
+
+function RaceManagerMode:RequestSpectate(unused , player)
+	if settings.debugLevel >= 1 then
+		print(tostring(player).." is requesting to spectate")
+	end
+	
+	if self.race.playerIdToRacer[player:GetId()] then
+		if self.race.numPlayers > 1 then
+			Network:Send(player , "AcknowledgeSpectate" , true)
+			self.race:RemovePlayer(player)
+			self.race:AddSpectator(player)
+		else
+			player:SendChatMessage("Cannot spectate; not enough players" , Color(220 , 50 , 50))
+			Network:Send(player , "AcknowledgeSpectate" , false)
+		end
 	end
 end
 

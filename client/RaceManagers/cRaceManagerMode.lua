@@ -22,11 +22,11 @@ function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
 	end
 	
 	self:EventSubscribe("RaceCreate")
-	self:EventSubscribe("SpectateCreate" , self.RaceCreate)
-	self:EventSubscribe("RaceEnd")
-	self:EventSubscribe("SpectateEnd" , self.RaceEnd)
+	self:EventSubscribe("SpectateCreate")
+	self:EventSubscribe("RaceOrSpectateEnd")
 	self:NetworkSubscribe("UpdateVoteSkipInfo")
 	self:NetworkSubscribe("AcknowledgeVoteSkip")
+	self:NetworkSubscribe("AcknowledgeSpectate")
 	self:NetworkSubscribe("AcknowledgeAdminSkip")
 	self:NetworkSubscribe("RaceSkipped")
 	self:NetworkSubscribe("RaceWillEndIn")
@@ -36,7 +36,9 @@ end
 function RaceManagerMode:AddToRaceMenu()
 	local fontSize = 16
 	
+	--
 	-- Current race info
+	--
 	
 	local groupBox = RaceMenu.CreateGroupBox(RaceMenu.instance.addonArea)
 	groupBox:SetDock(GwenPosition.Left)
@@ -66,19 +68,19 @@ function RaceManagerMode:AddToRaceMenu()
 	-- Voteskip control
 	
 	self.voteSkipBase = BaseWindow.Create(groupBox)
-	self.voteSkipBase:SetMargin(Vector2(0 , 0) , Vector2(0 , 0))
 	self.voteSkipBase:SetDock(GwenPosition.Top)
 	self.voteSkipBase:SetHeight(32)
 	
-	self.voteSkipButton = Button.Create(self.voteSkipBase)
-	self.voteSkipButton:SetPadding(Vector2(24 , 0) , Vector2(24 , 0))
-	self.voteSkipButton:SetDock(GwenPosition.Left)
-	self.voteSkipButton:SetToggleable(true)
-	self.voteSkipButton:SetTextSize(16)
-	self.voteSkipButton:SetText("Vote skip")
-	self.voteSkipButton:SizeToContents()
-	self.voteSkipButton:Subscribe("ToggleOn" , self , self.VoteSkipButtonPressed)
-	self.voteSkipButton:Subscribe("ToggleOff" , self , self.VoteSkipButtonUnpressed)
+	local button = Button.Create(self.voteSkipBase)
+	button:SetPadding(Vector2(24 , 0) , Vector2(24 , 0))
+	button:SetDock(GwenPosition.Left)
+	button:SetToggleable(true)
+	button:SetTextSize(16)
+	button:SetText("Vote skip")
+	button:SizeToContents()
+	button:Subscribe("ToggleOn" , self , self.VoteSkipButtonPressed)
+	button:Subscribe("ToggleOff" , self , self.VoteSkipButtonUnpressed)
+	self.voteSkipButton = button
 	
 	self.voteSkipLabel = Label.Create(self.voteSkipBase)
 	self.voteSkipLabel:SetDock(GwenPosition.Fill)
@@ -86,9 +88,26 @@ function RaceManagerMode:AddToRaceMenu()
 	self.voteSkipLabel:SetTextSize(16)
 	self.voteSkipLabel:SetText("...")
 	
-	self.voteSkipBase:SetVisible(false)
+	self.voteSkipBase:SetEnabled(false)
 	
+	-- Other buttons
+	
+	local base = BaseWindow.Create(groupBox)
+	base:SetDock(GwenPosition.Top)
+	base:SetHeight(32)
+	
+	local button = Button.Create(base)
+	button:SetPadding(Vector2(24 , 0) , Vector2(24 , 0))
+	button:SetDock(GwenPosition.Left)
+	button:SetTextSize(16)
+	button:SetText("Spectate")
+	button:SizeToContents()
+	button:Subscribe("Press" , self , self.SpectateButtonPressed)
+	self.spectateButton = button
+	
+	--
 	-- Next race info
+	--
 	
 	groupBox = RaceMenu.CreateGroupBox(RaceMenu.instance.addonArea)
 	groupBox:SetDock(GwenPosition.Fill)
@@ -151,6 +170,11 @@ function RaceManagerMode:VoteSkipButtonUnpressed()
 	self.voteSkipButton:SetEnabled(false)
 end
 
+function RaceManagerMode:SpectateButtonPressed()
+	RaceMenu.instance:AddRequest("RequestSpectate")
+	self.spectateButton:SetEnabled(false)
+end
+
 function RaceManagerMode:AdminSkipButtonPressed()
 	RaceMenu.instance:AddRequest("AdminSkip")
 	self.adminSkipButton:SetEnabled(false)
@@ -164,16 +188,21 @@ end
 -- Events
 
 function RaceManagerMode:RaceCreate()
-	self.voteSkipBase:SetVisible(true)
 	self.voteSkipButton:SetEnabled(true)
+	self.spectateButton:SetEnabled(true)
 end
 
-function RaceManagerMode:RaceEnd()
+function RaceManagerMode:SpectateCreate()
+	self.voteSkipButton:SetEnabled(true)
+	self.spectateButton:SetEnabled(false)
+end
+
+function RaceManagerMode:RaceOrSpectateEnd()
 	-- Reset our vote skip controls.
 	self.voteSkipButton:SetToggleState(false)
 	self.voteSkipLabel:SetText("...")
 	self.voteSkipLabel:SetColorNormal()
-	self.voteSkipBase:SetVisible(false)
+	self.voteSkipBase:SetEnabled(false)
 end
 
 function RaceManagerMode:RaceAdminInitialize()
@@ -214,6 +243,12 @@ end
 function RaceManagerMode:AcknowledgeVoteSkip(vote)
 	self.voteSkipButton:SetEnabled(true)
 	self.voteSkipButton:SetToggleState(vote)
+end
+
+function RaceManagerMode:AcknowledgeSpectate(success)
+	if success == false then
+		self.spectateButton:SetEnabled(true)
+	end
 end
 
 function RaceManagerMode:AcknowledgeAdminSkip()

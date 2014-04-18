@@ -42,4 +42,6 @@ function Race:Terminate()
 	RaceMenu.instance:RemoveTab(self.currentRaceTab)
 	
 	self:Destroy()
+	
+	Race.instance = nil
 end

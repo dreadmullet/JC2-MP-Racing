@@ -250,10 +250,6 @@ function Race:NetworkSendRace(name , ...)
 	end
 end
 
-function Race:GetRacerFromPlayerId(id)
-	return self.playerIdToRacer[id]
-end
-
 function Race:MarshalForClient()
 	local info = {
 		numPlayers = self.numPlayers ,
