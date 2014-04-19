@@ -59,14 +59,17 @@ function Spectate:RenderRacing()
 	if IsValid(targetPlayer) then
 		self.requestTimer = nil
 		
+		local newTargetPosition
 		local vehicle = targetPlayer:GetVehicle()
 		if vehicle then
-			self.orbitCamera.targetPosition = vehicle:GetCenterOfMass() + Vector3(0 , 0.5 , 0)
+			newTargetPosition = vehicle:GetCenterOfMass() + Vector3(0 , 0.5 , 0)
 		else
-			self.orbitCamera.targetPosition = targetPlayer:GetPosition() + Vector3(0 , 1 , 0)
+			newTargetPosition = targetPlayer:GetPosition() + Vector3(0 , 1 , 0)
 		end
-		if self.orbitCamera.targetPosition:Distance(Vector3(0,0,0)) < 10 then
-			self.orbitCamera.targetPosition = Vector3(100000 , 300 , 100000)
+		if newTargetPosition:Distance(Vector3(0,0,0)) < 50 then
+			-- The client thinks they're at 0,0,0 for some reason. Blame JCMP.
+		else
+			self.orbitCamera.targetPosition = newTargetPosition
 		end
 	else
 		if
