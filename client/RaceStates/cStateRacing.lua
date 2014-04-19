@@ -5,7 +5,7 @@ function StateRacing:__init(race , args) ; EGUSM.SubscribeUtility.__init(self)
 	self.racePosition = -1
 	self.currentLap = 1
 	self.targetCheckpoint = 1
-	self.targetArrowValue = 1
+	self.targetArrowValue = 1000
 	self.timer = Timer()
 	self.numTicks = 0
 	self.sendCheckpointTimer = Timer()

@@ -58,6 +58,8 @@ function RaceGUI.DrawTargetArrow(args)
 	-- Conditionally render, it blinks when you hit a checkpoint.
 	local maxValue = settings.targetArrowFlashNum * settings.targetArrowFlashInterval * 2
 	local shouldDraw = (
+		args.targetArrowValue == nil or
+		args.numTicks == nil or
 		args.targetArrowValue == maxValue or
 		math.floor(args.numTicks / settings.targetArrowFlashInterval) % 2 == 0
 	)

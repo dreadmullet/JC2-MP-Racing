@@ -102,6 +102,11 @@ function StateStartingGrid:Render()
 		
 		RaceGUI.DrawCourseName(self.race.course.name)
 		
+		RaceGUI.DrawTargetArrow{
+			checkpointPosition = self.race.course.checkpoints[1][1] ,
+			model = Race.instance.targetArrowModel ,
+		}
+		
 		RaceGUI.DrawLapCounter{
 			courseType = self.race.course.type ,
 			currentLap = 1 ,
