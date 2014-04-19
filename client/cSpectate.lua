@@ -15,7 +15,7 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	elseif self.stateName == "StateStartingGrid" then
 		-- TODO: wat
 		for playerId , startPosition in pairs(args.startPositions) do
-			table.insert(self.leaderboard , playerId)
+			table.insert(self.leaderboard , {playerId = playerId , isFinished = false})
 		end
 		
 		self:EventSubscribe("Render" , self.RenderRacing)
@@ -25,7 +25,11 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 		self:EventSubscribe("Render" , self.RenderRacing)
 	end
 	
-	self.targetPlayerId = self.leaderboard[1] or -1
+	if self.leaderboard[1] then
+		self.targetPlayerId = self.leaderboard[1].playerId
+	else
+		self.targetPlayerId = -1
+	end
 	
 	self.orbitCamera = OrbitCamera()
 	self.orbitCamera.minDistance = 3
@@ -116,8 +120,8 @@ end
 
 function Spectate:ChangeTarget(delta)
 	local position = -1
-	for index , playerId in ipairs(self.leaderboard) do
-		if self.targetPlayerId == playerId then
+	for index , entry in ipairs(self.leaderboard) do
+		if self.targetPlayerId == entry.playerId then
 			position = index
 			break
 		end
@@ -125,7 +129,12 @@ function Spectate:ChangeTarget(delta)
 	position = position + delta
 	position = math.clamp(position , 1 , #self.leaderboard)
 	
-	self.targetPlayerId = self.leaderboard[position] or -1
+	local entry = self.leaderboard[position]
+	if entry then
+		self.targetPlayerId = entry.playerId
+	else
+		self.targetPlayerId = -1
+	end
 	print("Target changed to "..self.targetPlayerId)
 end
 
@@ -142,10 +151,14 @@ function Spectate:RaceSetState(args)
 		
 		-- TODO: Same wat as above
 		for playerId , startPosition in pairs(args.startPositions) do
-			table.insert(self.leaderboard , playerId)
+			table.insert(self.leaderboard , {playerId = playerId , isFinished = false})
 		end
 		
-		self.targetPlayerId = self.leaderboard[1] or -1
+		if self.leaderboard[1] then
+			self.targetPlayerId = self.leaderboard[1].playerId
+		else
+			self.targetPlayerId = -1
+		end
 	end
 	
 	self.stateName = args.stateName

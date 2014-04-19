@@ -20,7 +20,7 @@ function StateStartingGrid:__init(race , args) ; EGUSM.SubscribeUtility.__init(s
 	-- Get our starting position, and fill self.race.leaderboard with starting positions.
 	self.startPosition = -1
 	for playerId , startPosition in pairs(self.startPositions) do
-		table.insert(self.race.leaderboard , playerId)
+		table.insert(self.race.leaderboard , {playerId = playerId , isFinished = false})
 		local playerInfo = self.race.playerIdToInfo[playerId]
 		if playerInfo.name == LocalPlayer:GetName() then
 			self.startPosition = startPosition

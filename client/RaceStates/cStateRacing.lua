@@ -79,8 +79,8 @@ function StateRacing:Render()
 	end
 	
 	-- Extract our race position from the leaderboard.
-	for index , playerId in ipairs(self.race.leaderboard) do
-		if playerId == LocalPlayer:GetId() then
+	for index , entry in ipairs(self.race.leaderboard) do
+		if entry.playerId == LocalPlayer:GetId() then
 			self.racePosition = index
 		end
 	end

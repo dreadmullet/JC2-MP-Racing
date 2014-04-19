@@ -170,17 +170,20 @@ end
 
 function RaceGUI.DrawLeaderboard(args)
 	local currentPos = NormVector2(settings.leaderboardPos.x , settings.leaderboardPos.y)
-	local textHeight = Render:GetTextHeight("W" , settings.leaderboardTextSize)
-	local textWidth = Render:GetTextWidth("W" , settings.leaderboardTextSize)
+	local charWidth = Render:GetTextWidth("W" , settings.leaderboardTextSize)
+	local charHeight = Render:GetTextHeight("W" , settings.leaderboardTextSize)
 	
 	for n = 1 , math.min(#args.leaderboard , settings.leaderboardMaxPlayers) do
-		local playerId = args.leaderboard[n]
+		local playerId = args.leaderboard[n].playerId
+		local isFinished = args.leaderboard[n].isFinished
 		local playerInfo = args.playerIdToInfo[playerId]
 		local playerName = playerInfo.name
 		
 		-- Clamp their name length.
 		playerName = playerName:sub(1 , settings.maxPlayerNameLength)
 		local playerNameWidth = Render:GetTextWidth(playerName , settings.leaderboardTextSize)
+		
+		local currentX = 0
 		
 		DrawText(
 			currentPos ,
@@ -189,24 +192,37 @@ function RaceGUI.DrawLeaderboard(args)
 			settings.leaderboardTextSize ,
 			"left"
 		)
+		currentX = currentX + charWidth * 2.25
 		DrawText(
-			currentPos + Vector2(textWidth * 2 , 0) ,
+			currentPos + Vector2(currentX , 0) ,
 			string.format("%s" , playerName) ,
 			playerInfo.color ,
 			settings.leaderboardTextSize ,
 			"left"
 		)
-		-- If this is us, draw an arrow.
-		if playerId == LocalPlayer:GetId() then
+		currentX = currentX + playerNameWidth
+		-- If they've finished, draw "(finished)".
+		if isFinished then
 			DrawText(
-				currentPos + Vector2(textWidth * -1 , 0) ,
-				"»" ,
+				currentPos + Vector2(currentX , 0) ,
+				" (finished)" ,
 				settings.textColor ,
 				settings.leaderboardTextSize ,
 				"left"
 			)
+			currentX = currentX + Render:GetTextWidth(" (finished)" , settings.leaderboardTextSize)
+		end
+		-- If this is us, point out our name with arrows.
+		if playerId == LocalPlayer:GetId() then
 			DrawText(
-				currentPos + Vector2(textWidth * 2.5 + playerNameWidth , 0) ,
+				currentPos + Vector2(-2 , 0) ,
+				"»" ,
+				settings.textColor ,
+				settings.leaderboardTextSize ,
+				"right"
+			)
+			DrawText(
+				currentPos + Vector2(currentX + 4 , 0) ,
 				"«" ,
 				settings.textColor ,
 				settings.leaderboardTextSize ,
@@ -214,14 +230,14 @@ function RaceGUI.DrawLeaderboard(args)
 			)
 		end
 		
-		currentPos.y = currentPos.y + textHeight + 2
+		currentPos.y = currentPos.y + charHeight + 2
 	end
 end
 
 function RaceGUI.DrawPositionTags(args)
-	for index , playerId in ipairs(args.leaderboard) do
-		if playerId ~= LocalPlayer:GetId() then
-			RaceGUI.DrawPositionTag(playerId , index)
+	for index , entry in ipairs(args.leaderboard) do
+		if entry.playerId ~= LocalPlayer:GetId() then
+			RaceGUI.DrawPositionTag(entry.playerId , index)
 		end
 	end
 end

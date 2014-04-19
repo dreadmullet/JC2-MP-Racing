@@ -22,6 +22,8 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self.recordTimePlayerName = raceInfo.topRecordPlayerName
 	self.collisions = raceInfo.collisions
 	
+	-- Array of tables, each element is like:
+	-- {playerId (number), isFinished (boolean)}
 	self.leaderboard = {}
 	self.targetArrowModel = nil
 	self.icons = {}
@@ -80,7 +82,11 @@ function RaceBase:UpdateLeaderboard(racePosInfo)
 	
 	-- Finished players
 	for n = 1 , #finishedPlayerIds do
-		table.insert(self.leaderboard , finishedPlayerIds[n])
+		local entry = {
+			playerId = finishedPlayerIds[n] ,
+			isFinished = true ,
+		}
+		table.insert(self.leaderboard , entry)
 		self.numPlayers = self.numPlayers + 1
 	end
 	
@@ -88,8 +94,11 @@ function RaceBase:UpdateLeaderboard(racePosInfo)
 	for cpIndex = currentCheckpoint , 0 , -1 do
 		local numPlayerIds = #racePosTrackerArray[cpIndex]
 		for playerIdIndex = 1 , numPlayerIds do
-			local playerId = racePosTrackerArray[cpIndex][playerIdIndex]
-			table.insert(self.leaderboard , playerId)
+			local entry = {
+				playerId = racePosTrackerArray[cpIndex][playerIdIndex] ,
+				isFinished = false ,
+			}
+			table.insert(self.leaderboard , entry)
 			self.numPlayers = self.numPlayers + 1
 		end
 	end
