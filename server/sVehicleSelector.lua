@@ -12,9 +12,13 @@ function VehicleSelector:__init(state , racer) ; EGUSM.SubscribeUtility.__init(s
 	self.vehicleIndex = -1
 	self.templateIndex = -1
 	self.vehicle = nil
-	self.color1 = self.racer.player:GetColor() * 0.85
-	self.color2 = self.racer.player:GetColor()
 	
+	-- Colors
+	self.color2 = Utility.StringToColor(self.racer.player:GetValue("RaceVehicleColor2"))
+	self.color2 = self.color2 or self.racer.player:GetColor()
+	self.color1 = Utility.StringToColor(self.racer.player:GetValue("RaceVehicleColor1"))
+	self.color1 = self.color1 or self.color2 * 0.85
+	self.color1.a = 255
 	-- World
 	self.world:SetTime(self.race.world:GetTime())
 	self.world:SetWeatherSeverity(self.race.world:GetWeatherSeverity())
@@ -36,6 +40,8 @@ function VehicleSelector:__init(state , racer) ; EGUSM.SubscribeUtility.__init(s
 		vehicles = self.state.vehicles ,
 		vehicleIndex = self.vehicleIndex ,
 		templateIndex = self.templateIndex ,
+		color2 = self.color2 ,
+		color1 = self.color1 ,
 		vehicleId = vehicleId ,
 		garagePosition = StateVehicleSelection.garagePosition ,
 		garageAngle = StateVehicleSelection.garageAngle ,
@@ -203,5 +209,7 @@ function VehicleSelector:VehicleSetColors(colors , player)
 	end
 	
 	self.color1 , self.color2 = color1 , color2
-	self.vehicle:SetColors(color1 , color2)
+	self.vehicle:SetColors(self.color1 , self.color2)
+	self.racer.player:SetValue("RaceVehicleColor1" , Utility.ColorToString(self.color1))
+	self.racer.player:SetValue("RaceVehicleColor2" , Utility.ColorToString(self.color2))
 end

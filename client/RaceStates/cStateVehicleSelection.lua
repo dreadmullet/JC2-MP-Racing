@@ -8,6 +8,7 @@ function StateVehicleSelection:__init(race , args) ; EGUSM.SubscribeUtility.__in
 	self.vehicleId = args.vehicleId
 	self.garagePosition = args.garagePosition
 	self.garageAngle = args.garageAngle
+	self.startColor = args.color2
 	self.vehicle = nil
 	self.window = nil
 	self.timer = Timer()
@@ -134,7 +135,7 @@ function StateVehicleSelection:CreateMenus()
 	self.colorPicker = HSVColorPicker.Create(self.groupBoxColorPicker)
 	self.colorPicker:SetMargin(Vector2(0 , 6) , Vector2(0 , 0))
 	self.colorPicker:SetDock(GwenPosition.Fill)
-	self.colorPicker:SetColor(LocalPlayer:GetColor())
+	self.colorPicker:SetColor(self.startColor)
 	self.colorPicker:Subscribe("ColorChanged" , self , self.ColorChanged)
 	
 	self:UpdateColorControls()
