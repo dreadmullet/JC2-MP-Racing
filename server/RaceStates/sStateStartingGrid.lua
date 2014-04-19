@@ -75,6 +75,10 @@ function StateStartingGrid:UpdateRacer(racer)
 			if distance >= 2 then
 				shouldRespawn = true
 			end
+			
+			if vehicle:GetHealth() < 0.75 then
+				shouldRespawn = true
+			end
 		end
 	end
 	
