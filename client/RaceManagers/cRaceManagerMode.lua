@@ -199,7 +199,7 @@ function RaceManagerMode:PostRender()
 	-- If we haven't opened the race menu yet, draw help text under the chat box.
 	if self.raceMenuHelpText then
 		DrawText(
-			Vector2(30 , Render.Height * 0.875) ,
+			Vector2(30 , Render.Height * 0.9) ,
 			self.raceMenuHelpText ,
 			Color(255 , 232 , 60) ,
 			TextSize.Default ,
