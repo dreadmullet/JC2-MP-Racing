@@ -2,25 +2,24 @@ BandarSelekeh
 BerawanBesarSplit
 CapeCarnival
 CarVHelicopter
-# CliffRacer -- not very good
+CliffRacer
 CliffsOfFear
-# ClusterfuckingLimousines
+# ClusterfuckingLimousines # Disabled until courses can be chosen based on player count
 DasPhailenring
 DesertBus
 DirtTrackEast
 EastBerawanTouge
-EndlessCoast
+# EndlessCoast # Disabled until courses can be chosen based on player count
 FacepalmPond
 HillclimbDesertHighlands
 Icewheels
-INeverAskedForThis
-# LostIslandRally -- Cars start on fire because the EMP tower activates.
+# INeverAskedForThis # A little too silly
+LostIslandRally
 MileHighClubMadness
 MileHighClubDive1
 PanauCanals
 ReapersRun
 RedMountainPlunge
-SaladIslandHovercrafting
 SelatanBackcountry
 SidewalkBlazer
 SkiSlopeSkydive
@@ -34,4 +33,6 @@ ThreeKingsTriangle
 Vortex
 WestBerawanTouge
 
-# DLCTest
+# DLC courses
+
+# SaladIslandHovercrafting
