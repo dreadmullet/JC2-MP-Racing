@@ -4,6 +4,8 @@ function Spectator:__init(race , player)
 	RacerBase.__init(self , race , player)
 	EGUSM.SubscribeUtility.__init(self)
 	
+	self.Remove = Spectator.Remove
+	
 	player:SetStreamDistance(0)
 	player:SetWorld(self.race.world)
 	player:SetPosition(self.race.course.averageSpawnPosition + Vector3(0 , 2 , 0))
@@ -36,6 +38,8 @@ function Spectator:__init(race , player)
 end
 
 function Spectator:Remove()
+	RacerBase.Remove(self)
+	
 	self.player:SetStreamDistance(Config:GetValue("Streamer" , "PlayerStreamDistance") or 500)
 	self.player:SetWorld(DefaultWorld)
 	

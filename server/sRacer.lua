@@ -2,6 +2,7 @@ class("Racer")
 
 function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	self.Update = Racer.Update
+	self.Remove = Racer.Remove
 	
 	-- Pulled from database, and used to update database on our removal.
 	self.playTime = -1
@@ -28,15 +29,6 @@ function Racer:__init(race , player) ; RacerBase.__init(self , race , player)
 	-- Works with settings.respawnDelay to delay the respawn when it's requested.
 	self.respawnDelayTimer = Timer()
 	self.isRespawning = false
-	
-	-- Disable collisions, if applicable.
-	if self.race.vehicleCollisions then
-		self.player:EnableCollision(CollisionGroup.Vehicle)
-	else
-		self.player:DisableCollision(CollisionGroup.Vehicle)
-	end
-	-- Always disable player collisions.
-	self.player:DisableCollision(CollisionGroup.Player)
 	
 	-- Add ourselves to Stats.
 	Stats.AddPlayer(self)
@@ -69,6 +61,8 @@ function Racer:Update(racePosInfo)
 end
 
 function Racer:Remove()
+	RacerBase.Remove(self)
+	
 	-- Update database with our new playtime, if the timer is running.
 	if self.raceTimer then
 		self.playTime = self.playTime + self.raceTimer:GetSeconds()
@@ -80,14 +74,6 @@ function Racer:Remove()
 	if vehicle then
 		vehicle:Remove()
 	end
-	
-	-- Reenable collisions, if applicable.
-	if self.race.vehicleCollisions then
-		self.player:DisableCollision(CollisionGroup.Vehicle)
-	else
-		self.player:EnableCollision(CollisionGroup.Vehicle)
-	end
-	self.player:EnableCollision(CollisionGroup.Player)
 	
 	Network:Send(self.player , "Terminate")
 end
