@@ -126,3 +126,24 @@ Utility.LapTimeString = function(totalSeconds)
 	
 	return string.format("%.2i:%.2i.%.2i" , minutes , seconds , hundredths)
 end
+
+Utility.ColorToString = function(color)
+	if color == nil then
+		return nil
+	end
+	
+	return ""..color.r..","..color.g..","..color.b..","..color.a
+end
+
+Utility.StringToColor = function(text)
+	if text == nil then
+		return nil
+	end
+	
+	local c = text:split(",")
+	for n = 1 , #c do
+		c[n] = tonumber(c[n])
+	end
+	local color = Color(c[1] , c[2] , c[3] , c[4])
+	return color
+end
