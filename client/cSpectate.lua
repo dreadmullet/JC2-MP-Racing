@@ -37,6 +37,7 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	self:EventSubscribe("ControlDown")
 	self:NetworkSubscribe("RaceSetState")
 	self:NetworkSubscribe("ReceiveTargetPosition")
+	self:NetworkSubscribe("UpdateRacePositions")
 	self:NetworkSubscribe("Terminate")
 	
 	Events:Fire("SpectateCreate")
@@ -157,6 +158,10 @@ function Spectate:ReceiveTargetPosition(position)
 	else
 		self:ChangeTarget(1)
 	end
+end
+
+function Spectate:UpdateRacePositions(racePosInfo)
+	self:UpdateLeaderboard(racePosInfo)
 end
 
 function Spectate:Terminate()
