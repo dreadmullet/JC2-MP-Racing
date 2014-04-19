@@ -5,23 +5,14 @@ function StateVehicleSelection:__init(race , args) ; EGUSM.SubscribeUtility.__in
 	self.vehicles = args.vehicles
 	self.vehicleIndex = args.vehicleIndex
 	self.templateIndex = args.templateIndex
-	self.vehicleId = args.vehicleId
 	self.garagePosition = args.garagePosition
 	self.garageAngle = args.garageAngle
 	self.startColor = args.color2
-	self.vehicle = nil
 	self.window = nil
 	self.timer = Timer()
 	self.setColorsTimer = Timer()
 	self.colorBuffer = nil
-	-- Create the OrbitCamera.
-	self.camera = OrbitCamera(self.garagePosition , Angle(math.rad(45) , math.rad(-10) , 0))
-	self.camera.minPitch = math.rad(-35)
-	self.camera.maxPitch = math.rad(2)
-	self.camera.minDistance = 3.6
-	self.camera.maxDistance = 6.5
-	self.camera.collision = false
-	self.camera.isInputEnabled = false
+	self.camera = nil
 	-- Contains arrays of {button , radioButton}.
 	self.templateControls = {}
 	
@@ -35,7 +26,9 @@ function StateVehicleSelection:__init(race , args) ; EGUSM.SubscribeUtility.__in
 end
 
 function StateVehicleSelection:End()
-	self.camera:Destroy()
+	if self.camera then
+		self.camera:Destroy()
+	end
 	self:Destroy()
 	self.timerControl:Remove()
 	if self.window then
@@ -51,6 +44,16 @@ function StateVehicleSelection:DrawLoadingScreen(text)
 	local fontSize = TextSize.Large
 	local textSize = Render:GetTextSize(text , fontSize)
 	Render:DrawText(Render.Size/2 - textSize/2 , text , settings.textColor , fontSize)
+end
+
+function StateVehicleSelection:CreateCamera()
+	self.camera = OrbitCamera(self.garagePosition , Angle(math.rad(45) , math.rad(-10) , 0))
+	self.camera.minPitch = math.rad(-35)
+	self.camera.maxPitch = math.rad(2)
+	self.camera.minDistance = 3.6
+	self.camera.maxDistance = 6.5
+	self.camera.collision = false
+	self.camera.isInputEnabled = false
 end
 
 function StateVehicleSelection:CreateMenus()
@@ -290,9 +293,10 @@ end
 function StateVehicleSelection:StateLoading()
 	self:DrawLoadingScreen("Loading..")
 	self:RenderAlways()
-	-- Wait until our vehicle is valid, then initialize after a short delay.
-	self.vehicle = Vehicle.GetById(self.vehicleId)
-	if not IsValid(self.vehicle) then
+	-- Wait for a short time.
+	-- TODO: Wait until the local player has spawned and then continue. I'm not sure how to do that
+	-- right now, maybe it's just missing functionality.
+	if self.timer:GetSeconds() < 4 then
 		return
 	end
 	-- Change the state function to StatePreSelection.
@@ -323,13 +327,17 @@ end
 
 function StateVehicleSelection:ControlDown(control)
 	if control.name == "Rotate camera" and inputSuspensionValue == 0 then
-		self.camera.isInputEnabled = true
+		if self.camera then
+			self.camera.isInputEnabled = true
+		end
 	end
 end
 
 function StateVehicleSelection:ControlUp(control)
 	if control.name == "Rotate camera" and inputSuspensionValue == 0 then
-		self.camera.isInputEnabled = false
+		if self.camera then
+			self.camera.isInputEnabled = false
+		end
 	end
 end
 
@@ -346,7 +354,9 @@ function StateVehicleSelection:VehicleSelectionInitialize(vehicleUsages)
 	self:NetworkSubscribe("VehicleTemplateSelected")
 	self:NetworkSubscribe("ReceiveVehicleUsages")
 	
+	self:CreateCamera()
 	self:CreateMenus()
+	
 	self:ReceiveVehicleUsages(vehicleUsages)
 end
 

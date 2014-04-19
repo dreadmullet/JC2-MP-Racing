@@ -28,13 +28,9 @@ function VehicleSelector:__init(state , racer) ; EGUSM.SubscribeUtility.__init(s
 	vehicleInfo , self.vehicleIndex = self.state:ChooseAvailableVehicle()
 	self.templateIndex = math.random(1 , #vehicleInfo.templates)
 	vehicleInfo.used = vehicleInfo.used + 1
-	-- Spawn the vehicle
-	self:SpawnVehicle()
+	-- Teleport the player.
+	self.racer.player:SetPosition(StateVehicleSelection.garagePosition)
 	-- Send info to client.
-	local vehicleId = -1
-	if self.vehicle then
-		vehicleId = self.vehicle:GetId()
-	end
 	local args = {
 		stateName = "StateVehicleSelection" ,
 		vehicles = self.state.vehicles ,
@@ -42,15 +38,10 @@ function VehicleSelector:__init(state , racer) ; EGUSM.SubscribeUtility.__init(s
 		templateIndex = self.templateIndex ,
 		color2 = self.color2 ,
 		color1 = self.color1 ,
-		vehicleId = vehicleId ,
 		garagePosition = StateVehicleSelection.garagePosition ,
 		garageAngle = StateVehicleSelection.garageAngle ,
 	}
 	Network:Send(self.racer.player , "RaceSetState" , args)
-	-- If they're on foot, initialize them now.
-	if vehicleId == -1 then
-		self:VehicleSelectionLoaded("." , self.racer.player)
-	end
 	
 	self:NetworkSubscribe("VehicleSelectionLoaded")
 	self:NetworkSubscribe("VehicleSelected")
@@ -59,6 +50,7 @@ function VehicleSelector:__init(state , racer) ; EGUSM.SubscribeUtility.__init(s
 end
 
 function VehicleSelector:SpawnVehicle()
+	-- Remove the vehicle if it exists already.
 	if self.vehicle then
 		self.vehicle:Remove()
 	end
@@ -114,10 +106,8 @@ function VehicleSelector:VehicleSelectionLoaded(unused , player)
 		return
 	end
 	
-	-- Reset the vehicle's position in case it moved (to the client's perspective, anyway).
-	if self.vehicle then
-		self.vehicle:SetPosition(StateVehicleSelection.garagePosition)
-	end
+	-- Spawn the vehicle.
+	self:SpawnVehicle()
 	-- Acknowledge their initialization and give them the initial counts of vehicles.
 	local vehicleUsages = {}
 	for index , vehicleInfo in ipairs(self.state.vehicles) do
