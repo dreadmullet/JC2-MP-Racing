@@ -99,6 +99,11 @@ function Spectate:RenderRacing()
 			courseType = self.course.type ,
 		}
 		
+		RaceGUI.DrawRaceProgress{
+			currentCheckpoint = self.leaderboard[1].checkpointsHit or 0 ,
+			checkpointCount = self.totalCheckpointCount ,
+		}
+		
 		RaceGUI.DrawLeaderboard{
 			leaderboard = self.leaderboard ,
 			playerIdToInfo = self.playerIdToInfo ,

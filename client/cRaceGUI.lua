@@ -377,3 +377,16 @@ function RaceGUI.DrawNextCheckpointArrow(args)
 		)
 	end
 end
+
+function RaceGUI.DrawRaceProgress(args)
+	local percent = (args.currentCheckpoint / args.checkpointCount) * 100
+	local text = string.format("Race completion: %i%%" , percent)
+	
+	DrawText(
+		NormVector2(0 , -0.65) ,
+		text ,
+		settings.textColor ,
+		24 ,
+		"center"
+	)
+end

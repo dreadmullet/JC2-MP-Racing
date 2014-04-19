@@ -136,7 +136,7 @@ function RaceManagerMode:ApplyCurrentRaceInfo(args)
 	labels.Course:SetText(args.course.name)
 	labels.Authors:SetText(table.concat(args.course.authors , ", "))
 	labels.Type:SetText(args.course.type)
-	labels.Checkpoints:SetText(string.format("%i" , args.numCheckpoints))
+	labels.Checkpoints:SetText(string.format("%i" , args.course.checkpointCount))
 	if args.collisions then
 		labels.Collisions:SetText("On")
 	else

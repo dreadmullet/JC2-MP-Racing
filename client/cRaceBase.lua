@@ -22,8 +22,13 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self.recordTimePlayerName = raceInfo.topRecordPlayerName
 	self.collisions = raceInfo.collisions
 	
+	self.totalCheckpointCount = self.course.checkpointCount
+	if self.course.type == "Circuit" then
+		self.totalCheckpointCount = self.totalCheckpointCount * self.numLaps
+	end
+	
 	-- Array of tables, each element is like:
-	-- {playerId (number), isFinished (boolean)}
+	-- {playerId (number), isFinished (boolean), checkpointsHit (number)}
 	self.leaderboard = {}
 	self.targetArrowModel = nil
 	self.icons = {}
@@ -85,6 +90,7 @@ function RaceBase:UpdateLeaderboard(racePosInfo)
 		local entry = {
 			playerId = finishedPlayerIds[n] ,
 			isFinished = true ,
+			checkpointsHit = self.totalCheckpointCount ,
 		}
 		table.insert(self.leaderboard , entry)
 		self.numPlayers = self.numPlayers + 1
@@ -97,6 +103,7 @@ function RaceBase:UpdateLeaderboard(racePosInfo)
 			local entry = {
 				playerId = racePosTrackerArray[cpIndex][playerIdIndex] ,
 				isFinished = false ,
+				checkpointsHit = cpIndex ,
 			}
 			table.insert(self.leaderboard , entry)
 			self.numPlayers = self.numPlayers + 1

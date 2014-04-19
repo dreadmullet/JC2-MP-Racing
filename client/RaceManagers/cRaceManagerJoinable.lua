@@ -95,7 +95,7 @@ function RaceManagerJoinable:QueuedRaceCreate(args)
 	self.labels.Course:SetText(args.course.name)
 	self.labels.Authors:SetText(table.concat(args.course.authors , ", "))
 	self.labels.Type:SetText(args.course.type)
-	self.labels.Checkpoints:SetText(string.format("%i" , args.numCheckpoints))
+	self.labels.Checkpoints:SetText(string.format("%i" , args.course.checkpointCount))
 	if args.collisions then
 		self.labels.Collisions:SetText("On")
 	else

@@ -130,9 +130,10 @@ function Course:MarshalInfo()
 	return {
 		name = self.name ,
 		type = self.type ,
+		checkpointCount = #self.checkpoints ,
 		parachuteEnabled = self.parachuteEnabled ,
 		grappleEnabled = self.grappleEnabled ,
-		authors = self.authors
+		authors = self.authors ,
 	}
 end
 

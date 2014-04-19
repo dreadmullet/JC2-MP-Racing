@@ -70,7 +70,6 @@ function RaceManagerJoinable:MarshalNextRace()
 		currentPlayers = #self.playerQueue ,
 		maxPlayers = self.nextCourse:GetMaxPlayers() ,
 		course = self.nextCourse:MarshalInfo() ,
-		numCheckpoints = #self.nextCourse.checkpoints ,
 		collisions = self.nextCourseCollisions ,
 	}
 end

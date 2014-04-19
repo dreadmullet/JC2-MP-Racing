@@ -96,8 +96,6 @@ function RaceManagerMode:MarshalCurrentRace()
 	return {
 		currentPlayers = self.race.numPlayers ,
 		course = self.race.course:MarshalInfo() ,
-		-- TODO: Shouldn't this be part of course?
-		numCheckpoints = #self.race.course.checkpoints ,
 		collisions = self.race.vehicleCollisions ,
 	}
 end
