@@ -9,7 +9,7 @@ function StateRacing:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	self.racePosTracker = {}
 	-- Starts at 0. When someone hits the first checkpoint, this becomes 1, etc.
 	self.currentCheckpoint = 0
-	-- Number of times ServerTick has been called.
+	-- Number of times PostTick has been called.
 	self.numTicks = 0
 	
 	-- Array of RacerBases. This is used to update one RacerBase per tick.
@@ -56,10 +56,12 @@ function StateRacing:GetRacePosInfo()
 	}
 end
 
+-- Race callbacks
+
 function StateRacing:RacerLeave(racer)
 	-- Remove them from self.updateList.
-	for index , raceBase in ipairs(self.updateList) do
-		if raceBase.player == racer.player then
+	for index , racerBase in ipairs(self.updateList) do
+		if racerBase.player == racer.player then
 			table.remove(self.updateList , index)
 			break
 		end
@@ -83,8 +85,8 @@ end
 
 function StateRacing:SpectatorLeave(spectator)
 	-- Remove them from self.updateList.
-	for index , raceBase in ipairs(self.updateList) do
-		if raceBase.player == spectator.player then
+	for index , racerBase in ipairs(self.updateList) do
+		if racerBase.player == spectator.player then
 			table.remove(self.updateList , index)
 			break
 		end
