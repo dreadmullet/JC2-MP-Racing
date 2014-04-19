@@ -5,13 +5,14 @@ function RaceModules.Mode:__init() ; EGUSM.SubscribeUtility.__init(self)
 	
 	self.timerControl = nil
 	
-	self:EventSubscribe("RaceEnd")
+	self:EventSubscribe("RaceEnd" , self.RaceOrSpectateEnd)
+	self:EventSubscribe("SpectateEnd" , self.RaceOrSpectateEnd)
 	self:NetworkSubscribe("RaceWillEndIn")
 end
 
 -- Events
 
-function RaceModules.Mode:RaceEnd()
+function RaceModules.Mode:RaceOrSpectateEnd()
 	if self.timerControl then
 		self.timerControl:Remove()
 	end

@@ -26,6 +26,15 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self.targetArrowModel = nil
 	self.icons = {}
 	
+	-- Initialize RaceModules.
+	for index , moduleName in ipairs(args.raceInfo.modules) do
+		local class = RaceModules[moduleName]
+		if class then
+			class()
+		end
+	end
+	
+	-- Request target arrow model.
 	local args = {
 		path = "Models/TargetArrow" ,
 		type = OBJLoader.Type.Single ,
