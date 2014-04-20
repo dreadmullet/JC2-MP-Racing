@@ -210,6 +210,8 @@ function RaceManagerMode:ManagedPlayerLeave(player)
 	if self.raceInfo then
 		table.erase(self.raceInfo.skipVotes , player)
 	end
+	
+	self:UpdateVoteSkipInfo()
 end
 
 -- Race events
