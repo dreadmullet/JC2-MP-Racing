@@ -45,9 +45,11 @@ function Racer:Update(racePosInfo)
 	RacerBase.Update(self , racePosInfo)
 	
 	-- If we're stunt jumped on someone else's vehicle, teleport us off.
+	local vehicle = self.player:GetVehicle()
 	if
 		self.player:GetState() == PlayerState.StuntPos and
-		self.player:GetVehicle():GetId() ~= self.assignedVehicleId
+		vehicle and
+		vehicle:GetId() ~= self.assignedVehicleId
 	then
 		self:Message("Get off, you freeloader!")
 		self.player:SetPosition(self.player:GetPosition() + Vector3(0 , 0.5 , 0))
