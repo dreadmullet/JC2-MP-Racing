@@ -15,7 +15,7 @@ settings.startingGridSeconds = 14
 settings.lapsMult = 1
 
 settings.numLapsFunc = function(numPlayers , maxPlayers , courseLaps)
-	local lapsMultPlayers = (numPlayers / maxPlayers)
+	local lapsMultPlayers = math.min((numPlayers / maxPlayers) , 1)
 	lapsMultPlayers = lapsMultPlayers + 0.75
 	-- Dilute the effect.
 	lapsMultPlayers = math.lerp(1 , lapsMultPlayers , 0.7)
