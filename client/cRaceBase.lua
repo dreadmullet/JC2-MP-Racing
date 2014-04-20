@@ -49,6 +49,7 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	OBJLoader.Request(args , self , RaceBase.ModelReceive)
 	
 	self:NetworkSubscribe("ShowLargeMessage" , RaceBase.ShowLargeMessage)
+	self:ConsoleSubscribe("leaderboard" , RaceBase.PrintLeaderboard)
 end
 
 function RaceBase:UpdateLeaderboard(racePosInfo)
@@ -132,4 +133,11 @@ end
 
 function RaceBase:ShowLargeMessage(args)
 	LargeMessage(args[1] , args[2])
+end
+
+-- Console events
+
+function RaceBase:PrintLeaderboard()
+	print("Leaderboard:")
+	Utility.PrintTable(self.leaderboard)
 end
