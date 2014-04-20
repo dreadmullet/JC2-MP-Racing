@@ -316,7 +316,7 @@ function Race:raceinfo()
 	print("Max players        "..self.course:GetMaxPlayers())
 	print("Course name        "..self.course.name)
 	print("World id           "..self.world:GetId())
-	print("Vehicle collisions "..self.vehicleCollisions)
+	print("Vehicle collisions "..tostring(self.vehicleCollisions))
 	print()
 end
 
