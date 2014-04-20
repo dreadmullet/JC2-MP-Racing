@@ -132,7 +132,12 @@ function RaceManagerMode:UpdateVoteSkipInfo()
 end
 
 function RaceManagerMode:GetRequiredSkipVotes()
-	return math.ceil(self:GetPlayerCount() * 0.525)
+	-- Hmm, should probably just subtract the number of AFK people or something.
+	if self:GetPlayerCount() <= 2 then
+		return 1
+	else
+		return math.ceil(self:GetPlayerCount() * 0.525)
+	end
 end
 
 function RaceManagerMode:EndRaceIn(seconds)
