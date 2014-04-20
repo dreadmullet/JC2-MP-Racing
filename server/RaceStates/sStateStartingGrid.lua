@@ -65,7 +65,7 @@ function StateStartingGrid:UpdateRacer(racer)
 	local shouldRespawn = false
 	if racer.assignedVehicleId == -1 then
 		local distance = Vector3.Distance2D(racer.courseSpawn.position , racer.player:GetPosition())
-		if distance >= 1 then
+		if distance >= 1.2 and distance < 150 then
 			shouldRespawn = true
 		end
 	else
