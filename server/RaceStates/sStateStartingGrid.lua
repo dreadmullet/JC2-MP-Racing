@@ -92,10 +92,10 @@ end
 
 -- Race callbacks
 
-function StateStartingGrid:RacerLeave(racer)
+function StateStartingGrid:RacerLeave(racerThatLeft)
 	-- Remove them from self.startPositions.
 	for playerId , startPosition in pairs(self.startPositions) do
-		if playerId == racer.playerId then
+		if playerId == racerThatLeft.playerId then
 			self.startPositions[playerId] = nil
 			break
 		end
@@ -103,7 +103,7 @@ function StateStartingGrid:RacerLeave(racer)
 	
 	-- Remove them from self.updateList.
 	for index , racer in ipairs(self.updateList) do
-		if racer.player == racer.player then
+		if racer.player == racerThatLeft.player then
 			table.remove(self.updateList , index)
 			break
 		end
