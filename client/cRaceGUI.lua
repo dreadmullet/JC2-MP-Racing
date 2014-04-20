@@ -383,7 +383,7 @@ function RaceGUI.DrawRaceProgress(args)
 	local text = string.format("Race completion: %i%%" , percent)
 	
 	DrawText(
-		NormVector2(0 , -0.65) ,
+		NormVector2(0 , -0.75) ,
 		text ,
 		settings.textColor ,
 		24 ,
