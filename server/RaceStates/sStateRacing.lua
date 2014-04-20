@@ -83,6 +83,11 @@ function StateRacing:RacerLeave(racer)
 	end
 end
 
+function StateRacing:SpectatorJoin(spectator)
+	-- Add them to self.updateList.
+	table.insert(self.updateList , spectator)
+end
+
 function StateRacing:SpectatorLeave(spectator)
 	-- Remove them from self.updateList.
 	for index , racerBase in ipairs(self.updateList) do

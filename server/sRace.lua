@@ -140,6 +140,10 @@ function Race:AddSpectator(player)
 	local spectator = Spectator(self , player)
 	self.playerIdToSpectator[player:GetId()] = spectator
 	table.insert(self.participants , spectator)
+	
+	if self.state.SpectatorJoin then
+		self.state:SpectatorJoin(spectator)
+	end
 end
 
 function Race:RemovePlayer(player)
