@@ -1,5 +1,7 @@
 class("Spectate")
 
+-- TODO: racer leave and respawn network events
+
 function Spectate:__init(args) ; RaceBase.__init(self , args)
 	Spectate.instance = self
 	
@@ -7,6 +9,16 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 		print("Spectate:__init")
 		print("args.position = "..tostring(args.position))
 	end
+	
+	-- This is set when we're waiting for the server to give us the target info, and nil otherwise.
+	-- {id (number), timer (Timer)}
+	self.targetRequest = nil
+	-- Used to control our camera. position is updated every frame, and is used if the target is not
+	-- valid for whatever reason.
+	self.target = {
+		id = -1
+		position = args.position or Vector3(0 , 5000 , 0)
+	}
 	
 	if args.stateName == "StateVehicleSelection" then
 		self:EventSubscribe("Render" , self.RenderVehicleSelection)
@@ -23,22 +35,19 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 		self:EventSubscribe("Render" , self.RenderRacing)
 	end
 	
+	-- If our leaderboard is valid, set our target to the leader.
 	if self.leaderboard[1] then
-		self.targetPlayerId = self.leaderboard[1].playerId
-	else
-		self.targetPlayerId = -1
+		self.target.id = self.leaderboard[1].playerId
 	end
 	
 	self.orbitCamera = OrbitCamera()
 	self.orbitCamera.minDistance = 3
 	self.orbitCamera.maxDistance = 50
-	self.orbitCamera.targetPosition = args.position or Vector3(0 , 10000 , 0)
-	
-	self.requestTimer = nil
+	self.orbitCamera.targetPosition = self.target.position
 	
 	self:EventSubscribe("ControlDown")
 	self:NetworkSubscribe("RaceSetState")
-	self:NetworkSubscribe("ReceiveTargetPosition")
+	self:NetworkSubscribe("SpectateReceiveTarget" , self.ReceiveTarget)
 	self:NetworkSubscribe("UpdateRacePositions")
 	self:NetworkSubscribe("Terminate")
 	
@@ -58,10 +67,29 @@ end
 function Spectate:RenderRacing()
 	self.orbitCamera.isInputEnabled = inputSuspensionValue == 0
 	
-	local targetPlayer = Player.GetById(self.targetPlayerId)
-	if IsValid(targetPlayer) then
-		self.requestTimer = nil
+	if self.target == nil or self.target.id == nil then
+		warn("Invalid spectate target!")
+		return
+	end
+	
+	-- Place the camera at our fallback position. It will likely be overwritten soon.
+	self.orbitCamera.targetPosition = self.target.position
+	
+	local targetPlayer = Player.GetById(self.target.id)
+	
+	-- If this player isn't even on the server, change our target and bail out.
+	if IsValid(targetPlayer , false) == false then
+		if math.random() > 0.5 then
+			self:ChangeTarget(1)
+		else
+			self:ChangeTarget(-1)
+		end
 		
+		return
+	end
+	
+	-- If we can see our target, follow them.
+	if IsValid(targetPlayer) then
 		local newTargetPosition
 		local vehicle = targetPlayer:GetVehicle()
 		if vehicle then
@@ -69,21 +97,19 @@ function Spectate:RenderRacing()
 		else
 			newTargetPosition = targetPlayer:GetPosition() + Vector3(0 , 1 , 0)
 		end
-		if newTargetPosition:Distance(Vector3(0,0,0)) < 50 then
-			-- The client thinks they're at 0,0,0 for some reason. Blame JCMP.
+		
+		if newTargetPosition:Distance(self.target.position) > 500 then
+			-- The client thinks they're at 0,0,0 or something weird. Request their position.
+			self:RequestTarget()
 		else
+			-- Success!
 			self.orbitCamera.targetPosition = newTargetPosition
+			self.target.position = newTargetPosition
+			self.targetRequest = nil
 		end
+	-- Otherwise, we can't see our target, so request their position.
 	else
-		if
-			self.requestTimer == nil or
-			self.requestTimer:GetSeconds() > settings.spectatorRequestInterval
-		then
-			self.requestTimer = Timer()
-			
-			Network:Send("RequestTargetPosition" , self.targetPlayerId)
-			print("Requesting target: "..self.targetPlayerId)
-		end
+		self:RequestTarget()
 	end
 	
 	if Game:GetState() == GUIState.Game then
@@ -122,9 +148,9 @@ function Spectate:ControlDown(args)
 end
 
 function Spectate:ChangeTarget(delta)
-	local position = -1
+	local position = 0
 	for index , entry in ipairs(self.leaderboard) do
-		if self.targetPlayerId == entry.playerId then
+		if self.target.id == entry.playerId then
 			position = index
 			break
 		end
@@ -134,11 +160,27 @@ function Spectate:ChangeTarget(delta)
 	
 	local entry = self.leaderboard[position]
 	if entry then
-		self.targetPlayerId = entry.playerId
+		self.target.id = entry.playerId
 	else
-		self.targetPlayerId = -1
+		self.target.id = -1
 	end
-	print("Target changed to "..self.targetPlayerId)
+	print("Target changed to "..self.target.id)
+end
+
+function Spectate:RequestTarget()
+	-- If we've already requested recently, bail out.
+	if
+		self.targetRequest ~= nil and
+		self.targetRequest.timer:GetSeconds() < settings.spectatorRequestInterval
+	then
+		return
+	end
+	
+	print("Requesting target: "..self.target.id)
+	
+	self.targetRequest = {id = self.target.id , timer = Timer()}
+	
+	Network:Send("SpectateRequestTarget" , self.target.id)
 end
 
 -- Network events
@@ -157,20 +199,38 @@ function Spectate:RaceSetState(args)
 			table.insert(self.leaderboard , {playerId = playerId , isFinished = false})
 		end
 		
+		-- Set our fallback target position to the first checkpoint.
+		self.target.position = self.course.checkpoints[1][1]
+		
+		-- Set our target player to the leader.
 		if self.leaderboard[1] then
-			self.targetPlayerId = self.leaderboard[1].playerId
+			self.target.id = self.leaderboard[1].playerId
 		else
-			self.targetPlayerId = -1
+			self.target.id = -1
 		end
 	end
 end
 
-function Spectate:ReceiveTargetPosition(position)
-	print("Received target: "..tostring(position))
-	if position then
-		self.orbitCamera.targetPosition = position
-	else
-		self:ChangeTarget(1)
+function Spectate:ReceiveTarget(target)
+	-- If our request became nil (we found our target), bail out.
+	if self.targetRequest == nil then
+		warn("Already found target!")
+		return
+	end
+	
+	-- If this isn't our target, bail out.
+	if self.targetRequest.id ~= target.id then
+		warn("Wrong target!")
+		return
+	end
+	
+	print("Received target: "..tostring(target.position))
+	self.target = target
+	
+	-- If the target is not valid, set our target to the leader probably.
+	if target.id < 0 then
+		warn("Invalid target!")
+		self:ChangeTarget(-500)
 	end
 end
 

@@ -1,6 +1,6 @@
 settings = {}
 
-settings.spectatorRequestInterval = 5.5
+settings.spectatorRequestInterval = 2.5
 
 settings.textColor = Color(228 , 142 , 56 , 255) -- Light red-orange.
 

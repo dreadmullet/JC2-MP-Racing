@@ -48,7 +48,7 @@ function Spectator:Remove()
 	self:Destroy()
 end
 
-function Spectator:RequestTargetPosition(playerId)
+function Spectator:RequestTarget(playerId)
 	if
 		self.requestTimer == nil or
 		self.requestTimer:GetSeconds() > settings.spectatorRequestInterval * 1.2 + 0.2
@@ -58,11 +58,22 @@ function Spectator:RequestTargetPosition(playerId)
 		
 		local targetPlayer = Player.GetById(playerId)
 		if IsValid(targetPlayer) then
-			Network:Send(self.player , "ReceiveTargetPosition" , targetPlayer:GetPosition())
+			local target = {id = playerId , position = targetPlayer:GetPosition()}
+			Network:Send(self.player , "SpectateReceiveTarget" , target)
+		-- If the player isn't valid, give them an invalid target, but set the position to the current
+		-- checkpoint in the race.
 		else
-			warn(tostring(self.player).." is requesting an invalid player id: "..playerId)
+			warn(tostring(self.player).." is requesting an invalid player id: "..tostring(playerId))
 			
-			Network:Send(self.player , "ReceiveTargetPosition" , nil)
+			local target = {id = -1}
+			
+			local checkpointIndex = self.race.state.currentCheckpoint
+			if checkpointIndex == 0 then
+				checkpointIndex = 1
+			end
+			target.position = self.race.checkpointPositions[checkpointIndex]
+			
+			Network:Send(self.player , "SpectateReceiveTarget" , target)
 		end
 	end
 end
