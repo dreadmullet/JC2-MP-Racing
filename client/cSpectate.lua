@@ -16,7 +16,7 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	-- Used to control our camera. position is updated every frame, and is used if the target is not
 	-- valid for whatever reason.
 	self.target = {
-		id = -1
+		id = -1 ,
 		position = args.position or Vector3(0 , 5000 , 0)
 	}
 	
