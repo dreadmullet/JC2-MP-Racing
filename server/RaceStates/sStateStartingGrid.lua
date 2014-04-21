@@ -71,8 +71,13 @@ function StateStartingGrid:UpdateRacer(racer)
 	else
 		local vehicle = Vehicle.GetById(racer.assignedVehicleId)
 		if vehicle then
-			local distance = Vector3.Distance2D(racer.courseSpawn.position , vehicle:GetPosition())
-			if distance >= 2 then
+			-- Dilute the effect of the Y axis on the resulting distance.
+			local a = Copy(racer.courseSpawn.position)
+			local b = Copy(vehicle:GetPosition())
+			a.y = a.y * 0.4
+			b.y = b.y * 0.4
+			local distanceSquared = Vector3.DistanceSqr(a , b)
+			if distanceSquared >= 4.2 then
 				shouldRespawn = true
 			end
 			
