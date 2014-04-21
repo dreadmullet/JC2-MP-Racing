@@ -141,7 +141,7 @@ function Race:AddSpectator(player)
 	self.playerIdToSpectator[player:GetId()] = spectator
 	table.insert(self.participants , spectator)
 	
-	if self.state.SpectatorJoin then
+	if self.state and self.state.SpectatorJoin then
 		self.state:SpectatorJoin(spectator)
 	end
 end
