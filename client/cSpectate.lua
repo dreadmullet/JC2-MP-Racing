@@ -8,18 +8,16 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 		print("args.position = "..tostring(args.position))
 	end
 	
-	self.stateName = args.stateName
-	
-	if self.stateName == "StateVehicleSelection" then
+	if args.stateName == "StateVehicleSelection" then
 		self:EventSubscribe("Render" , self.RenderVehicleSelection)
-	elseif self.stateName == "StateStartingGrid" then
+	elseif args.stateName == "StateStartingGrid" then
 		-- TODO: wat
 		for playerId , startPosition in pairs(args.startPositions) do
 			table.insert(self.leaderboard , {playerId = playerId , isFinished = false})
 		end
 		
 		self:EventSubscribe("Render" , self.RenderRacing)
-	elseif self.stateName == "StateRacing" then
+	elseif args.stateName == "StateRacing" then
 		self:UpdateLeaderboard(args.racePosInfo)
 		
 		self:EventSubscribe("Render" , self.RenderRacing)
@@ -147,7 +145,7 @@ end
 
 function Spectate:RaceSetState(args)
 	if settings.debugLevel >= 2 then
-		print("Spectate:RaceSetState: " , self.stateName , args.stateName)
+		print("Spectate:RaceSetState: " , args.stateName)
 	end
 	
 	if args.stateName == "StateStartingGrid" then
@@ -165,8 +163,6 @@ function Spectate:RaceSetState(args)
 			self.targetPlayerId = -1
 		end
 	end
-	
-	self.stateName = args.stateName
 end
 
 function Spectate:ReceiveTargetPosition(position)
