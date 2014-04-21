@@ -50,8 +50,13 @@ function Race:__init(args)
 	-- World
 	
 	self.world = World.Create()
-	self.world:SetTime(math.random(4, 21))
-	self.world:SetWeatherSeverity(math.pow(math.random() , 2.5) * 2)
+	-- More chance of a day race.
+	if math.random() > 0.25 then
+		self.world:SetTime(math.random(7 , 15))
+	else
+		self.world:SetTime(math.random() * 24)
+	end
+	self.world:SetWeatherSeverity(math.pow(math.random() , 2.6) * 2)
 	
 	-- Misc
 	
