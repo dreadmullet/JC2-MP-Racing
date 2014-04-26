@@ -14,7 +14,7 @@ function StateVehicleSelection:__init(race) ; EGUSM.SubscribeUtility.__init(self
 	--    templates = array of strings ,
 	--    available = number ,
 	--    used = number
-	self.vehicles = Copy(self.race.course.vehiclesInfo)
+	self.vehicles = Copy(self.race.course.vehicleInfos)
 	
 	-- If this race has more players than spawns, add that many extra to each vehicle.
 	local extraVehicles = 0

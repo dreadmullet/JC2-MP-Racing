@@ -2,11 +2,11 @@ class("CourseSpawn")
 
 function CourseSpawn:__init(course)
 	self.course = course
+	
 	self.position = nil
 	self.angle = nil
-	self.modelIds = {}
-	self.templates = {}
-	self.decals = {}
+	self.vehicleInfos = {}
+	
 	self.racer = nil
 	self.vehicle = nil
 end
@@ -58,34 +58,18 @@ function CourseSpawn:SpawnRacer()
 	self.racer.player:Teleport(teleportPos , self.angle)
 end
 
-function CourseSpawn:MarshalJSON()
-	local spawn = {}
-	
-	spawn.position = {}
-	spawn.position.x = self.position.x
-	spawn.position.y = self.position.y
-	spawn.position.z = self.position.z
-	spawn.angle = {}
-	spawn.angle.x = self.angle.x
-	spawn.angle.y = self.angle.y
-	spawn.angle.z = self.angle.z
-	spawn.angle.w = self.angle.w
-	spawn.modelIds = self.modelIds
-	spawn.templates = self.templates
-	spawn.decals = self.decals
-	
-	return spawn
-end
-
 -- Could probably replace this with marshal/unmarshal functions in the future.
 function CourseSpawn:Copy()
 	local spawn = CourseSpawn(self.course)
 	
 	spawn.position = self.position
 	spawn.angle = self.angle
-	spawn.modelIds = self.modelIds
-	spawn.templates = self.templates
-	spawn.decals = self.decals
+	-- We don't want a deep copy of self.vehicleInfos because we want to keep the refs.
+	spawn.vehicleInfos = {}
+	for index , vehicleInfo in ipairs(self.vehicleInfos) do
+		spawn.vehicleInfos[index] = vehicleInfo
+		vehicleInfo.available = vehicleInfo.available + 1
+	end
 	
 	return spawn
 end

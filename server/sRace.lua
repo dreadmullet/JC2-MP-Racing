@@ -41,11 +41,13 @@ function Race:__init(args)
 	for n = 1 , #self.course.checkpoints do
 		table.insert(self.checkpointPositions , self.course.checkpoints[n].position)
 	end
-	self.numLaps = settings.numLapsFunc(
-		self.numPlayers ,
-		#self.course.spawns ,
-		self.course.numLaps
-	)
+	if self.course.type == "Circuit" then
+		self.numLaps = settings.numLapsFunc(
+			self.numPlayers ,
+			#self.course.spawns ,
+			self.course.numLaps
+		)
+	end
 	
 	-- World
 	
@@ -124,7 +126,7 @@ function Race:__init(args)
 	self.isValid = true
 	
 	-- Start the vehicle selection state, unless this is a purely on-foot race.
-	if #self.course.vehiclesInfo == 1 and self.course.vehiclesInfo[1].modelId == -1 then
+	if #self.course.vehicleInfos == 1 and self.course.vehicleInfos[1].modelId == -1 then
 		self:SetState("StateStartingGrid")
 	else
 		self:SetState("StateVehicleSelection")
@@ -320,7 +322,7 @@ function Race:raceinfo()
 	print("Spectator count    "..table.count(self.playerIdToSpectator))
 	print("Max players        "..self.course:GetMaxPlayers())
 	print("Course name        "..self.course.name)
-	print("Laps               "..self.numLaps)
+	print("Laps               "..tostring(self.numLaps))
 	print("World id           "..self.world:GetId())
 	print("Vehicle collisions "..tostring(self.vehicleCollisions))
 	print()

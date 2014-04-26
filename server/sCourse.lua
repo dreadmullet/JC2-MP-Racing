@@ -26,6 +26,11 @@ function Course:__init()
 	self.checkpoints = {}
 	-- Array of CourseSpawns. Determines max player count.
 	self.spawns = {}
+	-- Array of tables; each table has the following:
+	--    modelId = number ,
+	--    templates = array of strings ,
+	--    available = number
+	self.vehicleInfos = {}
 	
 	-- Other variables.
 	-- TODO: Some of these should be in Race.
@@ -38,12 +43,6 @@ function Course:__init()
 	-- Value = CourseCheckpoint
 	-- Checkpoints add themselves to this.
 	self.checkpointMap = {}
-	-- Array of tables; each table has the following:
-	--    modelId = number ,
-	--    templates = array of strings ,
-	--    available = number
-	-- Much better than using self.spawns for some things, such as vehicle selection.
-	self.vehiclesInfo = {}
 	-- Key = modelId
 	-- value = true
 	self.dlcVehicles = {}
@@ -158,39 +157,6 @@ function Course:HasDLCConflict(player)
 	return false
 end
 
-function Course:Save(name)
-	local ctable = {}
-	
-	ctable.name = self.name
-	ctable.type = self.type
-	ctable.numLaps = self.numLaps
-	ctable.weatherSeverity = self.weatherSeverity
-	ctable.parachuteEnabled = self.parachuteEnabled
-	ctable.grappleEnabled = self.grappleEnabled
-	ctable.forceCollision = self.forceCollision
-	ctable.authors = self.authors
-	
-	ctable.checkpoints = {}
-	
-	for index, checkpoint in ipairs(self.checkpoints) do
-		table.insert(ctable.checkpoints , checkpoint:MarshalJSON())
-	end
-	
-	ctable.spawns = {}
-	
-	for index, spawn in ipairs(self.spawns) do
-		table.insert(ctable.spawns , spawn:MarshalJSON())
-	end
-	
-	local json = require "JSON"
-	
-	local file = io.open(settings.coursesPath..name..".course" , "w")
-	
-	file:write(json.encode(ctable))
-	
-	file:close()
-end
-
 function Course.Load(name)
 	if settings.debugLevel >= 2 then
 		print("Loading course file: "..name)
@@ -198,112 +164,98 @@ function Course.Load(name)
 	
 	local timer = Timer()
 	
+	local LoadError = function(message)
+		error("Cannot load "..path..": "..message)
+	end
+	
 	local path = settings.coursesPath..name..".course"
 	
-	--
-	-- Make sure file exists.
-	--
-	if path == nil then
-		print()
-		print("*ERROR*")
-		print("Course path is nil!")
-		print()
-		return nil
+	local file , openError = io.open(path , "r")
+	
+	if openError then
+		LoadError(openError)
 	end
 	
-	local file = io.open(path , "r")
-	
-	if not file then
-		print()
-		print("*ERROR*")
-		print("Cannot open course file: "..path)
-		print()
-		return nil
-	end
-	
-	local string = ""
-	
-	for line in file:lines() do 
-		string = string..line
-	end
+	local entireFile = file:read("*a")
 	
 	local json = require("JSON")
 	
-	local ctable = json:decode(string)
+	local map = json:decode(entireFile)
 	local course = Course()
 	
-	course.name = ctable.name
-	course.type = ctable.type
-	course.numLaps = ctable.numLaps
-	course.weatherSeverity = ctable.weatherSeverity
-	course.parachuteEnabled = ctable.parachuteEnabled
-	course.grappleEnabled = ctable.grappleEnabled
-	course.forceCollision = ctable.forceCollision or ForceCollision.None
-	course.authors = ctable.authors
-	-- Temporary because I'm not going to change every course just for this.
-	if course.parachuteEnabled == nil then course.parachuteEnabled = true end
-	if course.grappleEnabled == nil then course.grappleEnabled = true end
+	course.name = map.properties.title or LoadError("No title")
+	course.type = map.properties.type or LoadError("No type")
+	course.numLaps = map.properties.laps
+	course.weatherSeverity = map.properties.weatherSeverity or -1
+	course.parachuteEnabled = map.properties.parachuteEnabled
+	course.grappleEnabled = map.properties.grappleEnabled
+	course.forceCollision = map.properties.forceCollision or ForceCollision.None
+	course.authors = map.properties.authors or {"No author"}
 	
-	course.checkpoints = {}
+	local objectIdToVehicleInfo = {}
 	
-	for index , checkpoint in ipairs(ctable.checkpoints) do
-		local cp = CourseCheckpoint(course)
-		table.insert(course.checkpoints , cp)
-		
-		cp.index = #course.checkpoints
-		
-		cp.position = Vector3(
-			checkpoint.position.x ,
-			checkpoint.position.y ,
-			checkpoint.position.z
-		)
-		
-		cp.validVehicles = checkpoint.validVehicles
-		cp.actions = checkpoint.actions or {}
-		cp.isRespawnable = checkpoint.isRespawnable
-		if cp.isRespawnable == nil then
-			cp.isRespawnable = true
+	-- We need vehicle infos first.
+	for index , object in ipairs(map.objects) do
+		if object.type == "RaceVehicleInfo" then
+			local vehicleInfo = {
+				modelId = object.properties.modelId or LoadError("Invalid vehicle model") ,
+				templates = object.properties.templates or LoadError("Invalid vehicle templates") ,
+				available = 0 ,
+			}
+			table.insert(course.vehicleInfos , vehicleInfo)
+			objectIdToVehicleInfo[object.id] = vehicleInfo
 		end
 	end
 	
-	course.spawns = {}
-	course.dlcVehicles = {}
-	
-	for index , spawn in ipairs(ctable.spawns) do
-		local sp = CourseSpawn(course)
-		
-		sp.position = Vector3(
-			spawn.position.x ,
-			spawn.position.y ,
-			spawn.position.z
-		)
-		
-		sp.angle = Angle(
-			spawn.angle.x,
-			spawn.angle.y,
-			spawn.angle.z,
-			spawn.angle.w
-		)
-		
-		sp.modelIds = spawn.modelIds
-		sp.templates = spawn.templates
-		sp.decals = spawn.decals
-		
-		-- Add to dlcVehicles.
-		for index , modelId in ipairs(spawn.modelIds) do
-			local vehicleInfo = VehicleList[modelId]
-			if vehicleInfo.isDLC then
-				course.dlcVehicles[modelId] = true
+	for index , object in ipairs(map.objects) do
+		if object.type == "RaceCheckpoint" then
+			local cp = CourseCheckpoint(course)
+			table.insert(course.checkpoints , cp)
+			
+			cp.index = #course.checkpoints
+			
+			cp.position = Vector3(
+				object.position[1] ,
+				object.position[2] ,
+				object.position[3]
+			)
+			
+			cp.validVehicles = object.properties.validVehicles or LoadError("Invalid checkpoint")
+			cp.allowAllVehicles = object.properties.allowAllVehicles
+			cp.isRespawnable = object.properties.isRespawnable
+		elseif object.type == "RaceSpawn" then
+			local spawn = CourseSpawn(course)
+			table.insert(course.spawns , spawn)
+			
+			spawn.position = Vector3(
+				object.position[1] ,
+				object.position[2] ,
+				object.position[3]
+			)
+			
+			spawn.angle = Angle(
+				object.angle[1] ,
+				object.angle[2] ,
+				object.angle[3] ,
+				object.angle[4]
+			)
+			
+			spawn.vehicleInfos = {}
+			for index , objectId in ipairs(object.properties.vehicles) do
+				local vehicleInfo = objectIdToVehicleInfo[objectId] or LoadError("Invalid spawn")
+				table.insert(spawn.vehicleInfos , vehicleInfo)
+				vehicleInfo.available = vehicleInfo.available + 1
+			end
+			
+			-- Add to dlcVehicles.
+			for index , v in ipairs(spawn.vehicleInfos) do
+				local modelId = v.modelId
+				local vehicleInfo = VehicleList[modelId]
+				if vehicleInfo.isDLC then
+					course.dlcVehicles[modelId] = true
+				end
 			end
 		end
-		
-		-- Fix for old courses: if there are no model ids, it's an on-foot race. But on-foot has a
-		-- pseudo model id of -1, which breaks some things (vehicle selection, at least).
-		if #sp.modelIds == 0 then
-			sp.modelIds = {-1}
-		end
-		
-		table.insert(course.spawns , sp)
 	end
 	
 	course.fileName = path
@@ -311,49 +263,6 @@ function Course.Load(name)
 	course.fileName = course.fileName:gsub("\\" , "/")
 	-- Strip out everything except the file name.
 	course.fileName = course.fileName:gsub(".*/" , "")
-	
-	-- Populate course.vehiclesInfo.
-	
-	-- Create temporary vehicles map.
-	local vehicles = {}
-	for index , courseSpawn in ipairs(course.spawns) do
-		-- Map to help with removing duplicate model ids.
-		local modelIds = {}
-		for index , modelId in ipairs(courseSpawn.modelIds) do
-			-- If there are no templates, make a blank one.
-			if #courseSpawn.templates == 0 then
-				courseSpawn.templates = {"."}
-			end
-			
-			if vehicles[modelId] then
-				vehicles[modelId].templates[courseSpawn.templates[index]] = true
-				if modelIds[modelId] == nil then
-					vehicles[modelId].available = vehicles[modelId].available + 1
-					modelIds[modelId] = true
-				end
-			else
-				vehicles[modelId] = {
-					templates = {[courseSpawn.templates[index]] = true} ,
-					available = 1 ,
-				}
-				modelIds[modelId] = true
-			end
-		end
-	end
-	-- Translate vehicles (map) into course.vehiclesInfo (array).
-	for modelId , vehicleInfo in pairs(vehicles) do
-		local templates = {}
-		for template , alwaysTrue in pairs(vehicleInfo.templates) do
-			table.insert(templates , template)
-		end
-		
-		local vehicleInfo = {
-			modelId = modelId ,
-			templates = templates ,
-			available = vehicleInfo.available ,
-		}
-		table.insert(course.vehiclesInfo , vehicleInfo)
-	end
 	
 	-- Calculate course.averageSpawnPosition.
 	for index , courseSpawn in ipairs(course.spawns) do
