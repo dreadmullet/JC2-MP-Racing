@@ -20,7 +20,65 @@ Controls.GetInputNameByControl = function(controlName)
 	return "UNASSIGNED"
 end
 
--- This should be called to add or change controls. Used by BindMenu.
+Controls.Get = function(controlName)
+	for index , control in ipairs(Controls.controls) do
+		if control.name == controlName then
+			return control
+		end
+	end
+	
+	return nil
+end
+
+Controls.GetIsHeld = function(controlName)
+	local control = nil
+	for index , c in ipairs(Controls.controls) do
+		if c.name == controlName then
+			control = c
+		end
+	end
+	
+	if control == nil then
+		return false
+	end
+	
+	for index , c in ipairs(Controls.held) do
+		if c[2] == control.value and c[1] == control.type then
+			return true
+		end
+	end
+	
+	return false
+end
+
+-- Examples:
+--     Controls.Add("Respawn", "R")
+--     Controls.Add("Respawn", "Reload")
+--     Controls.Add("Respawn", nil)
+Controls.Add = function(name , defaultControl)
+	local control = {}
+	
+	if defaultControl == nil then
+		control.type = "Unassigned"
+		control.value = -1
+	elseif Action[defaultControl] then
+		control.type = "Action"
+		control.value = Action[defaultControl]
+	elseif VirtualKey[defaultControl] or defaultControl:len() == 1 then
+		control.type = "Key"
+		control.value = VirtualKey[defaultControl] or string.byte(defaultControl:upper())
+	else
+		error("default control is not a valid Action or Key name")
+	end
+	
+	control.name = name
+	control.valueString = defaultControl or "Unassigned"
+	
+	Controls.Set(control)
+	
+	return control
+end
+
 Controls.Set = function(controlToSet)
 	-- If a control with this name already exists, modify it.
 	for index , control in ipairs(Controls.controls) do
@@ -30,7 +88,7 @@ Controls.Set = function(controlToSet)
 		end
 	end
 	
-	table.insert(Controls.controls , Copy(controlToSet))
+	table.insert(Controls.controls , controlToSet)
 end
 
 Controls.Remove = function(controlName)

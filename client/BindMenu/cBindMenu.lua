@@ -37,24 +37,7 @@ BindMenu.Create = function(...)
 			error("Invalid arguments")
 		end
 		
-		local control = {}
-		
-		if defaultControl == nil then
-			control.type = "Unassigned"
-			control.value = -1
-		elseif Action[defaultControl] then
-			control.type = "Action"
-			control.value = Action[defaultControl]
-		elseif VirtualKey[defaultControl] or defaultControl:len() == 1 then
-			control.type = "Key"
-			control.value = VirtualKey[defaultControl] or string.byte(defaultControl:upper())
-		else
-			error("defaultControl is not a valid Action or Key")
-		end
-		
-		control.name = name
-		control.valueString = defaultControl or "Unassigned"
-		table.insert(self.controls , control)
+		local control = Controls.Add(name , defaultControl)
 		
 		local button = Button.Create(self)
 		button:SetDock(GwenPosition.Top)
