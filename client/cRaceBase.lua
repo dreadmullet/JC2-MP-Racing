@@ -36,6 +36,8 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	-- Initialize RaceModules.
 	for index , moduleName in ipairs(args.raceInfo.modules) do
 		local class = RaceModules[moduleName]
+		-- The server's modules are not necessarily the same as the client's modules.
+		-- To address this, we check if the module exists on the client before creating an instance.
 		if class then
 			class()
 		end
