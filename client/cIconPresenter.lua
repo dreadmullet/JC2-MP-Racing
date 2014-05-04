@@ -21,12 +21,12 @@ function IconPresenter:Proc()
 	local intervalDelay = 0.1
 	
 	if self.initialwaitTime then
-		sleep(self.initialwaitTime)
+		coroutine.sleep(self.initialwaitTime)
 	end
 	
 	for index , icon in ipairs(self.icons) do
 		self:PresentIcon(index , self.timePerIcon - intervalDelay)
-		sleep(intervalDelay)
+		coroutine.sleep(intervalDelay)
 	end
 end
 
@@ -47,7 +47,7 @@ function IconPresenter:PresentIcon(index , time)
 	icon:SetPosition(startPosition)
 	icon:SetSize(startSize)
 	
-	sleep(waitTime)
+	coroutine.sleep(waitTime)
 	
 	-- Moving and shrinking
 	local timer = Timer()
