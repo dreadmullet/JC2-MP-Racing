@@ -40,7 +40,7 @@ Stats.UpdateFromOldVersion = function(version)
 		version = 4
 	end
 	
-	print(".")
+	print("Stage 1/5: Copied and updated old data")
 	
 	-- Drop all tables.
 	local transaction = SQL:Transaction()
@@ -49,7 +49,7 @@ Stats.UpdateFromOldVersion = function(version)
 	end
 	transaction:Commit()
 	
-	print(".")
+	print("Stage 2/5: Removed old data from database")
 	
 	-- Recreate the database.
 	
@@ -69,7 +69,7 @@ Stats.UpdateFromOldVersion = function(version)
 		command:Bind(7 , racePlayer.Wins)
 		command:Execute()
 	end
-	print(".")
+	print("Stage 3/5: Updated race players")
 	-- RaceResults
 	for index , raceResult in ipairs(database.RaceResults) do
 		local command = SQL:Command(
@@ -83,7 +83,7 @@ Stats.UpdateFromOldVersion = function(version)
 		command:Bind(5 , raceResult.BestTime)
 		command:Execute()
 	end
-	print(".")
+	print("Stage 4/5: Updated race results")
 	-- RaceCourses
 	for index , raceCourse in ipairs(database.RaceCourses) do
 		local command = SQL:Command(
@@ -105,7 +105,7 @@ Stats.UpdateFromOldVersion = function(version)
 		command:Execute()
 	end
 	
-	print(".")
+	print("Stage 5/5: Updated courses")
 	
 	transaction:Commit()
 	

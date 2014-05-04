@@ -9,6 +9,9 @@ function RaceManagerMode:__init(args) ; EGUSM.SubscribeUtility.__init(self)
 	self.adminNextCourseTextBox = nil
 	self.raceMenuHelpText = "Use '/"..settings.command.."' to open the race menu"
 	
+	self.nextCourseTitle = nil
+	self.nextRaceTimerControl = nil
+	
 	self:AddToRaceMenu()
 	
 	self:ApplyNextRaceInfo(args.nextRaceInfo)
@@ -160,6 +163,8 @@ function RaceManagerMode:ApplyNextRaceInfo(args)
 	for title , label in pairs(labels) do
 		label:SizeToContents()
 	end
+
+	self.nextCourseTitle = args.courseName
 end
 
 -- GWEN events
@@ -224,6 +229,11 @@ function RaceManagerMode:RaceOrSpectateEnd()
 	self.voteSkipButton:SetEnabled(false)
 	self.voteSkipLabel:SetText("...")
 	self.voteSkipLabel:SetColorNormal()
+	
+	if self.nextRaceTimerControl then
+		self.nextRaceTimerControl:Remove()
+		self.nextRaceTimerControl = nil
+	end
 end
 
 function RaceManagerMode:RaceMenuOpened()
@@ -286,8 +296,14 @@ function RaceManagerMode:RaceSkipped()
 	self.voteSkipLabel:SetTextColor(Color.Green)
 end
 
-function RaceManagerMode:RaceWillEndIn()
+function RaceManagerMode:RaceWillEndIn(endTime)
 	self.voteSkipButton:SetEnabled(false)
+	if self.nextRaceTimerControl then
+		self.nextRaceTimerControl:Restart()
+	else
+		local message = string.format("next race: %s" , self.nextCourseTitle)
+		self.nextRaceTimerControl = RaceMenuUtility.CreateTimer(message , endTime)
+	end	
 end
 
 function RaceManagerMode:RaceInfoChanged(args)
