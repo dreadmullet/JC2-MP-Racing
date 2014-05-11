@@ -168,7 +168,7 @@ Stats.CreateTables = function()
 			"Id                 integer primary key autoincrement ,"..
 			"SteamId            integer ,"..
 			"Place              integer ,".. -- -1 means DNF
-			"CourseFileNameHash integer ,"..
+			"CourseFileNameHash integer ,".. -- -1 means the course doesn't use stats
 			"Vehicle            integer ,".. -- Vehicle model id
 			"BestTime           integer ,".. -- Milliseconds
 			"foreign key(SteamId) references RacePlayers(SteamId)"..
@@ -264,13 +264,20 @@ Stats.AddRaceResult = function(racer , place , course)
 		bestTime = math.floor(racer.bestTime * 1000 + 0.5)
 	end
 	
+	local fileNameHash
+	if course.useStats then
+		fileNameHash = FNV(course.fileName)
+	else
+		fileNameHash = -1
+	end
+	
 	local command = SQL:Command(
 		"insert into RaceResults(SteamId , Place , CourseFileNameHash , Vehicle , BestTime) "..
 		"values(?,?,?,?,?)"
 	)
 	command:Bind(1 , racer.steamId)
 	command:Bind(2 , place)
-	command:Bind(3 , FNV(course.fileName))
+	command:Bind(3 , fileNameHash)
 	command:Bind(4 , vehicleModelId)
 	command:Bind(5 , bestTime)
 	table.insert(Stats.sqlCommands , command)
@@ -361,20 +368,21 @@ Stats.RaceStart = function(race)
 	Stats.Commit()
 	
 	-- Increment RaceCourses.TimesPlayed.
-	
-	local query = SQL:Query("select TimesPlayed from RaceCourses where FileNameHash = ?")
-	query:Bind(1 , FNV(race.course.fileName))
-	local results = query:Execute()
-	
-	local timesPlayed = results[1].TimesPlayed
-	timesPlayed = timesPlayed + 1
-	
-	local command = SQL:Command(
-		"update RaceCourses set TimesPlayed = ? where FileNameHash = ?"
-	)
-	command:Bind(1 , timesPlayed)
-	command:Bind(2 , FNV(race.course.fileName))
-	table.insert(Stats.sqlCommands , command)
+	if race.course.useStats then
+		local query = SQL:Query("select TimesPlayed from RaceCourses where FileNameHash = ?")
+		query:Bind(1 , FNV(race.course.fileName))
+		local results = query:Execute()
+		
+		local timesPlayed = results[1].TimesPlayed
+		timesPlayed = timesPlayed + 1
+		
+		local command = SQL:Command(
+			"update RaceCourses set TimesPlayed = ? where FileNameHash = ?"
+		)
+		command:Bind(1 , timesPlayed)
+		command:Bind(2 , FNV(race.course.fileName))
+		table.insert(Stats.sqlCommands , command)
+	end
 	
 	-- Get each racer's PlayTime.
 	-- NOTE: This is probably inefficient. Would a transaction even work here?

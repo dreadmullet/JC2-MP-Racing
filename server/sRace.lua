@@ -272,11 +272,15 @@ function Race:MarshalForClient()
 	}
 	
 	-- Load the top time from the database.
-	local topRecord = Stats.GetCourseRecords(self.course.fileName , 1 , 1)[1]
+	local topRecord
+	if self.course.useStats then
+		topRecord = Stats.GetCourseRecords(self.course.fileName , 1 , 1)[1]
+	end
 	if topRecord then
 		info.topRecordTime = topRecord.time
 		info.topRecordPlayerName = topRecord.playerName
-	else -- If there are no records yet, use a fake one.
+	else -- If there are no records, use a fake one.
+		-- TODO: This is silly
 		topRecord = {}
 		info.topRecordTime = 59 * 60 + 59 + 0.99
 		info.topRecordPlayerName = "xXxSUpA1337r4c3rxXx"
@@ -331,7 +335,18 @@ end
 -- Static CreateRace event function.
 
 Race.CreateRaceFromEvent = function(args)
-	local course = Course.Load(args.courseName)
+	local course
+	if args.courseName then
+		course = Course.Load(args.courseName)
+	elseif args.jsonString then
+		course = Course.LoadFromJSON(args.jsonString)
+	elseif args.map then
+		course = Course.LoadFromMap(args.map)
+	end
+	
+	if course == nil then
+		error("Failed to load course")
+	end
 	
 	local raceArgs = {
 		players = args.players ,

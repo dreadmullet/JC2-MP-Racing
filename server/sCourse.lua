@@ -47,6 +47,8 @@ function Course:__init()
 	-- value = true
 	self.dlcVehicles = {}
 	self.averageSpawnPosition = Vector3(0 , 0 , 0)
+	-- Stats shouldn't be used in some cases, such as when testing courses in the map editor.
+	self.useStats = false
 end
 
 function Course:GetMaxPlayers()
@@ -157,30 +159,54 @@ function Course:HasDLCConflict(player)
 	return false
 end
 
-function Course.Load(name)
+Course.Load = function(name)
 	if settings.debugLevel >= 2 then
 		print("Loading course file: "..name)
 	end
 	
 	local timer = Timer()
 	
-	local LoadError = function(message)
-		error("Cannot load "..path..": "..message)
-	end
-	
 	local path = settings.coursesPath..name..".course"
 	
 	local file , openError = io.open(path , "r")
 	
 	if openError then
-		LoadError(openError)
+		error("Cannot load "..tostring(name)..": "..openError)
 	end
 	
-	local entireFile = file:read("*a")
+	local jsonString = file:read("*a")
 	
+	file:close()
+	
+	local course = Course.LoadFromJSON(jsonString)
+	
+	course.fileName = path
+	-- Replace backslashes with slashes for OS compatibility.
+	course.fileName = course.fileName:gsub("\\" , "/")
+	-- Strip out everything except the file name.
+	course.fileName = course.fileName:gsub(".*/" , "")
+	
+	-- Add to database.
+	course.useStats = true
+	Stats.AddCourse(course)
+	
+	print(string.format("%s loaded in %.3f seconds" , course.name , timer:GetSeconds()))
+	
+	return course
+end
+
+Course.LoadFromJSON = function(jsonString)
 	local json = require("JSON")
+	local map = json:decode(jsonString)
 	
-	local map = json:decode(entireFile)
+	return Course.LoadFromMap(map)
+end
+
+Course.LoadFromMap = function(map)
+	local LoadError = function(message)
+		error("Cannot load "..tostring(map.properties.title)..": "..message)
+	end
+	
 	local course = Course()
 	
 	course.name = map.properties.title or LoadError("No title")
@@ -251,29 +277,18 @@ function Course.Load(name)
 			for index , v in ipairs(spawn.vehicleInfos) do
 				local modelId = v.modelId
 				local vehicleInfo = VehicleList[modelId]
-				if vehicleInfo.isDLC then
+				if vehicleInfo and vehicleInfo.isDLC then
 					course.dlcVehicles[modelId] = true
 				end
 			end
 		end
 	end
 	
-	course.fileName = path
-	-- Replace backslashes with slashes for OS compatibility.
-	course.fileName = course.fileName:gsub("\\" , "/")
-	-- Strip out everything except the file name.
-	course.fileName = course.fileName:gsub(".*/" , "")
-	
 	-- Calculate course.averageSpawnPosition.
 	for index , courseSpawn in ipairs(course.spawns) do
 		course.averageSpawnPosition = course.averageSpawnPosition + courseSpawn.position
 	end
 	course.averageSpawnPosition = course.averageSpawnPosition / #course.spawns
-	
-	-- Add to database.
-	Stats.AddCourse(course)
-	
-	print(string.format("%s loaded in %.3f seconds" , course.name , timer:GetSeconds()))
 	
 	return course
 end
