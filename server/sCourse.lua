@@ -203,14 +203,10 @@ Course.LoadFromJSON = function(jsonString)
 end
 
 Course.LoadFromMap = function(map)
-	local LoadError = function(message)
-		error("Cannot load "..tostring(map.properties.title)..": "..message)
-	end
-	
 	local course = Course()
 	
-	course.name = map.properties.title or LoadError("No title")
-	course.type = map.properties.type or LoadError("No type")
+	course.name = map.properties.title
+	course.type = "Linear"
 	course.numLaps = map.properties.laps
 	course.weatherSeverity = map.properties.weatherSeverity or -1
 	course.parachuteEnabled = map.properties.parachuteEnabled
@@ -218,14 +214,86 @@ Course.LoadFromMap = function(map)
 	course.forceCollision = map.properties.forceCollision or ForceCollision.None
 	course.authors = map.properties.authors or {"No author"}
 	
+	local objectIdToCheckpoint = {}
 	local objectIdToVehicleInfo = {}
+	
+	-- Checkpoints
+	
+	-- Create a linked list of checkpoints.
+	-- Values are like, {previous = table , checkpoint = RaceCheckpoint , next = table}
+	local checkpointList = {}
+	for index , object in ipairs(map.objects) do
+		if object.type == "RaceCheckpoint" then
+			objectIdToCheckpoint[object.id] = object
+			table.insert(checkpointList , {checkpoint = object})
+		end
+	end
+	for index , listItem in ipairs(checkpointList) do
+		local nextCheckpointId = listItem.checkpoint.properties.nextCheckpoint
+		if nextCheckpointId then
+			for index2 , listItem2 in ipairs(checkpointList) do
+				if listItem2.checkpoint.id == nextCheckpointId then
+					listItem.next = listItem2
+					listItem2.previous = listItem
+				end
+			end
+		end
+	end
+	
+	-- Find the first checkpoint and also determine if the course is a circuit.
+	local startingCheckpointItem = checkpointList[1]
+	while true do
+		startingCheckpointItem.beenTo = true
+		
+		if
+			course.type == "Circuit" and
+			startingCheckpointItem.checkpoint.id == map.properties.firstCheckpoint
+		then
+			break
+		end
+		
+		if startingCheckpointItem.previous then
+			startingCheckpointItem = startingCheckpointItem.previous
+			-- Prevent an infinite loop in case it's a circuit.
+			if startingCheckpointItem.beenTo then
+				-- We know it's a circuit now, so start searching for the first checkpoint.
+				course.type = "Circuit"
+			end
+		else
+			break
+		end
+	end
+	-- Create the CourseCheckpoints by iterating through the checkpointList linked list.
+	local listItem = startingCheckpointItem
+	repeat
+		local object = listItem.checkpoint
+		
+		local checkpoint = CourseCheckpoint(course)
+		table.insert(course.checkpoints , checkpoint)
+		
+		checkpoint.index = #course.checkpoints
+		
+		checkpoint.position = Vector3(
+			object.position[1] ,
+			object.position[2] ,
+			object.position[3]
+		)
+		
+		checkpoint.validVehicles = object.properties.validVehicles
+		checkpoint.allowAllVehicles = object.properties.allowAllVehicles
+		checkpoint.isRespawnable = object.properties.isRespawnable
+		
+		listItem = listItem.next
+	until listItem == nil or listItem == startingCheckpointItem
+	
+	-- Spawns
 	
 	-- We need vehicle infos first.
 	for index , object in ipairs(map.objects) do
 		if object.type == "RaceVehicleInfo" then
 			local vehicleInfo = {
-				modelId = object.properties.modelId or LoadError("Invalid vehicle model") ,
-				templates = object.properties.templates or LoadError("Invalid vehicle templates") ,
+				modelId = object.properties.modelId ,
+				templates = object.properties.templates ,
 				available = 0 ,
 			}
 			table.insert(course.vehicleInfos , vehicleInfo)
@@ -233,23 +301,9 @@ Course.LoadFromMap = function(map)
 		end
 	end
 	
+	-- Create the CourseSpawns.
 	for index , object in ipairs(map.objects) do
-		if object.type == "RaceCheckpoint" then
-			local cp = CourseCheckpoint(course)
-			table.insert(course.checkpoints , cp)
-			
-			cp.index = #course.checkpoints
-			
-			cp.position = Vector3(
-				object.position[1] ,
-				object.position[2] ,
-				object.position[3]
-			)
-			
-			cp.validVehicles = object.properties.validVehicles or LoadError("Invalid checkpoint")
-			cp.allowAllVehicles = object.properties.allowAllVehicles
-			cp.isRespawnable = object.properties.isRespawnable
-		elseif object.type == "RaceSpawn" then
+		if object.type == "RaceSpawn" then
 			local spawn = CourseSpawn(course)
 			table.insert(course.spawns , spawn)
 			
@@ -268,7 +322,7 @@ Course.LoadFromMap = function(map)
 			
 			spawn.vehicleInfos = {}
 			for index , objectId in ipairs(object.properties.vehicles) do
-				local vehicleInfo = objectIdToVehicleInfo[objectId] or LoadError("Invalid spawn")
+				local vehicleInfo = objectIdToVehicleInfo[objectId]
 				table.insert(spawn.vehicleInfos , vehicleInfo)
 				vehicleInfo.available = vehicleInfo.available + 1
 			end
@@ -283,6 +337,8 @@ Course.LoadFromMap = function(map)
 			end
 		end
 	end
+	
+	-- Misc
 	
 	-- Calculate course.averageSpawnPosition.
 	for index , courseSpawn in ipairs(course.spawns) do
