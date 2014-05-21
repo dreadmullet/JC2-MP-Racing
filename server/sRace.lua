@@ -331,29 +331,3 @@ function Race:raceinfo()
 	print("Vehicle collisions "..tostring(self.vehicleCollisions))
 	print()
 end
-
--- Static CreateRace event function.
-
-Race.CreateRaceFromEvent = function(args)
-	local course
-	if args.courseName then
-		course = Course.Load(args.courseName)
-	elseif args.jsonString then
-		course = Course.LoadFromJSON(args.jsonString)
-	elseif args.map then
-		course = Course.LoadFromMap(args.map)
-	end
-	
-	if course == nil then
-		error("Failed to load course")
-	end
-	
-	local raceArgs = {
-		players = args.players ,
-		course = course ,
-		collisions = args.collisions
-	}
-	Race(raceArgs)
-end
-
-Events:Subscribe("CreateRace" , Race.CreateRaceFromEvent)

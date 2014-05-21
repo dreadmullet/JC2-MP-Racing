@@ -168,17 +168,9 @@ Course.Load = function(name)
 	
 	local path = settings.coursesPath..name..".course"
 	
-	local file , openError = io.open(path , "r")
+	local map = MapEditor.LoadFromFile(path)
 	
-	if openError then
-		error("Cannot load "..tostring(name)..": "..openError)
-	end
-	
-	local jsonString = file:read("*a")
-	
-	file:close()
-	
-	local course = Course.LoadFromJSON(jsonString)
+	local course = Course.LoadFromMap(map)
 	
 	course.fileName = path
 	-- Replace backslashes with slashes for OS compatibility.
@@ -195,13 +187,6 @@ Course.Load = function(name)
 	return course
 end
 
-Course.LoadFromJSON = function(jsonString)
-	local json = require("JSON")
-	local map = json:decode(jsonString)
-	
-	return Course.LoadFromMap(map)
-end
-
 Course.LoadFromMap = function(map)
 	local course = Course()
 	
@@ -214,7 +199,6 @@ Course.LoadFromMap = function(map)
 	course.forceCollision = map.properties.forceCollision or ForceCollision.None
 	course.authors = map.properties.authors or {"No author"}
 	
-	local objectIdToCheckpoint = {}
 	local objectIdToVehicleInfo = {}
 	
 	-- Checkpoints
@@ -222,17 +206,16 @@ Course.LoadFromMap = function(map)
 	-- Create a linked list of checkpoints.
 	-- Values are like, {previous = table , checkpoint = RaceCheckpoint , next = table}
 	local checkpointList = {}
-	for index , object in ipairs(map.objects) do
+	for objectId , object in pairs(map.objects) do
 		if object.type == "RaceCheckpoint" then
-			objectIdToCheckpoint[object.id] = object
 			table.insert(checkpointList , {checkpoint = object})
 		end
 	end
 	for index , listItem in ipairs(checkpointList) do
-		local nextCheckpointId = listItem.checkpoint.properties.nextCheckpoint
-		if nextCheckpointId then
+		local nextCheckpoint = listItem.checkpoint.properties.nextCheckpoint
+		if nextCheckpoint then
 			for index2 , listItem2 in ipairs(checkpointList) do
-				if listItem2.checkpoint.id == nextCheckpointId then
+				if listItem2.checkpoint.id == nextCheckpoint.id then
 					listItem.next = listItem2
 					listItem2.previous = listItem
 				end
@@ -247,7 +230,7 @@ Course.LoadFromMap = function(map)
 		
 		if
 			course.type == "Circuit" and
-			startingCheckpointItem.checkpoint.id == map.properties.firstCheckpoint
+			startingCheckpointItem.checkpoint == map.properties.firstCheckpoint
 		then
 			break
 		end
@@ -273,11 +256,7 @@ Course.LoadFromMap = function(map)
 		
 		checkpoint.index = #course.checkpoints
 		
-		checkpoint.position = Vector3(
-			object.position[1] ,
-			object.position[2] ,
-			object.position[3]
-		)
+		checkpoint.position = object.position
 		
 		checkpoint.validVehicles = object.properties.validVehicles
 		checkpoint.allowAllVehicles = object.properties.allowAllVehicles
@@ -289,7 +268,7 @@ Course.LoadFromMap = function(map)
 	-- Spawns
 	
 	-- We need vehicle infos first.
-	for index , object in ipairs(map.objects) do
+	for objectId , object in pairs(map.objects) do
 		if object.type == "RaceVehicleInfo" then
 			local vehicleInfo = {
 				modelId = object.properties.modelId ,
@@ -297,28 +276,19 @@ Course.LoadFromMap = function(map)
 				available = 0 ,
 			}
 			table.insert(course.vehicleInfos , vehicleInfo)
-			objectIdToVehicleInfo[object.id] = vehicleInfo
+			objectIdToVehicleInfo[objectId] = vehicleInfo
 		end
 	end
 	
 	-- Create the CourseSpawns.
-	for index , object in ipairs(map.objects) do
+	for objectId , object in pairs(map.objects) do
 		if object.type == "RaceSpawn" then
 			local spawn = CourseSpawn(course)
 			table.insert(course.spawns , spawn)
 			
-			spawn.position = Vector3(
-				object.position[1] ,
-				object.position[2] ,
-				object.position[3]
-			)
+			spawn.position = object.position
 			
-			spawn.angle = Angle(
-				object.angle[1] ,
-				object.angle[2] ,
-				object.angle[3] ,
-				object.angle[4]
-			)
+			spawn.angle = object.angle
 			
 			spawn.vehicleInfos = {}
 			for index , objectId in ipairs(object.properties.vehicles) do
