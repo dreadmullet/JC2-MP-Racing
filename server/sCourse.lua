@@ -166,7 +166,7 @@ Course.Load = function(name)
 	
 	local timer = Timer()
 	
-	local path = settings.coursesPath..name..".course"
+	local path = settings.coursesPath..name..".map"
 	
 	local map = MapEditor.LoadFromFile(path)
 	
