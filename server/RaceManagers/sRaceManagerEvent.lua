@@ -39,6 +39,11 @@ function RaceManagerEvent:RequestRaceOwners(raceId , player)
 end
 
 function RaceManagerEvent:OwnerEndRace(args , player)
+	if IsValid(player) == false then
+		warn("Invalid player in OwnerEndRace")
+		return
+	end
+	
 	if self.name == args.name and table.find(self.owners , player) then
 		self.race:Terminate()
 		self:Destroy()
