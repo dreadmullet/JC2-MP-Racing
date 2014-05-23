@@ -2,8 +2,10 @@ Controls = {}
 
 -- Array of tables.
 -- Example values:
--- {name = "Jump"  , type = "Action" , value = 44  , valueString = "SoundHornSiren"}
--- {name = "Boost" , type = "Key"    , value = 160 , valueString = "LShift"        }
+-- {name = "Jump"   , type = "Action"      , value = 44  , valueString = "SoundHornSiren"}
+-- {name = "Boost"  , type = "Key"         , value = 160 , valueString = "LShift"}
+-- {name = "Camera" , type = "MouseButton" , value = 3   , valueString = "Mouse3"}
+-- TODO: Mouse movement and scroll wheel
 Controls.controls = {}
 -- These three are arrays of tables. Similar to above, but [1] is type and [2] is value.
 Controls.held = {}
@@ -54,6 +56,7 @@ end
 -- Examples:
 --     Controls.Add("Respawn", "R")
 --     Controls.Add("Respawn", "Reload")
+--     Controls.Add("Respawn", "Mouse3")
 --     Controls.Add("Respawn", nil)
 Controls.Add = function(name , defaultControl)
 	local control = {}
@@ -67,8 +70,16 @@ Controls.Add = function(name , defaultControl)
 	elseif VirtualKey[defaultControl] or defaultControl:len() == 1 then
 		control.type = "Key"
 		control.value = VirtualKey[defaultControl] or string.byte(defaultControl:upper())
+	elseif defaultControl:sub(1 , 5) == "Mouse" then
+		local number = tonumber(defaultControl:sub(6))
+		if number then
+			control.type = "MouseButton"
+			control.value = number
+		else
+			error("Invalid default mouse button: "..tostring(defaultControl))
+		end
 	else
-		error("default control is not a valid Action or Key name")
+		error("default control is not a valid Action, Key, or mouse button")
 	end
 	
 	control.name = name
@@ -138,24 +149,46 @@ Controls.LocalPlayerInput = function(args)
 end
 
 Controls.KeyDown = function(args)
-	local key = args.key
 	-- Make sure this key isn't held down.
 	for index , controlInfo in ipairs(Controls.held) do
-		if controlInfo[1] == "Key" and controlInfo[2] == key then
+		if controlInfo[1] == "Key" and controlInfo[2] == args.key then
 			return
 		end
 	end
 	
-	local controlInfo = {"Key" , key}
+	local controlInfo = {"Key" , args.key}
 	Controls.Down(controlInfo)
 	table.insert(Controls.held , controlInfo)
 end
 
 Controls.KeyUp = function(args)
-	local key = args.key
 	-- Make sure this key is held down.
 	for index , controlInfo in ipairs(Controls.held) do
-		if controlInfo[1] == "Key" and controlInfo[2] == key then
+		if controlInfo[1] == "Key" and controlInfo[2] == args.key then
+			table.remove(Controls.held , index)
+			Controls.Up(controlInfo)
+			return
+		end
+	end
+end
+
+Controls.MouseDown = function(args)
+	-- Make sure this mouse button isn't held down.
+	for index , controlInfo in ipairs(Controls.held) do
+		if controlInfo[1] == "MouseButton" and controlInfo[2] == args.button then
+			return
+		end
+	end
+	
+	local controlInfo = {"MouseButton" , args.button}
+	Controls.Down(controlInfo)
+	table.insert(Controls.held , controlInfo)
+end
+
+Controls.MouseUp = function(args)
+	-- Make sure this mouse button is held down.
+	for index , controlInfo in ipairs(Controls.held) do
+		if controlInfo[1] == "MouseButton" and controlInfo[2] == args.button then
 			table.remove(Controls.held , index)
 			Controls.Up(controlInfo)
 			return
@@ -201,4 +234,6 @@ end
 Events:Subscribe("LocalPlayerInput" , Controls.LocalPlayerInput)
 Events:Subscribe("KeyDown" , Controls.KeyDown)
 Events:Subscribe("KeyUp" , Controls.KeyUp)
+Events:Subscribe("MouseDown" , Controls.MouseDown)
+Events:Subscribe("MouseUp" , Controls.MouseUp)
 Events:Subscribe("InputPoll" , Controls.InputPoll)

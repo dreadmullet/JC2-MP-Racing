@@ -1,4 +1,3 @@
-
 BindMenu = {}
 
 -- Controls cannot be assigned to these if allowMouse is false (default).
@@ -23,6 +22,7 @@ BindMenu.Create = function(...)
 	window.state = "Idle"
 	window.eventInput = nil
 	window.eventKeyUp = nil
+	window.eventMouseButtonUp = nil
 	window.activatedButton = nil
 	window.allowMouse = false
 	window.receiveEvent = nil
@@ -31,7 +31,7 @@ BindMenu.Create = function(...)
 	window.saveTimer = Timer()
 	
 	-- defaultControl can be an Action name, a Key name, or nil.
-	-- Examples: "SoundHornSiren", "LShift", "C", nil
+	-- Examples: "SoundHornSiren", "LShift", "C", "Mouse3", nil
 	function window:AddControl(name , defaultControl)
 		if not name then
 			error("Invalid arguments")
@@ -91,6 +91,7 @@ BindMenu.Create = function(...)
 		if IsValid(self.eventInput) then
 			Events:Unsubscribe(self.eventInput)
 			Events:Unsubscribe(self.eventKeyUp)
+			Events:Unsubscribe(self.eventMouseUp)
 		end
 	end
 	
@@ -112,6 +113,7 @@ BindMenu.Create = function(...)
 		
 		self.eventInput = Events:Subscribe("LocalPlayerInput" , self , self.LocalPlayerInput)
 		self.eventKeyUp = Events:Subscribe("KeyUp" , self , self.KeyUp)
+		self.eventMouseUp = Events:Subscribe("MouseUp" , self , self.MouseButtonUp)
 	end
 	
 	function window:UnassignButtonPressed(button)
@@ -145,6 +147,8 @@ BindMenu.Create = function(...)
 				type = "1"
 			elseif control.type == "Key" then
 				type = "2"
+			elseif control.type == "MouseButton" then
+				type = "3"
 			end
 			settings = settings..control.name.."|"..type.."|"..tostring(control.value).."\n"
 		end
@@ -189,12 +193,25 @@ BindMenu.Create = function(...)
 		local control = self.activatedButton:GetDataObject("control")
 		
 		control.type = "Key"
-		control.value = args.key		
+		control.value = args.key
 		control.valueString = InputNames.GetKeyName(args.key)
 		
 		if control.valueString == "INVALID" then
 			control.valueString = string.char(args.key) or "Unknown"
 		end
+		
+		self:Assign(self.activatedButton)
+		self.activatedButton = nil
+		
+		self.dirtySettings = true
+	end
+	
+	function window:MouseButtonUp(args)
+		local control = self.activatedButton:GetDataObject("control")
+		
+		control.type = "MouseButton"
+		control.value = args.button
+		control.valueString = string.format("Mouse%i" , args.button)
 		
 		self:Assign(self.activatedButton)
 		self.activatedButton = nil
@@ -237,6 +254,10 @@ BindMenu.Create = function(...)
 				control.valueString = InputNames.GetActionName(control.value)
 			elseif type == "2" then
 				control.type = "Key"
+				control.value = tonumber(value) or -1
+				control.valueString = InputNames.GetKeyName(control.value)
+			elseif type == "3" then
+				control.type = "MouseButton"
 				control.value = tonumber(value) or -1
 				control.valueString = InputNames.GetKeyName(control.value)
 			end
