@@ -41,8 +41,8 @@ MapEditor.LoadFromMarshalledMap = function(map)
 		end
 	end
 	
-	for objectId , object in pairs(map.objects) do
-		objectIdToObject[objectId] = object
+	for objectIdSometimes , object in pairs(map.objects) do
+		objectIdToObject[object.id] = object
 		
 		object.position = Vector3(
 			object.position[1] ,
@@ -57,7 +57,7 @@ MapEditor.LoadFromMarshalledMap = function(map)
 		)
 	end
 	
-	for objectId , object in pairs(map.objects) do
+	for objectIdSometimes , object in pairs(map.objects) do
 		ProcessProperties(object.properties)
 	end
 	

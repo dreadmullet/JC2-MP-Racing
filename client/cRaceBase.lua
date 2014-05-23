@@ -116,7 +116,7 @@ function RaceBase:UpdateLeaderboard(racePosInfo)
 end
 
 function RaceBase:Message(message)
-	Chat:Print(message , settings.textColor)
+	Chat:Print("[Racing] "..message , settings.textColor)
 end
 
 function RaceBase:ModelReceive(model , name)
