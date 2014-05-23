@@ -263,6 +263,7 @@ end
 
 function Race:MarshalForClient()
 	local info = {
+		id = self.id ,
 		numPlayers = self.numPlayers ,
 		numLaps = self.numLaps ,
 		playerIdToInfo = self.playerIdToInfo ,

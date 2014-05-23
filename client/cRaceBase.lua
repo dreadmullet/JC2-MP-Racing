@@ -13,7 +13,10 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 		print("RaceBase:__init")
 	end
 	
+	RaceBase.instance = self
+	
 	local raceInfo = args.raceInfo
+	self.id = raceInfo.id
 	self.numPlayers = raceInfo.numPlayers
 	self.numLaps = raceInfo.numLaps
 	self.playerIdToInfo = raceInfo.playerIdToInfo
@@ -114,7 +117,6 @@ end
 
 function RaceBase:Message(message)
 	Chat:Print(message , settings.textColor)
-	print(message)
 end
 
 function RaceBase:ModelReceive(model , name)

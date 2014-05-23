@@ -1,15 +1,27 @@
 class("RaceManagerEvent")
 
-function RaceManagerEvent:__init(race , name) ; RaceManagerBase.__init(self)
+function RaceManagerEvent:__init(race , name , owners) ; RaceManagerBase.__init(self)
 	self.race = race
 	self.name = name
+	-- Owners can end the race at any time by using the race menu.
+	self.owners = owners
 	
 	for index , racerBase in ipairs(self.race.participants) do
 		self:AddPlayer(racerBase.player)
 	end
 	
 	self:EventSubscribe("EndRace")
+	self:NetworkSubscribe("RequestRaceOwners")
+	self:NetworkSubscribe("OwnerEndRace")
 end
+
+-- PlayerManager callbacks
+
+function RaceManagerEvent:ManagedPlayerLeave(player)
+	self.race:RemovePlayer(player)
+end
+
+-- Events
 
 function RaceManagerEvent:EndRace(name)
 	if self.name == name then
@@ -18,10 +30,19 @@ function RaceManagerEvent:EndRace(name)
 	end
 end
 
--- PlayerManager callbacks
+-- Network events
 
-function RaceManagerEvent:ManagedPlayerLeave(player)
-	self.race:RemovePlayer(player)
+function RaceManagerEvent:RequestRaceOwners(raceId , player)
+	if raceId == self.race.id then
+		Network:Send(player , "ReceiveRaceOwners" , self.owners)
+	end
+end
+
+function RaceManagerEvent:OwnerEndRace(args , player)
+	if self.name == args.name and table.find(self.owners , player) then
+		self.race:Terminate()
+		self:Destroy()
+	end
 end
 
 -- Static CreateRaceX event functions.
@@ -49,9 +70,10 @@ RaceManagerEvent.CreateRaceFromEvent = function(args)
 		players = args.players ,
 		course = course ,
 		collisions = args.collisions ,
+		modules = {"Event"} ,
 	}
 	
-	raceManagerEvent = RaceManagerEvent(race , args.name)
+	raceManagerEvent = RaceManagerEvent(race , args.name , args.owners or args.players)
 end
 Events:Subscribe("CreateRace" , RaceManagerEvent.CreateRaceFromEvent)
 
