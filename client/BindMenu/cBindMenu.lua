@@ -33,7 +33,7 @@ BindMenu.Create = function(...)
 	-- These two are used to delay Actions so it prefers keys or mouse buttons.
 	window.activeAction = nil
 	window.ticksSinceAction = 0
-	-- Used when the mouse movement button is used.
+	-- Used to determine mouse delta.
 	window.mousePositionStart = nil
 	
 	-- defaultControl can be an Action name, a Key name, or nil.
@@ -65,14 +65,6 @@ BindMenu.Create = function(...)
 		button:SetTextPressedColor(Color(150 , 40 , 40))
 		button:SetTextHoveredColor(Color(255 , 70 , 70))
 		button:Subscribe("Down" , self , self.UnassignButtonPressed)
-		
-		-- Mouse movement button
-		local button = Button.Create(baseButton)
-		button:SetDock(GwenPosition.Right)
-		button:SetText(" M ")
-		button:SizeToContents()
-		button:SetToolTip("Mouse movement")
-		button:Subscribe("Press" , self , self.MouseMovementButtonPressed)
 		
 		-- Value label
 		local label = Label.Create(baseButton)
@@ -129,6 +121,7 @@ BindMenu.Create = function(...)
 		
 		self.activatedButton = button
 		self.activeAction = nil
+		self.mousePositionStart = Mouse:GetPosition()
 		
 		self.eventInput = Events:Subscribe("LocalPlayerInput" , self , self.LocalPlayerInput)
 		self.eventKeyUp = Events:Subscribe("KeyUp" , self , self.KeyUp)
@@ -270,49 +263,51 @@ BindMenu.Create = function(...)
 	end
 	
 	function window:PostTick()
-		-- If we've tried to assign an action a few ticks ago, actually assign it. Actions are delayed
-		-- so that keys and mouse buttons have preference.
-		if self.state == "Activated" and self.activeAction then
-			self.ticksSinceAction = self.ticksSinceAction + 1
-			if self.ticksSinceAction >= 3 then
-				local control = self.activatedButton:GetDataObject("control")
-				control.type = "Action"
-				control.value = self.activeAction
-				control.valueString = InputNames.GetActionName(self.activeAction)
+		if self.state == "Activated" then
+			-- If we've tried to assign an action a few ticks ago, actually assign it. Actions are
+			-- delayed so that keys and mouse buttons have preference.
+			if self.activeAction then
+				self.ticksSinceAction = self.ticksSinceAction + 1
+				if self.ticksSinceAction >= 3 then
+					local control = self.activatedButton:GetDataObject("control")
+					control.type = "Action"
+					control.value = self.activeAction
+					control.valueString = InputNames.GetActionName(self.activeAction)
+					
+					self:Assign(self.activatedButton)
+					self.activatedButton = nil
+					
+					self.dirtySettings = true
+					
+					self.activeAction = nil
+				end
+			-- Check for mouse movement.
+			else
+				local delta = Mouse:GetPosition() - self.mousePositionStart
+				local requiredDistance = 12
 				
-				self:Assign(self.activatedButton)
-				self.activatedButton = nil
+				local Assign = function(value , valueString)
+					local control = self.activatedButton:GetDataObject("control")
+					
+					control.type = "MouseMovement"
+					control.value = value
+					control.valueString = valueString
+					
+					self:Assign(self.activatedButton)
+					self.activatedButton = nil
+					
+					self.dirtySettings = true
+				end
 				
-				self.dirtySettings = true
-				
-				self.activeAction = nil
-			end
-		-- If we're waiting for the mouse to be moved, check if it's been moved and assign it.
-		elseif self.state == "ActivatedMouse" then
-			local delta = Mouse:GetPosition() - self.mousePositionStart
-			local requiredDistance = 12
-			
-			local Assign = function(value , valueString)
-				local control = self.activatedButton:GetDataObject("control")
-				
-				control.type = "MouseMovement"
-				control.value = value
-				control.valueString = valueString
-				
-				self:Assign(self.activatedButton)
-				self.activatedButton = nil
-				
-				self.dirtySettings = true
-			end
-			
-			if delta.x > requiredDistance then
-				Assign(">" , "Mouse right")
-			elseif delta.x < -requiredDistance then
-				Assign("<" , "Mouse left")
-			elseif delta.y > requiredDistance then
-				Assign("v" , "Mouse down")
-			elseif delta.y < -requiredDistance then
-				Assign("^" , "Mouse up")
+				if delta.x > requiredDistance then
+					Assign(">" , "Mouse right")
+				elseif delta.x < -requiredDistance then
+					Assign("<" , "Mouse left")
+				elseif delta.y > requiredDistance then
+					Assign("v" , "Mouse down")
+				elseif delta.y < -requiredDistance then
+					Assign("^" , "Mouse up")
+				end
 			end
 		end
 		
