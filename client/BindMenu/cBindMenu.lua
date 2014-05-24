@@ -193,10 +193,6 @@ BindMenu.Create = function(...)
 		control.value = args.key
 		control.valueString = InputNames.GetKeyName(args.key)
 		
-		if control.valueString == "INVALID" then
-			control.valueString = string.char(args.key) or "Unknown"
-		end
-		
 		self:Assign(self.activatedButton)
 		self.activatedButton = nil
 		
