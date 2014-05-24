@@ -259,7 +259,7 @@ BindMenu.Create = function(...)
 			elseif type == "3" then
 				control.type = "MouseButton"
 				control.value = tonumber(value) or -1
-				control.valueString = InputNames.GetKeyName(control.value)
+				control.valueString = ("Mouse%i"):format(value)
 			end
 			
 			for index , button in ipairs(self.buttons) do
