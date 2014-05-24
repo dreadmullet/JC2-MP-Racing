@@ -1,6 +1,6 @@
 BindMenu = {}
 
--- Controls cannot be assigned to these if allowMouse is false (default).
+-- Controls can only be assigned to these if using a gamepad.
 BindMenu.blockedMouseActions = {
 	Action.LookUp ,
 	Action.LookDown ,
@@ -26,7 +26,6 @@ BindMenu.Create = function(...)
 	window.eventMouseWheel = nil
 	window.eventPostTick = nil
 	window.activatedButton = nil
-	window.allowMouse = false
 	window.receiveEvent = nil
 	window.tickEvent = nil
 	window.dirtySettings = false
@@ -210,7 +209,7 @@ BindMenu.Create = function(...)
 	
 	function window:LocalPlayerInput(args)
 		-- Block mouse actions if we're not using a gamepad.
-		if self.allowMouse == false and Game:GetSetting(GameSetting.GamepadInUse) == 0 then
+		if Game:GetSetting(GameSetting.GamepadInUse) == 0 then
 			for index , action in ipairs(BindMenu.blockedMouseActions) do
 				if args.input == action then
 					return true
@@ -218,8 +217,11 @@ BindMenu.Create = function(...)
 			end
 		end
 		
-		self.activeAction = args.input
-		self.ticksSinceAction = 0
+		if args.state > 0.5 then
+			-- PostTick handles these later.
+			self.activeAction = args.input
+			self.ticksSinceAction = 0
+		end
 		
 		return true
 	end
