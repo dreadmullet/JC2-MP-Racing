@@ -34,6 +34,8 @@ BindMenu.Create = function(...)
 	-- These two are used to delay Actions so it prefers keys or mouse buttons.
 	window.activeAction = nil
 	window.ticksSinceAction = 0
+	-- Used when the mouse movement button is used.
+	window.mousePositionStart = nil
 	
 	-- defaultControl can be an Action name, a Key name, or nil.
 	-- Examples: "SoundHornSiren", "LShift", "C", "Mouse3", nil
@@ -51,29 +53,40 @@ BindMenu.Create = function(...)
 		button:SetDataObject("control" , control)
 		button:Subscribe("Press" , self , self.ButtonPressed)
 		button:Subscribe("RightPress" , self , self.ButtonPressed)
-		table.insert(self.buttons , button)
+		local baseButton = button
+		table.insert(self.buttons , baseButton)
 		
-		local unassignButton = Button.Create(button)
-		unassignButton:SetDock(GwenPosition.Right)
-		unassignButton:SetText(" X ")
-		unassignButton:SizeToContents()
-		unassignButton:SetToolTip("Unassign")
-		unassignButton:SetTextNormalColor(Color(220 , 50 , 50))
-		unassignButton:SetTextPressedColor(Color(150 , 40 , 40))
-		unassignButton:SetTextHoveredColor(Color(255 , 70 , 70))
-		unassignButton:Subscribe("Down" , self , self.UnassignButtonPressed)
+		-- Unassign button
+		local button = Button.Create(baseButton)
+		button:SetDock(GwenPosition.Right)
+		button:SetText(" X ")
+		button:SizeToContents()
+		button:SetToolTip("Unassign")
+		button:SetTextNormalColor(Color(220 , 50 , 50))
+		button:SetTextPressedColor(Color(150 , 40 , 40))
+		button:SetTextHoveredColor(Color(255 , 70 , 70))
+		button:Subscribe("Down" , self , self.UnassignButtonPressed)
 		
-		local labelValue = Label.Create(button)
-		labelValue:SetTextColor(button:GetTextColor())
-		labelValue:SetAlignment(GwenPosition.Right)
-		labelValue:SetDock(GwenPosition.Right)
-		labelValue:SetPadding(Vector2(4 , 4) , Vector2(4 , 4))
-		labelValue:SetText(control.valueString)
-		labelValue:SizeToContents()
+		-- Mouse movement button
+		local button = Button.Create(baseButton)
+		button:SetDock(GwenPosition.Right)
+		button:SetText(" M ")
+		button:SizeToContents()
+		button:SetToolTip("Mouse movement")
+		button:Subscribe("Press" , self , self.MouseMovementButtonPressed)
 		
-		button:SetDataObject("label" , labelValue)
+		-- Value label
+		local label = Label.Create(baseButton)
+		label:SetTextColor(baseButton:GetTextColor())
+		label:SetAlignment(GwenPosition.Right)
+		label:SetDock(GwenPosition.Right)
+		label:SetPadding(Vector2(4 , 4) , Vector2(4 , 4))
+		label:SetText(control.valueString)
+		label:SizeToContents()
 		
-		self:Assign(button)
+		baseButton:SetDataObject("label" , label)
+		
+		self:Assign(baseButton)
 	end
 	
 	function window:Assign(activeButton)
@@ -124,6 +137,23 @@ BindMenu.Create = function(...)
 		self.eventMouseWheel = Events:Subscribe("MouseScroll" , self , self.MouseScroll)
 	end
 	
+	function window:MouseMovementButtonPressed(button)
+		if self.state ~= "Idle" then
+			return
+		end
+		
+		self.state = "ActivatedMouse"
+		
+		BindMenu.SetEnabledRecursive(self , false)
+		
+		self.activatedButton = button:GetParent()
+		
+		self.mousePositionStart = Mouse:GetPosition()
+		
+		local label = self.activatedButton:GetDataObject("label")
+		label:SetText("...")
+	end
+	
 	function window:UnassignButtonPressed(button)
 		if self.state ~= "Idle" then
 			return
@@ -159,6 +189,8 @@ BindMenu.Create = function(...)
 				type = "3"
 			elseif control.type == "MouseWheel" then
 				type = "4"
+			elseif control.type == "MouseMovement" then
+				type = "5"
 			end
 			settings = settings..control.name.."|"..type.."|"..tostring(control.value).."\n"
 		end
@@ -252,6 +284,33 @@ BindMenu.Create = function(...)
 				
 				self.activeAction = nil
 			end
+		-- If we're waiting for the mouse to be moved, check if it's been moved and assign it.
+		elseif self.state == "ActivatedMouse" then
+			local delta = Mouse:GetPosition() - self.mousePositionStart
+			local requiredDistance = 12
+			
+			local Assign = function(value , valueString)
+				local control = self.activatedButton:GetDataObject("control")
+				
+				control.type = "MouseMovement"
+				control.value = value
+				control.valueString = valueString
+				
+				self:Assign(self.activatedButton)
+				self.activatedButton = nil
+				
+				self.dirtySettings = true
+			end
+			
+			if delta.x > requiredDistance then
+				Assign(">" , "Mouse right")
+			elseif delta.x < -requiredDistance then
+				Assign("<" , "Mouse left")
+			elseif delta.y > requiredDistance then
+				Assign("v" , "Mouse down")
+			elseif delta.y < -requiredDistance then
+				Assign("^" , "Mouse up")
+			end
 		end
 		
 		-- Give the server our settings periodically.
@@ -305,6 +364,15 @@ BindMenu.Create = function(...)
 				else
 					control.valueString = "Mouse wheel wat"
 				end
+			elseif type == "5" then
+				control.type = "MouseMovement"
+				control.value = value
+				control.valueString = ({
+					[">"] = "Mouse right" ,
+					["<"] = "Mouse left" ,
+					["v"] = "Mouse down" ,
+					["^"] = "Mouse up" ,
+				})[value]
 			end
 			
 			for index , button in ipairs(self.buttons) do

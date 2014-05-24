@@ -2,16 +2,18 @@ Controls = {}
 
 -- Array of tables.
 -- Example values:
--- {name = "Jump"   , type = "Action"      , value = 44  , valueString = "SoundHornSiren"}
--- {name = "Boost"  , type = "Key"         , value = 160 , valueString = "LShift"}
--- {name = "Camera" , type = "MouseButton" , value = 3   , valueString = "Mouse3"}
--- {name = "Camera" , type = "MouseWheel"  , value = 1   , valueString = "Mouse wheel up"}
--- TODO: Mouse movement and scroll wheel
+-- {name = "Jump"   , type = "Action"         , value = 44  , valueString = "SoundHornSiren"}
+-- {name = "Boost"  , type = "Key"            , value = 160 , valueString = "LShift"}
+-- {name = "Camera" , type = "MouseButton"    , value = 3   , valueString = "Mouse3"}
+-- {name = "Camera" , type = "MouseWheel"     , value = 1   , valueString = "Mouse wheel up"}
+-- {name = "Camera" , type = "MouseMovement"  , value = ">" , valueString = "Mouse right"}
 Controls.controls = {}
 -- These three are arrays of tables. Similar to above, but [1] is type and [2] is value.
 Controls.held = {}
 -- Like above, but for all Actions.
 Controls.actionsBuffer = {}
+Controls.mousePosition = Vector2(0 , 0)
+Controls.mouseDelta = Vector2(0 , 0)
 
 Controls.GetInputNameByControl = function(controlName)
 	for index , control in ipairs(Controls.controls) do
@@ -59,6 +61,7 @@ end
 --     Controls.Add("Respawn", "Reload")
 --     Controls.Add("Respawn", "Mouse3")
 --     Controls.Add("Respawn", "Mouse wheel up")
+--     Controls.Add("Respawn", "Mouse up")
 --     Controls.Add("Respawn", nil)
 Controls.Add = function(name , defaultControl)
 	local control = {}
@@ -84,12 +87,26 @@ Controls.Add = function(name , defaultControl)
 			error("Invalid default mouse wheel: "..tostring(defaultControl))
 		end
 	elseif defaultControl:sub(1 , 5) == "Mouse" then
-		local number = tonumber(defaultControl:sub(6))
-		if number then
-			control.type = "MouseButton"
-			control.value = number
+		if defaultControl:sub(6 , 6) == " " then
+			control.type = "MouseMovement"
+			control.value = ({
+				right = ">" ,
+				left  = "<" ,
+				down  = "v" ,
+				up    = "^" ,
+			})[defaultControl:sub(7)]
+			
+			if control.value == nil then
+				error("Invalid default mouse movement: "..tostring(defaultControl))
+			end
 		else
-			error("Invalid default mouse button: "..tostring(defaultControl))
+			local number = tonumber(defaultControl:sub(6))
+			if number then
+				control.type = "MouseButton"
+				control.value = number
+			else
+				error("Invalid default mouse button: "..tostring(defaultControl))
+			end
 		end
 	else
 		error("default control is not a valid Action, Key, or mouse button")
@@ -240,7 +257,62 @@ Controls.InputPoll = function(args)
 		::continue::
 	end
 	
-	-- Fire the ControlHeld event for all of our controls.
+	-- Mouse movement.
+	local newMouseDelta = Mouse:GetPosition() - Controls.mousePosition
+	if Controls.mouseDelta.x == 0 then
+		if newMouseDelta.x ~= 0 then
+			for index , control in ipairs(Controls.controls) do
+				if control.type == "MouseMovement" then
+					if
+						(control.value == ">" and newMouseDelta.x > 0) or
+						(control.value == "<" and newMouseDelta.x < 0)
+					then
+						Events:Fire("ControlDown" , control)
+					end
+				end
+			end
+		end
+	elseif newMouseDelta.x == 0 then
+		for index , control in ipairs(Controls.controls) do
+			if control.type == "MouseMovement" then
+				if
+					(control.value == ">" and Controls.mouseDelta.x > 0) or
+					(control.value == "<" and Controls.mouseDelta.x < 0)
+				then
+					Events:Fire("ControlUp" , control)
+				end
+			end
+		end
+	end
+	if Controls.mouseDelta.y == 0 then
+		if newMouseDelta.y ~= 0 then
+			for index , control in ipairs(Controls.controls) do
+				if control.type == "MouseMovement" then
+					if
+						(control.value == "v" and newMouseDelta.y > 0) or
+						(control.value == "^" and newMouseDelta.y < 0)
+					then
+						Events:Fire("ControlDown" , control)
+					end
+				end
+			end
+		end
+	elseif newMouseDelta.y == 0 then
+		for index , control in ipairs(Controls.controls) do
+			if control.type == "MouseMovement" then
+				if
+					(control.value == "v" and Controls.mouseDelta.y > 0) or
+					(control.value == "^" and Controls.mouseDelta.y < 0)
+				then
+					Events:Fire("ControlUp" , control)
+				end
+			end
+		end
+	end
+	Controls.mouseDelta = newMouseDelta
+	Controls.mousePosition = Mouse:GetPosition()
+	
+	-- Fire the ControlHeld event for all of our held controls.
 	for index , controlInfo in ipairs(Controls.held) do
 		for index , control in ipairs(Controls.controls) do
 			if control.type == controlInfo[1] and control.value == controlInfo[2] then
