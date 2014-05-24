@@ -23,12 +23,16 @@ BindMenu.Create = function(...)
 	window.eventInput = nil
 	window.eventKeyUp = nil
 	window.eventMouseButtonUp = nil
+	window.eventPostTick = nil
 	window.activatedButton = nil
 	window.allowMouse = false
 	window.receiveEvent = nil
 	window.tickEvent = nil
 	window.dirtySettings = false
 	window.saveTimer = Timer()
+	-- These two are used to delay Actions so it prefers keys or mouse buttons.
+	window.activeAction = nil
+	window.ticksSinceAction = 0
 	
 	-- defaultControl can be an Action name, a Key name, or nil.
 	-- Examples: "SoundHornSiren", "LShift", "C", "Mouse3", nil
@@ -110,6 +114,7 @@ BindMenu.Create = function(...)
 		label:SetText("...")
 		
 		self.activatedButton = button
+		self.activeAction = nil
 		
 		self.eventInput = Events:Subscribe("LocalPlayerInput" , self , self.LocalPlayerInput)
 		self.eventKeyUp = Events:Subscribe("KeyUp" , self , self.KeyUp)
@@ -175,16 +180,8 @@ BindMenu.Create = function(...)
 			end
 		end
 		
-		local control = self.activatedButton:GetDataObject("control")
-		
-		control.type = "Action"
-		control.value = args.input
-		control.valueString = InputNames.GetActionName(args.input)
-		
-		self:Assign(self.activatedButton)
-		self.activatedButton = nil
-		
-		self.dirtySettings = true
+		self.activeAction = args.input
+		self.ticksSinceAction = 0
 		
 		return true
 	end
@@ -220,6 +217,26 @@ BindMenu.Create = function(...)
 	end
 	
 	function window:PostTick()
+		-- If we've tried to assign an action a few ticks ago, actually assign it. Actions are delayed
+		-- so that keys and mouse buttons have preference.
+		if self.state == "Activated" and self.activeAction then
+			self.ticksSinceAction = self.ticksSinceAction + 1
+			if self.ticksSinceAction >= 3 then
+				local control = self.activatedButton:GetDataObject("control")
+				control.type = "Action"
+				control.value = self.activeAction
+				control.valueString = InputNames.GetActionName(self.activeAction)
+				
+				self:Assign(self.activatedButton)
+				self.activatedButton = nil
+				
+				self.dirtySettings = true
+				
+				self.activeAction = nil
+			end
+		end
+		
+		-- Give the server our settings periodically.
 		if self.saveTimer:GetSeconds() > 9 then
 			self.saveTimer:Restart()
 			
