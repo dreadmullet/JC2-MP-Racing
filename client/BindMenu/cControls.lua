@@ -5,6 +5,7 @@ Controls = {}
 -- {name = "Jump"   , type = "Action"      , value = 44  , valueString = "SoundHornSiren"}
 -- {name = "Boost"  , type = "Key"         , value = 160 , valueString = "LShift"}
 -- {name = "Camera" , type = "MouseButton" , value = 3   , valueString = "Mouse3"}
+-- {name = "Camera" , type = "MouseWheel"  , value = 1   , valueString = "Mouse wheel up"}
 -- TODO: Mouse movement and scroll wheel
 Controls.controls = {}
 -- These three are arrays of tables. Similar to above, but [1] is type and [2] is value.
@@ -57,6 +58,7 @@ end
 --     Controls.Add("Respawn", "R")
 --     Controls.Add("Respawn", "Reload")
 --     Controls.Add("Respawn", "Mouse3")
+--     Controls.Add("Respawn", "Mouse wheel up")
 --     Controls.Add("Respawn", nil)
 Controls.Add = function(name , defaultControl)
 	local control = {}
@@ -70,6 +72,17 @@ Controls.Add = function(name , defaultControl)
 	elseif VirtualKey[defaultControl] or defaultControl:len() == 1 then
 		control.type = "Key"
 		control.value = VirtualKey[defaultControl] or string.byte(defaultControl:upper())
+	elseif defaultControl:sub(1 , 11) == "Mouse wheel" then
+		local remaining = defaultControl:sub(12)
+		if remaining == " up" then
+			control.type = "MouseWheel"
+			control.value = 1
+		elseif remaining == " down" then
+			control.type = "MouseWheel"
+			control.value = -1
+		else
+			error("Invalid default mouse wheel: "..tostring(defaultControl))
+		end
 	elseif defaultControl:sub(1 , 5) == "Mouse" then
 		local number = tonumber(defaultControl:sub(6))
 		if number then
@@ -196,6 +209,15 @@ Controls.MouseUp = function(args)
 	end
 end
 
+Controls.MouseScroll = function(args)
+	local value = math.clamp(args.delta , -1 , 1)
+	
+	-- The mouse wheel is an exception, it is instantly released.
+	local controlInfo = {"MouseWheel" , value}
+	Controls.Down(controlInfo)
+	Controls.Up(controlInfo)
+end
+
 Controls.InputPoll = function(args)
 	-- Remove any Action from Controls.held if it wasn't held down this frame.
 	for n = #Controls.held , 1 , -1 do
@@ -236,4 +258,5 @@ Events:Subscribe("KeyDown" , Controls.KeyDown)
 Events:Subscribe("KeyUp" , Controls.KeyUp)
 Events:Subscribe("MouseDown" , Controls.MouseDown)
 Events:Subscribe("MouseUp" , Controls.MouseUp)
+Events:Subscribe("MouseScroll" , Controls.MouseScroll)
 Events:Subscribe("InputPoll" , Controls.InputPoll)

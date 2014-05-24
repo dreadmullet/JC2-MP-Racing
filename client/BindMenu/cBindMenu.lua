@@ -23,6 +23,7 @@ BindMenu.Create = function(...)
 	window.eventInput = nil
 	window.eventKeyUp = nil
 	window.eventMouseUp = nil
+	window.eventMouseWheel = nil
 	window.eventPostTick = nil
 	window.activatedButton = nil
 	window.allowMouse = false
@@ -96,6 +97,7 @@ BindMenu.Create = function(...)
 			Events:Unsubscribe(self.eventInput)
 			Events:Unsubscribe(self.eventKeyUp)
 			Events:Unsubscribe(self.eventMouseUp)
+			Events:Unsubscribe(self.eventMouseWheel)
 		end
 	end
 	
@@ -119,6 +121,7 @@ BindMenu.Create = function(...)
 		self.eventInput = Events:Subscribe("LocalPlayerInput" , self , self.LocalPlayerInput)
 		self.eventKeyUp = Events:Subscribe("KeyUp" , self , self.KeyUp)
 		self.eventMouseUp = Events:Subscribe("MouseUp" , self , self.MouseButtonUp)
+		self.eventMouseWheel = Events:Subscribe("MouseScroll" , self , self.MouseScroll)
 	end
 	
 	function window:UnassignButtonPressed(button)
@@ -154,6 +157,8 @@ BindMenu.Create = function(...)
 				type = "2"
 			elseif control.type == "MouseButton" then
 				type = "3"
+			elseif control.type == "MouseWheel" then
+				type = "4"
 			end
 			settings = settings..control.name.."|"..type.."|"..tostring(control.value).."\n"
 		end
@@ -205,6 +210,23 @@ BindMenu.Create = function(...)
 		control.type = "MouseButton"
 		control.value = args.button
 		control.valueString = string.format("Mouse%i" , args.button)
+		
+		self:Assign(self.activatedButton)
+		self.activatedButton = nil
+		
+		self.dirtySettings = true
+	end
+	
+	function window:MouseScroll(args)
+		local control = self.activatedButton:GetDataObject("control")
+		
+		control.type = "MouseWheel"
+		control.value = math.clamp(args.delta , -1 , 1)
+		if control.value == 1 then
+			control.valueString = "Mouse wheel up"
+		else
+			control.valueString = "Mouse wheel down"
+		end
 		
 		self:Assign(self.activatedButton)
 		self.activatedButton = nil
@@ -273,6 +295,16 @@ BindMenu.Create = function(...)
 				control.type = "MouseButton"
 				control.value = tonumber(value) or -1
 				control.valueString = ("Mouse%i"):format(value)
+			elseif type == "4" then
+				control.type = "MouseWheel"
+				control.value = tonumber(value) or 0
+				if control.value == 1 then
+					control.valueString = "Mouse wheel up"
+				elseif control.value == -1 then
+					control.valueString = "Mouse wheel down"
+				else
+					control.valueString = "Mouse wheel wat"
+				end
 			end
 			
 			for index , button in ipairs(self.buttons) do
