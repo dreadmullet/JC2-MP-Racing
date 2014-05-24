@@ -209,7 +209,8 @@ BindMenu.Create = function(...)
 	-- Events
 	
 	function window:LocalPlayerInput(args)
-		if self.allowMouse == false then
+		-- Block mouse actions if we're not using a gamepad.
+		if self.allowMouse == false and Game:GetSetting(GameSetting.GamepadInUse) == 0 then
 			for index , action in ipairs(BindMenu.blockedMouseActions) do
 				if args.input == action then
 					return true
