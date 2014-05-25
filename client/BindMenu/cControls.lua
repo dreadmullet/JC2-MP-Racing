@@ -8,7 +8,6 @@ Controls = {}
 -- {name = "Camera" , type = "MouseWheel"     , value = 1   , valueString = "Mouse wheel up"}
 -- {name = "Camera" , type = "MouseMovement"  , value = ">" , valueString = "Mouse right"}
 Controls.controls = {}
--- Array of tables. Similar to above, but [1] is type and [2] is value.
 Controls.held = {}
 -- Like above, but for all Actions.
 Controls.actionsBuffer = {}
@@ -36,19 +35,8 @@ Controls.Get = function(controlName)
 end
 
 Controls.GetIsHeld = function(controlName)
-	local control = nil
-	for index , c in ipairs(Controls.controls) do
-		if c.name == controlName then
-			control = c
-		end
-	end
-	
-	if control == nil then
-		return false
-	end
-	
-	for index , c in ipairs(Controls.held) do
-		if c[2] == control.value and c[1] == control.type then
+	for index , control in ipairs(Controls.held) do
+		if control.name == controlName then
 			return true
 		end
 	end
@@ -146,7 +134,7 @@ Controls.Down = function(controlInfo)
 	for index , control in ipairs(Controls.controls) do
 		if control.type == controlInfo[1] and control.value == controlInfo[2] then
 			Events:Fire("ControlDown" , control)
-			table.insert(Controls.held , controlInfo)
+			table.insert(Controls.held , control)
 			break
 		end
 	end
@@ -156,12 +144,7 @@ Controls.Up = function(controlInfo)
 	-- If this is one of our controls, remove it from Controls.held and fire ControlUp.
 	for index , control in ipairs(Controls.controls) do
 		if control.type == controlInfo[1] and control.value == controlInfo[2] then
-			for index , c in ipairs(Controls.held) do
-				if c[1] == controlInfo[1] and c[2] == controlInfo[2] then
-					table.remove(Controls.held , index)
-					break
-				end
-			end
+			table.remove(Controls.held , table.find(Controls.held , control))
 			Events:Fire("ControlUp" , control)
 			break
 		end
@@ -174,8 +157,8 @@ Controls.LocalPlayerInput = function(args)
 	table.insert(Controls.actionsBuffer , args.input)
 	
 	-- Make sure this action isn't held down.
-	for index , controlInfo in ipairs(Controls.held) do
-		if controlInfo[1] == "Action" and controlInfo[2] == args.input then
+	for index , control in ipairs(Controls.held) do
+		if control.type == "Action" and control.value == args.input then
 			return true
 		end
 	end
@@ -188,8 +171,8 @@ end
 
 Controls.KeyDown = function(args)
 	-- Make sure this key isn't held down.
-	for index , controlInfo in ipairs(Controls.held) do
-		if controlInfo[1] == "Key" and controlInfo[2] == args.key then
+	for index , control in ipairs(Controls.held) do
+		if control.type == "Key" and control.value == args.key then
 			return
 		end
 	end
@@ -200,9 +183,9 @@ end
 
 Controls.KeyUp = function(args)
 	-- Make sure this key is held down.
-	for index , controlInfo in ipairs(Controls.held) do
-		if controlInfo[1] == "Key" and controlInfo[2] == args.key then
-			Controls.Up(controlInfo)
+	for index , control in ipairs(Controls.held) do
+		if control.type == "Key" and control.value == args.key then
+			Controls.Up{control.type , control.value}
 			return
 		end
 	end
@@ -210,21 +193,20 @@ end
 
 Controls.MouseDown = function(args)
 	-- Make sure this mouse button isn't held down.
-	for index , controlInfo in ipairs(Controls.held) do
-		if controlInfo[1] == "MouseButton" and controlInfo[2] == args.button then
+	for index , control in ipairs(Controls.held) do
+		if control.type == "MouseButton" and control.value == args.button then
 			return
 		end
 	end
 	
-	local controlInfo = {"MouseButton" , args.button}
-	Controls.Down(controlInfo)
+	Controls.Down{"MouseButton" , args.button}
 end
 
 Controls.MouseUp = function(args)
 	-- Make sure this mouse button is held down.
-	for index , controlInfo in ipairs(Controls.held) do
-		if controlInfo[1] == "MouseButton" and controlInfo[2] == args.button then
-			Controls.Up(controlInfo)
+	for index , control in ipairs(Controls.held) do
+		if control.type == "MouseButton" and control.value == args.button then
+			Controls.Up{"MouseButton" , args.button}
 			return
 		end
 	end
@@ -243,12 +225,12 @@ end
 Controls.InputPoll = function(args)
 	-- Remove any Action from Controls.held if it wasn't held down this frame.
 	for n = #Controls.held , 1 , -1 do
-		local controlInfo = Controls.held[n]
-		if controlInfo[1] ~= "Action" then
+		local control = Controls.held[n]
+		if control.type ~= "Action" then
 			goto continue -- May the programming gods have mercy.
 		end
 		
-		local actionToRemove = controlInfo[2]
+		local actionToRemove = control.value
 		for index , action in ipairs(Controls.actionsBuffer) do
 			if action == actionToRemove then
 				goto continue
@@ -257,7 +239,7 @@ Controls.InputPoll = function(args)
 		
 		-- If we make it here, it means the action has been unpressed.
 		
-		Controls.Up(controlInfo)
+		Controls.Up{control.type , control.value}
 		
 		::continue::
 	end
@@ -302,9 +284,9 @@ Controls.InputPoll = function(args)
 	Controls.mousePosition = Mouse:GetPosition()
 	
 	-- Fire the ControlHeld event for all of our held controls.
-	for index , controlInfo in ipairs(Controls.held) do
-		for index , control in ipairs(Controls.controls) do
-			if control.type == controlInfo[1] and control.value == controlInfo[2] then
+	for index , control in ipairs(Controls.held) do
+		for index , c in ipairs(Controls.controls) do
+			if c == control then
 				Events:Fire("ControlHeld" , control)
 			end
 		end
