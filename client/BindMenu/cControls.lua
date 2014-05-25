@@ -235,6 +235,7 @@ Controls.MouseScroll = function(args)
 	Controls.Up(controlInfo)
 end
 
+-- This should probably be PostTick or something, but it doesn't really matter.
 Controls.InputPoll = function(args)
 	-- Remove any Action from Controls.held if it wasn't held down this frame.
 	for n = #Controls.held , 1 , -1 do
@@ -261,51 +262,35 @@ Controls.InputPoll = function(args)
 	local newMouseDelta = Mouse:GetPosition() - Controls.mousePosition
 	if Controls.mouseDelta.x == 0 then
 		if newMouseDelta.x ~= 0 then
-			for index , control in ipairs(Controls.controls) do
-				if control.type == "MouseMovement" then
-					if
-						(control.value == ">" and newMouseDelta.x > 0) or
-						(control.value == "<" and newMouseDelta.x < 0)
-					then
-						Events:Fire("ControlDown" , control)
-					end
-				end
+			if newMouseDelta.x > 0 then
+				Controls.Down{"MouseMovement" , ">"}
+			else
+				Controls.Down{"MouseMovement" , "<"}
 			end
 		end
 	elseif newMouseDelta.x == 0 then
-		for index , control in ipairs(Controls.controls) do
-			if control.type == "MouseMovement" then
-				if
-					(control.value == ">" and Controls.mouseDelta.x > 0) or
-					(control.value == "<" and Controls.mouseDelta.x < 0)
-				then
-					Events:Fire("ControlUp" , control)
-				end
+		if newMouseDelta.x ~= 0 then
+			if Controls.mouseDelta.x > 0 then
+				Controls.Up{"MouseMovement" , ">"}
+			else
+				Controls.Up{"MouseMovement" , "<"}
 			end
 		end
 	end
 	if Controls.mouseDelta.y == 0 then
 		if newMouseDelta.y ~= 0 then
-			for index , control in ipairs(Controls.controls) do
-				if control.type == "MouseMovement" then
-					if
-						(control.value == "v" and newMouseDelta.y > 0) or
-						(control.value == "^" and newMouseDelta.y < 0)
-					then
-						Events:Fire("ControlDown" , control)
-					end
-				end
+			if newMouseDelta.y > 0 then
+				Controls.Down{"MouseMovement" , "v"}
+			else
+				Controls.Down{"MouseMovement" , "^"}
 			end
 		end
 	elseif newMouseDelta.y == 0 then
-		for index , control in ipairs(Controls.controls) do
-			if control.type == "MouseMovement" then
-				if
-					(control.value == "v" and Controls.mouseDelta.y > 0) or
-					(control.value == "^" and Controls.mouseDelta.y < 0)
-				then
-					Events:Fire("ControlUp" , control)
-				end
+		if newMouseDelta.y ~= 0 then
+			if Controls.mouseDelta.y > 0 then
+				Controls.Up{"MouseMovement" , "v"}
+			else
+				Controls.Up{"MouseMovement" , "^"}
 			end
 		end
 	end
