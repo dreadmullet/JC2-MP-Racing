@@ -299,7 +299,10 @@ Controls.InputPoll = function(args)
 		if Mouse:GetVisible() or Game:GetState() ~= GUIState.Game then
 			Controls.mousePosition = Mouse:GetPosition()
 		else
-			Controls.mousePosition = Render.Size / 2
+			Controls.mousePosition = Vector2(
+				math.floor(Render.Width / 2) ,
+				math.floor(Render.Height / 2)
+			)
 			Mouse:SetPosition(Controls.mousePosition)
 		end
 		Controls.mouseDelta = newMouseDelta

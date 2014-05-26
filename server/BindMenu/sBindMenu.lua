@@ -1,4 +1,3 @@
-
 BindMenu = {}
 -- Minimum interval in seconds that clients are allowed to request, to prevent spam.
 BindMenu.networkLimit = 2
@@ -6,8 +5,6 @@ BindMenu.networkLimit = 2
 -- Key: player id
 -- Value: timer
 BindMenu.requests = {}
--- Prevents clients from storing massive strings in the database.
-BindMenu.maxSettingsLength = 5000
 
 BindMenu.Init = function()
 	SQL:Execute(
@@ -46,22 +43,57 @@ BindMenu.RequestSettings = function(unused , player)
 	end
 end
 
-BindMenu.SaveSettings = function(settings , player)
+BindMenu.SaveSettings = function(newSettings , player)
 	-- Make sure the client can request.
 	if BindMenu.CheckSpam(player) == false then
 		return
 	end
 	
-	if settings:len() > BindMenu.maxSettingsLength then
-		warn(player:GetName().."'s bind menu settings are "..settings:len().." characters!")
+	-- Check client arguments.
+	if type(newSettings) ~= "table" then
 		return
+	end
+	
+	local settings = {}
+	local query = SQL:Query("select Settings from BindMenuClientSettings where SteamId = (?)")
+	query:Bind(1 , player:GetSteamId().string)
+	results = query:Execute()
+	
+	if #results > 0 and results[1].Settings ~= "Empty" then
+		local marshalledControls = string.split(results[1].Settings , "\n")
+		for index , marshalledControl in ipairs(marshalledControls) do
+			if marshalledControl:len() > 10 then
+				local args = string.split(marshalledControl , "|")
+				settings[args[2]] = {
+					module = args[1] ,
+					name = args[2] ,
+					type = args[3] ,
+					value = args[4] ,
+				}
+			end
+		end
+	end
+	
+	for index , newSetting in ipairs(newSettings) do
+		settings[newSetting.name] = newSetting
+	end
+	
+	local settingsString = ""
+	for name , setting in pairs(settings) do
+		settingsString = (
+			settingsString..
+			setting.module.."|"..
+			setting.name.."|"..
+			setting.type.."|"..
+			setting.value.."\n"
+		)
 	end
 	
 	local command = SQL:Command(
 		"insert or replace into BindMenuClientSettings(SteamId , Settings) values(?,?)"
 	)
 	command:Bind(1 , player:GetSteamId().string)
-	command:Bind(2 , settings)
+	command:Bind(2 , settingsString)
 	command:Execute()
 end
 

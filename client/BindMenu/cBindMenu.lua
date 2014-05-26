@@ -168,23 +168,17 @@ BindMenu.Create = function(...)
 	end
 	
 	function window:SaveSettings()
-		local settings = ""
+		local settings = {}
 		
 		-- Marshal every control into a format that will be stored in the database.
 		for index , control in ipairs(Controls.controls) do
-			local type = "0"
-			if control.type == "Action" then
-				type = "1"
-			elseif control.type == "Key" then
-				type = "2"
-			elseif control.type == "MouseButton" then
-				type = "3"
-			elseif control.type == "MouseWheel" then
-				type = "4"
-			elseif control.type == "MouseMovement" then
-				type = "5"
-			end
-			settings = settings..control.name.."|"..type.."|"..tostring(control.value).."\n"
+			local info = {
+				name = control.name ,
+				type = control.type ,
+				value = tostring(control.value) ,
+				module = module_name ,
+			}
+			table.insert(settings , info)
 		end
 		
 		Network:Send("BindMenuSaveSettings" , settings)
@@ -312,7 +306,7 @@ BindMenu.Create = function(...)
 		end
 		
 		-- Give the server our settings periodically.
-		if self.saveTimer:GetSeconds() > 9 then
+		if self.saveTimer:GetSeconds() > 7 then
 			self.saveTimer:Restart()
 			
 			if self.dirtySettings then
@@ -322,38 +316,29 @@ BindMenu.Create = function(...)
 		end
 	end
 	
-	function window:ReceiveSettings(settings)
-		if settings == "Empty" then
+	function window:ReceiveSettings(settingsString)
+		if settingsString == "Empty" then
 			return
 		end
 		
-		local settingsTable = settings:split("\n")
-		for index , setting in ipairs(settingsTable) do
-			if setting:len() < 4 then
-				goto continue
-			end
-			
+		local settings = settingsString:split("\n")
+		for index , setting in ipairs(settings) do
 			local control = {}
-			local name , type , value = table.unpack(setting:split("|"))
+			local module , name , type , value = table.unpack(setting:split("|"))
 			control.name = name
-			if type == "0" then
-				control.type = "Unassigned"
-				control.value = -1
+			control.type = type
+			if control.type == "Unassigned" then
 				control.valueString = "Unassigned"
-			elseif type == "1" then
-				control.type = "Action"
+			elseif control.type == "Action" then
 				control.value = tonumber(value) or -1
 				control.valueString = InputNames.GetActionName(control.value)
-			elseif type == "2" then
-				control.type = "Key"
+			elseif control.type == "Key" then
 				control.value = tonumber(value) or -1
 				control.valueString = InputNames.GetKeyName(control.value)
-			elseif type == "3" then
-				control.type = "MouseButton"
+			elseif control.type == "MouseButton" then
 				control.value = tonumber(value) or -1
 				control.valueString = ("Mouse%i"):format(value)
-			elseif type == "4" then
-				control.type = "MouseWheel"
+			elseif control.type == "MouseWheel" then
 				control.value = tonumber(value) or 0
 				if control.value == 1 then
 					control.valueString = "Mouse wheel up"
@@ -362,15 +347,14 @@ BindMenu.Create = function(...)
 				else
 					control.valueString = "Mouse wheel wat"
 				end
-			elseif type == "5" then
-				control.type = "MouseMovement"
+			elseif control.type == "MouseMovement" then
 				control.value = value
 				control.valueString = ({
 					[">"] = "Mouse right" ,
 					["<"] = "Mouse left" ,
 					["v"] = "Mouse down" ,
 					["^"] = "Mouse up" ,
-				})[value]
+				})[control.value]
 			end
 			
 			for index , button in ipairs(self.buttons) do
@@ -381,8 +365,6 @@ BindMenu.Create = function(...)
 					break
 				end
 			end
-			
-			::continue::
 		end
 	end
 	
