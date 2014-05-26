@@ -7,12 +7,14 @@ Controls = {}
 -- {name = "Camera" , type = "MouseButton"    , value = 3   , valueString = "Mouse3"}
 -- {name = "Camera" , type = "MouseWheel"     , value = 1   , valueString = "Mouse wheel up"}
 -- {name = "Camera" , type = "MouseMovement"  , value = ">" , valueString = "Mouse right"}
+-- Also, every control has a 'state' member, which is between 0 and 1 for most inputs.
 Controls.controls = {}
 Controls.held = {}
--- Like above, but for all Actions.
+-- Map of all actions pressed. Resets every frame.
 Controls.actionsBuffer = {}
 Controls.mousePosition = Vector2(0 , 0)
 Controls.mouseDelta = Vector2(0 , 0)
+Controls.mouseControls = {}
 
 Controls.GetInputNameByControl = function(controlName)
 	for index , control in ipairs(Controls.controls) do
@@ -49,7 +51,7 @@ end
 --     Controls.Add("Respawn", "Reload")
 --     Controls.Add("Respawn", "Mouse3")
 --     Controls.Add("Respawn", "Mouse wheel up")
---     Controls.Add("Respawn", "Mouse up")
+--     Controls.Add("Respawn", "Mouse left")
 --     Controls.Add("Respawn", nil)
 Controls.Add = function(name , defaultControl)
 	local control = {}
@@ -109,43 +111,40 @@ Controls.Add = function(name , defaultControl)
 end
 
 Controls.Set = function(controlToSet)
-	if controlToSet.type == "MouseMovement" then
-		Controls.hasMouse = true
-	end
-	
+	local alreadyExists = false
 	-- If a control with this name already exists, modify it.
 	for index , control in ipairs(Controls.controls) do
 		if control.name == controlToSet.name then
-			Controls.controls[index] = controlToSet
-			return
-		end
-	end
-	
-	table.insert(Controls.controls , controlToSet)
-end
-
-Controls.Remove = function(controlName)
-	local isMouse = false
-	for index , control in ipairs(Controls.controls) do
-		if control.name == controlName then
+			-- If the old control was type MouseMovement, remove it from Controls.mouseControls.
 			if control.type == "MouseMovement" then
-				isMouse = true
+				table.remove(Controls.mouseControls , table.find(Controls.mouseControls , control) or 0)
 			end
-			table.remove(Controls.controls , index)
+			
+			Controls.controls[index] = controlToSet
+			
+			alreadyExists = true
 			break
 		end
 	end
 	
-	if isMouse then
-		local hasAnotherMouseType = false
-		for index , control in ipairs(Controls.controls) do
+	-- If its type is MouseMovement, add it to Controls.mouseControls.
+	if controlToSet.type == "MouseMovement" then
+		table.insert(Controls.mouseControls , controlToSet)
+	end
+	
+	if alreadyExists == false then
+		table.insert(Controls.controls , controlToSet)
+	end
+end
+
+Controls.Remove = function(controlName)
+	for index , control in ipairs(Controls.controls) do
+		if control.name == controlName then
 			if control.type == "MouseMovement" then
-				hasAnotherMouseType = true
-				break
+				table.remove(Controls.mouseControls , table.find(Controls.mouseControls , control) or 0)
 			end
-		end
-		if hasAnotherMouseType == false then
-			Controls.hasMouse = false
+			table.remove(Controls.controls , index)
+			break
 		end
 	end
 end
@@ -165,7 +164,7 @@ Controls.Up = function(controlInfo)
 	-- If this is one of our controls, remove it from Controls.held and fire ControlUp.
 	for index , control in ipairs(Controls.controls) do
 		if control.type == controlInfo[1] and control.value == controlInfo[2] then
-			table.remove(Controls.held , table.find(Controls.held , control))
+			table.remove(Controls.held , table.find(Controls.held , control) or 0)
 			Events:Fire("ControlUp" , control)
 			break
 		end
@@ -175,7 +174,7 @@ end
 -- Events
 
 Controls.LocalPlayerInput = function(args)
-	table.insert(Controls.actionsBuffer , args.input)
+	Controls.actionsBuffer[args.input] = args.state
 	
 	-- Make sure this action isn't held down.
 	for index , control in ipairs(Controls.held) do
@@ -252,7 +251,7 @@ Controls.InputPoll = function(args)
 		end
 		
 		local actionToRemove = control.value
-		for index , action in ipairs(Controls.actionsBuffer) do
+		for action , state in pairs(Controls.actionsBuffer) do
 			if action == actionToRemove then
 				goto continue
 			end
@@ -266,32 +265,33 @@ Controls.InputPoll = function(args)
 	end
 	
 	-- Mouse movement.
-	if Controls.hasMouse then
+	if #Controls.mouseControls > 0 then
+		local oldMouseDelta = Controls.mouseDelta
 		local newMouseDelta = Mouse:GetPosition() - Controls.mousePosition
 		-- X
-		if Controls.mouseDelta.x <= 0 and newMouseDelta.x > 0 then
+		if oldMouseDelta.x <= 0 and newMouseDelta.x > 0 then
 			Controls.Down{"MouseMovement" , ">"}
 		end
-		if Controls.mouseDelta.x > 0 and newMouseDelta.x <= 0 then
+		if oldMouseDelta.x > 0 and newMouseDelta.x <= 0 then
 			Controls.Up{"MouseMovement" , ">"}
 		end
-		if Controls.mouseDelta.x >= 0 and newMouseDelta.x < 0 then
+		if oldMouseDelta.x >= 0 and newMouseDelta.x < 0 then
 			Controls.Down{"MouseMovement" , "<"}
 		end
-		if Controls.mouseDelta.x < 0 and newMouseDelta.x >= 0 then
+		if oldMouseDelta.x < 0 and newMouseDelta.x >= 0 then
 			Controls.Up{"MouseMovement" , "<"}
 		end
 		-- Y
-		if Controls.mouseDelta.y <= 0 and newMouseDelta.y > 0 then
+		if oldMouseDelta.y <= 0 and newMouseDelta.y > 0 then
 			Controls.Down{"MouseMovement" , "v"}
 		end
-		if Controls.mouseDelta.y > 0 and newMouseDelta.y <= 0 then
+		if oldMouseDelta.y > 0 and newMouseDelta.y <= 0 then
 			Controls.Up{"MouseMovement" , "v"}
 		end
-		if Controls.mouseDelta.y >= 0 and newMouseDelta.y < 0 then
+		if oldMouseDelta.y >= 0 and newMouseDelta.y < 0 then
 			Controls.Down{"MouseMovement" , "^"}
 		end
-		if Controls.mouseDelta.y < 0 and newMouseDelta.y >= 0 then
+		if oldMouseDelta.y < 0 and newMouseDelta.y >= 0 then
 			Controls.Up{"MouseMovement" , "^"}
 		end
 		-- If the mouse isn't visible, force it to the center of the screen so it doesn't hit the
@@ -305,10 +305,35 @@ Controls.InputPoll = function(args)
 		Controls.mouseDelta = newMouseDelta
 	end
 	
+	-- Set the state of every control to 0.
+	for index , control in ipairs(Controls.controls) do
+		control.state = 0
+	end
+	
 	-- Fire the ControlHeld event for all of our held controls.
+	local SetState = function(control)
+		if control.type == "Action" then
+			control.state = Controls.actionsBuffer[control.value] or 1
+		elseif control.type == "Key" then
+			control.state = 1
+		elseif control.type == "MouseButton" then
+			control.state = 1
+		elseif control.type == "MouseMovement" then
+			if control.value == ">" then
+				control.state = Controls.mouseDelta.x
+			elseif control.value == "<" then
+				control.state = -Controls.mouseDelta.x
+			elseif control.value == "v" then
+				control.state = Controls.mouseDelta.y
+			elseif control.value == "^" then
+				control.state = -Controls.mouseDelta.y
+			end
+		end
+	end
 	for index , control in ipairs(Controls.held) do
 		for index , c in ipairs(Controls.controls) do
 			if c == control then
+				SetState(control)
 				Events:Fire("ControlHeld" , control)
 			end
 		end
