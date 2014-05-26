@@ -296,7 +296,7 @@ Controls.InputPoll = function(args)
 		end
 		-- If the mouse isn't visible, force it to the center of the screen so it doesn't hit the
 		-- edges of the window.
-		if Mouse:GetVisible() or Game:GetState() ~= GameState.Game then
+		if Mouse:GetVisible() or Game:GetState() ~= GUIState.Game then
 			Controls.mousePosition = Mouse:GetPosition()
 		else
 			Controls.mousePosition = Render.Size / 2
