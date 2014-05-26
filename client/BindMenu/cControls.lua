@@ -109,6 +109,10 @@ Controls.Add = function(name , defaultControl)
 end
 
 Controls.Set = function(controlToSet)
+	if controlToSet.type == "MouseMovement" then
+		Controls.hasMouse = true
+	end
+	
 	-- If a control with this name already exists, modify it.
 	for index , control in ipairs(Controls.controls) do
 		if control.name == controlToSet.name then
@@ -121,10 +125,27 @@ Controls.Set = function(controlToSet)
 end
 
 Controls.Remove = function(controlName)
+	local isMouse = false
 	for index , control in ipairs(Controls.controls) do
 		if control.name == controlName then
+			if control.type == "MouseMovement" then
+				isMouse = true
+			end
 			table.remove(Controls.controls , index)
 			break
+		end
+	end
+	
+	if isMouse then
+		local hasAnotherMouseType = false
+		for index , control in ipairs(Controls.controls) do
+			if control.type == "MouseMovement" then
+				hasAnotherMouseType = true
+				break
+			end
+		end
+		if hasAnotherMouseType == false then
+			Controls.hasMouse = false
 		end
 	end
 end
@@ -245,43 +266,44 @@ Controls.InputPoll = function(args)
 	end
 	
 	-- Mouse movement.
-	local newMouseDelta = Mouse:GetPosition() - Controls.mousePosition
-	if Controls.mouseDelta.x == 0 then
-		if newMouseDelta.x ~= 0 then
-			if newMouseDelta.x > 0 then
-				Controls.Down{"MouseMovement" , ">"}
-			else
-				Controls.Down{"MouseMovement" , "<"}
-			end
+	if Controls.hasMouse then
+		local newMouseDelta = Mouse:GetPosition() - Controls.mousePosition
+		-- X
+		if Controls.mouseDelta.x <= 0 and newMouseDelta.x > 0 then
+			Controls.Down{"MouseMovement" , ">"}
 		end
-	elseif newMouseDelta.x == 0 then
-		if newMouseDelta.x ~= 0 then
-			if Controls.mouseDelta.x > 0 then
-				Controls.Up{"MouseMovement" , ">"}
-			else
-				Controls.Up{"MouseMovement" , "<"}
-			end
+		if Controls.mouseDelta.x > 0 and newMouseDelta.x <= 0 then
+			Controls.Up{"MouseMovement" , ">"}
 		end
+		if Controls.mouseDelta.x >= 0 and newMouseDelta.x < 0 then
+			Controls.Down{"MouseMovement" , "<"}
+		end
+		if Controls.mouseDelta.x < 0 and newMouseDelta.x >= 0 then
+			Controls.Up{"MouseMovement" , "<"}
+		end
+		-- Y
+		if Controls.mouseDelta.y <= 0 and newMouseDelta.y > 0 then
+			Controls.Down{"MouseMovement" , "v"}
+		end
+		if Controls.mouseDelta.y > 0 and newMouseDelta.y <= 0 then
+			Controls.Up{"MouseMovement" , "v"}
+		end
+		if Controls.mouseDelta.y >= 0 and newMouseDelta.y < 0 then
+			Controls.Down{"MouseMovement" , "^"}
+		end
+		if Controls.mouseDelta.y < 0 and newMouseDelta.y >= 0 then
+			Controls.Up{"MouseMovement" , "^"}
+		end
+		-- If the mouse isn't visible, force it to the center of the screen so it doesn't hit the
+		-- edges of the window.
+		if Mouse:GetVisible() then
+			Controls.mousePosition = Mouse:GetPosition()
+		else
+			Controls.mousePosition = Render.Size / 2
+			Mouse:SetPosition(Controls.mousePosition)
+		end
+		Controls.mouseDelta = newMouseDelta
 	end
-	if Controls.mouseDelta.y == 0 then
-		if newMouseDelta.y ~= 0 then
-			if newMouseDelta.y > 0 then
-				Controls.Down{"MouseMovement" , "v"}
-			else
-				Controls.Down{"MouseMovement" , "^"}
-			end
-		end
-	elseif newMouseDelta.y == 0 then
-		if newMouseDelta.y ~= 0 then
-			if Controls.mouseDelta.y > 0 then
-				Controls.Up{"MouseMovement" , "v"}
-			else
-				Controls.Up{"MouseMovement" , "^"}
-			end
-		end
-	end
-	Controls.mouseDelta = newMouseDelta
-	Controls.mousePosition = Mouse:GetPosition()
 	
 	-- Fire the ControlHeld event for all of our held controls.
 	for index , control in ipairs(Controls.held) do
