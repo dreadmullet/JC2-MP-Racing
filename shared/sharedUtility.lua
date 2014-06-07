@@ -38,7 +38,9 @@ Utility.PrintTable = function(t , depth , tableList)
 	-- add t to tableList
 	tableList[t] = true
 	
-	for key,value in pairs(t) do
+	for key , value in pairs(t) do
+		local keyString = tostring(key)
+		
 		-- If this check isn't in place it will error.
 		if type(key) == "table" then
 			local keysString = ""
@@ -48,13 +50,13 @@ Utility.PrintTable = function(t , depth , tableList)
 			keysString = keysString:sub(1 , keysString:len() - 3)
 			key = "TABLE: {"..keysString.."}"
 		end
+		
 		local type = type(value)
-		local typeString = "("..
+		local typeString = " ("..
 			type..
-			")"..
-			string.rep(" " , Utility.typeStringTabLength - string.len(type))
+			") "
 		if type == "table" then
-			print(tab.."TABLE: "..key)
+			print(tab..keyString..typeString)
 			if tableList[value] then
 				print(tab.."(already printed)")
 			else
@@ -62,17 +64,16 @@ Utility.PrintTable = function(t , depth , tableList)
 			end
 		elseif type == "boolean" then
 			if value then
-				print(tab..typeString..key.." = true")
+				print(tab..keyString..typeString.."= true")
 			else
-				print(tab..typeString..key.." = false")
+				print(tab..keyString..typeString.."= false")
 			end
+		elseif type == "number" or type == "string" or type == "function" then
+			print(tab..keyString..typeString.."= "..tostring(value))
+		elseif type == "userdata" then
+			print(tab..keyString..typeString.."= "..tostring(value))
 		else
-			-- other types
-			if type == "number" or type == "string" then
-				print(tab..typeString..key.." = "..value)
-			else
-				print(tab.."(UNKNOWN TYPE) "..type.." - "..key)
-			end
+			print(tab..keyString..typeString)
 		end
 	end
 end
