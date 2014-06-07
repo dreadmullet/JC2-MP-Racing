@@ -35,9 +35,11 @@ OBJLoader.Request = function(args , extra1 , extra2)
 	
 	local cachedRequest = OBJLoader.cachedRequests[args.path]
 	if cachedRequest then
-		cachedRequest.callback = onLoadCallback
-		cachedRequest.callbackInstance = onLoadCallbackInstance
-		cachedRequest:CallCallback()
+		if cachedRequest.isFinished then
+			cachedRequest:ForceCallback(onLoadCallback , onLoadCallbackInstance)
+		else
+			cachedRequest:AddCallback(onLoadCallback , onLoadCallbackInstance)
+		end
 	else
 		OBJLoader.cachedRequests[args.path] = OBJLoader.MeshRequester(
 			args , onLoadCallback , onLoadCallbackInstance

@@ -4,11 +4,14 @@ function OBJLoader.MeshRequester:__init(args , callback , callbackInstance)
 	self.modelPath = args.path
 	self.type = args.type or OBJLoader.Type.Single
 	self.is2D = args.is2D or false
-	self.callback = callback
-	self.callbackInstance = callbackInstance
+	self.callbacks = {}
 	self.models = {}
 	self.depths = {}
 	self.modelCount = 0
+	self.isFinished = false
+	self.result = nil
+	
+	self:AddCallback(callback , callbackInstance)
 	
 	if self.is2D == false and self.type == OBJLoader.Type.MultipleDepthSorted then
 		error("[OBJLoader] Cannot be 3D and MultipleDepthSorted!")
@@ -94,29 +97,36 @@ function OBJLoader.MeshRequester:Receive(args)
 		end
 	end
 	
-	self:CallCallback()
-end
-
-function OBJLoader.MeshRequester:CallCallback()
-	local arg
 	if self.type == OBJLoader.Type.Single then
 		if self.modelCount > 1 then
 			warn("[OBJLoader] Type is Single but there are "..self.modelCount.." meshes!")
 		end
 		
 		for modelName , model in pairs(self.models) do
-			arg = model
+			self.result = model
 			break
 		end
 	elseif self.type == OBJLoader.Type.Multiple then
-		arg = self.models
+		self.result = self.models
 	elseif self.type == OBJLoader.Type.MultipleDepthSorted then
-		arg = self.models
+		self.result = self.models
 	end
 	
-	if self.callbackInstance then
-		self.callback(self.callbackInstance , arg , self.modelPath)
+	for index , callback in ipairs(self.callbacks) do
+		self:ForceCallback(callback.func , callback.instance)
+	end
+	
+	self.isFinished = true
+end
+
+function OBJLoader.MeshRequester:AddCallback(func , instance)
+	table.insert(self.callbacks , {func = func , instance = instance})
+end
+
+function OBJLoader.MeshRequester:ForceCallback(func , instance)
+	if instance then
+		func(instance , self.result , self.modelPath)
 	else
-		self.callback(arg , self.modelPath)
+		func(self.result , self.modelPath)
 	end
 end
