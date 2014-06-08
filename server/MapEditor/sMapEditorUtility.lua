@@ -29,8 +29,8 @@ MapEditor.LoadFromMarshalledMap = function(map)
 			
 			if typeHash == objectHash then
 				if type(value) == "table" then
-					for index , value in ipairs(value) do
-						value = objectIdToObject[value]
+					for index , objectId in ipairs(value) do
+						value[index] = objectIdToObject[objectId]
 					end
 				else
 					value = objectIdToObject[value]

@@ -206,7 +206,7 @@ Course.LoadFromMap = function(map)
 	-- Create a linked list of checkpoints.
 	-- Values are like, {previous = table , checkpoint = RaceCheckpoint , next = table}
 	local checkpointList = {}
-	for objectId , object in pairs(map.objects) do
+	for objectIdSometimes , object in pairs(map.objects) do
 		if object.type == "RaceCheckpoint" then
 			table.insert(checkpointList , {checkpoint = object})
 		end
@@ -268,7 +268,7 @@ Course.LoadFromMap = function(map)
 	-- Spawns
 	
 	-- We need vehicle infos first.
-	for objectId , object in pairs(map.objects) do
+	for objectIdSometimes , object in pairs(map.objects) do
 		if object.type == "RaceVehicleInfo" then
 			local vehicleInfo = {
 				modelId = object.properties.modelId ,
@@ -276,12 +276,12 @@ Course.LoadFromMap = function(map)
 				available = 0 ,
 			}
 			table.insert(course.vehicleInfos , vehicleInfo)
-			objectIdToVehicleInfo[objectId] = vehicleInfo
+			objectIdToVehicleInfo[object.id] = vehicleInfo
 		end
 	end
 	
 	-- Create the CourseSpawns.
-	for objectId , object in pairs(map.objects) do
+	for objectIdSometimes , object in pairs(map.objects) do
 		if object.type == "RaceSpawn" then
 			local spawn = CourseSpawn(course)
 			table.insert(course.spawns , spawn)
@@ -291,8 +291,8 @@ Course.LoadFromMap = function(map)
 			spawn.angle = object.angle
 			
 			spawn.vehicleInfos = {}
-			for index , objectId in ipairs(object.properties.vehicles) do
-				local vehicleInfo = objectIdToVehicleInfo[objectId]
+			for index , object in ipairs(object.properties.vehicles) do
+				local vehicleInfo = objectIdToVehicleInfo[object.id]
 				table.insert(spawn.vehicleInfos , vehicleInfo)
 				vehicleInfo.available = vehicleInfo.available + 1
 			end
