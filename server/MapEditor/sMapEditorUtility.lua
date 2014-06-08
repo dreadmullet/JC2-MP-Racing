@@ -1,5 +1,3 @@
-JSON = require("JSON")
-
 MapEditor.LoadFromFile = function(path)
 	local file , openError = io.open(path , "r")
 	
@@ -11,7 +9,7 @@ MapEditor.LoadFromFile = function(path)
 	
 	file:close()
 	
-	local marshalledMap = JSON:decode(jsonString)
+	local marshalledMap = MapEditor.JSON:decode(jsonString)
 	
 	return MapEditor.LoadFromMarshalledMap(marshalledMap)
 end
