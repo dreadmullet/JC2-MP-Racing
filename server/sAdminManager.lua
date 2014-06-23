@@ -37,9 +37,9 @@ AdminManager.Kick = function(playerName , player)
 		return
 	end
 	
-	local player = Player.Match(playerName)[1]
-	if player then
-		player:Kick()
+	local playerToKick = Player.Match(playerName)[1]
+	if playerToKick then
+		playerToKick:Kick()
 	else
 		player:SendChatMessage(playerName.." not found!" , Color.Red)
 	end
@@ -50,9 +50,9 @@ AdminManager.Ban = function(playerName , player)
 		return
 	end
 	
-	local player = Player.Match(playerName)[1]
-	if player then
-		player:Ban()
+	local playerToKick = Player.Match(playerName)[1]
+	if playerToKick then
+		playerToKick:Ban()
 	else
 		player:SendChatMessage(playerName.." not found!" , Color.Red)
 	end
