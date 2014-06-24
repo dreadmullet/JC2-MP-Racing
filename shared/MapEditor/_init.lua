@@ -1,0 +1,3 @@
+MapEditor = {}
+
+MapEditor.Objects = {}

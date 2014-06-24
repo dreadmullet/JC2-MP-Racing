@@ -190,6 +190,7 @@ end
 Course.LoadFromMap = function(map)
 	local course = Course()
 	
+	course.map = map
 	course.name = map.properties.title
 	course.type = "Linear"
 	course.numLaps = map.properties.laps

@@ -49,6 +49,9 @@ function Race:__init(args)
 		)
 	end
 	
+	-- Initialize map editor things such as generic objects.
+	self.mapInstance = MapEditor.MapInstance(self.course.map)
+	
 	-- World
 	
 	self.world = World.Create()
@@ -208,6 +211,7 @@ end
 
 -- This cleans up everything and can be called at any time.
 function Race:Terminate()
+	-- Make sure we only ever terminate once.
 	if self.isValid then
 		self.isValid = false
 	else
@@ -227,6 +231,9 @@ function Race:Terminate()
 	for id , spectator in pairs(self.playerIdToSpectator) do
 		self:RemovePlayer(spectator.player)
 	end
+	
+	-- Remove our map instance.
+	self.mapInstance:Destroy()
 	
 	-- Remove the world, which removes anything in it.
 	if self.world then

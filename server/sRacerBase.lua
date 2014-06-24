@@ -21,6 +21,9 @@ function RacerBase:__init(race , player)
 	end
 	-- Always disable player collisions.
 	self.player:DisableCollision(CollisionGroup.Player)
+	
+	-- Initialize map editor client-side things for our player.
+	self.race.mapInstance:AddPlayer(self.player)
 end
 
 function RacerBase:Update(racePosInfo)
@@ -35,4 +38,7 @@ function RacerBase:Remove()
 		self.player:EnableCollision(CollisionGroup.Vehicle)
 	end
 	self.player:EnableCollision(CollisionGroup.Player)
+	
+	-- Clean up map editor client-side things for our player.
+	self.race.mapInstance:RemovePlayer(self.player)
 end
