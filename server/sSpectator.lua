@@ -53,11 +53,15 @@ function Spectator:RequestTarget(playerId)
 		self.requestTimer == nil or
 		self.requestTimer:GetSeconds() > settings.spectatorRequestInterval * 1.2 + 0.2
 	then
-		print("Giving target pos to "..tostring(self.player))
 		self.requestTimer = Timer()
 		
 		local targetPlayer = Player.GetById(playerId)
 		if IsValid(targetPlayer) then
+			print(self.player:GetName().." is requesting the position of "..targetPlayer:GetName())
+			print("\t"..self.player:GetName().."'s position: "..tostring(self.player:GetPosition()))
+			print("\t"..targetPlayer:GetName().."'s position: "..tostring(targetPlayer:GetPosition()))
+			print("\tDelta: "..tostring(self.player:GetPosition() - targetPlayer:GetPosition()))
+			
 			local target = {id = playerId , position = targetPlayer:GetPosition()}
 			Network:Send(self.player , "SpectateReceiveTarget" , target)
 		-- If the player isn't valid, give them an invalid target, but set the position to the current
