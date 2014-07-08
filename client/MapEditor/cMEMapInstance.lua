@@ -15,31 +15,30 @@ function MapEditor.MapInstance:__init(objectsData)
 		end
 	end
 	
-	-- self.objectIndex = 1
+	self.objectIndex = 1
 	
-	-- self.tickSub = Events:Subscribe("PreTick" , self , self.PreTick)
+	self.tickSub = Events:Subscribe("PreTick" , self , self.PreTick)
 	self.terminateSub = Network:Subscribe("TerminateMapInstance" , self , self.Terminate)
 end
 
 -- Events
 
--- function MapEditor.MapInstance:PreTick()
-	-- if #self.objects == 0 then
-		-- return
-	-- end
+function MapEditor.MapInstance:PreTick()
+	if #self.objects == 0 then
+		return
+	end
 	
-	---- Iterate over a few of our objects each frame.
-	-- local object
-	-- for n = 1 , 5 do
-		-- self.objectIndex = self.objectIndex - 1
-		-- if self.objectIndex < 1 then
-			-- self.objectIndex = #self.objects
-		-- end
+	-- Iterate over a few of our objects each frame.
+	for n = 1 , math.min(10 , #self.objects) do
+		self.objectIndex = self.objectIndex - 1
+		if self.objectIndex < 1 then
+			self.objectIndex = #self.objects
+		end
 		
-		-- object = self.objects[self.objectIndex]
-		-- object:Update()
-	-- end
--- end
+		local object = self.objects[self.objectIndex]
+		object:Update()
+	end
+end
 
 function MapEditor.MapInstance:Terminate()
 	-- Destroy all of our objects.
@@ -49,7 +48,7 @@ function MapEditor.MapInstance:Terminate()
 	
 	MapEditor.mapInstance = nil
 	
-	-- Network:Unsubscribe(self.tickSub)
+	Events:Unsubscribe(self.tickSub)
 	Network:Unsubscribe(self.terminateSub)
 end
 

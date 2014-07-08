@@ -14,13 +14,17 @@ MapEditor.LoadFromFile = function(path)
 	return MapEditor.LoadFromMarshalledMap(marshalledMap)
 end
 
--- This converts the raw, marshalled map into a more convenient table: object ids are converted into
--- objects, and object position/angle are turned into a Vector3 and Angle.
+-- This converts the raw, marshalled map into a more convenient table:
+--    * object ids are converted into objects.
+--    * object position/angle are turned into a Vector3 and Angle.
+--    * Array objects are applied.
 MapEditor.LoadFromMarshalledMap = function(map)
 	local objectIdToObject = {}
+	local objectIdCounter = 1
 	local objectHash = FNV("Object")
 	local colorHash = FNV("Color")
 	
+	-- Converts object ids to objects and marshalled colors to Colors.
 	local ProcessProperties = function(properties)
 		local isTable , typeHash , value
 		for name , data in pairs(properties) do
@@ -58,7 +62,12 @@ MapEditor.LoadFromMarshalledMap = function(map)
 		end
 	end
 	
+	-- Convert object position/angle to actual Vector3s and Angles.
 	for objectIdSometimes , object in pairs(map.objects) do
+		if object.id >= objectIdCounter then
+			objectIdCounter = object.id + 1
+		end
+		
 		objectIdToObject[object.id] = object
 		
 		object.position = Vector3(
@@ -74,11 +83,66 @@ MapEditor.LoadFromMarshalledMap = function(map)
 		)
 	end
 	
+	-- Call ProcessProperties on all object properties, as well as the map properties.
 	for objectIdSometimes , object in pairs(map.objects) do
 		ProcessProperties(object.properties)
 	end
-	
 	ProcessProperties(map.properties)
+	
+	-- After-processing of certain objects.
+	for objectIdSometimes , object in pairs(map.objects) do
+		if object.type == "Array" then
+			local sourceObject = object.properties.sourceObject
+			if sourceObject then
+				local position = sourceObject.position
+				local angle = sourceObject.angle
+				local offsetPosition = Vector3(
+					object.properties.offsetX ,
+					object.properties.offsetY ,
+					object.properties.offsetZ
+				)
+				local offsetAngle = Angle(
+					math.rad(object.properties.offsetYaw) ,
+					math.rad(object.properties.offsetPitch) ,
+					math.rad(object.properties.offsetRoll)
+				)
+				local relativeOffsetPosition = Vector3(
+					object.properties.relativeOffsetX ,
+					object.properties.relativeOffsetY ,
+					object.properties.relativeOffsetZ
+				)
+				local relativeOffsetAngle = Angle(
+					math.rad(object.properties.relativeOffsetYaw) ,
+					math.rad(object.properties.relativeOffsetPitch) ,
+					math.rad(object.properties.relativeOffsetRoll)
+				)
+				
+				local Next = function()
+					position = position + angle * relativeOffsetPosition
+					angle = angle * relativeOffsetAngle
+					
+					position = position + offsetPosition
+					angle = offsetAngle * angle
+				end
+				
+				for n = 1 , object.properties.count do
+					Next()
+					
+					local newObject = {
+						id = objectIdCounter ,
+						type = sourceObject.type ,
+						position = position ,
+						angle = angle ,
+						isClientSide = sourceObject.isClientSide ,
+						properties = sourceObject.properties ,
+					}
+					objectIdCounter = objectIdCounter + 1
+					
+					map.objects[newObject.id] = newObject
+				end
+			end
+		end
+	end
 	
 	return map
 end
