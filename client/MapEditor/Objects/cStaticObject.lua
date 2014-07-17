@@ -38,7 +38,12 @@ function MapEditor.Objects.StaticObject:SetEnabled(enabled)
 	if self.isEnabled then
 		local model = self.data.properties.model
 		
-		local collision = model:gsub("-", "_lod1-"):gsub("%.lod", "_col.pfx")
+		-- Get the collision either from a hardcoded list or just calculate it. Most models can be
+		-- calculated just fine.
+		local collision = self.collisionFixes[model]
+		if collision == nil then
+			collision = model:gsub("-" , "_lod1-"):gsub("%.lod" , "_col.pfx")
+		end
 		self.staticObject = ClientStaticObject.Create{
 			position = self.position ,
 			angle = self.angle ,
@@ -56,3 +61,8 @@ end
 function MapEditor.Objects.StaticObject:OnDestroy()
 	self:SetEnabled(false)
 end
+
+MapEditor.Objects.StaticObject.collisionFixes = {
+	["general.bl/go200-a1.lod"] =              "general.blz/go200_lod1-a_col.pfx" ,
+	["general.blz/go200-a1.lod"] =             "general.blz/go200_lod1-a_col.pfx" ,
+}

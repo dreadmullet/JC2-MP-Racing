@@ -29,10 +29,9 @@ end
 
 function MapEditor.MapInstance:__init(map)
 	self.map = map
-	-- In case there are thousands of objects but only one client-side one that gets sent to clients,
-	-- this prevents excessive iteration over all objects.
+	-- Copy objects map to a more convenient type-to-object-array map.
 	-- Key: object type
-	-- Value: array of objects (with any object properties replaced with object ids)
+	-- Value: array of objects (with any object-type properties replaced with object ids)
 	self.objectTypeToObjects = {}
 	for prettySureThisIsNeverActuallyTheObjectId , object in pairs(self.map.objects) do
 		if self.objectTypeToObjects[object.type] == nil then
