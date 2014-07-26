@@ -1,5 +1,3 @@
-MapEditor.version = 3
-
 MapEditor.LoadFromFile = function(path)
 	local file , openError = io.open(path , "r")
 	
