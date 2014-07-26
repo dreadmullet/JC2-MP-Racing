@@ -252,38 +252,72 @@ function Racer:Respawn()
 		previousCheckpointIndex = -1
 	end
 	
-	-- Get spawn position and angle.
+	-- Get spawn position, angle, and speed.
 	local spawnPosition
 	local spawnAngle
+	local spawnSpeed = 5
 	if checkpointIndex <= 0 then
-		-- Respawn at our spawn position.
+		-- Respawn at our start position.
 		spawnPosition = self.courseSpawn.position
 		spawnAngle = self.courseSpawn.angle
 	else
 		local previousCheckpoint = self.race.course.checkpoints[previousCheckpointIndex]
 		local checkpoint = self.race.course.checkpoints[checkpointIndex]
 		local nextCheckpoint = self.race.course.checkpoints[nextCheckpointIndex]
-		spawnPosition = checkpoint.position
-		
-		local spawnDirection
-		if previousCheckpoint then
-			spawnDirection = (previousCheckpoint.position - checkpoint.position)
-			if nextCheckpoint then
-				spawnDirection = (
-					spawnDirection +
-					(checkpoint.position - nextCheckpoint.position)
-				) * 0.5
+		-- If the checkpoint has usable respawn points, use them.
+		local usedRespawnPoint = false
+		if #checkpoint.respawnPoints > 0 then
+			local respawnPointToUse
+			for index , respawnPoint in ipairs(checkpoint.respawnPoints) do
+				if
+					respawnPoint.modelId == 0 or
+					respawnPoint.modelId == self.assignedVehicleInfo.modelId
+				then
+					if respawnPointToUse == nil or respawnPoint.counter < respawnPointToUse.counter then
+						respawnPointToUse = respawnPoint
+					end
+				end
 			end
-		elseif nextCheckpoint then
-			spawnDirection = checkpoint.position - nextCheckpoint.position
+			if respawnPointToUse ~= nil then
+				spawnPosition = respawnPointToUse.position
+				spawnAngle = respawnPointToUse.angle
+				spawnSpeed = respawnPointToUse.speed
+				
+				respawnPointToUse.counter = respawnPointToUse.counter + 1
+				usedRespawnPoint = true
+			end
 		end
-		spawnDirection = spawnDirection:Normalized()
-		
-		spawnAngle = Angle.FromVectors(
-			Vector3(0 , 0 , 1) ,
-			spawnDirection
-		)
-		spawnAngle.roll = 0
+		-- Otherwise, calculate spawnAngle from the surrounding checkpoints and, if our assigned
+		-- vehicle is a plane, set spawnSpeed to a reasonable amount so we don't immediately crash
+		-- into the ground.
+		if usedRespawnPoint == false then
+			spawnPosition = checkpoint.position
+			
+			local spawnDirection
+			if previousCheckpoint then
+				spawnDirection = (previousCheckpoint.position - checkpoint.position)
+				if nextCheckpoint then
+					spawnDirection = (
+						spawnDirection +
+						(checkpoint.position - nextCheckpoint.position)
+					) * 0.5
+				end
+			elseif nextCheckpoint then
+				spawnDirection = nextCheckpoint.position - checkpoint.position
+			end
+			spawnDirection = spawnDirection:Normalized()
+			
+			spawnAngle = Angle.FromVectors(
+				Vector3.Forward ,
+				spawnDirection
+			)
+			spawnAngle.roll = 0
+			
+			local vehicleListEntry = VehicleList[self.assignedVehicleInfo.modelId]
+			if vehicleListEntry.type == "Air" then
+				spawnSpeed = 32
+			end
+		end
 	end
 	
 	-- If the spawn position isn't clear, spawn the vehicle a little above. Terrible solution, I know.
@@ -308,6 +342,7 @@ function Racer:Respawn()
 		spawnArgs.tone2 = self.assignedVehicleInfo.color2
 		spawnArgs.template = self.assignedVehicleInfo.template
 		spawnArgs.decal = "."
+		spawnArgs.linear_velocity = spawnAngle * Vector3.Forward * spawnSpeed
 		
 		local newVehicle = Vehicle.Create(spawnArgs)
 		newVehicle:SetDeathRemove(true)

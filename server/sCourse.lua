@@ -263,6 +263,17 @@ Course.LoadFromMap = function(map)
 		checkpoint.allowAllVehicles = object.properties.allowAllVehicles
 		checkpoint.isRespawnable = object.properties.isRespawnable
 		
+		for index , respawnPointObject in ipairs(object.properties.respawnPoints) do
+			local respawnPoint = {
+				position = respawnPointObject.position ,
+				angle = respawnPointObject.angle ,
+				speed = respawnPointObject.properties.speed ,
+				modelId = respawnPointObject.properties.modelId ,
+				counter = 0 ,
+			}
+			table.insert(checkpoint.respawnPoints , respawnPoint)
+		end
+		
 		listItem = listItem.next
 	until listItem == nil or listItem == startingCheckpointItem
 	

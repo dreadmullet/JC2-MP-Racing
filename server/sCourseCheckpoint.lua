@@ -7,6 +7,8 @@ function CourseCheckpoint:__init(course)
 	self.validVehicles = {}
 	self.allowAllVehicles = false
 	self.isRespawnable = true
+	-- Array of tables, each has position, angle, speed, modelId, and counter
+	self.respawnPoints = {}
 	
 	self.index = -1
 	self.checkpoint = nil
