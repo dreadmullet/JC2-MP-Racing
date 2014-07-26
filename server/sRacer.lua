@@ -316,6 +316,7 @@ function Racer:Respawn()
 			local vehicleListEntry = VehicleList[self.assignedVehicleInfo.modelId]
 			if vehicleListEntry.type == "Air" then
 				spawnSpeed = 120 / 3.6
+				spawnAngle.pitch = spawnAngle.pitch + math.rad(10)
 			end
 		end
 	end
