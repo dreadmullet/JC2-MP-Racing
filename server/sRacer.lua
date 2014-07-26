@@ -255,7 +255,7 @@ function Racer:Respawn()
 	-- Get spawn position, angle, and speed.
 	local spawnPosition
 	local spawnAngle
-	local spawnSpeed = 5
+	local spawnSpeed = 10 / 3.6
 	if checkpointIndex <= 0 then
 		-- Respawn at our start position.
 		spawnPosition = self.courseSpawn.position
@@ -281,7 +281,7 @@ function Racer:Respawn()
 			if respawnPointToUse ~= nil then
 				spawnPosition = respawnPointToUse.position
 				spawnAngle = respawnPointToUse.angle
-				spawnSpeed = respawnPointToUse.speed
+				spawnSpeed = respawnPointToUse.speed / 3.6
 				
 				respawnPointToUse.counter = respawnPointToUse.counter + 1
 				usedRespawnPoint = true
@@ -295,11 +295,11 @@ function Racer:Respawn()
 			
 			local spawnDirection
 			if previousCheckpoint then
-				spawnDirection = (previousCheckpoint.position - checkpoint.position)
+				spawnDirection = (checkpoint.position - previousCheckpoint.position)
 				if nextCheckpoint then
 					spawnDirection = (
 						spawnDirection +
-						(checkpoint.position - nextCheckpoint.position)
+						(nextCheckpoint.position - checkpoint.position)
 					) * 0.5
 				end
 			elseif nextCheckpoint then
@@ -315,7 +315,7 @@ function Racer:Respawn()
 			
 			local vehicleListEntry = VehicleList[self.assignedVehicleInfo.modelId]
 			if vehicleListEntry.type == "Air" then
-				spawnSpeed = 32
+				spawnSpeed = 120 / 3.6
 			end
 		end
 	end
