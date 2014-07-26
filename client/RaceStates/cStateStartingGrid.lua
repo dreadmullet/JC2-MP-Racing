@@ -185,7 +185,7 @@ function StateStartingGrid:LocalPlayerInput(args)
 			local vehicle = Vehicle.GetById(self.race.assignedVehicleId)
 			if IsValid(vehicle) then
 				local vehicleInfo = VehicleList[vehicle:GetModelId()]
-				if vehicleInfo and vehicleInfo.type ~= "Car" then
+				if vehicleInfo and vehicleInfo.type ~= "Land" then
 					return false
 				end
 			end
