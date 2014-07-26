@@ -10,9 +10,6 @@ function CourseCheckpoint:__init(course)
 	
 	self.index = -1
 	self.checkpoint = nil
-	-- When racer enters checkpoint, these functions of ours are called. One argument: racer.
-	-- Array of function names.
-	self.actions = {}
 end
 
 function CourseCheckpoint:Spawn()
@@ -63,10 +60,6 @@ function CourseCheckpoint:Enter(racer)
 	then
 		-- Advance racer's checkpoint.
 		racer:AdvanceCheckpoint(self.index)
-		-- Call this checkpoint's actions.
-		for index , functionName in ipairs(self.actions) do
-			self[functionName](self , racer)
-		end
 	end
 end
 
