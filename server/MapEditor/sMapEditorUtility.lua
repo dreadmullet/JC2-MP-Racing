@@ -1,3 +1,5 @@
+MapEditor.version = 3
+
 MapEditor.LoadFromFile = function(path)
 	local file , openError = io.open(path , "r")
 	
@@ -19,6 +21,16 @@ end
 --    * object position/angle are turned into a Vector3 and Angle.
 --    * Array objects are applied.
 MapEditor.LoadFromMarshalledMap = function(map)
+	if map.version ~= MapEditor.version then
+		local errorMessage = string.format(
+			"Map version mismatch: expected version %s, map is version %s" ,
+			tostring(MapEditor.version) ,
+			tostring(map.version)
+		)
+		error(errorMessage)
+		return
+	end
+	
 	local objectIdToObject = {}
 	local objectIdCounter = 1
 	local objectHash = FNV("Object")
