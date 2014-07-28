@@ -29,7 +29,7 @@ function MapEditor.MapInstance:PreTick()
 	end
 	
 	-- Iterate over a few of our objects each frame.
-	for n = 1 , math.min(10 , #self.objects) do
+	for n = 1 , math.min(15 , #self.objects) do
 		self.objectIndex = self.objectIndex - 1
 		if self.objectIndex < 1 then
 			self.objectIndex = #self.objects
