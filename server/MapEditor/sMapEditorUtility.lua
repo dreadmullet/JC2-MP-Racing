@@ -48,7 +48,7 @@ MapEditor.LoadFromMarshalledMap = function(map)
 						if objectId ~= -1 then
 							value[index] = objectIdToObject[objectId]
 						else
-							value = nil
+							value[index] = MapEditor.NoObject
 						end
 					end
 				else
