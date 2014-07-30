@@ -15,6 +15,8 @@ function Course:__init()
 	self.name = "Unnamed Course"
 	self.type = "Invalid"
 	self.numLaps = -1
+	self.minStartHour = 0
+	self.maxStartHour = 24
 	-- -1 is random.
 	self.weatherSeverity = -1
 	self.parachuteEnabled = true
@@ -193,6 +195,8 @@ Course.LoadFromMap = function(map)
 	course.name = map.properties.title
 	course.type = "Linear"
 	course.numLaps = map.properties.laps
+	course.minStartHour = map.properties.minStartHour
+	course.maxStartHour = map.properties.maxStartHour
 	course.weatherSeverity = map.properties.weatherSeverity
 	course.parachuteEnabled = map.properties.parachuteEnabled
 	course.grappleEnabled = map.properties.grappleEnabled

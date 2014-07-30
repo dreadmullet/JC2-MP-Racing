@@ -55,11 +55,12 @@ function Race:__init(args)
 	-- World
 	
 	self.world = World.Create()
-	-- More chance of a day race.
-	if math.random() > 0.25 then
-		self.world:SetTime(math.random(7 , 15))
+	self.world:SetTimeStep(0)
+	if self.course.minStartHour <= self.course.maxStartHour then
+		self.world:SetTime(math.random(self.course.minStartHour , self.course.maxStartHour))
 	else
-		self.world:SetTime(math.random() * 24)
+		local range = 24 - self.course.minStartHour + self.course.maxStartHour
+		self.world:SetTime((self.course.minStartHour + math.random(0 , range)) % 24)
 	end
 	if self.course.weatherSeverity == -1 then
 		self.world:SetWeatherSeverity(math.pow(math.random() , 2.8) * 2)
