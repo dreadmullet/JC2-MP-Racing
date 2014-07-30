@@ -36,7 +36,7 @@ function Race:__init(args)
 	
 	self.course = args.course
 	self.course.race = self
-	-- TODO: Is this necessary?
+	-- TODO: Is this necessary? It will be looked at with the client-side checkpoint overhaul.
 	self.checkpointPositions = {}
 	for n = 1 , #self.course.checkpoints do
 		table.insert(self.checkpointPositions , self.course.checkpoints[n].position)
@@ -61,7 +61,11 @@ function Race:__init(args)
 	else
 		self.world:SetTime(math.random() * 24)
 	end
-	self.world:SetWeatherSeverity(math.pow(math.random() , 2.6) * 2)
+	if self.course.weatherSeverity == -1 then
+		self.world:SetWeatherSeverity(math.pow(math.random() , 2.8) * 2)
+	else
+		self.world:SetWeatherSeverity(self.course.weatherSeverity)
+	end
 	
 	-- Misc
 	

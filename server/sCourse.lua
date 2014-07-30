@@ -16,7 +16,6 @@ function Course:__init()
 	self.type = "Invalid"
 	self.numLaps = -1
 	-- -1 is random.
-	-- TODO: This isn't even used.
 	self.weatherSeverity = -1
 	self.parachuteEnabled = true
 	self.grappleEnabled = true
@@ -194,11 +193,11 @@ Course.LoadFromMap = function(map)
 	course.name = map.properties.title
 	course.type = "Linear"
 	course.numLaps = map.properties.laps
-	course.weatherSeverity = map.properties.weatherSeverity or -1
+	course.weatherSeverity = map.properties.weatherSeverity
 	course.parachuteEnabled = map.properties.parachuteEnabled
 	course.grappleEnabled = map.properties.grappleEnabled
-	course.forceCollision = map.properties.forceCollision or ForceCollision.None
-	course.authors = map.properties.authors or {"No author"}
+	course.forceCollision = map.properties.forceCollision
+	course.authors = map.properties.authors
 	
 	local objectIdToVehicleInfo = {}
 	
