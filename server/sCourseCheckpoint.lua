@@ -58,7 +58,8 @@ function CourseCheckpoint:Enter(racer)
 	if
 		racer.hasFinished == false and
 		self:GetIsValidVehicle(racer.player:GetVehicle()) and
-		racer.targetCheckpoint == self.index
+		racer.targetCheckpoint == self.index and
+		racer.isRespawning == false
 	then
 		-- Advance racer's checkpoint.
 		racer:AdvanceCheckpoint(self.index)

@@ -7,7 +7,8 @@ settings.textColor = Color(228 , 142 , 56 , 255) -- Light red-orange.
 settings.command = "race"
 
 settings.respawnMinPeriod = 5
-settings.respawnDelay = 3
+-- If you set this too low, some courses can be done faster by respawning at certain points.
+settings.respawnDelay = 3.5
 
 settings.vehicleSelectionSeconds = 22
 settings.startingGridSeconds = 14
