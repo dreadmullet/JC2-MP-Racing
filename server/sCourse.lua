@@ -292,6 +292,9 @@ Course.LoadFromMap = function(map)
 				templates = object.properties.templates ,
 				available = 0 ,
 			}
+			if #vehicleInfo.templates == 0 then
+				vehicleInfo.templates[1] = ""
+			end
 			table.insert(course.vehicleInfos , vehicleInfo)
 			objectIdToVehicleInfo[object.id] = vehicleInfo
 		end
