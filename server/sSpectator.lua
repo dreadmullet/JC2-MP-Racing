@@ -41,7 +41,6 @@ function Spectator:Remove()
 	RacerBase.Remove(self)
 	
 	self.player:SetStreamDistance(Config:GetValue("Streamer" , "PlayerStreamDistance") or 500)
-	self.player:SetWorld(DefaultWorld)
 	
 	Network:Send(self.player , "Terminate")
 	

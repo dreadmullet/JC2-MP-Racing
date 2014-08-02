@@ -1,14 +1,25 @@
 class("RaceManagerEvent")
 
-function RaceManagerEvent:__init(race , name , owners) ; RaceManagerBase.__init(self)
-	self.race = race
-	self.name = name
+-- function RaceManagerEvent:__init(race , name , players , owners) ; RaceManagerBase.__init(self)
+function RaceManagerEvent:__init(args) ; RaceManagerBase.__init(self)
+	self.name = args.name
+	self.playerIdToInfo = {}
 	-- Owners can end the race at any time by using the race menu.
-	self.owners = owners
+	self.owners = args.owners
 	
-	for index , racerBase in ipairs(self.race.participants) do
-		self:AddPlayer(racerBase.player)
+	for index , player in ipairs(args.players) do
+		self.playerIdToInfo[player:GetId()] = {
+			originalWorld = player:GetWorld() ,
+		}
+		self:AddPlayer(player)
 	end
+	
+	self.race = Race{
+		players = args.players ,
+		course = args.course ,
+		collisions = args.collisions ,
+		modules = {"Event"} ,
+	}
 	
 	self:EventSubscribe("EndRace")
 	self:NetworkSubscribe("RequestRaceOwners")
@@ -18,6 +29,11 @@ end
 -- PlayerManager callbacks
 
 function RaceManagerEvent:ManagedPlayerLeave(player)
+	local playerInfo = self.playerIdToInfo[player:GetId()]
+	if IsValid(playerInfo.originalWorld) == true then
+		player:SetWorld(playerInfo.originalWorld)
+	end
+	
 	self.race:RemovePlayer(player)
 end
 
@@ -71,14 +87,13 @@ RaceManagerEvent.CreateRaceFromEvent = function(args)
 		error("Failed to load course")
 	end
 	
-	local race = Race{
+	RaceManagerEvent{
+		name = args.name ,
 		players = args.players ,
+		owners = args.owners or args.players ,
 		course = course ,
 		collisions = args.collisions ,
-		modules = {"Event"} ,
 	}
-	
-	raceManagerEvent = RaceManagerEvent(race , args.name , args.owners or args.players)
 end
 Events:Subscribe("CreateRace" , RaceManagerEvent.CreateRaceFromEvent)
 

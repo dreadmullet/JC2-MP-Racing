@@ -41,4 +41,6 @@ function RacerBase:Remove()
 	
 	-- Clean up map editor client-side things for our player.
 	self.race.mapInstance:RemovePlayer(self.player)
+	
+	self.player:SetWorld(DefaultWorld)
 end
