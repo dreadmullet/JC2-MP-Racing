@@ -7,6 +7,9 @@ function MapEditor.MapInstance:__init(objectsData)
 	
 	-- Create all of our objects.
 	for index , objectData in ipairs(objectsData) do
+		-- Fix for Angle inaccuracy when sent to clients.
+		objectData.angle = Angle(table.unpack(objectData.angle))
+		
 		local classType = MapEditor.Objects[objectData.type]
 		if classType then
 			table.insert(self.objects , classType(objectData))

@@ -33,6 +33,7 @@ function MapEditor.MapInstance:__init(map)
 	-- Key: object type
 	-- Value: array of objects (with any object-type properties replaced with object ids)
 	self.objectTypeToObjects = {}
+	
 	for prettySureThisIsNeverActuallyTheObjectId , object in pairs(self.map.objects) do
 		if self.objectTypeToObjects[object.type] == nil then
 			self.objectTypeToObjects[object.type] = {}
@@ -57,7 +58,20 @@ function MapEditor.MapInstance:__init(map)
 			end
 		end
 		
+		-- Fix for Angle inaccuracy when sent to clients.
+		local a = copiedObject.angle
+		copiedObject.angle = {a.x , a.y , a.z , a.w}
+		
 		table.insert(self.objectTypeToObjects[object.type] , copiedObject)
+	end
+	
+	self.clientObjects = {}
+	for objectType , objects in pairs(self.objectTypeToObjects) do
+		if objects[1].isClientSide then
+			for index , object in ipairs(objects) do
+				table.insert(self.clientObjects , object)
+			end
+		end
 	end
 	
 	self.players = {}
@@ -71,20 +85,9 @@ function MapEditor.MapInstance:Destroy()
 end
 
 function MapEditor.MapInstance:AddPlayer(player)
-	local clientObjects = {}
-	
-	-- Gather up all client-side objects.
-	for objectType , objects in pairs(self.objectTypeToObjects) do
-		if objects[1].isClientSide then
-			for index , object in ipairs(objects) do
-				table.insert(clientObjects , object)
-			end
-		end
-	end
-	
 	table.insert(self.players , player)
 	
-	Network:Send(player , "InitializeMapInstance" , clientObjects)
+	Network:Send(player , "InitializeMapInstance" , self.clientObjects)
 end
 
 function MapEditor.MapInstance:RemovePlayer(player)
