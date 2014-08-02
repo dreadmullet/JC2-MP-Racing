@@ -126,20 +126,25 @@ function Racer:AdvanceLap()
 	
 	local lapTime = self.bestTimeTimer:GetSeconds()
 	
-	-- If we don't have a best lap time yet, just set it.
-	if self.bestTime == -1 then
-		self.bestTime = lapTime
-	-- Otherwise, only set our best lap time if this lap was faster.
-	else
-		if lapTime < self.bestTime then
+	local lapTest = self.race.course.allowFirstLapRecord == true or self.numLapsCompleted ~= 1
+	
+	if lapTest == true then
+		-- If we don't have a best lap time yet, just set it.
+		if self.bestTime == -1 then
 			self.bestTime = lapTime
+		-- Otherwise, only set our best lap time if this lap was faster. Also, check for
+		-- course.allowFirstLapRecord.
+		else
+			if lapTime < self.bestTime then
+				self.bestTime = lapTime
+			end
 		end
 	end
 	
 	Network:Send(self.player , "RaceTimePersonal" , lapTime)
 	
 	-- If this is a new record, send every racer the new time/player.
-	if lapTime < self.race.info.topRecordTime then
+	if lapTest == true and lapTime < self.race.info.topRecordTime then
 		self.race:NetworkSendRace("NewRecordTime" , {lapTime , self.name})
 		self.race.info.topRecordTime = lapTime
 		self.race.topRecordPlayerName = self.name

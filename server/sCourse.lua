@@ -32,6 +32,7 @@ function Course:__init()
 	--    templates = array of strings ,
 	--    available = number
 	self.vehicleInfos = {}
+	self.allowFirstLapRecord = true
 	
 	-- Other variables.
 	-- TODO: Some of these should be in Race.
@@ -202,6 +203,7 @@ Course.LoadFromMap = function(map)
 	course.grappleEnabled = map.properties.grappleEnabled
 	course.forceCollision = map.properties.forceCollision
 	course.authors = map.properties.authors
+	course.allowFirstLapRecord = map.properties.allowFirstLapRecord
 	
 	local objectIdToVehicleInfo = {}
 	

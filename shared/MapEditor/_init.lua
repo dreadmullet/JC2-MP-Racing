@@ -1,6 +1,6 @@
 MapEditor = {}
 
-MapEditor.version = 4
+MapEditor.version = 5
 
 MapEditor.Objects = {}
 
