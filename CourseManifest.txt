@@ -1,38 +1,12 @@
-BandarSelekeh
-BerawanBesarSplit
-CapeCarnival
-CarVHelicopter
-CliffRacer
-CliffsOfFear
-# ClusterfuckingLimousines # Disabled until courses can be chosen based on player count
-DasPhailenring
-DesertBus
-DirtTrackEast
-EastBerawanTouge
-# EndlessCoast # Disabled until courses can be chosen based on player count
-FacepalmPond
-HillclimbDesertHighlands
-Icewheels
-# INeverAskedForThis # A little too silly
-LostIslandRally
-MileHighClubMadness
-MileHighClubDive1
-PanauCanals
-ReapersRun
-RedMountainPlunge
-SelatanBackcountry
-SidewalkBlazer
-SkiSlopeSkydive
-SkullIslandRollercoaster
-SonOfABeach
-SoutheastBerawanTouge
-SpiderRico
-# ThreeKingsComplex -- Bad
-ThreeKingsHighJinks
-ThreeKingsTriangle
-Vortex
-WestBerawanTouge
-
-# DLC courses
-
-# SaladIslandHovercrafting
+8
+Banana
+Boat vs Plane
+Bridge of Life
+Das Phailenring
+Kota Kersik Raid
+Kuala City Showdown
+Pierstone Rally
+Planetastic
+Reaper's Run
+Roseport
+Thunder Pass
