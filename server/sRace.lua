@@ -84,10 +84,7 @@ function Race:__init(args)
 	
 	-- Collisions
 	
-	self.vehicleCollisions = args.collisions
-	if self.vehicleCollisions == nil then
-		self.vehicleCollisions = false
-	end
+	self.vehicleCollisions = args.collisions or settings.collisionChanceFunc()
 	
 	self.vehicleCollisions = self.course:ProcessCollisions(self.vehicleCollisions)
 	

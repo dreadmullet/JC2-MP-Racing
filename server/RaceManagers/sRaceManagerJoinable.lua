@@ -29,7 +29,7 @@ function RaceManagerJoinable:SetupNextRace()
 	
 	self.playerQueue = {}
 	self.nextCourse = self.courseManager:LoadRandom()
-	self.nextCourseCollisions = math.random() > 0.55
+	self.nextCourseCollisions = settings.collisionChanceFunc()
 	
 	self:Message(
 		"A race has started queueing, use /"..settings.command.." to open the race menu! "..
