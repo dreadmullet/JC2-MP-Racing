@@ -118,7 +118,7 @@ end
 -- Events
 
 function StateStartingGrid:PostTick()
-	if self.startTimer:GetSeconds() >= settings.startingGridSeconds then
+	if self.startTimer:GetSeconds() >= self.race.startingGridSeconds then
 		self.race:SetState("StateRacing")
 	end
 	

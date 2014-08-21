@@ -24,6 +24,8 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self.recordTime = raceInfo.topRecordTime
 	self.recordTimePlayerName = raceInfo.topRecordPlayerName
 	self.collisions = raceInfo.collisions
+	self.vehicleSelectionSeconds = raceInfo.vehicleSelectionSeconds
+	self.startingGridSeconds = raceInfo.startingGridSeconds
 	
 	self.totalCheckpointCount = self.course.checkpointCount
 	if self.course.type == "Circuit" then

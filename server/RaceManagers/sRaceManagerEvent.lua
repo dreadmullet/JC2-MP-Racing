@@ -19,6 +19,7 @@ function RaceManagerEvent:__init(args) ; RaceManagerBase.__init(self)
 		course = args.course ,
 		collisions = args.collisions ,
 		modules = {"Event"} ,
+		quickStart = args.quickStart ,
 	}
 	
 	self:EventSubscribe("EndRace")
@@ -93,6 +94,7 @@ RaceManagerEvent.CreateRaceFromEvent = function(args)
 		owners = args.owners or args.players ,
 		course = course ,
 		collisions = args.collisions ,
+		quickStart = args.quickStart ,
 	}
 end
 Events:Subscribe("CreateRace" , RaceManagerEvent.CreateRaceFromEvent)

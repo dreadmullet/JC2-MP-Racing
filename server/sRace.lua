@@ -74,6 +74,14 @@ function Race:__init(args)
 	
 	self.overflowHandling = args.overflowHandling or Race.OverflowHandling.StackSpawns
 	
+	if args.quickStart == true then
+		self.vehicleSelectionSeconds = 10
+		self.startingGridSeconds = 6
+	else
+		self.vehicleSelectionSeconds = settings.vehicleSelectionSeconds
+		self.startingGridSeconds = settings.startingGridSeconds
+	end
+	
 	-- Collisions
 	
 	self.vehicleCollisions = args.collisions
@@ -281,7 +289,9 @@ function Race:MarshalForClient()
 		playerIdToInfo = self.playerIdToInfo ,
 		course = self.course:MarshalForClient() ,
 		collisions = self.vehicleCollisions ,
-		modules = self.moduleNames
+		modules = self.moduleNames ,
+		vehicleSelectionSeconds = self.vehicleSelectionSeconds ,
+		startingGridSeconds = self.startingGridSeconds ,
 	}
 	
 	-- Load the top time from the database.

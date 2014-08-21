@@ -56,7 +56,7 @@ function StateStartingGrid:__init(race , args) ; EGUSM.SubscribeUtility.__init(s
 	end
 	
 	local maxPresentTime = (
-		settings.startingGridSeconds -
+		self.race.startingGridSeconds -
 		settings.countDownInterval * settings.countDownNumMessages
 	)
 	local presentTime = math.min(maxPresentTime , 5 * #icons)
@@ -82,7 +82,7 @@ function StateStartingGrid:Render()
 	-- If there is a valid count down time left, and it's ready to be shown, show it.
 	if
 		#self.countDownTimes > 0 and
-		self.timer:GetSeconds() > settings.startingGridSeconds - self.countDownTimes[1]
+		self.timer:GetSeconds() > self.race.startingGridSeconds - self.countDownTimes[1]
 	then
 		LargeMessage(
 			tostring(settings.countDownNumMessages - self.messageCount) ,
@@ -92,7 +92,7 @@ function StateStartingGrid:Render()
 		table.remove(self.countDownTimes , 1)
 	end
 	-- If the timer is done, change our race's state to StateRacing.
-	if self.timer:GetSeconds() > settings.startingGridSeconds then
+	if self.timer:GetSeconds() > self.race.startingGridSeconds then
 		self.race:SetState("StateRacing")
 	end
 	

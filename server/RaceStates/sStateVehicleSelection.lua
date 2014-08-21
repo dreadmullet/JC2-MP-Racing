@@ -72,7 +72,7 @@ end
 -- Events
 
 function StateVehicleSelection:PreTick()
-	if self.timer:GetSeconds() >= settings.vehicleSelectionSeconds then
+	if self.timer:GetSeconds() >= self.race.vehicleSelectionSeconds then
 		self.race:SetState("StateStartingGrid")
 	end
 end

@@ -8,5 +8,6 @@ Events:Subscribe("TestMap" , function(args)
 	RaceManagerEvent.CreateRaceFromEvent{
 		players = args.players ,
 		map = map ,
+		quickStart = true ,
 	}
 end)
