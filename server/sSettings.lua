@@ -1,20 +1,19 @@
-
-debug = {}
--- Helps with testing starting grids.
--- debug.alwaysMaxPlayers = true
-
 settings.debugLevel = 1
 
-settings.raceManager = RaceManagerJoinable
+-- settings.raceManager = RaceManagerMode
 
-settings.coursesPath = "courses/"
+settings.coursesPath = "Courses/"
 
 settings.statsCommitInterval = 10 -- Seconds
 
 settings.prizeMoneyDefault = 10000
 settings.prizeMoneyMultiplier = 0.75
 
--- If you're using an admin manager script, plug it in here. Or just make your own list.
+settings.admins = {
+	SteamId("STEAM_0:1:12633239") ,
+	SteamId("76561197960287930") ,
+}
+-- If you're using an admin manager script, plug it in here. Or just edit the list above.
 settings.GetIsAdmin = function(player)
-	return player:GetSteamId() == SteamId("STEAM_0:1:12633239")
+	return table.find(settings.admins , player:GetSteamId()) ~= nil
 end
