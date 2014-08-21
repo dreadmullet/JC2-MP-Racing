@@ -114,13 +114,3 @@ RaceManagerEvent.CreateRaceFromConsole = function(args)
 	}
 end
 Console:Subscribe("createrace" , RaceManagerEvent.CreateRaceFromConsole)
-
-RaceManagerEvent.CreateRaceFromMapEditor = function(args)
-	local map = MapEditor.LoadFromMarshalledMap(args.marshalledMap)
-	
-	RaceManagerEvent.CreateRaceFromEvent{
-		players = args.players ,
-		map = map ,
-	}
-end
-Events:Subscribe("CreateRaceFromMapEditor" , RaceManagerEvent.CreateRaceFromMapEditor)
