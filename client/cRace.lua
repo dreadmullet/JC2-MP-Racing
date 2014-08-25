@@ -12,6 +12,8 @@ function Race:__init(args) ; RaceBase.__init(self , args)
 	
 	Race.currentRaceTab = RaceMenu.instance:AddTab(CurrentRaceTab)
 	
+	self:InitializeRaceModules()
+	
 	Events:Fire("RaceCreate")
 	
 	self:NetworkSubscribe("RaceSetState")

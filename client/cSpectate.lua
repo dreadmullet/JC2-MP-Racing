@@ -45,6 +45,8 @@ function Spectate:__init(args) ; RaceBase.__init(self , args)
 	self.orbitCamera.maxDistance = 50
 	self.orbitCamera.targetPosition = self.target.position
 	
+	self:InitializeRaceModules()
+	
 	self:EventSubscribe("ControlDown")
 	self:NetworkSubscribe("RaceSetState")
 	self:NetworkSubscribe("SpectateReceiveTarget" , self.ReceiveTarget)

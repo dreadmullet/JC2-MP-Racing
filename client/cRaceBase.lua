@@ -5,6 +5,7 @@ class("RaceBase")
 
 function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	-- Expose functions
+	self.InitializeRaceModules = RaceBase.InitializeRaceModules
 	self.UpdateLeaderboard = RaceBase.UpdateLeaderboard
 	self.Message = RaceBase.Message
 	self.Destroy = RaceBase.Destroy
@@ -26,6 +27,7 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self.collisions = raceInfo.collisions
 	self.vehicleSelectionSeconds = raceInfo.vehicleSelectionSeconds
 	self.startingGridSeconds = raceInfo.startingGridSeconds
+	self.raceModuleNames = raceInfo.modules
 	
 	self.totalCheckpointCount = self.course.checkpointCount
 	if self.course.type == "Circuit" then
@@ -38,14 +40,6 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	self.targetArrowModel = nil
 	self.icons = {}
 	
-	-- Initialize RaceModules.
-	for index , moduleName in ipairs(args.raceInfo.modules) do
-		local class = RaceModules[moduleName]
-		if class then
-			class()
-		end
-	end
-	
 	-- Request target arrow model.
 	local args = {
 		path = "Models/TargetArrow" ,
@@ -55,6 +49,15 @@ function RaceBase:__init(args) ; EGUSM.StateMachine.__init(self)
 	
 	self:NetworkSubscribe("ShowLargeMessage" , RaceBase.ShowLargeMessage)
 	self:ConsoleSubscribe("leaderboard" , RaceBase.PrintLeaderboard)
+end
+
+function RaceBase:InitializeRaceModules()
+	for index , moduleName in ipairs(self.raceModuleNames) do
+		local class = RaceModules[moduleName]
+		if class then
+			class()
+		end
+	end
 end
 
 function RaceBase:UpdateLeaderboard(racePosInfo)
