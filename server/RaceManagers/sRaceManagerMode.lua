@@ -102,7 +102,7 @@ end
 
 function RaceManagerMode:UpdateNextRaceInfo()
 	local course = self.courseManager:LoadNext()
-	local collisions = course:ProcessCollisions(settings.collisionChanceFunc)
+	local collisions = course:ProcessCollisions(settings.collisionChanceFunc())
 	
 	self.nextRaceInfo = {
 		course = course ,
