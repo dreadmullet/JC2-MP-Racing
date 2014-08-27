@@ -11,10 +11,60 @@ function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 		table.insert(self.updateList , racer)
 	end
 	
-	race.course:AssignRacers(self.race.playerIdToRacer)
-	race.course:SpawnVehicles()
-	race.course:SpawnRacers()
-	race.course:SpawnCheckpoints()
+	-- Assign racers
+	
+	local course = self.race.course
+	
+	local numRacers = table.count(self.race.playerIdToRacer)
+	local maxRacers = course:GetMaxPlayers()
+	if
+		numRacers > maxRacers and
+		self.race.overflowHandling ~= Race.OverflowHandling.StackSpawns
+	then
+		error("Too many racers for course! "..course.name..", "..numRacers.."/"..maxRacers)
+	end
+	
+	local racers = {}
+	for id , racer in pairs(self.race.playerIdToRacer) do
+		table.insert(racers , racer)
+	end
+	
+	-- Randomly sort the racers table. Otherwise, the starting grid is consistent; we want it to
+	-- always be completely random.
+	table.sortrandom(racers)
+	
+	local spawnIndex = 1
+	for index , racer in ipairs(racers) do
+		-- If the players overflow, copy a random spawn.
+		if spawnIndex > maxRacers then
+			local copiedSpawn = course.spawns[math.random(1 , maxRacers)]:Copy()
+			table.insert(course.spawns , copiedSpawn)
+		end
+		
+		racer.startPosition = index -- TODO: Starting grid bug is here.
+		course.spawns[spawnIndex].racer = racer
+		spawnIndex = spawnIndex + 1
+	end
+	
+	-- Spawn vehicles
+	
+	for n , spawn in ipairs(course.spawns) do
+		if spawn.racer then
+			spawn:SpawnVehicle()
+		end
+	end
+	
+	-- Spawn checkpoints
+	
+	for n, checkpoint in ipairs(course.checkpoints) do
+		checkpoint:Spawn()
+	end
+	
+	-- Spawn racers
+	
+	for n , spawn in ipairs(course.spawns) do
+		spawn:SpawnRacer()
+	end
 	
 	self.startTimer = Timer()
 	

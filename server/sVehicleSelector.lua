@@ -5,9 +5,10 @@ function VehicleSelector:__init(state , racer) ; EGUSM.SubscribeUtility.__init(s
 	self.Destroy = VehicleSelector.Destroy
 	
 	self.state = state
-	self.race = state.race
-	self.spawns = state.race.course.spawns
 	self.racer = racer
+	self.race = self.state.race
+	self.spawns = self.race.course.spawns
+	
 	self.world = World.Create()
 	self.vehicleIndex = -1
 	self.templateIndex = -1
