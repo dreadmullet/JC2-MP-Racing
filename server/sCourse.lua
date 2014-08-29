@@ -45,6 +45,8 @@ function Course:__init()
 	-- Value = CourseCheckpoint
 	-- Checkpoints add themselves to this.
 	self.checkpointMap = {}
+	-- Array of elements, each is like, {vehicleInfo = {}, spawns = {}}
+	self.vehicleInfoMap = {}
 	-- Key = modelId
 	-- value = true
 	self.dlcVehicles = {}
@@ -239,6 +241,7 @@ Course.LoadFromMap = function(map)
 			end
 			table.insert(course.vehicleInfos , vehicleInfo)
 			objectIdToVehicleInfo[object.id] = vehicleInfo
+			table.insert(course.vehicleInfoMap , {vehicleInfo = vehicleInfo , spawns = {}})
 		end
 	end
 	
@@ -257,6 +260,12 @@ Course.LoadFromMap = function(map)
 				local vehicleInfo = objectIdToVehicleInfo[object.id]
 				table.insert(spawn.vehicleInfos , vehicleInfo)
 				vehicleInfo.available = vehicleInfo.available + 1
+				-- Add to course.vehicleInfoMap
+				for index , entry in ipairs(course.vehicleInfoMap) do
+					if entry.vehicleInfo == vehicleInfo then
+						table.insert(entry.spawns , spawn)
+					end
+				end
 			end
 			
 			-- Add to dlcVehicles.

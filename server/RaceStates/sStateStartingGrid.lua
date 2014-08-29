@@ -28,21 +28,53 @@ function StateStartingGrid:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	for id , racer in pairs(self.race.playerIdToRacer) do
 		table.insert(racers , racer)
 	end
-	
 	-- Randomly sort the racers table. Otherwise, the starting grid is consistent; we want it to
 	-- always be completely random.
 	table.sortrandom(racers)
-	
+	-- Assign racers to spawns.
 	local spawnIndex = 1
 	for index , racer in ipairs(racers) do
-		-- If the players overflow, copy a random spawn.
-		if spawnIndex > maxRacers then
-			local copiedSpawn = course.spawns[math.random(1 , maxRacers)]:Copy()
-			table.insert(course.spawns , copiedSpawn)
+		racer.startPosition = index -- TODO: Starting grid bug is here.
+		
+		local IsRacerCompatibleWithSpawn = function(spawn)
+			-- This is WAY more complex than it should be. It should just be able to compare an index.
+			for index , vehicleInfo in ipairs(spawn.vehicleInfos) do
+				if vehicleInfo.modelId ~= racer.assignedVehicleInfo.modelId then
+					goto continue
+				end
+				if #vehicleInfo.templates == 0 then
+					goto continue
+				end
+				for index , template in ipairs(vehicleInfo.templates) do
+					if racer.assignedVehicleInfo.template == template then
+						return true
+					end
+				end
+				
+				::continue::
+			end
+			
+			return false
 		end
 		
-		racer.startPosition = index -- TODO: Starting grid bug is here.
-		course.spawns[spawnIndex].racer = racer
+		local foundSpawn = false
+		for index , spawn in ipairs(course.spawns) do
+			if spawn.racer == nil and IsRacerCompatibleWithSpawn(spawn) == true then
+				spawn.racer = racer
+				foundSpawn = true
+				break
+			end
+		end
+		if foundSpawn == false then
+			warn("Could not find appropriate spawn for "..tostring(racer.player))
+			for index , spawn in ipairs(course.spawns) do
+				if spawn.racer == nil then
+					spawn.racer = racer
+					break
+				end
+			end
+		end
+		
 		spawnIndex = spawnIndex + 1
 	end
 	

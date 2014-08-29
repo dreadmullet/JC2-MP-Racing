@@ -6,7 +6,6 @@ StateVehicleSelection.garageAngle = Angle(math.tau * 0.5 , 0 , 0)
 
 function StateVehicleSelection:__init(race) ; EGUSM.SubscribeUtility.__init(self)
 	self.race = race
-	self.spawns = self.race.course.spawns
 	self.timer = Timer()
 	self.playerIdToVehicleSelector = {}
 	-- Array of tables; each table has the following:
@@ -16,16 +15,9 @@ function StateVehicleSelection:__init(race) ; EGUSM.SubscribeUtility.__init(self
 	--    used = number
 	self.vehicles = Copy(self.race.course.vehicleInfos)
 	
-	-- If this race has more players than spawns, add that many extra to each vehicle.
-	local extraVehicles = 0
-	if self.race.numPlayers > #self.spawns then
-		extraVehicles = self.race.numPlayers - #self.spawns
-	end
-	
-	-- Add the 'used' variable to each vehicle info and change the available counts, if necessary.
+	-- Add the 'used' variable to each vehicle info.
 	for index , vehicleInfo in ipairs(self.vehicles) do
 		vehicleInfo.used = 0
-		vehicleInfo.available = vehicleInfo.available + extraVehicles
 	end
 	
 	-- Create playerIdToVehicleSelector.

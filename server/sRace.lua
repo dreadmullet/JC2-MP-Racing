@@ -36,6 +36,7 @@ function Race:__init(args)
 	
 	self.course = args.course
 	self.course.race = self
+	local maxPlayers = self.course:GetMaxPlayers()
 	-- TODO: Is this necessary? It will be looked at with the client-side checkpoint overhaul.
 	self.checkpointPositions = {}
 	for n = 1 , #self.course.checkpoints do
@@ -87,18 +88,35 @@ function Race:__init(args)
 	self.vehicleCollisions = args.collisions or settings.collisionChanceFunc()
 	self.vehicleCollisions = self.course:ProcessCollisions(self.vehicleCollisions)
 	
+	-- Overflow handling
+	
 	if
 		self.overflowHandling == Race.OverflowHandling.StackSpawns and
-		self.numPlayers > self.course:GetMaxPlayers()
+		self.numPlayers > maxPlayers
 	then
 		if settings.debugLevel >= 2 then
 			print(
-				string.format("%i/%i" , self.numPlayers , self.course:GetMaxPlayers())..
+				string.format("%i/%i" , self.numPlayers , maxPlayers)..
 				" players, turning collisions off"
 			)
 		end
 		
 		self.vehicleCollisions = false
+		
+		-- Create a new spawn for each vehicle info.
+		local overflow = self.numPlayers - maxPlayers
+		-- testing
+		-- local overflow = 5
+		for n = 1 , overflow do
+			for index , entry in ipairs(self.course.vehicleInfoMap) do
+				if #entry.spawns > 0 then
+					entry.vehicleInfo.available = entry.vehicleInfo.available + 1
+					
+					local copiedSpawn = table.randomvalue(entry.spawns):Copy()
+					table.insert(self.course.spawns , copiedSpawn)
+				end
+			end
+		end
 	end
 	
 	-- More stuff
@@ -115,7 +133,6 @@ function Race:__init(args)
 	end
 	
 	-- Initialize Racers and Spectators.
-	local maxPlayers = self.course:GetMaxPlayers()
 	local forceSpectators = self.overflowHandling == Race.OverflowHandling.ForceSpectate
 	for index , player in ipairs(args.players) do
 		if index <= maxPlayers or forceSpectators == false then
