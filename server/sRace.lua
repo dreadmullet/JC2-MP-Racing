@@ -85,7 +85,6 @@ function Race:__init(args)
 	-- Collisions
 	
 	self.vehicleCollisions = args.collisions or settings.collisionChanceFunc()
-	
 	self.vehicleCollisions = self.course:ProcessCollisions(self.vehicleCollisions)
 	
 	if
@@ -101,6 +100,8 @@ function Race:__init(args)
 		
 		self.vehicleCollisions = false
 	end
+	
+	-- More stuff
 	
 	self.moduleNames = args.modules or {}
 	
@@ -118,7 +119,7 @@ function Race:__init(args)
 	local forceSpectators = self.overflowHandling == Race.OverflowHandling.ForceSpectate
 	for index , player in ipairs(args.players) do
 		if index <= maxPlayers or forceSpectators == false then
-			self:AddPlayer(player)
+			self:AddRacer(player)
 		else
 			self:AddSpectator(player)
 		end
@@ -150,7 +151,7 @@ function Race:__init(args)
 	self:ConsoleSubscribe("raceinfo")
 end
 
-function Race:AddPlayer(player)
+function Race:AddRacer(player)
 	local racer = Racer(self , player)
 	self.playerIdToRacer[player:GetId()] = racer
 	table.insert(self.participants , racer)
