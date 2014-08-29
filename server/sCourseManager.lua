@@ -43,6 +43,7 @@ function CourseManager:Advance()
 	self.currentIndex = self.currentIndex + 1
 	if self.currentIndex > #self.courseNames then
 		self.currentIndex = 1
+		self:LoadManifest()
 		self:Randomize()
 	end
 end
@@ -57,7 +58,7 @@ function CourseManager:LoadManifest()
 	if fileError then
 		error("Error loading course manifest: "..fileError)
 	end
-	io.close(file)
+	file:close()
 	
 	-- Erase courseNames if it's already been filled. This allows it to be updated just by
 	-- calling this function again.
@@ -69,7 +70,7 @@ function CourseManager:LoadManifest()
 		line = Utility.TrimCommentsFromLine(line)
 		-- Make sure this line has stuff in it.
 		if string.find(line , "%S") then
-			-- Add the entire line, sans comments, to self.courseNames
+			-- Add the entire line to self.courseNames.
 			table.insert(self.courseNames , line)
 		end
 	end
