@@ -1,5 +1,3 @@
-class("RaceManagerJoinable")
-
 RaceManagerJoinable.maxQueueSeconds = 120
 
 function RaceManagerJoinable:__init() ; RaceManagerBase.__init(self)

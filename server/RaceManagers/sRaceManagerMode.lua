@@ -1,5 +1,3 @@
-class("RaceManagerMode")
-
 RaceManagerMode.initializeDelay = 1.5
 
 function RaceManagerMode:__init() ; RaceManagerBase.__init(self)

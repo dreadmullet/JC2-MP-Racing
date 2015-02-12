@@ -3,6 +3,8 @@ math.tau = math.pi * 2
 
 Stats = {}
 class("CourseCheckpoint")
+class("RaceManagerMode")
+class("RaceManagerJoinable")
 
 ModuleLoad = function()
 	Chat:Broadcast(
